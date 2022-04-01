@@ -1,0 +1,37 @@
+{
+  "name": "chainbridge-sdk",
+  "version": "1.0.0",
+  "description": "Chainbridge SDK",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+  },
+  "keywords": [],
+  "author": "Chainsafe product team",
+  "license": "MIT",
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/webpack-dev-server",
+      "**/react-scripts"
+    ]
+  },
+  "dependencies": {
+    "wsrun": "5.2.4",
+    "@changesets/cli": "^2.14.1",
+    "ethers": "5.4.5",
+    "prettier": "2.1.2"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.23",
+    "eslint": "^8.12.0",
+    "jest": "^27.5.1",
+    "lerna": "^4.0.0",
+    "ts-jest": "^27.1.4",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.3"
+  }
+}

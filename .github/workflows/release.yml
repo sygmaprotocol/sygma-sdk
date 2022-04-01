@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  push:
+    paths:
+      - "packages/chainbridge-ui-core/**"
+  #   branches:
+  #     - master
+  #   # when any of these versions receive a push
+    tags:
+      - "v*.*.*"
+  # pull_request:
+  #   paths:
+  #   - "packages/core/**"
+  #   branches: [main]
+  #   tags:
+  #     - "v*.*.*"
+  # when any releases are created
+  release:
+    types:
+      - created
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      # Setup .npmrc file to publish to npm
+      - uses: actions/setup-node@v2
+        with:
+          always-auth: true
+          node-version: '16.x'
+          cache: 'yarn'
+          registry-url: 'https://registry.npmjs.org'
+          # Defaults to the user or organization that owns the workflow file
+          scope: '@chainsafe'
+      - run: yarn
+      - run: yarn workspace @chainsafe/chainbridge-ui-core build
+      - run: npm publish --workspace=@chainsafe/chainbridge-ui-core publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
