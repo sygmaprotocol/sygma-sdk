@@ -1,0 +1,31 @@
+# Copyright 2020 ChainSafe Systems
+# SPDX-License-Identifier: LGPL-3.0-only
+version: '3'
+
+services:
+  nodeA:
+    image: trufflesuite/ganache:latest
+    command: -h 0.0.0.0 -m test -p 8544 --database.dbPath /node1 --chain.chainId 23 -b 1
+    ports:
+      - "8544:8544"
+    volumes:
+      - ./node1/_data:/node1
+    networks:
+      - evm
+
+  nodeB:
+    image: trufflesuite/ganache:latest
+    command: -h 0.0.0.0 -m test -p 8553 --database.dbPath /node2 --chain.chainId 24 -b 1
+    ports:
+      - "8553:8553"
+    volumes:
+      - ./node2/_data:/node2
+    networks:
+      - evm
+
+volumes:
+  nodeA:
+  nodeB:
+
+networks:
+  evm:
