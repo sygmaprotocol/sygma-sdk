@@ -4,28 +4,65 @@ version: '3'
 
 services:
   nodeA:
+    container_name: node1-1
+    networks:
+      - evm1
     image: trufflesuite/ganache:latest
-    command: -h 0.0.0.0 -m test -p 8544 --database.dbPath /node1 --chain.chainId 23 -b 1
+    command: -h 0.0.0.0 -m test -p 8544 --database.dbPath /node1 --chain.chainId 23 -b 1 --wallet.accountKeysPath /keysN1.json --wallet.accounts "0x000000000000000000000000000000000000000000000000000000616c696365,666000000000000000000" "0x0000000000000000000000000000000000000000000000000000000000626f62,666000000000000000000" "0x00000000000000000000000000000000000000000000000000636861726c6965,666000000000000000000" "0x0000000000000000000000000000000000000000000000000000000064617665,666000000000000000000" "0x0000000000000000000000000000000000000000000000000000000000657665,666000000000000000000"
     ports:
       - "8544:8544"
     volumes:
       - ./node1/_data:/node1
-    networks:
-      - evm
+      - ./keysN1/keysN1.json:/keysN1.json
 
   nodeB:
+    container_name: node2-1
+    networks:
+      - evm2
     image: trufflesuite/ganache:latest
-    command: -h 0.0.0.0 -m test -p 8553 --database.dbPath /node2 --chain.chainId 24 -b 1
+    command: -h 0.0.0.0 -m test -p 8553 --database.dbPath /node2 --chain.chainId 24 -b 1 --wallet.accountKeysPath /keysN2.json --wallet.accounts "0x000000000000000000000000000000000000000000000000000000616c696365,666000000000000000000" "0x0000000000000000000000000000000000000000000000000000000000626f62,666000000000000000000" "0x00000000000000000000000000000000000000000000000000636861726c6965,666000000000000000000" "0x0000000000000000000000000000000000000000000000000000000064617665,666000000000000000000" "0x0000000000000000000000000000000000000000000000000000000000657665,666000000000000000000"
     ports:
       - "8553:8553"
     volumes:
       - ./node2/_data:/node2
+      - ./keysN2/keysN2.json:/keysN2.json
+
+  sdk-relayer1:
+    container_name: r1
+    build:
+      context: ./.
+      dockerfile: Dockerfile
+    command: run --config /config/config_evm-evm.json --testkey alice --fresh
+    depends_on:
+      - nodeA
+      - nodeB
+    volumes:
+      - ./config:/config
     networks:
-      - evm
+      - evm1
+      - evm2
+    restart: always
+
+  sdk-relayer2:
+    container_name: r2
+    build:
+      context: ./.
+      dockerfile: Dockerfile
+    command: run --config /config/config_evm-evm.json --testkey bob --fresh
+    depends_on:
+      - nodeA
+      - nodeB
+    volumes:
+      - ./config:/config
+    networks:
+      - evm1
+      - evm2
+    restart: always
+
+networks:
+  evm1:
+  evm2:
 
 volumes:
   nodeA:
   nodeB:
-
-networks:
-  evm:
