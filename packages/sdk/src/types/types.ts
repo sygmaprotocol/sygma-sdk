@@ -1,9 +1,8 @@
-import { Erc20Detailed } from './Contracts/Erc20Detailed';
+import { Erc20Detailed } from '../Contracts/Erc20Detailed';
 import { Bridge } from '@chainsafe/chainbridge-contracts';
 import { ethers } from 'ethers';
 
-export interface ChainbridgeSDK {
-}
+export interface ChainbridgeSDK {}
 
 export type Directions = "chain1" | "chain2"
 
@@ -62,6 +61,6 @@ export type ChainbridgeProviders =
 
 export type ChainbridgeErc20Contracts = { [chain: string]: Erc20Detailed } | undefined;
 
-export type Provider = ethers.providers.JsonRpcProvider | undefined;
+export type Provider = ethers.providers.JsonRpcProvider | ethers.providers.Web3Provider | undefined;
 
 export type Signer = ethers.providers.JsonRpcSigner | undefined;

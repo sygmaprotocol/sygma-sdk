@@ -9,6 +9,7 @@ import {
 	ChainbridgeContracts,
 	ChainbridgeErc20Contracts,
 	ChainbridgeProviders,
+	Provider,
 } from '../types';
 
 export const computeBridges = (contracts: ChainbridgeContracts): Bridges =>
@@ -36,7 +37,7 @@ export const computeERC20Contracts = (contracts: ChainbridgeContracts): Chainbri
 export const computeBridgeEvents = (contracts: ChainbridgeContracts) =>
 	Object.keys(contracts).reduce((bridgeEvents: any, chain) => {
 		const { bridgeEvent } = contracts[chain];
-		const [entries] = Object.entries(contracts).filter((e:any) => e[0] !== chain);
+		const [entries] = Object.entries(contracts).filter((e: any) => e[0] !== chain);
 
 		const proposalEeventDestinationBridge = computeProposalEvents(entries[1].bridge);
 
@@ -64,20 +65,37 @@ export const computeProposalEvents = (destinationBridge: Bridge): BridgeEventCal
 	return destinationProposalEvents;
 };
 
-export const computeProviders = (bridgeSetup: BridgeData, address: string): ChainbridgeProviders =>
-	Object.keys(bridgeSetup).reduce((providers: any, chain) => {
-		const { rpcURL } = bridgeSetup[chain as keyof BridgeData];
+export const computeProviders = (bridgeSetup: BridgeData, address?: string): ChainbridgeProviders => Object.keys(bridgeSetup).reduce((providers: any, chain) => {
+	const { rpcURL } = bridgeSetup[chain as keyof BridgeData];
 
-		const provider = new ethers.providers.JsonRpcProvider(rpcURL);
-		const signer = provider.getSigner(address);
+	const provider = setProvider(rpcURL)
+	let signer
 
-		providers = {
-			...providers,
-			[chain]: { provider, signer },
-		};
+	if(address !== undefined){
+		signer = provider!.getSigner(address);
+	} else {
+		signer = provider?.getSigner()
+	}
 
-		return providers;
-	}, {});
+	providers = {
+		...providers,
+		[chain]: { provider, signer },
+	};
+
+	return providers;
+}, {});
+
+const setProvider = (rpcURL?: string): Provider => {
+	if (window !== undefined && window.ethereum) {
+		console.log("Metamask detected")
+		const provider = new ethers.providers.Web3Provider(
+			window.ethereum, "any"
+		)
+		return provider
+	}
+	console.log("Using rpc URL")
+	return new ethers.providers.JsonRpcProvider(rpcURL)
+}
 
 export const processAmountForERC20Transfer = (amount: number): string => {
 	const parsedAmountToERC20Decimals = utils.parseUnits(amount.toString(), 18);
