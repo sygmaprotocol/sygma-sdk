@@ -1,4 +1,4 @@
-import { BigNumber, ethers, providers, utils, Event } from 'ethers';
+import { ethers } from 'ethers';
 import { Bridge__factory as BridgeFactory, Bridge } from '@chainsafe/chainbridge-contracts';
 import { Erc20DetailedFactory } from './Contracts/Erc20DetailedFactory';
 import { Erc20Detailed } from './Contracts/Erc20Detailed';
@@ -17,15 +17,16 @@ import {
 	ChainbridgeEventsObject,
 	ChainbridgeErc20Contracts,
 	BridgeEventCallback,
+	Events,
+	Directions,
 } from './types';
 import {
 	computeBridgeEvents,
 	computeBridges,
 	computeERC20Contracts,
 	computeProviders,
-	processAmountForERC20Transfer,
-	processLenRecipientAddress,
 } from './utls';
+import { ERC20Bridge } from './chains';
 
 /**
  * Chainbridge is the main class that allows you to have bridging capabilities
@@ -35,34 +36,28 @@ import {
  */
 
 export class Chainbridge implements ChainbridgeSDK {
-	private url: string = '';
-	private SDKName: string = '';
-	public ethersProvider: Provider = undefined;
-	public bridgeSetup: BridgeData;
+	private ethersProvider: Provider = undefined;
+	private bridgeSetup: BridgeData;
 	private bridges: Bridges = undefined;
-	private bridgeEvents: BridgeEvents = undefined;
+	public bridgeEvents: Events = undefined;
 	private signer: Signer = undefined;
 	private erc20: ChainbridgeErc20Contracts = undefined;
 	private providers: ChainbridgeProviders = undefined;
+	private erc20Bridge: ERC20Bridge
 
-	public constructor({ provider, bridgeSetup }: Setup) {
+	public constructor({ bridgeSetup }: Setup) {
 		this.bridgeSetup = bridgeSetup;
-		this.ethersProvider = provider as ethers.providers.JsonRpcProvider;
+		this.erc20Bridge = ERC20Bridge.getInstance()
 	}
 
-	public get getUrl() {
-		return this.url;
-	}
-
-	public get getSDKName() {
-		return this.SDKName;
-	}
-
-	public initializeConnection(address: string): BridgeEvents {
+	public initializeConnection(address: string): {
+		chain1: BridgeEvents,
+		chain2: BridgeEvents
+	} {
 		this.providers = computeProviders(this.bridgeSetup, address);
 
 		// TODO CHECK HOW TO TYPE REDUCERS
-		const contracts = this.computeContractrs();
+		const contracts = this.computeContracts();
 
 		// this returns bridge events object
 		this.bridgeEvents = computeBridgeEvents(contracts);
@@ -73,17 +68,18 @@ export class Chainbridge implements ChainbridgeSDK {
 		// setup bridges contracts
 		this.bridges = computeBridges(contracts);
 
-		return this.bridgeEvents!;
+		return { chain1: this.bridgeEvents?.chain1, chain2: this.bridgeEvents?.chain2 };
 	}
 
-	private computeContractrs(): ChainbridgeContracts {
+	private computeContracts(): ChainbridgeContracts {
 		return Object.keys(this.bridgeSetup).reduce((contracts: any, chain) => {
 			console.log('chain', chain);
 			const { bridgeAddress, erc20Address } = this.bridgeSetup[chain as keyof BridgeData];
 
 			const { signer } = this.providers![chain as keyof BridgeData];
 
-			const { bridge, bridgeEvent } = this.connectToBridge(bridgeAddress, signer!);
+			const bridge = this.connectToBridge(bridgeAddress, signer!);
+			const bridgeEvent = this.getBridgeDepositEvents(bridge, signer)
 			const erc20Connected = this.connectERC20(erc20Address, signer!);
 			contracts = {
 				...contracts,
@@ -93,10 +89,12 @@ export class Chainbridge implements ChainbridgeSDK {
 		}, {});
 	}
 
-	private connectToBridge(bridgeAddress: string, signer: Signer) {
-		const bridge = BridgeFactory.connect(bridgeAddress, signer!);
-		const bridgeEvent = this.bridgeDepositEvent(bridge, signer!);
-		return { bridge, bridgeEvent };
+	private connectToBridge(bridgeAddress: string, signer: Signer): Bridge {
+		return BridgeFactory.connect(bridgeAddress, signer!);
+	}
+
+	private getBridgeDepositEvents(bridge: Bridge, signer: Signer) {
+		return this.bridgeDepositEvent(bridge, signer!);
 	}
 
 	private connectERC20(
@@ -121,119 +119,71 @@ export class Chainbridge implements ChainbridgeSDK {
 		return bridgeEvent;
 	}
 
-	// TODO: THIS SHOULD BE CALLED BEFORE TRANSFERRING
-	// TODO: PROVIDE DIRECTION OF THE TRANSFER AND TEST THIS
-	private proposalEvents(destinationBridge: Bridge): BridgeEventCallback {
-		const proposalEventsFilter = destinationBridge.filters.ProposalEvent(null, null, null, null);
-
-		const destinationProposalEvents = (func: any) =>
-			destinationBridge.on(
-				proposalEventsFilter,
-				(originDomainId, despositNonce, status, dataHash, tx) => {
-					func(originDomainId, despositNonce, status, dataHash, tx);
-				},
-			);
-
-		return destinationProposalEvents;
-	}
-
 	public async transferERC20(
 		amount: number,
 		recipientAddress: string,
-		from: 'chain1' | 'chain2',
-		direction: 'chain1' | 'chain2',
+		from: Directions, // change this for a type
+		to: Directions, // change this for a type
 	) {
 
-		// TO DEPOSIT WE NEED THE FOLLOWING:
-		// TOKEN AMOUNT OR ID TO DEPOSIT (32 BYTES)
-		// len(RecipientAddress) (32 BYTES)
-		// recipientAddress (32 BYTES)
+		const erc20ToUse = this.erc20![from];
+		const {provider} = this.providers![from]
+		const bridgeToUse = this.bridges![from]
+		const {erc20HandlerAddress} = this.bridgeSetup[from]
+		const { domainId, erc20ResourceID } = this.bridgeSetup[to]
 
-		// TOKEN AMOUNT TO DEPOSIT IN 32 BYTES
-		const amountTransformedToData = processAmountForERC20Transfer(amount);
-		// console.log("amount transformed", amountTransformedToData)
-
-		// LEN(RECIPIENTADDRESS) 32 BYTES
-		const toHexString = processLenRecipientAddress(recipientAddress);
-
-		// console.log("len of recipient address", toHexString)
-
-		// RECIPIENT ADDRESS (32 BYTES)
-		const recipientAddressTo32 = recipientAddress.substr(2);
-
-		const dataToSend = `0x${amountTransformedToData}${toHexString}${recipientAddressTo32}`;
-
-		console.log('DATA TO SEND', dataToSend);
-
-		const feeData = await this.ethersProvider?.getFeeData();
-
-		// console.log("fee data", feeData)
-		console.log('parsed fee', feeData?.gasPrice?.toString());
-
-		const amountForApproval = utils.parseUnits(amount.toString(), 18);
-
-		const amountForApprovalBN = BigNumber.from(amountForApproval);
-
-		let approval = { hash: '' };
-
-		const erc20ToUse = this.erc20![direction];
-
-		try {
-			const { erc20HandlerAddress } = this.bridgeSetup[direction];
-			const a = await erc20ToUse.approve(erc20HandlerAddress, amountForApprovalBN, {
-				gasPrice: feeData?.gasPrice?.toString(),
-			});
-
-			if (a !== undefined) {
-				approval = a;
-			}
-		} catch (err) {
-			console.log('Approve error', err);
-		}
-
-		// console.log("approved", approval)
-
-		const bridgeFee = await this.bridges![direction]?._fee();
-
-		const bridgeFeeTransformed = utils.parseUnits(bridgeFee?.toString()!, 18);
-
-		console.log(
-			'BRIDGE FEE',
-			bridgeFeeTransformed.toString(),
-			BigNumber.from('0x5DB698').toString(),
-		);
-
-		let depositAction;
-
-		const bridgeToUse = this.bridges![direction];
-
-		const destinationProposalEvents = this.proposalEvents(direction);
-		try {
-			depositAction = await bridgeToUse.deposit(
-				BigNumber.from(destinationChainId), // DESTINATION CHAIN ID,
-				this.bridgeSetup[direction].erc20ResourceID,
-				dataToSend,
-				{
-					gasPrice: feeData?.gasPrice?.toString(),
-					value: utils.parseUnits((bridgeFee || 0).toString(), 18),
-					gasLimit: BigNumber.from('0x5DB698').toString(),
-				},
-			);
-			// console.log('deposit action', depositAction);
-
-			return {
-				approvalTxHash: approval.hash,
-				depositTxHash: depositAction?.hash,
-				destinationProposalEvents,
-			};
-		} catch (e) {
-			console.log('Error =====>>>', e);
-		}
+		return await this.erc20Bridge.transferERC20(
+			amount,
+			recipientAddress,
+			erc20ToUse,
+			bridgeToUse,
+			provider,
+			erc20HandlerAddress,
+			domainId,
+			erc20ResourceID
+		)
 	}
 
 	public async waitForTransactionReceipt(txHash: string) {
 		const receipt = await this.ethersProvider?.waitForTransaction(txHash, 1);
 		return receipt;
+	}
+
+	public async hasTokenSupplies(
+		amount: number,
+		to: Directions
+	) {
+		const { erc20Address: destinationTokenAddress, erc20HandlerAddress, decimals } = this.bridgeSetup[to]
+		const { provider } = this.providers![to]
+
+		return await this.erc20Bridge.hasTokenSupplies(
+			amount,
+			to,
+			provider,
+			destinationTokenAddress,
+			erc20HandlerAddress,
+			decimals
+		)
+	}
+
+	public async checkCurrentAllowance(from: Directions, recipientAddress: string) {
+
+		const erc20ToUse = this.erc20![from]
+		const { erc20HandlerAddress } = this.bridgeSetup[from]
+
+		return await this.erc20Bridge.checkCurrentAllowance(
+			recipientAddress,
+			erc20ToUse,
+			erc20HandlerAddress
+		)
+	}
+
+	public async isEIP1559MaxFeePerGas(from: string) {
+		const { provider } = this.providers![from]
+
+		return await this.erc20Bridge.isEIP1559MaxFeePerGas(
+			provider
+		)
 	}
 
 }

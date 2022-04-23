@@ -1,7 +1,9 @@
-import { utils, BigNumber, ethers } from 'ethers'
+import { Bridge } from '@chainsafe/chainbridge-contracts';
+import { utils, BigNumber, ethers } from 'ethers';
 
 import {
 	BridgeData,
+	BridgeEventCallback,
 	BridgeEvents,
 	Bridges,
 	ChainbridgeContracts,
@@ -31,26 +33,38 @@ export const computeERC20Contracts = (contracts: ChainbridgeContracts): Chainbri
 		return erc20Contracts;
 	}, {});
 
-export const computeBridgeEvents = (contracts: ChainbridgeContracts): BridgeEvents =>
+export const computeBridgeEvents = (contracts: ChainbridgeContracts) =>
 	Object.keys(contracts).reduce((bridgeEvents: any, chain) => {
 		const { bridgeEvent } = contracts[chain];
+		const [entries] = Object.entries(contracts).filter((e:any) => e[0] !== chain);
 
-		// TODO: ADD PROPOSAL EVENTS WITH KEY RELATED OF THE DESTINATIOM CHAIN
-		// IN THIS CASE IS THE OTHER CHAIN, SO WE CAN FILTER IN A NEGATIVE WAY
-		// USING THE BRIDGE SETUP
+		const proposalEeventDestinationBridge = computeProposalEvents(entries[1].bridge);
 
 		bridgeEvents = {
 			...bridgeEvents,
-			[chain]: bridgeEvent,
+			[chain]: {
+				bridgeEvents: bridgeEvent,
+				proposalEvents: {
+					[entries[0]]: proposalEeventDestinationBridge,
+				},
+			},
 		};
 
 		return bridgeEvents;
 	}, {});
 
-export const computeProviders = (
-	bridgeSetup: BridgeData,
-	address: string,
-): ChainbridgeProviders =>
+export const computeProposalEvents = (destinationBridge: Bridge): BridgeEventCallback => {
+	const proposalFilter = destinationBridge.filters.ProposalEvent(null, null, null, null);
+
+	const destinationProposalEvents = (func: any) =>
+		destinationBridge.on(proposalFilter, (originDomainId, despositNonce, status, dataHash, tx) => {
+			func(originDomainId, despositNonce, status, dataHash, tx);
+		});
+
+	return destinationProposalEvents;
+};
+
+export const computeProviders = (bridgeSetup: BridgeData, address: string): ChainbridgeProviders =>
 	Object.keys(bridgeSetup).reduce((providers: any, chain) => {
 		const { rpcURL } = bridgeSetup[chain as keyof BridgeData];
 
@@ -66,21 +80,21 @@ export const computeProviders = (
 	}, {});
 
 export const processAmountForERC20Transfer = (amount: number): string => {
-  const parsedAmountToERC20Decimals = utils.parseUnits(amount.toString(), 18);
+	const parsedAmountToERC20Decimals = utils.parseUnits(amount.toString(), 18);
 
-  const toBigNumber = BigNumber.from(parsedAmountToERC20Decimals);
+	const toBigNumber = BigNumber.from(parsedAmountToERC20Decimals);
 
-  const toHexString = toBigNumber.toHexString();
+	const toHexString = toBigNumber.toHexString();
 
-  const amountTransformedToData = utils.hexZeroPad(toHexString, 32).substr(2);
+	const amountTransformedToData = utils.hexZeroPad(toHexString, 32).substr(2);
 
-  return amountTransformedToData;
-}
+	return amountTransformedToData;
+};
 
 export const processLenRecipientAddress = (recipientAddress: string): string => {
-  const hexilifiedLenOfRecipientAddress = utils.hexlify((recipientAddress.length - 2) / 2);
+	const hexilifiedLenOfRecipientAddress = utils.hexlify((recipientAddress.length - 2) / 2);
 
-  const toHexString = utils.hexZeroPad(hexilifiedLenOfRecipientAddress, 32).substr(2);
+	const toHexString = utils.hexZeroPad(hexilifiedLenOfRecipientAddress, 32).substr(2);
 
-  return toHexString;
-}
+	return toHexString;
+};

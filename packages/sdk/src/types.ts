@@ -5,9 +5,9 @@ import { ethers } from 'ethers';
 export interface ChainbridgeSDK {
 }
 
+export type Directions = "chain1" | "chain2"
+
 export type Setup = {
-	provider: any;
-	providerClient: 'ethers' | 'web3';
 	bridgeSetup: BridgeData;
 };
 
@@ -18,6 +18,7 @@ export type ChainbridgeBridgeSetup = {
 	erc20ResourceID: string;
 	rpcURL: string;
 	domainId: string;
+	decimals: number;
 };
 
 export type BridgeData = {
@@ -41,6 +42,13 @@ export type ChainbridgeEventsObject =
 
 export type BridgeEvents =
 	| { bridgeEvents: ChainbridgeEventsObject; proposalEvents: ChainbridgeEventsObject }
+	| undefined;
+
+export type Events =
+	| {
+			chain1: BridgeEvents;
+			chain2: BridgeEvents;
+	  }
 	| undefined;
 
 export type ChainbridgeProviders =

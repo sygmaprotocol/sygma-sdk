@@ -16,7 +16,7 @@ COPY config /config
 # COPY keystore /keystore
 COPY --from=builder /bridge ./
 RUN chmod +x ./bridge
-# RUN ls -l /keystore
+RUN ls -l
 # RUN cat /config/config_evm-evm.json
 
 ENTRYPOINT ["./bridge"]
