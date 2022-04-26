@@ -1,6 +1,6 @@
 {
 	"name": "@chainsafe/chainbridge-sdk",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Core primitives for bridging and message passing",
 	"main": "dist/src/index.js",
 	"types": "dist/src/index.d.ts",
@@ -10,7 +10,8 @@
 		"test": "jest --watchAll --detectOpenHandles",
 		"run:all": "concurrently \"yarn run prepareNodes\" \"yarn run test\"",
 		"build": "tsc",
-		"run:nodes": "docker-compose -f docker-compose.yml up"
+		"run:nodes": "docker-compose -f docker-compose.yml up",
+		"clean": "rm -rf ./dist"
 	},
 	"keywords": [],
 	"author": "",
@@ -32,5 +33,9 @@
 	},
 	"files": [
 		"dist/**/*"
-	]
+	],
+	"dependencies": {
+		"react-hook-form": "^7.30.0",
+		"web3": "^1.7.3"
+	}
 }

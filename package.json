@@ -6,8 +6,11 @@
   "private": true,
   "scripts": {
     "sdk:build": "yarn wsrun -p @chainsafe/chainbridge-sdk -c build",
+    "sdk:cleanDist":"yarn wsrun -p @chainsafe/chainbridge-sdk -c clean",
     "sdk:test": "yarn wsrun -p @chainsafe/chainbridge-sdk -c test",
-    "start:react-example": "yarn wsrun -p @chainsage/chainbridge-sdk-react-example -c start"
+    "start:react-example": "yarn wsrun -p @chainsafe/chainbridge-sdk-react-example -c start",
+    "sdk:run-local-example": "yarn wsrun -p @chainsafe/chainbridge-sdk-node-example -c run:local-ex",
+    "sdk:run-ganache-example": "yarn wsrun -p @chainsafe/chainbridge-sdk-node-example -c run:ganache-ex"
   },
   "keywords": [],
   "author": "Chainsafe product team",
@@ -35,5 +38,6 @@
     "ts-jest": "^27.1.4",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.3",
+    "web3": "1.7.3"
   }
 }
