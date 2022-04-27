@@ -1,7 +1,3 @@
-// SIGNER DEPENDS ON THE CONTEXT
-// BUT CONTEXT DEPENDS IF WE ARE PASSING OR NOT
-// ADDRESS TO THE INITIALIZE CONNECTION
-
 import { ethers } from "ethers";
 import { Provider, Signer } from "../types";
 
@@ -12,23 +8,26 @@ interface IConnector {
 }
 
 export default class Connector implements IConnector {
-  private provider: Provider
-  private signer: Signer
+  private provider: Provider | undefined
+  private signer: Signer | undefined
 
   constructor(rpcURL?: string, address?: string) {
-    if (!rpcURL) {
+    if (!rpcURL && !address) {
       if (window && window.ethereum) {
         this.provider = new ethers.providers.Web3Provider(
           window.ethereum,
           "any"
         )
         this.signer = this.provider.getSigner()
+      } else {
+        console.warn("No ethereum object to initialize provider on the Browser")
+        this.provider = undefined
       }
-      console.warn("No ethereum object and rpc url to initialize provider")
-    }
-    this.provider = new ethers.providers.JsonRpcProvider(rpcURL)
-    if(address){
-      this.signer = this.provider.getSigner(address)
+    } else {
+      this.provider = new ethers.providers.JsonRpcProvider(rpcURL)
+      if(address){
+        this.signer = this.provider.getSigner(address)
+      }
     }
   }
 
