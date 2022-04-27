@@ -1,5 +1,15 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { BridgeData } from '../../src/types'
 import { computeProvidersAndSigners } from '../../src/utls'
+
+declare global {
+  interface Window {
+    ethereum: any
+  }
+}
 
 describe("computeProviders function", () => {
   const bridgeSetup = {
@@ -12,7 +22,7 @@ describe("computeProviders function", () => {
   }
 
   const testAcc = '0xF4314cb9046bECe6AA54bb9533155434d0c76909'
-  it("Should computer JsonRPCProvider from bridge data object", () => {
+  it("Should compute JsonRPCProvider and Signer from bridge data object", () => {
     const providersAndSigners = computeProvidersAndSigners(
       bridgeSetup as BridgeData,
       testAcc

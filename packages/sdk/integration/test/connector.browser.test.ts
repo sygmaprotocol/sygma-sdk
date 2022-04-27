@@ -26,14 +26,14 @@ describe("Connectors Browser", () => {
   global.window.ethereum = {}
 
   it("Should initialize Web3Provider", () => {
-    const connector = Connector.getInstance()
+    Connector.getInstance()
     expect(ethers.providers.Web3Provider).toHaveBeenCalled()
     expect(ethers.providers.Web3Provider).toHaveBeenCalledWith(window.ethereum, "any")
   })
   it("Should setup provider as undefined and get a warn message if no param is passed", () => {
     delete global.window.ethereum
     jest.spyOn(console, "warn")
-    const connector = Connector.getInstance()
+    Connector.getInstance()
     expect(console.warn).toHaveBeenCalled()
   })
 })
