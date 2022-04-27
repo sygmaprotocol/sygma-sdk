@@ -1,4 +1,4 @@
-import { BigNumber } from "ethers"
+import { BigNumber, ethers } from "ethers"
 import { Connector } from "../../src/connectors"
 
 describe('Connectors', () => {
@@ -10,7 +10,10 @@ describe('Connectors', () => {
   })
   it('Should connect to JsonRpcProvider and setup signer', () => {
     const connector = Connector.getInstance(url, address)
+    const { signer, provider } = connector
     expect(Object.keys(connector)).toHaveLength(2)
+    expect(provider).toBeInstanceOf(ethers.providers.JsonRpcProvider)
+    expect(signer).toBeInstanceOf(ethers.providers.JsonRpcSigner)
   })
   it('Should get data from the signer', async () => {
     const connector = Connector.getInstance(url, address)
