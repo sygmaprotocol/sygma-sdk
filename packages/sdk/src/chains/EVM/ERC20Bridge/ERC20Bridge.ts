@@ -40,7 +40,7 @@ export default class ERC20Bridge {
 
     let gasPriceStringify
 
-    if(typeof gasPrice !== "boolean"){
+    if (typeof gasPrice !== "boolean") {
       gasPriceStringify = gasPrice.toString()
     }
 
@@ -57,9 +57,10 @@ export default class ERC20Bridge {
           }
         )
       ).wait(1)
-    } catch (error){
+    } catch (error) {
       console.log('Approve error', error);
     }
+
     console.log("allowance before deposit", await this.checkCurrentAllowance(recipientAddress, erc20Intance, erc20HandlerAddress))
 
     const bridgeFee = await bridge._fee()
@@ -68,7 +69,7 @@ export default class ERC20Bridge {
 
     try {
       // TODO: check if wait 1 here
-      depositAction = await bridge.deposit(
+      depositAction = await (await bridge.deposit(
         domainId,
         resourceId,
         preparedDataToTransfer,
@@ -77,13 +78,10 @@ export default class ERC20Bridge {
           gasPrice: gasPriceStringify,
           value: utils.parseUnits((bridgeFee || 0).toString(), 18),
         }
-      )
+      )).wait(1)
 
-      return {
-        approvalTxHash: approve?.transactionHash,
-        depositTxHash: depositAction.hash
-      }
-    } catch(error) {
+      return depositAction
+    } catch (error) {
       console.log("Error on deposit", error)
     }
   }
@@ -101,13 +99,15 @@ export default class ERC20Bridge {
     const destinationERC20HandlerInstance = Erc20HandlerFactory.connect(erc20HandlerAddress, provider!)
 
     const isMintable = await destinationERC20HandlerInstance._burnList(destinationERC20Address)
+
     if (isMintable) {
       return true
     }
 
-    const balanceOfTokens = await erc20DestinationToken.balanceOf(erc20HandlerAddress)
+    const balanceOfTokens = await this.getERC20Balance(erc20DestinationToken, erc20HandlerAddress)
 
     const amountGreaterThantBalance = Number(utils.formatUnits(balanceOfTokens, decimals)) < amount
+
     const hasEnoughBalance = !amountGreaterThantBalance
 
     return hasEnoughBalance
@@ -124,15 +124,37 @@ export default class ERC20Bridge {
     return Number(utils.formatUnits(currentAllowance, 18))
   }
 
-  public async isEIP1559MaxFeePerGas(provider: Provider): Promise<BigNumber | boolean>{
+  public async isEIP1559MaxFeePerGas(provider: Provider): Promise<BigNumber | boolean> {
     try {
       const feeData = await provider!.getFeeData()
       const { maxFeePerGas, maxPriorityFeePerGas, gasPrice } = feeData
       return gasPrice as BigNumber
-    } catch(error){
+    } catch (error) {
       console.log("error getting EIP 1559", error)
       return false
     }
+  }
+
+  public async getTokenInfo(
+    erc20Address: string,
+    accountAddress: string,
+    provider: Provider
+  ) {
+    const erc20Contract = Erc20DetailedFactory.connect(
+      erc20Address,
+      provider!
+    )
+
+    const balanceOfTokens = await erc20Contract.balanceOf(accountAddress)
+    const tokenName = await erc20Contract.name()
+
+    return { balanceOfTokens, tokenName }
+  }
+
+  public async getERC20Balance(erc20Contract: Erc20Detailed, address: string): Promise<BigNumber> {
+    return await erc20Contract.balanceOf(
+      address
+    )
   }
 
   private prepareData(amount: number, recipientAddress: string): string {

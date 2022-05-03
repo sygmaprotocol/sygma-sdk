@@ -1,5 +1,6 @@
 import { Bridge } from '@chainsafe/chainbridge-contracts';
-import { utils, BigNumber, ethers } from 'ethers';
+import { utils, BigNumber } from 'ethers';
+import { Connector } from '../connectors';
 
 import {
 	BridgeData,
@@ -65,36 +66,34 @@ export const computeProposalEvents = (destinationBridge: Bridge): BridgeEventCal
 	return destinationProposalEvents;
 };
 
-export const computeProviders = (bridgeSetup: BridgeData, address?: string): ChainbridgeProviders => Object.keys(bridgeSetup).reduce((providers: any, chain) => {
-	const { rpcURL } = bridgeSetup[chain as keyof BridgeData];
+export const computeProvidersAndSigners = (bridgeSetup: BridgeData, address?: string): ChainbridgeProviders => Object.keys(bridgeSetup).reduce((providers: any, chain) => {
+	if(window !== undefined && window.ethereum){
+		const connectorData = setConnector()
+		const { signer, provider } = connectorData
 
-	const provider = setProvider(rpcURL)
-	let signer
+		providers = {
+			...providers,
+			[chain]: { provider, signer },
+		};
 
-	if(address !== undefined){
-		signer = provider!.getSigner(address);
+		return providers;
 	} else {
-		signer = provider?.getSigner()
+		const { rpcURL } = bridgeSetup[chain as keyof BridgeData];
+
+		const connectorData = setConnector(rpcURL, address)
+		const { signer, provider } = connectorData
+
+		providers = {
+			...providers,
+			[chain]: { provider, signer },
+		};
+
+		return providers;
 	}
-
-	providers = {
-		...providers,
-		[chain]: { provider, signer },
-	};
-
-	return providers;
 }, {});
 
-const setProvider = (rpcURL?: string): Provider => {
-	if (window !== undefined && window.ethereum) {
-		console.log("Metamask detected")
-		const provider = new ethers.providers.Web3Provider(
-			window.ethereum, "any"
-		)
-		return provider
-	}
-	console.log("Using rpc URL")
-	return new ethers.providers.JsonRpcProvider(rpcURL)
+const setConnector = (rpcURL?: string, address?: string): Connector => {
+	return Connector.getInstance(rpcURL, address)
 }
 
 export const processAmountForERC20Transfer = (amount: number): string => {

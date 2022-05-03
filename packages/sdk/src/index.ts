@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { Bridge__factory as BridgeFactory, Bridge } from '@chainsafe/chainbridge-contracts';
 import { Erc20DetailedFactory } from './Contracts/Erc20DetailedFactory';
 import { Erc20Detailed } from './Contracts/Erc20Detailed';
@@ -19,12 +19,14 @@ import {
 	BridgeEventCallback,
 	Events,
 	Directions,
+	ConnectorSigner,
+	ConnectorProvider,
 } from './types';
 import {
 	computeBridgeEvents,
 	computeBridges,
 	computeERC20Contracts,
-	computeProviders,
+	computeProvidersAndSigners,
 } from './utls';
 import { ERC20Bridge } from './chains';
 
@@ -40,9 +42,9 @@ export class Chainbridge implements ChainbridgeSDK {
 	private bridgeSetup: BridgeData;
 	private bridges: Bridges = undefined;
 	public bridgeEvents: Events = undefined;
-	private signer: Signer = undefined;
+	private signer: ConnectorSigner = undefined;
 	private erc20: ChainbridgeErc20Contracts = undefined;
-	private providers: ChainbridgeProviders = undefined;
+	private providers: ConnectorProvider = undefined;
 	private erc20Bridge: ERC20Bridge
 
 	public constructor({ bridgeSetup }: Setup) {
@@ -50,13 +52,29 @@ export class Chainbridge implements ChainbridgeSDK {
 		this.erc20Bridge = ERC20Bridge.getInstance()
 	}
 
-	public initializeConnection(address: string): {
+	public initializeConnection(address?: string): {
 		chain1: BridgeEvents,
 		chain2: BridgeEvents
 	} {
-		this.providers = computeProviders(this.bridgeSetup, address);
+		const providersAndSigners = computeProvidersAndSigners(this.bridgeSetup, address);
 
-		// TODO CHECK HOW TO TYPE REDUCERS
+		if (!address) {
+			this.providers = {
+				chain1: (providersAndSigners!['chain1' as keyof BridgeData].provider as ethers.providers.Web3Provider),
+				chain2: (providersAndSigners!['chain2' as keyof BridgeData].provider as ethers.providers.Web3Provider)
+			}
+		} else {
+			this.providers = {
+				chain1: (providersAndSigners!['chain1' as keyof BridgeData].provider as ethers.providers.JsonRpcProvider),
+				chain2: (providersAndSigners!['chain2' as keyof BridgeData].provider as ethers.providers.JsonRpcProvider)
+			}
+		}
+
+		this.signer = {
+			chain1: providersAndSigners!['chain1' as keyof BridgeData].signer,
+			chain2: providersAndSigners!['chain2' as keyof BridgeData].signer
+		}
+
 		const contracts = this.computeContracts();
 
 		// this returns bridge events object
@@ -73,10 +91,9 @@ export class Chainbridge implements ChainbridgeSDK {
 
 	private computeContracts(): ChainbridgeContracts {
 		return Object.keys(this.bridgeSetup).reduce((contracts: any, chain) => {
-			console.log('chain', chain);
 			const { bridgeAddress, erc20Address } = this.bridgeSetup[chain as keyof BridgeData];
 
-			const { signer } = this.providers![chain as keyof BridgeData];
+			const signer = this.signer![chain as keyof BridgeData];
 
 			const bridge = this.connectToBridge(bridgeAddress, signer!);
 			const bridgeEvent = this.getBridgeDepositEvents(bridge, signer)
@@ -122,14 +139,14 @@ export class Chainbridge implements ChainbridgeSDK {
 	public async transferERC20(
 		amount: number,
 		recipientAddress: string,
-		from: Directions, // change this for a type
-		to: Directions, // change this for a type
+		from: Directions,
+		to: Directions,
 	) {
 
 		const erc20ToUse = this.erc20![from];
-		const {provider} = this.providers![from]
+		const provider = this.providers![from]
 		const bridgeToUse = this.bridges![from]
-		const {erc20HandlerAddress} = this.bridgeSetup[from]
+		const { erc20HandlerAddress } = this.bridgeSetup[from]
 		const { domainId, erc20ResourceID } = this.bridgeSetup[to]
 
 		return await this.erc20Bridge.transferERC20(
@@ -152,11 +169,11 @@ export class Chainbridge implements ChainbridgeSDK {
 	public async hasTokenSupplies(
 		amount: number,
 		to: Directions
-	) {
+	): Promise<boolean> {
 		const { erc20Address: destinationTokenAddress, erc20HandlerAddress, decimals } = this.bridgeSetup[to]
-		const { provider } = this.providers![to]
+		const provider = this.providers![to]
 
-		return await this.erc20Bridge.hasTokenSupplies(
+		const hasTokenSupplies = await this.erc20Bridge.hasTokenSupplies(
 			amount,
 			to,
 			provider,
@@ -164,6 +181,8 @@ export class Chainbridge implements ChainbridgeSDK {
 			erc20HandlerAddress,
 			decimals
 		)
+
+		return hasTokenSupplies
 	}
 
 	public async checkCurrentAllowance(from: Directions, recipientAddress: string) {
@@ -178,12 +197,44 @@ export class Chainbridge implements ChainbridgeSDK {
 		)
 	}
 
-	public async isEIP1559MaxFeePerGas(from: string) {
-		const { provider } = this.providers![from]
+	public async isEIP1559MaxFeePerGas(from: Directions) {
+		const provider = this.providers![from]
 
 		return await this.erc20Bridge.isEIP1559MaxFeePerGas(
 			provider
 		)
+	}
+
+	public async getTokenInfo(
+		chain: Directions
+	) {
+		const { erc20Address } = this.bridgeSetup[chain]
+		const provider = this.providers![chain]
+		const address = await this.getSignerAddress(chain)
+
+		return await this.erc20Bridge.getTokenInfo(
+			erc20Address,
+			address!,
+			provider
+		)
+	}
+
+	public async getTokenBalance(
+		erc20Contract: Erc20Detailed, address: string
+	): Promise<BigNumber> {
+		return await this.erc20Bridge.getERC20Balance(erc20Contract, address)
+	}
+
+	public async getSignerBalance(chain: string) {
+		return await (this.signer![chain as keyof BridgeData] as Signer)?.getBalance()
+	}
+
+	public async getSignerAddress(chain: string) {
+		return await (this.signer![chain as keyof BridgeData] as Signer)?.getAddress()
+	}
+
+	public async getSignerGasPrice(chain: string) {
+		return await (this.signer![chain as keyof BridgeData] as Signer)?.getGasPrice()
 	}
 
 }

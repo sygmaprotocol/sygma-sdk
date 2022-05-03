@@ -64,3 +64,7 @@ export type ChainbridgeErc20Contracts = { [chain: string]: Erc20Detailed } | und
 export type Provider = ethers.providers.JsonRpcProvider | ethers.providers.Web3Provider | undefined;
 
 export type Signer = ethers.providers.JsonRpcSigner | undefined;
+
+export type ConnectorSigner = Record<"chain1" | "chain2", Signer> | undefined
+
+export type ConnectorProvider = Record<"chain1" | "chain2", Provider> | undefined

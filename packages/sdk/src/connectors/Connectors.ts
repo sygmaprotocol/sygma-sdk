@@ -8,25 +8,25 @@ interface IConnector {
 }
 
 export default class Connector implements IConnector {
-  private provider: Provider | undefined
-  private signer: Signer | undefined
+  private connectorProvider: Provider | undefined
+  private connectorSigner: Signer | undefined
 
   constructor(rpcURL?: string, address?: string) {
     if (!rpcURL && !address) {
       if (window && window.ethereum) {
-        this.provider = new ethers.providers.Web3Provider(
+        this.connectorProvider = new ethers.providers.Web3Provider(
           window.ethereum,
           "any"
         )
-        this.signer = this.provider.getSigner()
+        this.connectorSigner = this.connectorProvider.getSigner()
       } else {
         console.warn("No ethereum object to initialize provider on the Browser")
-        this.provider = undefined
+        this.connectorProvider = undefined
       }
     } else {
-      this.provider = new ethers.providers.JsonRpcProvider(rpcURL)
+      this.connectorProvider = new ethers.providers.JsonRpcProvider(rpcURL)
       if(address){
-        this.signer = this.provider.getSigner(address)
+        this.connectorSigner = this.connectorProvider.getSigner(address)
       }
     }
   }
@@ -49,6 +49,14 @@ export default class Connector implements IConnector {
   }
 
   public setSigner(address:string){
-    this.signer = this.provider!.getSigner(address)
+    this.connectorSigner = this.connectorProvider!.getSigner(address)
+  }
+
+  get signer(){
+    return this.connectorSigner
+  }
+
+  get provider(){
+    return this.connectorProvider
   }
 }
