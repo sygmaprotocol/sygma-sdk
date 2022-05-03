@@ -8,6 +8,7 @@ export type Directions = "chain1" | "chain2"
 
 export type Setup = {
 	bridgeSetup: BridgeData;
+	feeOracleSetup?: FeeOracleData;
 };
 
 export type ChainbridgeBridgeSetup = {
@@ -24,6 +25,11 @@ export type BridgeData = {
 	chain1: ChainbridgeBridgeSetup;
 	chain2: ChainbridgeBridgeSetup;
 };
+
+export type FeeOracleData = {
+	feeOracleBaseUrl: string;
+	feeOracleHandlerAddress: string;
+}
 
 export type Bridges = { [chain: string]: Bridge } | undefined;
 

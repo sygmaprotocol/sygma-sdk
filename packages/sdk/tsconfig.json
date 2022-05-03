@@ -3,6 +3,7 @@
 		"target": "ES2017",
 		"outDir": "dist",
 		"module": "commonjs",
+		"baseUrl": "./src",
 		"allowJs": true,
 		"composite": true,
     "declaration": true,
@@ -16,7 +17,8 @@
 		"esModuleInterop": true,
 		"downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
-		"forceConsistentCasingInFileNames": true
+		"forceConsistentCasingInFileNames": true,
+		"lib": ["es2021", "dom"]
 	},
 	"include": ["src"],
 }
