@@ -97,7 +97,6 @@ export const computeProvidersAndSigners = (bridgeSetup: BridgeData, address?: st
 			return providers;
 		}
 	} else {
-		console.log(bridgeSetup)
 		const { rpcURL } = bridgeSetup[chain as keyof BridgeData];
 
 		const connectorData = setConnector(rpcURL, address)

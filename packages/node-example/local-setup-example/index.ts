@@ -61,7 +61,7 @@ const funcVoteEvent = async (
 ) => {
   const txReceipt = await tx.getTransactionReceipt()
 
-  console.log("txReceipt", txReceipt === 1 ? "Confirmed" : "Rejected")
+  console.log("txReceipt", txReceipt.status === 1 ? "Confirmed" : "Rejected")
   console.log("status", status)
 }
 
@@ -110,8 +110,8 @@ const funcVoteEvent = async (
   } = await chainbridge.transferERC20(
     7,
     "0xF4314cb9046bECe6AA54bb9533155434d0c76909",
-    "chain2",
-    "chain1"
+    "chain1",
+    "chain2"
   );
 
   bridgeEvents.chain1?.bridgeEvents(funcDeposit)
