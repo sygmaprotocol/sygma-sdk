@@ -2,7 +2,7 @@ import { Erc20Detailed } from '../Contracts/Erc20Detailed';
 import { Bridge } from '@chainsafe/chainbridge-contracts';
 import { ethers } from 'ethers';
 
-export interface ChainbridgeSDK {}
+export interface ChainbridgeSDK { }
 
 export type Directions = "chain1" | "chain2"
 
@@ -35,28 +35,33 @@ export type BridgeEventCallback = (fn: (...params: any) => void) => Bridge;
 
 export type ChainbridgeEventsObject =
 	| {
-			[chain: string]: BridgeEventCallback;
-	  }
+		[chain: string]: BridgeEventCallback;
+	}
 	| undefined;
 
 export type BridgeEvents =
-	| { bridgeEvents: ChainbridgeEventsObject; proposalEvents: ChainbridgeEventsObject }
+	| { bridgeEvents: ((func: any) => Bridge), proposalEvents: ChainbridgeEventsObject, voteEvents: ChainbridgeEventsObject }
 	| undefined;
+
+export type ConnectionEvents = {
+	chain1: BridgeEvents,
+	chain2: BridgeEvents
+}
 
 export type Events =
 	| {
-			chain1: BridgeEvents;
-			chain2: BridgeEvents;
-	  }
+		chain1: BridgeEvents;
+		chain2: BridgeEvents;
+	}
 	| undefined;
 
 export type ChainbridgeProviders =
 	| {
-			[chain: string]: {
-				provider: ethers.providers.JsonRpcProvider;
-				signer: ethers.providers.JsonRpcSigner;
-			};
-	  }
+		[chain: string]: {
+			provider: ethers.providers.JsonRpcProvider;
+			signer: ethers.providers.JsonRpcSigner;
+		};
+	}
 	| undefined;
 
 export type ChainbridgeErc20Contracts = { [chain: string]: Erc20Detailed } | undefined;

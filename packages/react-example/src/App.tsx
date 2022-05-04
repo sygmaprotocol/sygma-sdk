@@ -75,9 +75,9 @@ function App() {
   );
 
   const getAccountData = async (chainbridge: Chainbridge) => {
-    const balance = await chainbridge.getSignerBalance();
-    const address = await chainbridge.getSignerAddress();
-    const gasPrice = await chainbridge.getSignerGasPrice();
+    const balance = await chainbridge.getSignerBalance("chain1");
+    const address = await chainbridge.getSignerAddress("chain1");
+    const gasPrice = await chainbridge.getSignerGasPrice("chain1");
     const { balanceOfTokens, tokenName } = await chainbridge.getTokenInfo(
       "chain1"
     );

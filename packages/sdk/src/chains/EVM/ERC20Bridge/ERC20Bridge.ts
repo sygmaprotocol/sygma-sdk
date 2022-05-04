@@ -1,7 +1,7 @@
-import { Bridge__factory as BridgeFactory, Bridge, ERC20Handler__factory as Erc20HandlerFactory } from '@chainsafe/chainbridge-contracts'
+import { Bridge, ERC20Handler__factory as Erc20HandlerFactory } from '@chainsafe/chainbridge-contracts'
 import { utils, BigNumber } from 'ethers'
 import { Directions, Provider } from "../../../types";
-import { processAmountForERC20Transfer, processLenRecipientAddress } from "../../../utls";
+import { processAmountForERC20Transfer, processLenRecipientAddress } from "../../../utils";
 import { Erc20Detailed } from '../../../Contracts/Erc20Detailed'
 import { Erc20DetailedFactory } from '../../../Contracts/Erc20DetailedFactory'
 
@@ -67,6 +67,8 @@ export default class ERC20Bridge {
 
     let depositAction
 
+    console.warn("gas price stringified", gasPriceStringify)
+
     try {
       // TODO: check if wait 1 here
       depositAction = await (await bridge.deposit(
@@ -120,14 +122,13 @@ export default class ERC20Bridge {
       erc20HandlerAddress
     )
 
-    console.log("current allowance:::", Number(utils.formatUnits(currentAllowance, 18)))
     return Number(utils.formatUnits(currentAllowance, 18))
   }
 
   public async isEIP1559MaxFeePerGas(provider: Provider): Promise<BigNumber | boolean> {
     try {
       const feeData = await provider!.getFeeData()
-      const { maxFeePerGas, maxPriorityFeePerGas, gasPrice } = feeData
+      const { gasPrice } = feeData
       return gasPrice as BigNumber
     } catch (error) {
       console.log("error getting EIP 1559", error)

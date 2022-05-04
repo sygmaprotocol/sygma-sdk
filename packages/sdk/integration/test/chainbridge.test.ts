@@ -1,19 +1,8 @@
-/**
- * @jest-environment jsdom
- */
 import { Chainbridge } from '../../src'
-import { BigNumber, ContractReceipt, ethers, utils } from 'ethers'
+import { BigNumber, ethers, utils } from 'ethers'
 import { BridgeData } from '../../src/types'
 import { ERC20Bridge } from '../../src/chains'
 import { Erc20DetailedFactory } from '../../src/Contracts/Erc20DetailedFactory';
-
-
-
-declare global {
-  interface Window {
-    ethereum: any
-  }
-}
 
 // NOTE: this setup is dependant on current chainbridge core local setup
 const bridgeSetup: BridgeData = {
@@ -50,7 +39,7 @@ describe("chainbridge-sdk", () => {
 
     expect(Object.keys(connectionData)).toHaveLength(2)
     Object.keys(connectionData).forEach((key) => {
-      const expectedKeys = ["bridgeEvents", "proposalEvents"]
+      const expectedKeys = ["bridgeEvents", "proposalEvents", "voteEvents"]
       // @ts-ignore-line
       expect(Object.keys(connectionData[key as keyof BridgeData])).toEqual(expectedKeys)
     })
@@ -107,23 +96,5 @@ describe("chainbridge-sdk", () => {
     const tokenBalance = await chainbridge.getTokenBalance(erc20ContractInstance, testintAcc)
 
     expect(Number(utils.formatUnits(tokenBalance)) > 0).toBe(true)
-  })
-
-  it("Should transfer some tokens from chain1 to chain2", async () => {
-    const amount = 7
-    const recipientAddress = testintAcc
-    const from = "chain1"
-    const to = "chain2"
-
-    const depositAction = await chainbridge.transferERC20(
-      amount,
-      recipientAddress,
-      from,
-      to
-    )
-
-    console.log("depositAction", depositAction)
-    const { status } = depositAction as ContractReceipt
-    expect(status).toBe(1)
   })
 })

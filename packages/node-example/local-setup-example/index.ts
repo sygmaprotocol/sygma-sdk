@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { BigNumber } from "ethers";
 import { Chainbridge } from "@chainsafe/chainbridge-sdk";
 
@@ -12,7 +13,7 @@ const funcDeposit = (
 ) => {
   console.log("");
   console.log(
-    `bride deposit event deposit nonce: ${depositNonce.toString()}, transaction hash: ${tx.transactionHash
+    `bridge deposit event deposit nonce: ${depositNonce.toString()}, transaction hash: ${tx.transactionHash
     }`
   );
   console.log("");
@@ -24,7 +25,6 @@ const funcProposalEvent = async (originDomainId, despositNonce, status, dataHash
   console.log(
     `tx receipt of proposal event`
   );
-  // console.log(await tx.getTransactionReceipt())
   const proposalStatus = BigNumber.from(status).toNumber();
 
   switch (proposalStatus) {
@@ -42,7 +42,7 @@ const funcProposalEvent = async (originDomainId, despositNonce, status, dataHash
       console.log("");
       console.log("Transfer completed!!!");
       console.log("");
-      process.exit(1)
+      // process.exit(1)
     }
     case 4: {
       console.log("");
@@ -51,6 +51,19 @@ const funcProposalEvent = async (originDomainId, despositNonce, status, dataHash
     }
   }
 };
+
+const funcVoteEvent = async (
+  originDomainId,
+  depositNonce,
+  status,
+  dataHash,
+  tx
+) => {
+  const txReceipt = await tx.getTransactionReceipt()
+
+  console.log("txReceipt", txReceipt === 1 ? "Confirmed" : "Rejected")
+  console.log("status", status)
+}
 
 (async () => {
   // CHAIN 1 ADRESSES
@@ -87,45 +100,23 @@ const funcProposalEvent = async (originDomainId, despositNonce, status, dataHash
 
   const bridgeEvents = chainbridge.initializeConnection(notEve)
 
-  console.log("token supplies", await chainbridge.hasTokenSupplies(2, "chain2"))
+  const { chain1 } = bridgeEvents
 
-  console.log("check current allowance", await chainbridge.checkCurrentAllowance("chain1", notEve))
-  console.log("EIP1559", await chainbridge.isEIP1559MaxFeePerGas("chain1"))
-
-  console.log("bridge events", bridgeEvents)
-
-  const { chain1: { bridgeEvents: homechainBridgeEvent, proposalEvents: { chain2 } } } = bridgeEvents
+  const { bridgeEvents: homechainBridgeEvent, proposalEvents, voteEvents } = chain1
 
   const {
     approvalTxHash,
     depositTxHash,
   } = await chainbridge.transferERC20(
-    27,
+    7,
     "0xF4314cb9046bECe6AA54bb9533155434d0c76909",
     "chain2",
     "chain1"
   );
 
-  homechainBridgeEvent(funcDeposit);
+  bridgeEvents.chain1?.bridgeEvents(funcDeposit)
 
-  chain2(funcProposalEvent);
+  proposalEvents.chain2(funcProposalEvent)
+  voteEvents.chain2(funcVoteEvent)
 
-  // const receiptApproval = await chainbridge.waitForTransactionReceipt(
-  //   approvalTxHash
-  // );
-
-  // const receiptDeposit = await chainbridge.waitForTransactionReceipt(
-  //   depositTxHash
-  // );
-
-  // console.log("-----------APPROVAL RECEIPT------------------------------------")
-  // console.log("---------------------------------------------------------------")
-  // console.log(receiptApproval)
-  // console.log("")
-  // console.log("")
-  // console.log("")
-
-  // console.log("----------------DEPOSIT RECEIPT--------------------------------")
-  // console.log("---------------------------------------------------------------")
-  // console.log(receiptDeposit)
 })();

@@ -40,15 +40,20 @@ export const computeBridgeEvents = (contracts: ChainbridgeContracts) =>
 		const { bridgeEvent } = contracts[chain];
 		const [entries] = Object.entries(contracts).filter((e: any) => e[0] !== chain);
 
-		const proposalEeventDestinationBridge = computeProposalEvents(entries[1].bridge);
+		const proposalEventDestinationBridge = computeProposalEvents(entries[1].bridge);
+
+		const proposalVoteEvents = computeProposalVoteEvents(entries[1].bridge)
 
 		bridgeEvents = {
 			...bridgeEvents,
 			[chain]: {
 				bridgeEvents: bridgeEvent,
 				proposalEvents: {
-					[entries[0]]: proposalEeventDestinationBridge,
+					[entries[0]]: proposalEventDestinationBridge
 				},
+				voteEvents: {
+					[entries[0]]: proposalVoteEvents
+				}
 			},
 		};
 
@@ -66,18 +71,33 @@ export const computeProposalEvents = (destinationBridge: Bridge): BridgeEventCal
 	return destinationProposalEvents;
 };
 
+export const computeProposalVoteEvents = (destinationBridge: Bridge): BridgeEventCallback => {
+	const proposalVoteFilter = destinationBridge.filters.ProposalVote(null, null, null, null)
+
+	const destinationProposalVoteEvents = (func: any) => destinationBridge.on(
+		proposalVoteFilter,
+		(originDomainId, depositNonce, status, dataHash, tx) => {
+			func(originDomainId, depositNonce, status, dataHash, tx)}
+	)
+
+	return destinationProposalVoteEvents
+}
+
 export const computeProvidersAndSigners = (bridgeSetup: BridgeData, address?: string): ChainbridgeProviders => Object.keys(bridgeSetup).reduce((providers: any, chain) => {
-	if(window !== undefined && window.ethereum){
-		const connectorData = setConnector()
-		const { signer, provider } = connectorData
+	if(typeof window !== "undefined"){
+		if("ethereum" in window) {
+			const connectorData = setConnector()
+			const { signer, provider } = connectorData
 
-		providers = {
-			...providers,
-			[chain]: { provider, signer },
-		};
+			providers = {
+				...providers,
+				[chain]: { provider, signer },
+			};
 
-		return providers;
+			return providers;
+		}
 	} else {
+		console.log(bridgeSetup)
 		const { rpcURL } = bridgeSetup[chain as keyof BridgeData];
 
 		const connectorData = setConnector(rpcURL, address)

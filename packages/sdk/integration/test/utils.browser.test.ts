@@ -3,7 +3,7 @@
  */
 import { ethers } from 'ethers'
 import { BridgeData } from '../../src/types'
-import { computeProvidersAndSigners } from '../../src/utls'
+import { computeProvidersAndSigners } from '../../src/utils'
 
  declare global {
    interface Window {

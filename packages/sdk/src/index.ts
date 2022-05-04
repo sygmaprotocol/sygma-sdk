@@ -21,13 +21,14 @@ import {
 	Directions,
 	ConnectorSigner,
 	ConnectorProvider,
+	ConnectionEvents,
 } from './types';
 import {
 	computeBridgeEvents,
 	computeBridges,
 	computeERC20Contracts,
 	computeProvidersAndSigners,
-} from './utls';
+} from './utils';
 import { ERC20Bridge } from './chains';
 
 /**
@@ -52,10 +53,7 @@ export class Chainbridge implements ChainbridgeSDK {
 		this.erc20Bridge = ERC20Bridge.getInstance()
 	}
 
-	public initializeConnection(address?: string): {
-		chain1: BridgeEvents,
-		chain2: BridgeEvents
-	} {
+	public initializeConnection(address?: string): ConnectionEvents {
 		const providersAndSigners = computeProvidersAndSigners(this.bridgeSetup, address);
 
 		if (!address) {
@@ -122,7 +120,7 @@ export class Chainbridge implements ChainbridgeSDK {
 	}
 
 	private bridgeDepositEvent(bridge: Bridge, signer: Signer): BridgeEventCallback {
-		// console.log("signer address", signer._address)
+		console.log("signer address", signer!._address)
 		const depositFilter = bridge.filters.Deposit(null, null, null, signer!._address, null, null);
 
 		const bridgeEvent = (func: any) =>

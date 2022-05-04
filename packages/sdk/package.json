@@ -8,6 +8,7 @@
 	"scripts": {
 		"prepareNodes": "cd ./integration/node1 && npx hardhat node --port 8545 & cd ./integration/node2 && npx hardhat node --port 8547 &",
 		"test": "jest --watchAll --detectOpenHandles",
+		"test:unit": "jest --detectOpenHandles",
 		"run:all": "concurrently \"yarn run prepareNodes\" \"yarn run test\"",
 		"build": "tsc",
 		"run:nodes": "docker-compose -f docker-compose.yml up",
@@ -35,6 +36,7 @@
 		"dist/**/*"
 	],
 	"dependencies": {
+		"ganache": "^7.1.0",
 		"react-hook-form": "^7.30.0",
 		"web3": "^1.7.3"
 	}

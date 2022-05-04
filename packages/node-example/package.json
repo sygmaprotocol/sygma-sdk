@@ -4,10 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "private": "true",
-  "type": "module",
   "scripts": {
-    "run:ganache-ex": "node ./ganache-example/index.js",
-    "run:local-ex": "node ./local-setup-example/index.js"
+    "run:ganache-ex": "ts-node ./ganache-example/index.ts",
+    "run:local-ex": "ts-node ./local-setup-example/index.ts"
   },
   "dependencies": {
     "@chainsafe/chainbridge-sdk": "^1.0.0",
@@ -18,5 +17,9 @@
     "ganache-cli": "^6.12.2",
     "react-hook-form": "^7.30.0",
     "web3": "^1.7.3"
+  },
+  "devDependencies": {
+    "typescript": "^4.6.3",
+    "ts-node": "^10.7.0"
   }
 }
