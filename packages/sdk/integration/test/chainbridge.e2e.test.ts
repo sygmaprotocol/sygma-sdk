@@ -10,7 +10,7 @@ describe("Chainbridge e2e deposit event", () => {
     const from = "chain1"
     const to = "chain2"
 
-    const depositAction = await chainbridge.transferERC20(
+    const depositAction = await chainbridge.deposit(
       amount,
       recipientAddress,
       from,

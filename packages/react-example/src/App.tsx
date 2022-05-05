@@ -190,7 +190,7 @@ function App() {
 
     // console.log(events?.proposalEvents)
 
-    const result = await (chainbridgeInstance as Chainbridge).transferERC20(
+    const result = await (chainbridgeInstance as Chainbridge).deposit(
       Number(amount),
       address,
       from,

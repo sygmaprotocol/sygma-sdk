@@ -38,7 +38,7 @@ export class Chainbridge implements ChainbridgeSDK {
   private bridgeSetup: BridgeData;
   private bridges: Bridges = undefined;
   public bridgeEvents: Events = undefined;
-  private signer: ConnectorSigner = undefined;
+  private signers: ConnectorSigner = undefined;
   private erc20: ChainbridgeErc20Contracts = undefined;
   private providers: ConnectorProvider = undefined;
   private erc20Bridge: ERC20Bridge
@@ -63,7 +63,7 @@ export class Chainbridge implements ChainbridgeSDK {
       }
     }
 
-    this.signer = {
+    this.signers = {
       chain1: providersAndSigners!['chain1' as keyof BridgeData].signer,
       chain2: providersAndSigners!['chain2' as keyof BridgeData].signer
     }
@@ -86,7 +86,7 @@ export class Chainbridge implements ChainbridgeSDK {
     return Object.keys(this.bridgeSetup).reduce((contracts: any, chain) => {
       const { bridgeAddress, erc20Address } = this.bridgeSetup[chain as keyof BridgeData];
 
-      const signer = this.signer![chain as keyof BridgeData];
+      const signer = this.signers![chain as keyof BridgeData];
 
       const bridge = this.connectToBridge(bridgeAddress, signer!);
       const bridgeEvent = this.getBridgeDepositEvents(bridge, signer)
@@ -128,7 +128,7 @@ export class Chainbridge implements ChainbridgeSDK {
     return bridgeEvent;
   }
 
-  public async transferERC20(
+  public async deposit(
     amount: number,
     recipientAddress: string,
     from: Directions,
@@ -218,15 +218,15 @@ export class Chainbridge implements ChainbridgeSDK {
   }
 
   public async getSignerBalance(chain: string) {
-    return await (this.signer![chain as keyof BridgeData] as Signer)?.getBalance()
+    return await (this.signers![chain as keyof BridgeData] as Signer)?.getBalance()
   }
 
   public async getSignerAddress(chain: string) {
-    return await (this.signer![chain as keyof BridgeData] as Signer)?.getAddress()
+    return await (this.signers![chain as keyof BridgeData] as Signer)?.getAddress()
   }
 
   public async getSignerGasPrice(chain: string) {
-    return await (this.signer![chain as keyof BridgeData] as Signer)?.getGasPrice()
+    return await (this.signers![chain as keyof BridgeData] as Signer)?.getGasPrice()
   }
 
 }

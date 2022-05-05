@@ -107,7 +107,7 @@ const funcVoteEvent = async (
   const {
     approvalTxHash,
     depositTxHash,
-  } = await chainbridge.transferERC20(
+  } = await chainbridge.deposit(
     7,
     "0xF4314cb9046bECe6AA54bb9533155434d0c76909",
     "chain1",
