@@ -5,7 +5,13 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "sdk:build": "yarn wsrun -p @chainsafe/chainbridge-sdk -c build",
+    "sdk:cleanDist":"yarn wsrun -p @chainsafe/chainbridge-sdk -c clean",
+    "sdk:test": "yarn wsrun -p @chainsafe/chainbridge-sdk -c test",
+    "sdk:test:unit": "yarn wsrun -p @chainsafe/chainbridge-sdk -c test:unit",
+    "start:react-example": "yarn wsrun -p @chainsafe/chainbridge-sdk-react-example -c start",
+    "sdk:run-local-example": "yarn wsrun -p @chainsafe/chainbridge-sdk-node-example -c run:local-ex",
+    "sdk:run-ganache-example": "yarn wsrun -p @chainsafe/chainbridge-sdk-node-example -c run:ganache-ex"
   },
   "keywords": [],
   "author": "Chainsafe product team",

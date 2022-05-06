@@ -1,0 +1,70 @@
+# Copyright 2020 ChainSafe Systems
+# SPDX-License-Identifier: LGPL-3.0-only
+version: '3'
+
+services:
+  nodeA:
+    container_name: node1-1
+    networks:
+      - gevm1
+    image: trufflesuite/ganache-cli:v6.12.2
+    command: -v -h 0.0.0.0 -m test -p 8544 --db /node1 --chainId 23 --networkId 23 --account "0x6937d1d0b52f2fa7f4e071c7e64934ad988a8f21c6bf4f323fc19af4c77e3c5e,100000000000000000000" --account "0x0000000000000000000000000000000000000000000000000000000000626f62,666000000000000000000" --account "0x00000000000000000000000000000000000000000000000000636861726c6965,666000000000000000000" --account "0x0000000000000000000000000000000000000000000000000000000064617665,666000000000000000000" --account "0x0000000000000000000000000000000000000000000000000000000000657665,666000000000000000000"
+
+    ports:
+      - "8544:8544"
+    volumes:
+      - ./node1/_data:/node1
+      - ./keysN1/keysN1.json:/keysN1.json
+
+  nodeB:
+    container_name: node2-1
+    networks:
+      - gevm2
+    image: trufflesuite/ganache-cli:v6.12.2
+    command: -v -h 0.0.0.0 -m test -p 8553 --db /node2 --chainId 24 --networkId 24 --account "0x6937d1d0b52f2fa7f4e071c7e64934ad988a8f21c6bf4f323fc19af4c77e3c5e,100000000000000000000" --account "0x0000000000000000000000000000000000000000000000000000000000626f62,666000000000000000000" --account "0x00000000000000000000000000000000000000000000000000636861726c6965,666000000000000000000" --account "0x0000000000000000000000000000000000000000000000000000000064617665,666000000000000000000" --account "0x0000000000000000000000000000000000000000000000000000000000657665,666000000000000000000"
+
+    ports:
+      - "8553:8553"
+    volumes:
+      - ./node2/_data:/node2
+      - ./keysN2/keysN2.json:/keysN2.json
+
+  sdk-relayer1:
+    container_name: r1
+    build:
+      context: ./.
+      dockerfile: Dockerfile
+    command: run --config /config/config_evm-evm.json --testkey alice --latest
+    depends_on:
+      - nodeA
+      - nodeB
+    volumes:
+      - ./config:/config
+    networks:
+      - gevm1
+      - gevm2
+    restart: always
+
+  sdk-relayer2:
+    container_name: r2
+    build:
+      context: ./.
+      dockerfile: Dockerfile
+    command: run --config /config/config_evm-evm.json --testkey bob --latest
+    depends_on:
+      - nodeA
+      - nodeB
+    volumes:
+      - ./config:/config
+    networks:
+      - gevm1
+      - gevm2
+    restart: always
+
+networks:
+  gevm1:
+  gevm2:
+
+volumes:
+  nodeA:
+  nodeB:
