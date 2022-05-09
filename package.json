@@ -5,7 +5,7 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "sdk:build": "yarn wsrun -p @chainsafe/chainbridge-sdk -c build",
+    "sdk:build": "yarn wsrun -p @chainsafe/chainbridge-sdk-core -c build",
     "sdk:cleanDist": "yarn wsrun -p @chainsafe/chainbridge-sdk -c clean",
     "sdk:test": "yarn wsrun -p @chainsafe/chainbridge-sdk -c test",
     "sdk:test:unit": "yarn wsrun -p @chainsafe/chainbridge-sdk -c test:unit",

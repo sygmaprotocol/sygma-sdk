@@ -18,16 +18,18 @@ After cloning the repo, simply run
 npx lerna bootstrap
 ```
 
-For React example, after you have run and deploy the contracts using [Chainbridge](https://github.com/ChainSafe/chainbridge-core), simply run:
+## Examples
+
+For React example, after you have run and deploy the contracts using [Chainbridge](https://github.com/ChainSafe/chainbridge-core), go to the `examples` folder and simply run
 
 ```bash
-yarn start:react-example
+yarn start
 ```
 
 For NodeJS example, simply run:
 
 ```bash
-yarn sdk:run-local-example
+yarn run:local-ex
 ```
 
 Notice that for NodeJS example to run properly you also are going to need local setup from `chainbrdige-core`.
