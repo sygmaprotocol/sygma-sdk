@@ -20,10 +20,11 @@ export default class Connector implements IConnector {
             "any"
           )
           this.connectorSigner = this.connectorProvider.getSigner()
+        } else {
+          console.warn("No ethereum object to initialize provider on the Browser")
+          this.connectorProvider = undefined
         }
       }
-      console.warn("No ethereum object to initialize provider on the Browser")
-      this.connectorProvider = undefined
     } else {
       this.connectorProvider = new ethers.providers.JsonRpcProvider(rpcURL)
       if (address) {
