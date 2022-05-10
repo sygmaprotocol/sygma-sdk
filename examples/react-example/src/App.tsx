@@ -174,12 +174,19 @@ function App() {
     }
   };
 
-  const voteEventsLogs = async (
+const funcVoteEvent = async (
+  originDomainId: any,
+  depositNonce: any,
+  status: any,
+  dataHash: any,
+  tx: any
+) => {
+  const txReceipt = await tx.getTransactionReceipt();
 
-  ) => {
-
-  }
-
+  console.log("txReceipt", txReceipt.status === 1 ? "Confirmed" : "Rejected");
+  console.log("status", status);
+  return
+};
   const submit = async (values: any) => {
     console.log("submit data", values);
     const { amount, address, from, to } = values;
@@ -193,21 +200,20 @@ function App() {
     events?.bridgeEvents(depositEventLogs)
     // // @ts-ignore-line
     const proposalEvents = events?.proposalEvents![to as keyof ChainbridgeData]
-    console.log("proposal events", proposalEvents)
-    proposalEvents!(proposalEventsLogs)
+    proposalEvents!(await proposalEventsLogs)
     const voteEvents = events?.voteEvents![to as keyof ChainbridgeData]
-    voteEvents!()
+    voteEvents!(await funcVoteEvent);
 
     // // console.log(events?.proposalEvents)
 
-    // const result = await (chainbridgeInstance as Chainbridge).deposit(
-    //   Number(amount),
-    //   address,
-    //   from,
-    //   to
-    // );
+    const result = await (chainbridgeInstance as Chainbridge).deposit(
+      Number(amount),
+      address,
+      from,
+      to
+    );
 
-    // console.log("result of transfer", result);
+    console.log("result of deposit:", result)
   };
 
   const handleConnect = () => {
