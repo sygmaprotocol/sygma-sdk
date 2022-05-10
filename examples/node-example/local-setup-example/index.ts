@@ -63,6 +63,7 @@ const funcVoteEvent = async (
 
   console.log("txReceipt", txReceipt.status === 1 ? "Confirmed" : "Rejected")
   console.log("status", status)
+  process.exit(0)
 }
 
 (async () => {
