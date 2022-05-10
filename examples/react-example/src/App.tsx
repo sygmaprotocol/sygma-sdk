@@ -188,18 +188,19 @@ const funcVoteEvent = async (
   return
 };
   const submit = async (values: any) => {
-    console.log("submit data", values);
+    // console.log("submit data", values);
     const { amount, address, from, to } = values;
 
     const events = (data as ChainbridgeData)[from as keyof ChainbridgeData];
 
-    console.log("events object", events)
+    // console.log("events object", events)
 
     // THIS IS HORRENDOUS
     // @ts-ignore-line
     events?.bridgeEvents(depositEventLogs)
     // // @ts-ignore-line
     const proposalEvents = events?.proposalEvents![to as keyof ChainbridgeData]
+    // console.log("proposal events", proposalEvents)
     proposalEvents!(await proposalEventsLogs)
     const voteEvents = events?.voteEvents![to as keyof ChainbridgeData]
     voteEvents!(await funcVoteEvent);
