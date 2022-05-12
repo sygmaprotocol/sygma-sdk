@@ -1,12 +1,12 @@
 {
-  "name": "chainbridge-sdk",
+  "name": "@chainsafe/chainbridge-sdk",
   "version": "1.0.0",
   "description": "Chainbridge SDK",
   "main": "index.js",
   "private": true,
   "scripts": {
-    "sdk:build": "yarn wsrun -p @chainsafe/chainbridge-sdk -c build",
-    "sdk:cleanDist":"yarn wsrun -p @chainsafe/chainbridge-sdk -c clean",
+    "sdk:build": "yarn wsrun -p @chainsafe/chainbridge-sdk-core -c build",
+    "sdk:cleanDist": "yarn wsrun -p @chainsafe/chainbridge-sdk -c clean",
     "sdk:test": "yarn wsrun -p @chainsafe/chainbridge-sdk -c test",
     "sdk:test:unit": "yarn wsrun -p @chainsafe/chainbridge-sdk -c test:unit",
     "start:react-example": "yarn wsrun -p @chainsafe/chainbridge-sdk-react-example -c start",
@@ -26,10 +26,10 @@
     ]
   },
   "dependencies": {
-    "wsrun": "5.2.4",
     "@changesets/cli": "^2.14.1",
     "ethers": "5.4.5",
-    "prettier": "2.1.2"
+    "prettier": "2.1.2",
+    "wsrun": "5.2.4"
   },
   "devDependencies": {
     "@types/node": "^17.0.23",

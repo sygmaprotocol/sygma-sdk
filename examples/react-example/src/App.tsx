@@ -5,9 +5,9 @@ import React, {
   useState,
 } from "react";
 import { BigNumber, utils } from "ethers";
-import { BridgeEvents } from "../../sdk/dist/src/types/types";
+import { BridgeEvents } from "@chainsafe/chainbridge-sdk-core/dist/src/types/types";
 import { useForm } from "react-hook-form";
-import { Chainbridge } from "@chainsafe/chainbridge-sdk";
+import { Chainbridge } from "@chainsafe/chainbridge-sdk-core";
 
 // TODO: MOVE THIS TO ENV
 const bridgeSetup = {
@@ -108,7 +108,7 @@ function App() {
     if (data !== undefined && chainbridgeInstance !== undefined) {
       getAccountData(chainbridgeInstance! as Chainbridge);
     }
-  }, [data]);
+  }, [data, logicConnected]);
 
   useEffect(() => {
     console.log(metaIsConnected, data);
@@ -174,21 +174,38 @@ function App() {
     }
   };
 
+const funcVoteEvent = async (
+  originDomainId: any,
+  depositNonce: any,
+  status: any,
+  dataHash: any,
+  tx: any
+) => {
+  const txReceipt = await tx.getTransactionReceipt();
+
+  console.log("txReceipt", txReceipt.status === 1 ? "Confirmed" : "Rejected");
+  console.log("status", status);
+  return
+};
   const submit = async (values: any) => {
-    console.log("submit data", values);
+    // console.log("submit data", values);
     const { amount, address, from, to } = values;
 
     const events = (data as ChainbridgeData)[from as keyof ChainbridgeData];
 
-    console.log("events object", events)
+    // console.log("events object", events)
 
     // THIS IS HORRENDOUS
     // @ts-ignore-line
     events?.bridgeEvents(depositEventLogs)
-    // @ts-ignore-line
-    events?.proposalEvents.chain2(await proposalEventsLogs)
+    // // @ts-ignore-line
+    const proposalEvents = events?.proposalEvents![to as keyof ChainbridgeData]
+    // console.log("proposal events", proposalEvents)
+    proposalEvents!(await proposalEventsLogs)
+    const voteEvents = events?.voteEvents![to as keyof ChainbridgeData]
+    voteEvents!(await funcVoteEvent);
 
-    // console.log(events?.proposalEvents)
+    // // console.log(events?.proposalEvents)
 
     const result = await (chainbridgeInstance as Chainbridge).deposit(
       Number(amount),
@@ -197,10 +214,11 @@ function App() {
       to
     );
 
-    console.log("result of transfer", result);
+    console.log("result of deposit:", result)
   };
 
   const handleConnect = () => {
+    // IF META IS NOT SIGNIN, TRIGGER POP OF THE WINDOW FOR THE EXTENSION
     if (!metaIsConnected) {
       return window.ethereum
         .request({ method: "eth_requestAccounts" })
