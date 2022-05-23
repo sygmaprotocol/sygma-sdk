@@ -68,6 +68,3 @@ networks:
 volumes:
   nodeA:
   nodeB:
-
-
-docker pull trufflesuite/ganache-cli:v6.12.2
