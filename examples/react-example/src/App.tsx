@@ -12,13 +12,13 @@ import { Chainbridge } from "@chainsafe/chainbridge-sdk-core";
 // TODO: MOVE THIS TO ENV
 const bridgeSetup = {
   chain1: {
-    bridgeAddress: "0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66",
-    erc20Address: "0x75dF75bcdCa8eA2360c562b4aaDBAF3dfAf5b19b",
-    erc20HandlerAddress: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
+    bridgeAddress: "0x22DB0E23228B07523B931045f93f0df93D099F1D",
+    erc20Address: "0x141F8690A87A7E57C2E270ee77Be94935970c035",
+    erc20HandlerAddress: "0x4FDc0179312d299724BA4F3247d76f77F37Dad5B",
     rpcURL: "http://localhost:8545",
     domainId: "1",
     erc20ResourceID:
-      "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "0x0000000000000000000000141f8690a87a7e57c2e270ee77be94935970c03501",
     decimals: 18,
   },
   chain2: {
@@ -28,10 +28,15 @@ const bridgeSetup = {
     rpcURL: "http://localhost:8547",
     domainId: "2",
     erc20ResourceID:
-      "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "0x0000000000000000000000141f8690a87a7e57c2e270ee77be94935970c03501",
     decimals: 18,
   },
 };
+
+const feeOracleSetup = {
+  feeOracleBaseUrl: 'http://localhost:8091',
+  feeOracleHandlerAddress: '0xa9ddD97e1762920679f3C20ec779D79a81903c0B'
+}
 
 const notEve = "0xF4314cb9046bECe6AA54bb9533155434d0c76909";
 
@@ -51,7 +56,14 @@ function App() {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      amount: "1.0",
+      address: "0x74d2946319bEEe4A140068eb83F9ee3a90B06F4f",
+      from: "chain1",
+      to: 'chain2'
+    }
+  });
   const [data, setData] = useState<SetStateAction<ChainbridgeData | undefined>>(
     undefined
   );
@@ -75,24 +87,30 @@ function App() {
   );
 
   const getAccountData = async (chainbridge: Chainbridge) => {
-    const balance = await chainbridge.getSignerBalance("chain1");
-    const address = await chainbridge.getSignerAddress("chain1");
-    const gasPrice = await chainbridge.getSignerGasPrice("chain1");
-    const { balanceOfTokens, tokenName } = await chainbridge.getTokenInfo(
-      "chain1"
-    );
-    console.log("signer balance", utils.formatEther(balance!));
-    console.log("signer address", address);
-    console.log("gas price", utils.formatEther(gasPrice!));
-    console.log("balance of tokens", utils.formatUnits(balanceOfTokens, 18));
-    setAccountData({
-      balance: balance!,
-      address: address!,
-      gasPrice: gasPrice!,
-      balanceOfTokens: balanceOfTokens!,
-      tokenName: tokenName!,
-    });
-    setIsReady(true);
+    try {
+      const balance =
+        (await chainbridge.getSignerBalance("chain1")) ?? BigNumber.from("0");
+      const address = await chainbridge.getSignerAddress("chain1");
+      const gasPrice = await chainbridge.getSignerGasPrice("chain1");
+      const { balanceOfTokens, tokenName } = await chainbridge.getTokenInfo(
+        "chain1"
+      );
+      console.log("signer balance", utils.formatEther(balance!));
+      console.log("signer address", address);
+      console.log("gas price", utils.formatEther(gasPrice!));
+      console.log("balance of tokens", utils.formatUnits(balanceOfTokens, 18));
+      setAccountData({
+        balance: balance!,
+        address: address!,
+        gasPrice: gasPrice!,
+        balanceOfTokens: balanceOfTokens!,
+        tokenName: tokenName!,
+      });
+      setIsReady(true);
+    } catch (e) {
+      console.log(e);
+      console.log("Perhaps you forget to deploy the bridge?")
+    }
   };
 
   useEffect(() => {
@@ -112,7 +130,7 @@ function App() {
 
   useEffect(() => {
     console.log(metaIsConnected, data);
-    if (metaIsConnected) {
+    if (metaIsConnected && chainbridgeInstance !== undefined) {
       handleConnect();
       getAccountData(chainbridgeInstance! as Chainbridge);
     }
@@ -207,14 +225,35 @@ const funcVoteEvent = async (
 
     // // console.log(events?.proposalEvents)
 
-    const result = await (chainbridgeInstance as Chainbridge).deposit(
-      Number(amount),
-      address,
-      from,
-      to
-    );
+    // const result = await (chainbridgeInstance as Chainbridge).deposit(
+    //   Number(amount),
+    //   address,
+    //   from,
+    //   to
+    // );
 
-    console.log("result of deposit:", result)
+    // console.log("result of deposit:", result)
+    const feeOracleData = await(
+      chainbridgeInstance as Chainbridge
+    ).fetchFeeData({
+      amount: Number(amount),
+      recipientAddress: address,
+      from,
+      to,
+    });
+    if (feeOracleData) {
+      if (window.confirm(`Current fee for the token ${feeOracleData.erc20TokenAddress} is\n\n${feeOracleData.calculatedRate} tokens.\n\nTotal(amount+fee): ${parseFloat(amount) + parseFloat(feeOracleData.calculatedRate)} tokens\n\nDo you really want to proceed?`)) {
+        // window.open("exit.html", "Thanks for Visiting!");
+            const result = await (chainbridgeInstance as Chainbridge).deposit(
+            Number(amount),
+            address,
+            from,
+            to,
+            feeOracleData.feeData
+          );
+          console.log("result of transfer", result);
+      }
+    }
   };
 
   const handleConnect = () => {
@@ -240,7 +279,7 @@ const funcVoteEvent = async (
           }
         });
     } else if (metaIsConnected) {
-      const setup = { bridgeSetup };
+      const setup = { bridgeSetup, feeOracleSetup };
       const chainbridge = new Chainbridge(setup);
 
       setChainbridgeInstance(chainbridge);
@@ -293,7 +332,7 @@ const funcVoteEvent = async (
             <p>
               Address: <span>{(accountData as LocalData).address}</span>
               <br />
-              Balance:{" "}
+              ETH:{" "}
               <span>
                 {utils.formatEther((accountData as LocalData).balance)}
               </span>
@@ -305,12 +344,13 @@ const funcVoteEvent = async (
               <br />
               Balance of tokens:{" "}
               <span>
-                {utils.formatUnits(
+                <b>{utils.formatUnits(
                   (accountData as LocalData).balanceOfTokens,
                   18
-                )}{" "}
+                )}</b>
+                {" "}
                 of{" "}
-                <strong>{(accountData as LocalData).tokenName} tokens</strong>
+                {(accountData as LocalData).tokenName} tokens
               </span>
             </p>
           </div>

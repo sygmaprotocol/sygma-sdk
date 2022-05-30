@@ -27,7 +27,7 @@ import {
   computeProvidersAndSigners,
 } from './utils';
 import { ERC20Bridge } from './chains';
-import { calculateFeeData } from './fee/feeOracle'
+import { calculateFeeData } from './fee/feeOracle';
 
 /**
  * Chainbridge is the main class that allows you to have bridging capabilities
@@ -57,22 +57,17 @@ export class Chainbridge implements ChainbridgeSDK {
     const providersAndSigners = computeProvidersAndSigners(this.bridgeSetup, address);
     console.log("🚀 ~ file: Chainbridge.ts ~ line 58 ~ Chainbridge ~ initializeConnection ~ providersAndSigners", providersAndSigners)
 
-    // if (!address) {
-    //   this.providers = {
-    //     chain1: (providersAndSigners!['chain1' as keyof BridgeData].provider as ethers.providers.Web3Provider),
-    //     chain2: (providersAndSigners!['chain2' as keyof BridgeData].provider as ethers.providers.Web3Provider)
-    //   }
-    // } else {
-    //   this.providers = {
-    //     // chain1: (providersAndSigners!['chain1' as keyof BridgeData].provider as ethers.providers.JsonRpcProvider),
-    //     chain1: new ethers.providers.Web3Provider(window.ethereum),
-    //     chain2: new ethers.providers.Web3Provider(window.ethereum),
-    //   }
-    // }
-    this.providers = {
-      // chain1: (providersAndSigners!['chain1' as keyof BridgeData].provider as ethers.providers.JsonRpcProvider),
-      chain1: new ethers.providers.Web3Provider(window.ethereum),
-      chain2: new ethers.providers.Web3Provider(window.ethereum),
+    if (!address) {
+      this.providers = {
+        chain1: (providersAndSigners!['chain1' as keyof BridgeData].provider as ethers.providers.Web3Provider),
+        chain2: (providersAndSigners!['chain2' as keyof BridgeData].provider as ethers.providers.Web3Provider)
+      }
+    } else {
+      this.providers = {
+        // chain1: (providersAndSigners!['chain1' as keyof BridgeData].provider as ethers.providers.JsonRpcProvider),
+        chain1: new ethers.providers.Web3Provider(window.ethereum),
+        chain2: new ethers.providers.Web3Provider(window.ethereum),
+      }
     }
 
     this.signers = {
@@ -189,7 +184,7 @@ export class Chainbridge implements ChainbridgeSDK {
 		const { feeOracleBaseUrl, feeOracleHandlerAddress } = this.feeOracleSetup;
 
 		// We use sender address or zero because of contracts
-		const sender = this.signer![from]?._address ?? ethers.constants.AddressZero
+		const sender = this.signers![from]?._address ?? ethers.constants.AddressZero
 
 		const feeData = calculateFeeData({
 			provider,

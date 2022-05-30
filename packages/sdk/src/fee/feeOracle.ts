@@ -85,7 +85,7 @@ export const calculateFeeData = async ({
   feeOracleBaseUrl,
   feeOracleHandlerAddress,
   overridedResourceId,
-  oraclePrivateKey
+  oraclePrivateKey,
 }: {
   provider: ethers.providers.Provider;
   sender: string;
@@ -98,10 +98,17 @@ export const calculateFeeData = async ({
   feeOracleHandlerAddress: string;
   overridedResourceId?: string;
   oraclePrivateKey?: string;
-}) => {
+}): Promise<
+  | {
+      calculatedRate: string;
+      erc20TokenAddress: string;
+      feeData: string;
+    }
+  | undefined
+> => {
   const resourceID = createResourceID(tokenResource, fromDomainID);
   const depositData = createERCDepositData(tokenAmount, 20, recipientAddress);
-  let oracleResponse
+  let oracleResponse;
   try {
     oracleResponse = await requestFeeFromFeeOracle({
       feeOracleBaseUrl,
@@ -110,10 +117,15 @@ export const calculateFeeData = async ({
       // tokenResource,
       resourceID: overridedResourceId ? overridedResourceId : tokenResource, // dirty hack for localsetup
     });
-  } catch(e) {
-    return e
+  } catch (e: any) {
+    return e;
   }
-  const feeData = createOracleFeeData((oracleResponse as OracleResource), tokenAmount, tokenResource, oraclePrivateKey);
+  const feeData = createOracleFeeData(
+    oracleResponse as OracleResource,
+    tokenAmount,
+    tokenResource,
+    oraclePrivateKey,
+  );
   const FeeHandlerWithOracleInstance = FeeHandlerWithOracle__factory.connect(
     feeOracleHandlerAddress,
     provider,
@@ -165,5 +177,3 @@ export const requestFeeFromFeeOracle = async ({
     return Promise.reject(new Error("Invalid fee oracle response"))
   }
 };
-
-
