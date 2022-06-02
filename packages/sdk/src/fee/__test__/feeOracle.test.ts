@@ -47,7 +47,6 @@ describe('feeOracle', () => {
         feeOracleBaseUrl: 'http://localhost:8091',
         fromDomainID: 1,
         toDomainID: 2,
-        // tokenResource,
         resourceID: '0xbA2aE424d960c26247Dd6c32edC70B295c744C4301',
       });
     });
@@ -65,7 +64,6 @@ describe('feeOracle', () => {
           feeOracleBaseUrl: 'http://localhost:8091',
           fromDomainID: 1,
           toDomainID: 2,
-          // tokenResource,
           resourceID: '0xbA2aE424d960c26247Dd6c32edC70B295c744C4301',
         });
       } catch (e) {

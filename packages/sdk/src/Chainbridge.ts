@@ -27,7 +27,7 @@ import {
   computeProvidersAndSigners,
 } from './utils';
 import { ERC20Bridge } from './chains';
-import { calculateFeeData } from './fee/feeOracle';
+import { calculateFeeData } from './fee';
 
 /**
  * Chainbridge is the main class that allows you to have bridging capabilities
@@ -55,7 +55,6 @@ export class Chainbridge implements ChainbridgeSDK {
 
   public initializeConnection(address?: string): ConnectionEvents {
     const providersAndSigners = computeProvidersAndSigners(this.bridgeSetup, address);
-    console.log("🚀 ~ file: Chainbridge.ts ~ line 58 ~ Chainbridge ~ initializeConnection ~ providersAndSigners", providersAndSigners)
 
     if (!address) {
       this.providers = {
@@ -64,9 +63,8 @@ export class Chainbridge implements ChainbridgeSDK {
       }
     } else {
       this.providers = {
-        // chain1: (providersAndSigners!['chain1' as keyof BridgeData].provider as ethers.providers.JsonRpcProvider),
-        chain1: new ethers.providers.Web3Provider(window.ethereum),
-        chain2: new ethers.providers.Web3Provider(window.ethereum),
+        chain1: (providersAndSigners!['chain1' as keyof BridgeData].provider as ethers.providers.JsonRpcProvider),
+        chain2: (providersAndSigners!['chain2' as keyof BridgeData].provider as ethers.providers.JsonRpcProvider)
       }
     }
 
@@ -174,13 +172,7 @@ export class Chainbridge implements ChainbridgeSDK {
 		}
 		const { amount, recipientAddress, from, to } = params;
     const provider = this.providers![from]!
-    // console.log("🚀 ~ file: Chainbridge.ts ~ line 176 ~ Chainbridge ~ from", from)
-
-    // console.log("🚀 ~ file: Chainbridge.ts ~ line 183 ~ Chainbridge ~ this.bridgeSetup", this.bridgeSetup[from])
-
 		const { erc20Address } = this.bridgeSetup[from];
-    console.log("🚀 ~ file: Chainbridge.ts ~ line 187 ~ Chainbridge ~ erc20Address", erc20Address)
-
 		const { feeOracleBaseUrl, feeOracleHandlerAddress } = this.feeOracleSetup;
 
 		// We use sender address or zero because of contracts
@@ -196,6 +188,8 @@ export class Chainbridge implements ChainbridgeSDK {
 			tokenAmount: amount,
 			feeOracleBaseUrl,
 			feeOracleHandlerAddress,
+      // overridedResourceId: '0xbA2aE424d960c26247Dd6c32edC70B295c744C43',
+      // oraclePrivateKey: '0x6937d1d0b52f2fa7f4e071c7e64934ad988a8f21c6bf4f323fc19af4c77e3c5e'
 		});
 
 		// feeOracleBaseUrl: 'http://localhost:8091',

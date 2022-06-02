@@ -223,16 +223,6 @@ const funcVoteEvent = async (
     const voteEvents = events?.voteEvents![to as keyof ChainbridgeData]
     voteEvents!(await funcVoteEvent);
 
-    // // console.log(events?.proposalEvents)
-
-    // const result = await (chainbridgeInstance as Chainbridge).deposit(
-    //   Number(amount),
-    //   address,
-    //   from,
-    //   to
-    // );
-
-    // console.log("result of deposit:", result)
     const feeOracleData = await(
       chainbridgeInstance as Chainbridge
     ).fetchFeeData({
@@ -243,15 +233,14 @@ const funcVoteEvent = async (
     });
     if (feeOracleData) {
       if (window.confirm(`Current fee for the token ${feeOracleData.erc20TokenAddress} is\n\n${feeOracleData.calculatedRate} tokens.\n\nTotal(amount+fee): ${parseFloat(amount) + parseFloat(feeOracleData.calculatedRate)} tokens\n\nDo you really want to proceed?`)) {
-        // window.open("exit.html", "Thanks for Visiting!");
-            const result = await (chainbridgeInstance as Chainbridge).deposit(
-            Number(amount),
-            address,
-            from,
-            to,
-            feeOracleData.feeData
-          );
-          console.log("result of transfer", result);
+          const result = await (chainbridgeInstance as Chainbridge).deposit(
+          Number(amount),
+          address,
+          from,
+          to,
+          feeOracleData.feeData
+        );
+        console.log("result of transfer", result);
       }
     }
   };
