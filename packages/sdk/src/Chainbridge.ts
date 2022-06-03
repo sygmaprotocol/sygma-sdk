@@ -1,4 +1,4 @@
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber, ethers, utils } from 'ethers';
 import { Bridge__factory as BridgeFactory, Bridge } from '@chainsafe/chainbridge-contracts';
 import { Erc20DetailedFactory } from './Contracts/Erc20DetailedFactory';
 import { Erc20Detailed } from './Contracts/Erc20Detailed';
@@ -271,6 +271,24 @@ export class Chainbridge implements ChainbridgeSDK {
 
   public async getSignerGasPrice(chain: string) {
     return await (this.signers![chain as keyof BridgeData] as Signer)?.getGasPrice()
+  }
+
+  public async approve(amounForApproval: string, from: Directions) {
+    const amountForApprovalBN = utils.parseUnits(
+      amounForApproval, 18
+    )
+
+    const gasPrice = await this.isEIP1559MaxFeePerGas(from)
+
+    const erc20ToUse = this.erc20![from]
+    const { erc20HandlerAddress } = this.bridgeSetup[from]
+
+    return await this.erc20Bridge.approve(
+      amountForApprovalBN,
+      erc20ToUse,
+      erc20HandlerAddress,
+      gasPrice as BigNumber
+    )
   }
 
 }

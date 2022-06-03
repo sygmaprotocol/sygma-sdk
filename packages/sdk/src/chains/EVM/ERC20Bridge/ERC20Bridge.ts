@@ -56,19 +56,17 @@ export default class ERC20Bridge {
     let approve;
 
     try {
-      approve = await (
-        await erc20Intance.approve(erc20HandlerAddress, amountForApprovalBN, {
-          gasPrice: gasPrice as BigNumber,
-        })
-      ).wait(1);
+      approve = this.approve(
+        amountForApprovalBN,
+        erc20Intance,
+        erc20HandlerAddress,
+        gasPrice as BigNumber
+      )
     } catch (error) {
       console.log('Approve error', error);
     }
 
-    console.log(
-      'allowance before deposit',
-      await this.checkCurrentAllowance(recipientAddress, erc20Intance, erc20HandlerAddress),
-    );
+    console.log("allowance before deposit", await this.checkCurrentAllowance(recipientAddress, erc20Intance, erc20HandlerAddress))
 
     console.warn('gas price stringified', gasPriceStringify);
 
@@ -76,13 +74,22 @@ export default class ERC20Bridge {
       // TODO: check if wait 1 here
       const tx = await bridge.deposit(domainId, resourceId, depositData, feeData, {
         gasPrice: gasPriceStringify,
-      })
+      });
       const depositAction = await(tx).wait(1);
-
-      return depositAction;
+      return depositAction
     } catch (error) {
       console.log('Error on deposit', error);
     }
+  }
+
+  public async approve(amountForApproval: BigNumber, erc20Instance: Erc20Detailed, erc20HandlerAddress: string, gasPrice: BigNumber){
+    return await(await erc20Instance.approve(
+      erc20HandlerAddress,
+      amountForApproval,
+      {
+        gasPrice
+      }
+    )).wait(1)
   }
 
   public async hasTokenSupplies(
