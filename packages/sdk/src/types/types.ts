@@ -31,6 +31,19 @@ export type FeeOracleData = {
 	feeOracleHandlerAddress: string;
 }
 
+export type OracleResource = {
+  baseEffectiveRate: string;
+  tokenEffectiveRate: string;
+  dstGasPrice: string;
+  signature: string;
+  fromDomainID: number;
+  toDomainID: number;
+  resourceID: string;
+  dataTimestamp: number;
+  signatureTimestamp: number;
+  expirationTimestamp: number;
+};
+
 export type FeeOracleResult = {
 	calculatedRate: string;
 	erc20TokenAddress: string;

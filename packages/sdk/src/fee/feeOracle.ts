@@ -5,21 +5,8 @@ import { utils, BigNumber, ethers } from 'ethers';
 import fetch from 'node-fetch';
 import EthCrypto from 'eth-crypto';
 
-import { FeeOracleResult } from '../types';
+import { OracleResource, FeeOracleResult } from '../types';
 import { toHex, addPadding, createResourceID, createERCDepositData } from '../utils/helpers';
-
-type OracleResource = {
-  baseEffectiveRate: string;
-  tokenEffectiveRate: string;
-  dstGasPrice: string;
-  signature: string;
-  fromDomainID: number;
-  toDomainID: number;
-  resourceID: string;
-  dataTimestamp: number;
-  signatureTimestamp: number;
-  expirationTimestamp: number;
-};
 
 export const createOracleFeeData = (
   oracleResponse: OracleResource,
@@ -152,7 +139,6 @@ export const requestFeeFromFeeOracle = async ({
   toDomainID: number;
   resourceID: string;
 }) => {
-  // http://localhost:8091/v1/rate/from/2/to/1/token/0x8A953CfE442c5E8855cc6c61b1293FA648BAE4722
   try {
     const response = await fetch(
       `${feeOracleBaseUrl}/v1/rate/from/${fromDomainID}/to/${toDomainID}/token/${resourceID}`,
