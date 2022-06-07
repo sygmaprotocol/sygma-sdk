@@ -31,6 +31,12 @@ export type FeeOracleData = {
 	feeOracleHandlerAddress: string;
 }
 
+export type FeeOracleResult = {
+	calculatedRate: string;
+	erc20TokenAddress: string;
+	feeData: string;
+}
+
 export type Bridges = { [chain: string]: Bridge } | undefined;
 
 export type ChainbridgeContracts = {

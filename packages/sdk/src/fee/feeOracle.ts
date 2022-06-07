@@ -5,6 +5,7 @@ import { utils, BigNumber, ethers } from 'ethers';
 import fetch from 'node-fetch';
 import EthCrypto from 'eth-crypto';
 
+import { FeeOracleResult } from '../types';
 import { toHex, addPadding, createResourceID, createERCDepositData } from '../utils/helpers';
 
 type OracleResource = {
@@ -98,14 +99,7 @@ export const calculateFeeData = async ({
   feeOracleHandlerAddress: string;
   overridedResourceId?: string;
   oraclePrivateKey?: string;
-}): Promise<
-  | {
-      calculatedRate: string;
-      erc20TokenAddress: string;
-      feeData: string;
-    }
-  | undefined
-> => {
+}): Promise<FeeOracleResult | undefined> => {
   const resourceID = createResourceID(tokenResource, fromDomainID);
   const depositData = createERCDepositData(tokenAmount, 20, recipientAddress);
   let oracleResponse;
