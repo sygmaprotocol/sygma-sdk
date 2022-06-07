@@ -1078,9 +1078,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@chainsafe/chainbridge-contracts@link:../chainbridge-solidity/dist":
-  version "0.0.0"
-  uid ""
+"@chainsafe/chainbridge-contracts@3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@chainsafe/chainbridge-contracts/-/chainbridge-contracts-3.0.1.tgz#d6ef0eb103a11746596633c9f18d3351055b24a5"
+  integrity sha512-ZpuHICa82eSLSQZCwIskwRa6D9j5MaY/XrEY5iVpDSTPkbQTokfQuQ2sAPlgdtIT+U6Xt+eoEX/h96698QrU8w==
 
 "@changesets/apply-release-plan@^6.0.0":
   version "6.0.0"
@@ -18259,6 +18260,11 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
+
+typescript@4.6.3:
+  version "4.6.3"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.6.3.tgz#eefeafa6afdd31d725584c67a0eaba80f6fc6c6c"
+  integrity sha512-yNIatDa5iaofVozS/uQJEl3JRWLKKGJKh6Yaiv0GLGSuhpFJe7P3SbHZ8/yjAHRQwKRoA6YZqlfjXWmVzoVSMw==
 
 typescript@^4.6.3:
   version "4.7.3"
