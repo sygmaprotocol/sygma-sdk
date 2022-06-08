@@ -129,7 +129,7 @@ export class Chainbridge implements ChainbridgeSDK {
   }
 
   public async deposit(
-    amount: number,
+    amount: string,
     recipientAddress: string,
     from: Directions,
     to: Directions,

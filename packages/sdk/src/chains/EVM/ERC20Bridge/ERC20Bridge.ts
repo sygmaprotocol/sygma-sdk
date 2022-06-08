@@ -16,7 +16,7 @@ export default class ERC20Bridge {
   }
 
   public async transferERC20(
-    amount: number,
+    amount: string,
     recipientAddress: string,
     erc20Intance: Erc20Detailed,
     bridge: Bridge,
@@ -168,7 +168,7 @@ export default class ERC20Bridge {
     )
   }
 
-  private prepareData(amount: number, recipientAddress: string): string {
+  private prepareData(amount: string, recipientAddress: string): string {
     const amountTransformedToData = processAmountForERC20Transfer(amount);
 
     // LEN(RECIPIENTADDRESS) 32 BYTES
