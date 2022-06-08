@@ -18,7 +18,8 @@
   "license": "MIT",
   "workspaces": {
     "packages": [
-      "packages/*"
+      "packages/*",
+      "examples/*"
     ],
     "nohoist": [
       "**/webpack-dev-server",

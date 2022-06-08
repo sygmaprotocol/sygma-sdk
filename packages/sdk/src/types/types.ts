@@ -8,6 +8,7 @@ export type Directions = "chain1" | "chain2"
 
 export type Setup = {
 	bridgeSetup: BridgeData;
+	feeOracleSetup?: FeeOracleData;
 };
 
 export type ChainbridgeBridgeSetup = {
@@ -24,6 +25,30 @@ export type BridgeData = {
 	chain1: ChainbridgeBridgeSetup;
 	chain2: ChainbridgeBridgeSetup;
 };
+
+export type FeeOracleData = {
+	feeOracleBaseUrl: string;
+	feeOracleHandlerAddress: string;
+}
+
+export type OracleResource = {
+  baseEffectiveRate: string;
+  tokenEffectiveRate: string;
+  dstGasPrice: string;
+  signature: string;
+  fromDomainID: number;
+  toDomainID: number;
+  resourceID: string;
+  dataTimestamp: number;
+  signatureTimestamp: number;
+  expirationTimestamp: number;
+};
+
+export type FeeOracleResult = {
+	calculatedRate: string;
+	erc20TokenAddress: string;
+	feeData: string;
+}
 
 export type Bridges = { [chain: string]: Bridge } | undefined;
 
@@ -66,7 +91,7 @@ export type ChainbridgeProviders =
 
 export type ChainbridgeErc20Contracts = { [chain: string]: Erc20Detailed } | undefined;
 
-export type Provider = ethers.providers.JsonRpcProvider | ethers.providers.Web3Provider | undefined;
+export type Provider = ethers.providers.Provider | undefined;
 
 export type Signer = ethers.providers.JsonRpcSigner | undefined;
 
