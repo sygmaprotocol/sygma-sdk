@@ -1,7 +1,7 @@
 import { utils, BigNumber } from 'ethers';
 
 export const toHex = (covertThis: any, padding: any) => {
-	return utils.hexZeroPad(utils.hexlify(covertThis), padding);
+	return utils.hexZeroPad(utils.hexlify(BigNumber.from(covertThis)), padding);
 };
 
 export const addPadding = (covertThis: any, padding: number) => {
