@@ -18,6 +18,7 @@ import {
   ConnectorSigner,
   ConnectorProvider,
   ConnectionEvents,
+  FeeOracleData,
 } from './types';
 import {
   computeBridgeEvents,
@@ -26,6 +27,7 @@ import {
   computeProvidersAndSigners,
 } from './utils';
 import { ERC20Bridge } from './chains';
+import { calculateFeeData } from './fee';
 
 /**
  * Chainbridge is the main class that allows you to have bridging capabilities
@@ -41,11 +43,14 @@ export class Chainbridge implements ChainbridgeSDK {
   private signers: ConnectorSigner = undefined;
   private erc20: ChainbridgeErc20Contracts = undefined;
   private providers: ConnectorProvider = undefined;
-  private erc20Bridge: ERC20Bridge
+  private erc20Bridge: ERC20Bridge;
+  private feeOracleSetup?: FeeOracleData;
 
-  public constructor({ bridgeSetup }: Setup) {
+
+  public constructor({ bridgeSetup, feeOracleSetup }: Setup) {
     this.bridgeSetup = bridgeSetup;
-    this.erc20Bridge = ERC20Bridge.getInstance()
+    this.erc20Bridge = ERC20Bridge.getInstance();
+    this.feeOracleSetup = feeOracleSetup;
   }
 
   public initializeConnection(address?: string): ConnectionEvents {
@@ -133,6 +138,7 @@ export class Chainbridge implements ChainbridgeSDK {
     recipientAddress: string,
     from: Directions,
     to: Directions,
+    feeData: string,
   ) {
 
     const erc20ToUse = this.erc20![from];
@@ -141,17 +147,55 @@ export class Chainbridge implements ChainbridgeSDK {
     const { erc20HandlerAddress } = this.bridgeSetup[from]
     const { domainId, erc20ResourceID } = this.bridgeSetup[to]
 
-    return await this.erc20Bridge.transferERC20(
+    return await this.erc20Bridge.transferERC20({
       amount,
       recipientAddress,
-      erc20ToUse,
-      bridgeToUse,
+      erc20Intance: erc20ToUse,
+      bridge: bridgeToUse,
       provider,
       erc20HandlerAddress,
       domainId,
-      erc20ResourceID
-    )
+      resourceId: erc20ResourceID,
+      feeData
+    });
   }
+
+  public async fetchFeeData(params: {
+		amount: number;
+		recipientAddress: string;
+		from: Directions;
+		to: Directions;
+	}) {
+		if (!this.feeOracleSetup) {
+			console.log("No feeOracle config")
+			return
+		}
+		const { amount, recipientAddress, from, to } = params;
+    const provider = this.providers![from]!
+		const { erc20Address } = this.bridgeSetup[from];
+		const { feeOracleBaseUrl, feeOracleHandlerAddress } = this.feeOracleSetup;
+
+		// We use sender address or zero because of contracts
+		const sender = this.signers![from]?._address ?? ethers.constants.AddressZero
+
+		const feeData = calculateFeeData({
+			provider,
+			sender,
+			recipientAddress,
+			fromDomainID: parseInt(this.bridgeSetup[from].domainId),
+			toDomainID: parseInt(this.bridgeSetup[to].domainId),
+			tokenResource: erc20Address,
+			tokenAmount: amount,
+			feeOracleBaseUrl,
+			feeOracleHandlerAddress,
+      // overridedResourceId: '0xbA2aE424d960c26247Dd6c32edC70B295c744C43',
+      // oraclePrivateKey: '0x6937d1d0b52f2fa7f4e071c7e64934ad988a8f21c6bf4f323fc19af4c77e3c5e'
+		});
+
+		// feeOracleBaseUrl: 'http://localhost:8091',
+		// FeeHandlerWithOracleAddress: '0xa9ddD97e1762920679f3C20ec779D79a81903c0B',
+		return feeData
+	}
 
   public async waitForTransactionReceipt(txHash: string) {
     const receipt = await this.ethersProvider?.waitForTransaction(txHash, 1);

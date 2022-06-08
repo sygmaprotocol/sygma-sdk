@@ -1,5 +1,5 @@
 module.exports = {
-    roots: ["<rootDir>/integration/test"],
+    roots: ["<rootDir>/integration/test", "<rootDir>/src"],
 
     // Jest transformations -- this adds support for TypeScript
     // using ts-jest

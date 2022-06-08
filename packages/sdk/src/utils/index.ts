@@ -61,23 +61,23 @@ export const computeBridgeEvents = (contracts: ChainbridgeContracts) =>
 	}, {});
 
 export const computeProposalEvents = (destinationBridge: Bridge): BridgeEventCallback => {
-	const proposalFilter = destinationBridge.filters.ProposalEvent(null, null, null, null);
+	const proposalFilter = destinationBridge.filters.ProposalExecution(null, null, null);
 
 	const destinationProposalEvents = (func: any) =>
-		destinationBridge.on(proposalFilter, (originDomainId, despositNonce, status, dataHash, tx) => {
-			func(originDomainId, despositNonce, status, dataHash, tx);
+		destinationBridge.on(proposalFilter, (originDomainId, despositNonce, dataHash, tx) => {
+			func(originDomainId, despositNonce, dataHash, tx);
 		});
 
 	return destinationProposalEvents;
 };
 
 export const computeProposalVoteEvents = (destinationBridge: Bridge): BridgeEventCallback => {
-	const proposalVoteFilter = destinationBridge.filters.ProposalVote(null, null, null, null)
+	const proposalVoteFilter = destinationBridge.filters.ProposalExecution(null, null, null)
 
 	const destinationProposalVoteEvents = (func: any) => destinationBridge.on(
 		proposalVoteFilter,
-		(originDomainId, depositNonce, status, dataHash, tx) => {
-			func(originDomainId, depositNonce, status, dataHash, tx)}
+		(originDomainId, depositNonce, dataHash, tx) => {
+			func(originDomainId, depositNonce, dataHash, tx)}
 	)
 
 	return destinationProposalVoteEvents
