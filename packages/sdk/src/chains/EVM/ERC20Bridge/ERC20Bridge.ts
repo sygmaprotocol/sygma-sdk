@@ -52,20 +52,6 @@ export default class ERC20Bridge {
       gasPriceStringify = gasPrice.toString();
     }
 
-    // TODO: THIS IS TEMPORARY
-    let approve;
-
-    try {
-      approve = this.approve(
-        amountForApprovalBN,
-        erc20Intance,
-        erc20HandlerAddress,
-        gasPrice as BigNumber
-      )
-    } catch (error) {
-      console.log('Approve error', error);
-    }
-
     console.log("allowance before deposit", await this.checkCurrentAllowance(recipientAddress, erc20Intance, erc20HandlerAddress))
 
     console.warn('gas price stringified', gasPriceStringify);
