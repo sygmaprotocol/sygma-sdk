@@ -81,7 +81,7 @@ export const calculateFeeData = async ({
   fromDomainID: number;
   toDomainID: number;
   tokenResource: string;
-  tokenAmount: number;
+  tokenAmount: string;
   feeOracleBaseUrl: string;
   feeOracleHandlerAddress: string;
   overridedResourceId?: string;

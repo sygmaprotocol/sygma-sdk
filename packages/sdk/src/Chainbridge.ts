@@ -134,7 +134,7 @@ export class Chainbridge implements ChainbridgeSDK {
   }
 
   public async deposit(
-    amount: number,
+    amount: string,
     recipientAddress: string,
     from: Directions,
     to: Directions,
@@ -161,7 +161,7 @@ export class Chainbridge implements ChainbridgeSDK {
   }
 
   public async fetchFeeData(params: {
-		amount: number;
+		amount: string;
 		recipientAddress: string;
 		from: Directions;
 		to: Directions;

@@ -28,7 +28,7 @@ export default class ERC20Bridge {
     resourceId,
     feeData,
   }: {
-    amount: number;
+    amount: string;
     recipientAddress: string;
     erc20Intance: Erc20Detailed;
     bridge: Bridge;

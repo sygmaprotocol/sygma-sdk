@@ -115,7 +115,7 @@ const setConnector = (rpcURL?: string, address?: string): Connector => {
 	return Connector.getInstance(rpcURL, address)
 }
 
-export const processAmountForERC20Transfer = (amount: number): string => {
+export const processAmountForERC20Transfer = (amount: string): string => {
 	const parsedAmountToERC20Decimals = utils.parseUnits(amount.toString(), 18);
 
 	const toBigNumber = BigNumber.from(parsedAmountToERC20Decimals);
