@@ -19,7 +19,7 @@ export default class Connector implements IConnector {
             window.ethereum,
             "any"
           )
-          this.connectorSigner = this.connectorProvider.getSigner()
+          this.connectorSigner = (this.connectorProvider as ethers.providers.Web3Provider).getSigner()
         } else {
           console.warn("No ethereum object to initialize provider on the Browser")
           this.connectorProvider = undefined
@@ -28,7 +28,7 @@ export default class Connector implements IConnector {
     } else {
       this.connectorProvider = new ethers.providers.JsonRpcProvider(rpcURL)
       if (address) {
-        this.connectorSigner = this.connectorProvider.getSigner(address)
+        this.connectorSigner = (this.connectorProvider as ethers.providers.JsonRpcProvider).getSigner(address)
       }
     }
   }
@@ -51,7 +51,7 @@ export default class Connector implements IConnector {
   }
 
   public setSigner(address: string) {
-    this.connectorSigner = this.connectorProvider!.getSigner(address)
+    this.connectorSigner = (this.connectorProvider as ethers.providers.JsonRpcProvider)!.getSigner(address)
   }
 
   get signer() {

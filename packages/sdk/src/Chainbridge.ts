@@ -185,7 +185,7 @@ export class Chainbridge implements ChainbridgeSDK {
 			fromDomainID: parseInt(this.bridgeSetup[from].domainId),
 			toDomainID: parseInt(this.bridgeSetup[to].domainId),
 			tokenResource: erc20Address,
-			tokenAmount: amount,
+			tokenAmount: Number(amount),
 			feeOracleBaseUrl,
 			feeOracleHandlerAddress,
       // overridedResourceId: '0xbA2aE424d960c26247Dd6c32edC70B295c744C43',
