@@ -226,7 +226,7 @@ const funcVoteEvent = async (
     const feeOracleData = await(
       chainbridgeInstance as Chainbridge
     ).fetchFeeData({
-      amount: Number(amount),
+      amount: amount,
       recipientAddress: address,
       from,
       to,
@@ -234,7 +234,7 @@ const funcVoteEvent = async (
     if (feeOracleData) {
       if (window.confirm(`Current fee for the token ${feeOracleData.erc20TokenAddress} is\n\n${feeOracleData.calculatedRate} tokens.\n\nTotal(amount+fee): ${parseFloat(amount) + parseFloat(feeOracleData.calculatedRate)} tokens\n\nDo you really want to proceed?`)) {
           const result = await (chainbridgeInstance as Chainbridge).deposit(
-          Number(amount),
+          amount,
           address,
           from,
           to,

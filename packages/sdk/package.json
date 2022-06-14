@@ -1,9 +1,13 @@
 {
 	"name": "@chainsafe/chainbridge-sdk-core",
-	"version": "1.0.1",
+	"version": "1.0.0",
 	"description": "Core primitives for bridging and message passing",
 	"main": "dist/src/index.js",
 	"types": "dist/src/index.d.ts",
+	 "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
 	"scripts": {
 		"prepareNodes": "cd ./integration/node1 && npx hardhat node --port 8545 & cd ./integration/node2 && npx hardhat node --port 8547 &",
 		"test": "jest --watchAll --detectOpenHandles",
@@ -14,9 +18,9 @@
 		"run:nodes": "docker-compose -f docker-compose.yml up",
 		"clean": "rm -rf ./dist"
 	},
-	"keywords": [],
-	"author": "",
-	"license": "MIT",
+	"keywords": ["chainsafe", "web3", "bridge", "ethereum"],
+	"author": "Chainsafe Products Team",
+	"license": "LGPL",
 	"devDependencies": {
 		"@chainsafe/chainbridge-contracts": "3.0.1",
 		"@types/jest": "27.4.1",
