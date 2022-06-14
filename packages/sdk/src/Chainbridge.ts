@@ -46,7 +46,6 @@ export class Chainbridge implements ChainbridgeSDK {
   private erc20Bridge: ERC20Bridge;
   private feeOracleSetup?: FeeOracleData;
 
-
   public constructor({ bridgeSetup, feeOracleSetup }: Setup) {
     this.bridgeSetup = bridgeSetup;
     this.erc20Bridge = ERC20Bridge.getInstance();
@@ -58,20 +57,24 @@ export class Chainbridge implements ChainbridgeSDK {
 
     if (!address) {
       this.providers = {
-        chain1: (providersAndSigners!['chain1' as keyof BridgeData].provider as ethers.providers.Web3Provider),
-        chain2: (providersAndSigners!['chain2' as keyof BridgeData].provider as ethers.providers.Web3Provider)
-      }
+        chain1: providersAndSigners!['chain1' as keyof BridgeData]
+          .provider as ethers.providers.Web3Provider,
+        chain2: providersAndSigners!['chain2' as keyof BridgeData]
+          .provider as ethers.providers.Web3Provider,
+      };
     } else {
       this.providers = {
-        chain1: (providersAndSigners!['chain1' as keyof BridgeData].provider as ethers.providers.JsonRpcProvider),
-        chain2: (providersAndSigners!['chain2' as keyof BridgeData].provider as ethers.providers.JsonRpcProvider)
-      }
+        chain1: providersAndSigners!['chain1' as keyof BridgeData]
+          .provider as ethers.providers.JsonRpcProvider,
+        chain2: providersAndSigners!['chain2' as keyof BridgeData]
+          .provider as ethers.providers.JsonRpcProvider,
+      };
     }
 
     this.signers = {
       chain1: providersAndSigners!['chain1' as keyof BridgeData].signer,
-      chain2: providersAndSigners!['chain2' as keyof BridgeData].signer
-    }
+      chain2: providersAndSigners!['chain2' as keyof BridgeData].signer,
+    };
 
     const contracts = this.computeContracts();
 
@@ -94,7 +97,7 @@ export class Chainbridge implements ChainbridgeSDK {
       const signer = this.signers![chain as keyof BridgeData];
 
       const bridge = this.connectToBridge(bridgeAddress, signer!);
-      const bridgeEvent = this.getBridgeDepositEvents(bridge, signer)
+      const bridgeEvent = this.getBridgeDepositEvents(bridge, signer);
       const erc20Connected = this.connectERC20(erc20Address, signer!);
       contracts = {
         ...contracts,
@@ -140,12 +143,11 @@ export class Chainbridge implements ChainbridgeSDK {
     to: Directions,
     feeData: string,
   ) {
-
     const erc20ToUse = this.erc20![from];
-    const provider = this.providers![from]
-    const bridgeToUse = this.bridges![from]
-    const { erc20HandlerAddress } = this.bridgeSetup[from]
-    const { domainId, erc20ResourceID } = this.bridgeSetup[to]
+    const provider = this.providers![from];
+    const bridgeToUse = this.bridges![from];
+    const { erc20HandlerAddress } = this.bridgeSetup[from];
+    const { domainId, erc20ResourceID } = this.bridgeSetup[to];
 
     return await this.erc20Bridge.transferERC20({
       amount,
@@ -156,58 +158,63 @@ export class Chainbridge implements ChainbridgeSDK {
       erc20HandlerAddress,
       domainId,
       resourceId: erc20ResourceID,
-      feeData
+      feeData,
     });
   }
 
-  public async fetchFeeData(params: {
-		amount: string;
-		recipientAddress: string;
-		from: Directions;
-		to: Directions;
-	}) {
-		if (!this.feeOracleSetup) {
-			console.log("No feeOracle config")
-			return
-		}
-		const { amount, recipientAddress, from, to } = params;
-    const provider = this.providers![from]!
-		const { erc20Address } = this.bridgeSetup[from];
-		const { feeOracleBaseUrl, feeOracleHandlerAddress } = this.feeOracleSetup;
+  public async fetchFeeData(
+    params: {
+      amount: string;
+      recipientAddress: string;
+      from: Directions;
+      to: Directions;
+      overridedResourceId?: string;
+      oraclePrivateKey?: string;
+    },
+  ) {
+    if (!this.feeOracleSetup) {
+      console.log('No feeOracle config');
+      return;
+    }
+    const { amount, recipientAddress, from, to, overridedResourceId, oraclePrivateKey } = params;
+    const provider = this.providers![from]!;
+    const { erc20Address } = this.bridgeSetup[from];
+    const { feeOracleBaseUrl, feeOracleHandlerAddress } = this.feeOracleSetup;
 
-		// We use sender address or zero because of contracts
-		const sender = this.signers![from]?._address ?? ethers.constants.AddressZero
+    // We use sender address or zero because of contracts
+    const sender = this.signers![from]?._address ?? ethers.constants.AddressZero;
 
-		const feeData = calculateFeeData({
-			provider,
-			sender,
-			recipientAddress,
-			fromDomainID: parseInt(this.bridgeSetup[from].domainId),
-			toDomainID: parseInt(this.bridgeSetup[to].domainId),
-			tokenResource: erc20Address,
-			tokenAmount: Number(amount),
-			feeOracleBaseUrl,
-			feeOracleHandlerAddress,
-      // overridedResourceId: '0xbA2aE424d960c26247Dd6c32edC70B295c744C43',
-      // oraclePrivateKey: '0x6937d1d0b52f2fa7f4e071c7e64934ad988a8f21c6bf4f323fc19af4c77e3c5e'
-		});
+    const feeData = calculateFeeData({
+      provider,
+      sender,
+      recipientAddress,
+      fromDomainID: parseInt(this.bridgeSetup[from].domainId),
+      toDomainID: parseInt(this.bridgeSetup[to].domainId),
+      tokenResource: erc20Address,
+      tokenAmount: Number(amount),
+      feeOracleBaseUrl,
+      feeOracleHandlerAddress,
+      overridedResourceId, // '0xbA2aE424d960c26247Dd6c32edC70B295c744C43',
+      oraclePrivateKey, //'0x6937d1d0b52f2fa7f4e071c7e64934ad988a8f21c6bf4f323fc19af4c77e3c5e'
+    });
 
-		// feeOracleBaseUrl: 'http://localhost:8091',
-		// FeeHandlerWithOracleAddress: '0xa9ddD97e1762920679f3C20ec779D79a81903c0B',
-		return feeData
-	}
+    // feeOracleBaseUrl: 'http://localhost:8091',
+    // FeeHandlerWithOracleAddress: '0xa9ddD97e1762920679f3C20ec779D79a81903c0B',
+    return feeData;
+  }
 
   public async waitForTransactionReceipt(txHash: string) {
     const receipt = await this.ethersProvider?.waitForTransaction(txHash, 1);
     return receipt;
   }
 
-  public async hasTokenSupplies(
-    amount: number,
-    to: Directions
-  ): Promise<boolean> {
-    const { erc20Address: destinationTokenAddress, erc20HandlerAddress, decimals } = this.bridgeSetup[to]
-    const provider = this.providers![to]
+  public async hasTokenSupplies(amount: number, to: Directions): Promise<boolean> {
+    const {
+      erc20Address: destinationTokenAddress,
+      erc20HandlerAddress,
+      decimals,
+    } = this.bridgeSetup[to];
+    const provider = this.providers![to];
 
     const hasTokenSupplies = await this.erc20Bridge.hasTokenSupplies(
       amount,
@@ -215,80 +222,66 @@ export class Chainbridge implements ChainbridgeSDK {
       provider,
       destinationTokenAddress,
       erc20HandlerAddress,
-      decimals
-    )
+      decimals,
+    );
 
-    return hasTokenSupplies
+    return hasTokenSupplies;
   }
 
   public async checkCurrentAllowance(from: Directions, recipientAddress: string) {
-
-    const erc20ToUse = this.erc20![from]
-    const { erc20HandlerAddress } = this.bridgeSetup[from]
+    const erc20ToUse = this.erc20![from];
+    const { erc20HandlerAddress } = this.bridgeSetup[from];
 
     return await this.erc20Bridge.checkCurrentAllowance(
       recipientAddress,
       erc20ToUse,
-      erc20HandlerAddress
-    )
+      erc20HandlerAddress,
+    );
   }
 
   public async isEIP1559MaxFeePerGas(from: Directions) {
-    const provider = this.providers![from]
+    const provider = this.providers![from];
 
-    return await this.erc20Bridge.isEIP1559MaxFeePerGas(
-      provider
-    )
+    return await this.erc20Bridge.isEIP1559MaxFeePerGas(provider);
   }
 
-  public async getTokenInfo(
-    chain: Directions
-  ) {
-    const { erc20Address } = this.bridgeSetup[chain]
-    const provider = this.providers![chain]
-    const address = await this.getSignerAddress(chain)
+  public async getTokenInfo(chain: Directions) {
+    const { erc20Address } = this.bridgeSetup[chain];
+    const provider = this.providers![chain];
+    const address = await this.getSignerAddress(chain);
 
-    return await this.erc20Bridge.getTokenInfo(
-      erc20Address,
-      address!,
-      provider
-    )
+    return await this.erc20Bridge.getTokenInfo(erc20Address, address!, provider);
   }
 
-  public async getTokenBalance(
-    erc20Contract: Erc20Detailed, address: string
-  ): Promise<BigNumber> {
-    return await this.erc20Bridge.getERC20Balance(erc20Contract, address)
+  public async getTokenBalance(erc20Contract: Erc20Detailed, address: string): Promise<BigNumber> {
+    return await this.erc20Bridge.getERC20Balance(erc20Contract, address);
   }
 
   public async getSignerBalance(chain: string) {
-    return await (this.signers![chain as keyof BridgeData] as Signer)?.getBalance()
+    return await (this.signers![chain as keyof BridgeData] as Signer)?.getBalance();
   }
 
   public async getSignerAddress(chain: string) {
-    return await (this.signers![chain as keyof BridgeData] as Signer)?.getAddress()
+    return await (this.signers![chain as keyof BridgeData] as Signer)?.getAddress();
   }
 
   public async getSignerGasPrice(chain: string) {
-    return await (this.signers![chain as keyof BridgeData] as Signer)?.getGasPrice()
+    return await (this.signers![chain as keyof BridgeData] as Signer)?.getGasPrice();
   }
 
   public async approve(amounForApproval: string, from: Directions) {
-    const amountForApprovalBN = utils.parseUnits(
-      amounForApproval, 18
-    )
+    const amountForApprovalBN = utils.parseUnits(amounForApproval, 18);
 
-    const gasPrice = await this.isEIP1559MaxFeePerGas(from)
+    const gasPrice = await this.isEIP1559MaxFeePerGas(from);
 
-    const erc20ToUse = this.erc20![from]
-    const { erc20HandlerAddress } = this.bridgeSetup[from]
+    const erc20ToUse = this.erc20![from];
+    const { erc20HandlerAddress } = this.bridgeSetup[from];
 
     return await this.erc20Bridge.approve(
       amountForApprovalBN,
       erc20ToUse,
       erc20HandlerAddress,
-      gasPrice as BigNumber
-    )
+      gasPrice as BigNumber,
+    );
   }
-
 }
