@@ -1,0 +1,6 @@
+{
+  "watch": ["./local-setup-example"],
+  "ext": ".ts",
+  "ignore": [],
+  "exec": "ts-node ./local-setup-example/index.ts"
+}
