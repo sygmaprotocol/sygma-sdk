@@ -77,7 +77,6 @@ export class Chainbridge implements ChainbridgeSDK {
     };
 
     const contracts = this.computeContracts();
-    // console.log("🚀 ~ file: Chainbridge.ts ~ line 77 ~ Chainbridge ~ initializeConnection ~ contracts", contracts)
 
     // this returns bridge events object
     this.bridgeEvents = computeBridgeEvents(contracts);
@@ -113,7 +112,6 @@ export class Chainbridge implements ChainbridgeSDK {
       const signer = this.signers![chain as keyof BridgeData];
 
       const bridge = this.connectToBridge(bridgeAddress, signer!);
-      // console.log("bridge fee", await this.checkFeeHandlerOnBridge(bridge))
       const bridgeEvent = this.getBridgeDepositEvents(bridge, signer);
       const erc20Connected = this.connectERC20(erc20Address, signer!);
       contracts = {
