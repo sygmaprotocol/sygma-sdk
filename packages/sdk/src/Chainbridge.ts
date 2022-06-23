@@ -87,7 +87,18 @@ export class Chainbridge implements ChainbridgeSDK {
     // setup bridges contracts
     this.bridges = computeBridges(contracts);
 
-    const feeHandlerByNetwork = await this.checkFeeHandlerByNetwork(contracts);
+    const areFeeSettings = this.checkFeeSettings(this.bridgeSetup);
+    let feeHandlerByNetwork;
+
+    if (!areFeeSettings) {
+      console.warn('No fee settings provided');
+      feeHandlerByNetwork = {
+        chain1: undefined,
+        chain2: undefined,
+      };
+    } else {
+      feeHandlerByNetwork = await this.checkFeeHandlerByNetwork(contracts);
+    }
 
     return {
       chain1: {
@@ -103,6 +114,23 @@ export class Chainbridge implements ChainbridgeSDK {
         feeHandler: feeHandlerByNetwork.chain2,
       },
     };
+  }
+
+  private checkFeeSettings(bridgeSetup: BridgeData): boolean {
+    return Object.keys(bridgeSetup)
+      .reduce((acc, chain) => {
+        const {
+          feeSettings: { type },
+        } = bridgeSetup[chain as keyof BridgeData];
+        if (type !== 'none') {
+          acc = [...acc, true];
+          return acc;
+        } else {
+          acc = [...acc, false];
+          return acc;
+        }
+      }, [] as boolean[])
+      .every(bool => !!bool);
   }
 
   private computeContracts(): ChainbridgeContracts {
@@ -194,16 +222,58 @@ export class Chainbridge implements ChainbridgeSDK {
     });
   }
 
-  public async fetchBasicFeeData(
-    amount: string,
-    recipientAddress: string,
-    from: Directions,
-    to: Directions,
-  ) {
-    const { feeSettings: { address: basicFeeHandlerAddress }, domainId: fromDomainID, erc20ResourceID: resourceID } = this.bridgeSetup[from as keyof BridgeData]
-    const { domainId: toDomainID } = this.bridgeSetup[to as keyof BridgeData]
-    const provider = this.providers![from]!
-    const sender = this.signers![from]?._address!
+  public async fetchFeeData(params: {
+    amount: string;
+    recipientAddress: string;
+    from: Directions;
+    to: Directions;
+    overridedResourceId?: string;
+    oraclePrivateKey?: string;
+  }) {
+    const { from, to, amount, overridedResourceId, oraclePrivateKey, recipientAddress } = params;
+    const {
+      feeSettings: { type },
+    } = this.bridgeSetup[from as keyof BridgeData];
+
+    if (type === 'none') {
+      console.warn('No fee settings provided');
+      return;
+    }
+
+    if (type !== 'basic' && this.feeOracleSetup?.feeOracleBaseUrl !== undefined) {
+      return await this.fetchFeeOracleData({
+        amount,
+        recipientAddress,
+        from,
+        to,
+        overridedResourceId,
+        oraclePrivateKey,
+      });
+    } else {
+      return await this.fetchBasicFeeData({
+        amount,
+        recipientAddress,
+        from,
+        to,
+      });
+    }
+  }
+
+  private async fetchBasicFeeData(params: {
+    amount: string;
+    recipientAddress: string;
+    from: Directions;
+    to: Directions;
+  }) {
+    const { from, to, amount, recipientAddress } = params;
+    const {
+      feeSettings: { address: basicFeeHandlerAddress },
+      domainId: fromDomainID,
+      erc20ResourceID: resourceID,
+    } = this.bridgeSetup[from as keyof BridgeData];
+    const { domainId: toDomainID } = this.bridgeSetup[to as keyof BridgeData];
+    const provider = this.providers![from]!;
+    const sender = this.signers![from]?._address!;
 
     try {
       const basicFee = await calculateBasicfee({
@@ -214,16 +284,16 @@ export class Chainbridge implements ChainbridgeSDK {
         toDomainID,
         resourceID,
         tokenAmount: Number(amount),
-        recipientAddress
-      })
+        recipientAddress,
+      });
 
-      return basicFee
-    } catch(error){
-      return error
+      return basicFee;
+    } catch (error) {
+      return error;
     }
   }
 
-  public async fetchFeeOracleData(params: {
+  private async fetchFeeOracleData(params: {
     amount: string;
     recipientAddress: string;
     from: Directions;
@@ -240,7 +310,7 @@ export class Chainbridge implements ChainbridgeSDK {
     }
     const { amount, recipientAddress, from, to, overridedResourceId, oraclePrivateKey } = params;
     const provider = this.providers![from]!;
-    const { erc20Address, feeOracleHandlerAddress } = this.bridgeSetup[from];
+    const { erc20Address, feeOracleHandlerAddress = '' } = this.bridgeSetup[from];
     const { feeOracleBaseUrl } = this.feeOracleSetup!;
 
     // We use sender address or zero because of contracts
