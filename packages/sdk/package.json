@@ -1,6 +1,6 @@
 {
 	"name": "@chainsafe/chainbridge-sdk-core",
-	"version": "1.0.0",
+	"version": "1.0.3",
 	"description": "Core primitives for bridging and message passing",
 	"main": "dist/src/index.js",
 	"types": "dist/src/index.d.ts",
@@ -22,7 +22,6 @@
 	"author": "Chainsafe Products Team",
 	"license": "LGPL",
 	"devDependencies": {
-		"@chainsafe/chainbridge-contracts": "3.0.1",
 		"@types/jest": "27.4.1",
 		"concurrently": "7.0.0",
 		"eslint-config-prettier": "8.3.0",
@@ -41,6 +40,7 @@
 		"dist/**/*"
 	],
 	"dependencies": {
+		"@chainsafe/chainbridge-contracts": "3.0.1",
 		"ganache": "^7.1.0",
 		"node-fetch": "2.6.1",
 		"react-hook-form": "^7.30.0",
