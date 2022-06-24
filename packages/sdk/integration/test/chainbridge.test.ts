@@ -53,7 +53,7 @@ describe('chainbridge-sdk', () => {
     });
   });
 
-  it('Should instantiate Chainbridge class and if feeSettings.type is none should trigger a console warn that no fee settings are provider', async () => {
+  it('Should instantiate Chainbridge class and if feeSettings.type is "none" should trigger a console warn that no fee settings are provider', async () => {
     jest.spyOn(console, 'warn');
 
     const bSetup = bridgeSetup;
@@ -96,7 +96,7 @@ describe('chainbridge-sdk', () => {
     });
     await ch.initializeConnection(testintAcc);
 
-    const res = await ch.fetchFeeData({
+    await ch.fetchFeeData({
       amount: '100',
       recipientAddress: '0xF4314cb9046bECe6AA54bb9533155434d0c76909',
       from: 'chain1',
