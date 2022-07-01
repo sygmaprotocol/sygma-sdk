@@ -57,9 +57,9 @@ export default class ERC20Bridge {
     console.warn('gas price stringified', gasPriceStringify);
 
     try {
-      // TODO: check if wait 1 here
       const tx = await bridge.deposit(domainId, resourceId, depositData, feeData, {
         gasPrice: gasPriceStringify,
+        value: feeData,
       });
       const depositAction = await(tx).wait(1);
       return depositAction

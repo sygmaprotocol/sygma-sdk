@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { BigNumber } from "ethers";
-import { Chainbridge } from "@chainsafe/chainbridge-sdk";
+import { Chainbridge } from "@chainsafe/chainbridge-sdk-core";
 
 const funcDeposit = (
   destinationChainId,
@@ -71,8 +71,9 @@ const funcVoteEvent = async (
   const bridgeSetup = {
     chain1: {
       bridgeAddress: "0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66",
-      erc20Address: "0x75dF75bcdCa8eA2360c562b4aaDBAF3dfAf5b19b",
-      erc20HandlerAddress: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
+      erc20Address: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
+      erc20HandlerAddress: "0x3cA3808176Ad060Ad80c4e08F30d85973Ef1d99e",
+      feeHandlerAddress: "0x08CFcF164dc2C4AB1E0966F236E87F913DE77b69",
       rpcURL: "http://localhost:8545",
       domainId: "1",
       erc20ResourceID:
@@ -81,8 +82,9 @@ const funcVoteEvent = async (
     },
     chain2: {
       bridgeAddress: "0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66",
-      erc20Address: "0x75dF75bcdCa8eA2360c562b4aaDBAF3dfAf5b19b",
-      erc20HandlerAddress: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
+      erc20Address: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
+      erc20HandlerAddress: "0x3cA3808176Ad060Ad80c4e08F30d85973Ef1d99e",
+      feeHandlerAddress: "0x08CFcF164dc2C4AB1E0966F236E87F913DE77b69",
       rpcURL: "http://localhost:8547",
       domainId: "2",
       erc20ResourceID:
@@ -98,6 +100,7 @@ const funcVoteEvent = async (
   };
 
   const chainbridge = new Chainbridge(setup);
+  console.log("🚀 ~ file: index.ts ~ line 101 ~ chainbridge", chainbridge)
 
   const bridgeEvents = chainbridge.initializeConnection(notEve)
 

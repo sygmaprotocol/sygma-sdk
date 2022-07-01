@@ -6,7 +6,8 @@
   "private": "true",
   "scripts": {
     "run:ganache-ex": "ts-node ./ganache-example/index.ts",
-    "run:local-ex": "ts-node ./local-setup-example/index.ts"
+    "run:local-ex": "ts-node ./local-setup-example/index.ts",
+    "start:dev": "nodemon"
   },
   "dependencies": {
     "chalk": "^5.0.1",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "typescript": "^4.6.3",
-    "ts-node": "^10.7.0"
+    "ts-node": "^10.7.0",
+    "nodemon": "2.0.16"
   }
 }

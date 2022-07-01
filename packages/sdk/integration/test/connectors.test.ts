@@ -26,8 +26,8 @@ describe('Connectors', () => {
     const signerGasPrice = await connector.getSignerGasPrice()
 
     expect(signerAddress).toMatch(address)
-    expect(signerBalance).toBeInstanceOf(BigNumber)
-    expect(signerGasPrice).toBeInstanceOf(BigNumber)
+    expect(signerBalance._isBigNumber).toBe(true)
+    expect(signerGasPrice._isBigNumber).toBe(true)
   })
 
   it("Should set signer if no address is provider on getInstance call", () => {
