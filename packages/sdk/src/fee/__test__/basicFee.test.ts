@@ -6,7 +6,7 @@ import { FeeOracleResult } from 'types'
 jest.mock('@chainsafe/chainbridge-contracts', () => ({
   ...jest.requireActual('@chainsafe/chainbridge-contracts'),
   BasicFeeHandler__factory: {
-    connect: async () => {
+    connect: () => {
       console.log('connect')
       return {
         calculateFee: async () => [BigNumber.from('0x174876e800'), '0x0']
