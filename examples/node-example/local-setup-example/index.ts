@@ -102,25 +102,25 @@ const funcVoteEvent = async (
   const chainbridge = new Chainbridge(setup);
   console.log("🚀 ~ file: index.ts ~ line 101 ~ chainbridge", chainbridge)
 
-  // const bridgeEvents = chainbridge.initializeConnection(notEve)
+  const bridgeEvents = chainbridge.initializeConnection(notEve)
 
-  // const { chain1 } = bridgeEvents
+  const { chain1 } = bridgeEvents
 
-  // const { bridgeEvents: homechainBridgeEvent, proposalEvents, voteEvents } = chain1
+  const { bridgeEvents: homechainBridgeEvent, proposalEvents, voteEvents } = chain1
 
-  // const {
-  //   approvalTxHash,
-  //   depositTxHash,
-  // } = await chainbridge.deposit(
-  //   7,
-  //   "0xF4314cb9046bECe6AA54bb9533155434d0c76909",
-  //   "chain1",
-  //   "chain2"
-  // );
+  const {
+    approvalTxHash,
+    depositTxHash,
+  } = await chainbridge.deposit(
+    7,
+    "0xF4314cb9046bECe6AA54bb9533155434d0c76909",
+    "chain1",
+    "chain2"
+  );
 
-  // bridgeEvents.chain1?.bridgeEvents(funcDeposit)
+  bridgeEvents.chain1?.bridgeEvents(funcDeposit)
 
-  // proposalEvents.chain2(funcProposalEvent)
-  // voteEvents.chain2(funcVoteEvent)
+  proposalEvents.chain2(funcProposalEvent)
+  voteEvents.chain2(funcVoteEvent)
 
 })();
