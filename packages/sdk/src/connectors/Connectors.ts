@@ -1,40 +1,45 @@
 import { ethers } from "ethers";
 import { Provider, Signer } from "../types";
 
-interface IConnector {
-  getSignerBalance(): Promise<ethers.BigNumber>
-  getSignerAddress(): Promise<string>
-  getSignerGasPrice(): Promise<ethers.BigNumber>
-}
+// interface IConnector {
+//   getSignerBalance(): Promise<ethers.BigNumber>
+//   getSignerAddress(): Promise<string>
+//   getSignerGasPrice(): Promise<ethers.BigNumber>
+// }
 
-export default class Connector implements IConnector {
+export default class Connector {
   private connectorProvider: Provider | undefined
   private connectorSigner: Signer | undefined
 
-  constructor(rpcURL?: string, address?: string) {
-    if (!rpcURL && !address) {
-      if (typeof window !== "undefined") {
-        if ("ethereum" in window) {
-          this.connectorProvider = new ethers.providers.Web3Provider(
-            window.ethereum,
-            "any"
-          )
-          this.connectorSigner = (this.connectorProvider as ethers.providers.Web3Provider).getSigner()
-        } else {
-          console.warn("No ethereum object to initialize provider on the Browser")
-          this.connectorProvider = undefined
-        }
-      }
-    } else {
-      this.connectorProvider = new ethers.providers.JsonRpcProvider(rpcURL)
-      if (address) {
-        this.connectorSigner = (this.connectorProvider as ethers.providers.JsonRpcProvider).getSigner(address)
-      }
-    }
+
+  /**
+   * Inits instance of Connector class from web3 provider instace
+   * @param web3ProvideInstance
+   * @returns
+   */
+  static initFromWeb3(web3ProvideInstance: any) {
+    const provider = new Connector()
+    provider.connectorProvider = new ethers.providers.Web3Provider(
+      web3ProvideInstance,
+      "any"
+    )
+    provider.connectorSigner = (provider.connectorProvider as ethers.providers.Web3Provider).getSigner()
+    return provider
   }
 
-  static getInstance(rpcURL?: string, address?: string) {
-    const provider = new Connector(rpcURL, address)
+  /**
+   * Inits instance of Connector class from RPC url and RPC address
+   * Design to be used in nodejs enviroment
+   * @param [rpcURL]
+   * @param [address]
+   * @returns
+   */
+  static initRPC(rpcURL?: string, address?: string) {
+    const provider = new Connector()
+    provider.connectorProvider = new ethers.providers.JsonRpcProvider(rpcURL)
+    if (address) {
+      provider.connectorSigner = (provider.connectorProvider as ethers.providers.JsonRpcProvider).getSigner(address)
+    }
     return provider
   }
 

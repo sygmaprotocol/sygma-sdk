@@ -57,7 +57,7 @@ export type FeeOracleResult = {
 export type Bridges = { [chain: string]: Bridge } | undefined;
 
 export type ChainbridgeContracts = {
-  [chain: string]: { bridge: Bridge; bridgeEvent: any; erc20: Erc20Detailed };
+  [chain: string]: { bridge: Bridge; erc20: Erc20Detailed };
 };
 
 export type BridgeEventCallback = (fn: (...params: any) => void) => Bridge;
@@ -70,9 +70,9 @@ export type ChainbridgeEventsObject =
 
 export type BridgeEvents =
   | {
-      bridgeEvents: (func: any) => Bridge;
-      proposalEvents: ChainbridgeEventsObject;
-      voteEvents: ChainbridgeEventsObject;
+      // bridgeEvents: (func: any) => Bridge;
+      // proposalEvents: ChainbridgeEventsObject;
+      // voteEvents: ChainbridgeEventsObject;
       feeHandler: string;
     }
   | undefined;
@@ -92,11 +92,10 @@ export type Events =
 export type ChainbridgeProviders =
   | {
       [chain: string]: {
-        provider: ethers.providers.JsonRpcProvider;
-        signer: ethers.providers.JsonRpcSigner;
+        provider: ethers.providers.JsonRpcProvider | Provider;
+        signer: ethers.providers.JsonRpcSigner | Signer;
       };
     }
-  | undefined;
 
 export type ChainbridgeErc20Contracts = { [chain: string]: Erc20Detailed } | undefined;
 

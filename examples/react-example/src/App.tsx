@@ -7,29 +7,37 @@ import React, {
 import { BigNumber, utils } from "ethers";
 import { BridgeEvents } from "@chainsafe/chainbridge-sdk-core/dist/src/types/types";
 import { useForm } from "react-hook-form";
-import { Chainbridge } from "@chainsafe/chainbridge-sdk-core";
+import { Chainbridge, BridgeData } from "@chainsafe/chainbridge-sdk-core";
 
 // TODO: MOVE THIS TO ENV
-const bridgeSetup = {
+const bridgeSetup: BridgeData = {
   chain1: {
-    bridgeAddress: "0x22DB0E23228B07523B931045f93f0df93D099F1D",
-    erc20Address: "0x141F8690A87A7E57C2E270ee77Be94935970c035",
-    erc20HandlerAddress: "0x4FDc0179312d299724BA4F3247d76f77F37Dad5B",
+    bridgeAddress: "0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66",
+    erc20Address: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
+    erc20HandlerAddress: "0x3cA3808176Ad060Ad80c4e08F30d85973Ef1d99e",
     rpcURL: "http://localhost:8545",
     domainId: "1",
     erc20ResourceID:
-      "0x0000000000000000000000141f8690a87a7e57c2e270ee77be94935970c03501",
+      "0x0000000000000000000000000000000000000000000000000000000000000000",
     decimals: 18,
+    feeSettings: {
+      type: 'basic',
+      address: '0x08CFcF164dc2C4AB1E0966F236E87F913DE77b69'
+    }
   },
   chain2: {
     bridgeAddress: "0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66",
-    erc20Address: "0x75dF75bcdCa8eA2360c562b4aaDBAF3dfAf5b19b",
-    erc20HandlerAddress: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
+    erc20Address: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
+    erc20HandlerAddress: "0x3cA3808176Ad060Ad80c4e08F30d85973Ef1d99e",
     rpcURL: "http://localhost:8547",
     domainId: "2",
     erc20ResourceID:
-      "0x0000000000000000000000141f8690a87a7e57c2e270ee77be94935970c03501",
+      "0x0000000000000000000000000000000000000000000000000000000000000000",
     decimals: 18,
+    feeSettings: {
+      type: 'basic',
+      address: '0x08CFcF164dc2C4AB1E0966F236E87F913DE77b69'
+    }
   },
 };
 
@@ -50,6 +58,33 @@ type LocalData = {
 
 type ChainbridgeData = { chain1: BridgeEvents; chain2: BridgeEvents };
 
+const proposalExecutionEventsLogs = async (
+  originDomainId: any,
+  despositNonce: any,
+  dataHash: any,
+  tx: any
+) => {
+  console.warn("Proposal execution event!")
+  console.log({originDomainId, despositNonce, dataHash, tx} )
+  console.warn("Transfer complete!")
+};
+
+const depositEventLogs = (
+  destinationDomainId: any,
+  resourceId: any,
+  depositNonce: any,
+  user: any,
+  data: any,
+  handleResponse: any,
+  tx: any
+) => {
+  console.log(
+    `bride deposit event deposit nonce: ${depositNonce.toString()} to contract with ResourceId: ${resourceId}`
+  );
+  console.log(` transaction hash: ${tx.transactionHash}`);
+  console.info("Deposit in transit!");
+};
+
 function App() {
   const {
     register,
@@ -58,8 +93,8 @@ function App() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      amount: "1.0",
-      address: "0x74d2946319bEEe4A140068eb83F9ee3a90B06F4f",
+      amount: "1",
+      address: "0x4CEEf6139f00F9F4535Ad19640Ff7A0137708485",
       from: "chain1",
       to: 'chain2'
     }
@@ -85,6 +120,14 @@ function App() {
   const [logicConnected, setLogicConnected] = useState<SetStateAction<boolean>>(
     false
   );
+  const [bridge, setBridge] = useState<SetStateAction<any | undefined>>(undefined)
+  useEffect(() => {
+    if (bridge) {
+      (chainbridgeInstance as Chainbridge).homeChainDepositEventListener(depositEventLogs);
+
+      (chainbridgeInstance as Chainbridge).destinationProposalExecutionEventListener(proposalExecutionEventsLogs);
+    }
+  }, [bridge])
 
   const getAccountData = async (chainbridge: Chainbridge) => {
     try {
@@ -125,6 +168,7 @@ function App() {
   useEffect(() => {
     if (data !== undefined && chainbridgeInstance !== undefined) {
       getAccountData(chainbridgeInstance! as Chainbridge);
+      setBridge((chainbridgeInstance! as Chainbridge).bridges!['chain2'])
     }
   }, [data, logicConnected]);
 
@@ -136,114 +180,51 @@ function App() {
     }
   }, [metaIsConnected]);
 
-  const depositEventLogs = (
-    destinationChainId: any,
-    resoureId: any,
-    depositNonce: any,
-    user: any,
-    data: any,
-    handleResponse: any,
-    tx: any
-  ) => {
-    console.log(
-      `bride deposit event deposit nonce: ${depositNonce.toString()} to contract with ResourceId: ${resoureId}`
-    );
-    console.log(` transaction hash: ${tx.transactionHash}`);
-    console.info("Deposit in transit!");
-  };
-
-  const proposalEventsLogs = async (
-    originDomainId: any,
-    despositNonce: any,
-    status: any,
-    dataHash: any,
-    tx: any
-  ) => {
-    console.warn("proposal events!")
-    const proposalStatus = BigNumber.from(status).toNumber();
-
-    switch (proposalStatus) {
-      // @ts-expect-error
-      case 1: {
-        console.log("");
-        console.log("Proposal created!!!!");
-        console.log("");
-      }
-      // @ts-expect-error
-      case 2: {
-        console.log("");
-        console.log("Proposal has passed, Executing!");
-        console.log("");
-      }
-      case 3: {
-        console.log("");
-        console.log("Transfer completed!!!");
-        console.log("");
-        return;
-      }
-      case 4: {
-        console.log("");
-        console.log("Transfer aborted!");
-        console.log("");
-        return;
-      }
-      default:
-        return;
-    }
-  };
-
-const funcVoteEvent = async (
-  originDomainId: any,
-  depositNonce: any,
-  status: any,
-  dataHash: any,
-  tx: any
-) => {
-  const txReceipt = await tx.getTransactionReceipt();
-
-  console.log("txReceipt", txReceipt.status === 1 ? "Confirmed" : "Rejected");
-  console.log("status", status);
-  return
-};
   const submit = async (values: any) => {
-    // console.log("submit data", values);
     const { amount, address, from, to } = values;
 
-    const events = (data as ChainbridgeData)[from as keyof ChainbridgeData];
-
-    // console.log("events object", events)
-
-    // THIS IS HORRENDOUS
-    // @ts-ignore-line
-    events?.bridgeEvents(depositEventLogs)
-    // // @ts-ignore-line
-    const proposalEvents = events?.proposalEvents![to as keyof ChainbridgeData]
-    // console.log("proposal events", proposalEvents)
-    proposalEvents!(await proposalEventsLogs)
-    const voteEvents = events?.voteEvents![to as keyof ChainbridgeData]
-    voteEvents!(await funcVoteEvent);
-
-    const feeOracleData = await(
-      chainbridgeInstance as Chainbridge
-    ).fetchFeeData({
-      amount: amount,
-      recipientAddress: address,
-      from,
-      to,
-    });
-    if (feeOracleData) {
-      if (window.confirm(`Current fee for the token ${feeOracleData.erc20TokenAddress} is\n\n${feeOracleData.calculatedRate} tokens.\n\nTotal(amount+fee): ${parseFloat(amount) + parseFloat(feeOracleData.calculatedRate)} tokens\n\nDo you really want to proceed?`)) {
-          const result = await (chainbridgeInstance as Chainbridge).deposit(
+    const basicFeeData = await (chainbridgeInstance as Chainbridge).fetchBasicFeeData(
+      {
+        amount: amount,
+        recipientAddress: address,
+        from,
+        to,
+      }
+    );
+    if (!(basicFeeData instanceof Error)) {
+      console.log(
+        "🚀 ~ file: App.tsx ~ line 244 ~ submit ~ feeOracleData",
+        basicFeeData
+      );
+      if (
+        window.confirm(
+          `Current fee for the token ${basicFeeData.erc20TokenAddress} is\n\n${
+            basicFeeData.calculatedRate
+          } tokens.\n\nTotal(amount+fee): ${
+            parseFloat(amount) + parseFloat(basicFeeData.calculatedRate)
+          } tokens\n\nDo you really want to proceed?`
+        )
+      ) {
+        const approveTx = await (chainbridgeInstance as Chainbridge).approve({
+          amounForApproval: "1",
+          from: "chain1",
+        });
+        console.log(
+          "🚀 ~ file: App.tsx ~ line 259 ~ submit ~ approveTx",
+          approveTx
+        );
+        const result = await (chainbridgeInstance as Chainbridge).deposit({
           amount,
-          address,
+          recipientAddress: address,
           from,
           to,
-          feeOracleData.feeData
-        );
+          feeData: basicFeeData.feeData,
+        });
         console.log("result of transfer", result);
       }
     }
   };
+  // const basicFeeData = await(chainbridgeInstance as Chainbridge).fetch
 
   const handleConnect = () => {
     // IF META IS NOT SIGNIN, TRIGGER POP OF THE WINDOW FOR THE EXTENSION
@@ -268,15 +249,15 @@ const funcVoteEvent = async (
           }
         });
     } else if (metaIsConnected) {
-      const setup = { bridgeSetup, feeOracleSetup };
+      const setup = { bridgeSetup };
       const chainbridge = new Chainbridge(setup);
 
       setChainbridgeInstance(chainbridge);
 
-      const data = chainbridge.initializeConnection();
+      const data = chainbridge.initializeConnectionFromWeb3Provider(window.ethereum);
 
       console.log("data", data);
-
+      //@ts-ignore-line
       setData(data);
       setLogicConnected(true);
     }

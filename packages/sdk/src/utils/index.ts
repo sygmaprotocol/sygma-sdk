@@ -3,134 +3,82 @@ import { utils, BigNumber } from 'ethers';
 import { Connector } from '../connectors';
 
 import {
-	BridgeData,
-	BridgeEventCallback,
-	BridgeEvents,
-	Bridges,
-	ChainbridgeContracts,
-	ChainbridgeErc20Contracts,
-	ChainbridgeProviders,
-	Provider,
+  BridgeData,
+  BridgeEventCallback,
+  BridgeEvents,
+  Bridges,
+  ChainbridgeContracts,
+  ChainbridgeErc20Contracts,
+  ChainbridgeProviders,
+  Provider,
 } from '../types';
 
 export const computeBridges = (contracts: ChainbridgeContracts): Bridges =>
-	Object.keys(contracts).reduce((bridges: any, chain) => {
-		const { bridge } = contracts[chain];
-		bridges = {
-			...bridges,
-			[chain]: bridge,
-		};
+  Object.keys(contracts).reduce((bridges: any, chain) => {
+    const { bridge } = contracts[chain];
+    bridges = {
+      ...bridges,
+      [chain]: bridge,
+    };
 
-		return bridges;
-	}, {});
+    return bridges;
+  }, {});
 
 export const computeERC20Contracts = (contracts: ChainbridgeContracts): ChainbridgeErc20Contracts =>
-	Object.keys(contracts).reduce((erc20Contracts: any, chain) => {
-		const { erc20 } = contracts[chain];
-		erc20Contracts = {
-			...erc20Contracts,
-			[chain]: erc20,
-		};
+  Object.keys(contracts).reduce((erc20Contracts: any, chain) => {
+    const { erc20 } = contracts[chain];
+    erc20Contracts = {
+      ...erc20Contracts,
+      [chain]: erc20,
+    };
 
-		return erc20Contracts;
-	}, {});
+    return erc20Contracts;
+  }, {});
 
-export const computeBridgeEvents = (contracts: ChainbridgeContracts) =>
-	Object.keys(contracts).reduce((bridgeEvents: any, chain) => {
-		const { bridgeEvent } = contracts[chain];
-		const [entries] = Object.entries(contracts).filter((e: any) => e[0] !== chain);
-
-		const proposalEventDestinationBridge = computeProposalEvents(entries[1].bridge);
-
-		const proposalVoteEvents = computeProposalVoteEvents(entries[1].bridge)
-
-		bridgeEvents = {
-			...bridgeEvents,
-			[chain]: {
-				bridgeEvents: bridgeEvent,
-				proposalEvents: {
-					[entries[0]]: proposalEventDestinationBridge
-				},
-				voteEvents: {
-					[entries[0]]: proposalVoteEvents
-				}
-			},
-		};
-
-		return bridgeEvents;
-	}, {});
-
-export const computeProposalEvents = (destinationBridge: Bridge): BridgeEventCallback => {
-	const proposalFilter = destinationBridge.filters.ProposalExecution(null, null, null);
-
-	const destinationProposalEvents = (func: any) =>
-		destinationBridge.on(proposalFilter, (originDomainId, despositNonce, dataHash, tx) => {
-			func(originDomainId, despositNonce, dataHash, tx);
-		});
-
-	return destinationProposalEvents;
+export const computeProvidersAndSignersRPC = (
+  bridgeSetup: BridgeData,
+  address?: string,
+): ChainbridgeProviders => {
+  return {
+    chain1: setConnectorRPC(bridgeSetup.chain1.rpcURL, address),
+    chain2: setConnectorRPC(bridgeSetup.chain2.rpcURL, address),
+  };
 };
 
-export const computeProposalVoteEvents = (destinationBridge: Bridge): BridgeEventCallback => {
-	const proposalVoteFilter = destinationBridge.filters.ProposalExecution(null, null, null)
+export const computeProvidersAndSignersWeb3 = (
+  bridgeSetup: BridgeData,
+  web3providerInstance: any,
+): ChainbridgeProviders => {
+  return {
+    chain1: setConnectorWeb3(web3providerInstance),
+    chain2: setConnectorRPC(bridgeSetup.chain2.rpcURL),
+  };
+};
 
-	const destinationProposalVoteEvents = (func: any) => destinationBridge.on(
-		proposalVoteFilter,
-		(originDomainId, depositNonce, dataHash, tx) => {
-			func(originDomainId, depositNonce, dataHash, tx)}
-	)
+const setConnectorRPC = (rpcURL?: string, address?: string): Connector => {
+  return Connector.initRPC(rpcURL, address);
+};
 
-	return destinationProposalVoteEvents
-}
-
-export const computeProvidersAndSigners = (bridgeSetup: BridgeData, address?: string): ChainbridgeProviders => Object.keys(bridgeSetup).reduce((providers: any, chain) => {
-	if(typeof window !== "undefined"){
-		if("ethereum" in window) {
-			const connectorData = setConnector()
-			const { signer, provider } = connectorData
-
-			providers = {
-				...providers,
-				[chain]: { provider, signer },
-			};
-
-			return providers;
-		}
-	} else {
-		const { rpcURL } = bridgeSetup[chain as keyof BridgeData];
-
-		const connectorData = setConnector(rpcURL, address)
-		const { signer, provider } = connectorData
-
-		providers = {
-			...providers,
-			[chain]: { provider, signer },
-		};
-
-		return providers;
-	}
-}, {});
-
-const setConnector = (rpcURL?: string, address?: string): Connector => {
-	return Connector.getInstance(rpcURL, address)
-}
+const setConnectorWeb3 = (web3ProviderInstance: any): Connector => {
+  return Connector.initFromWeb3(web3ProviderInstance);
+};
 
 export const processAmountForERC20Transfer = (amount: string): string => {
-	const parsedAmountToERC20Decimals = utils.parseUnits(amount.toString(), 18);
+  const parsedAmountToERC20Decimals = utils.parseUnits(amount.toString(), 18);
 
-	const toBigNumber = BigNumber.from(parsedAmountToERC20Decimals);
+  const toBigNumber = BigNumber.from(parsedAmountToERC20Decimals);
 
-	const toHexString = toBigNumber.toHexString();
+  const toHexString = toBigNumber.toHexString();
 
-	const amountTransformedToData = utils.hexZeroPad(toHexString, 32).substr(2);
+  const amountTransformedToData = utils.hexZeroPad(toHexString, 32).substr(2);
 
-	return amountTransformedToData;
+  return amountTransformedToData;
 };
 
 export const processLenRecipientAddress = (recipientAddress: string): string => {
-	const hexilifiedLenOfRecipientAddress = utils.hexlify((recipientAddress.length - 2) / 2);
+  const hexilifiedLenOfRecipientAddress = utils.hexlify((recipientAddress.length - 2) / 2);
 
-	const toHexString = utils.hexZeroPad(hexilifiedLenOfRecipientAddress, 32).substr(2);
+  const toHexString = utils.hexZeroPad(hexilifiedLenOfRecipientAddress, 32).substr(2);
 
-	return toHexString;
+  return toHexString;
 };

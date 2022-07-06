@@ -38,7 +38,7 @@ export default class ERC20Bridge {
     resourceId: string;
     feeData: string;
   }): Promise<ContractReceipt | undefined> {
-    const depositData = createERCDepositData(amount, 20, recipientAddress);
+    const depositData = createERCDepositData(utils.parseUnits(amount), 20, recipientAddress);
 
     const amountForApproval = utils.parseUnits(amount.toString(), 18);
 
@@ -50,6 +50,7 @@ export default class ERC20Bridge {
 
     if (typeof gasPrice !== 'boolean') {
       gasPriceStringify = gasPrice.toString();
+      console.log("🚀 ~ file: ERC20Bridge.ts ~ line 53 ~ ERC20Bridge ~ gasPriceStringify", gasPriceStringify)
     }
 
     console.log("allowance before deposit", await this.checkCurrentAllowance(recipientAddress, erc20Intance, erc20HandlerAddress))
@@ -69,13 +70,19 @@ export default class ERC20Bridge {
   }
 
   public async approve(amountForApproval: BigNumber, erc20Instance: Erc20Detailed, erc20HandlerAddress: string, gasPrice: BigNumber){
-    return await(await erc20Instance.approve(
-      erc20HandlerAddress,
-      amountForApproval,
-      {
-        gasPrice
-      }
-    )).wait(1)
+    try {
+      const tx = await erc20Instance.approve(
+        erc20HandlerAddress,
+        amountForApproval,
+        {
+          gasPrice
+        }
+      );
+      const approvalAction = await(tx).wait(1);
+      return approvalAction
+    } catch (error) {
+      console.log('Error on deposit', error);
+    }
   }
 
   public async hasTokenSupplies(
