@@ -18,7 +18,7 @@ After cloning the repo, simply run
 npx lerna bootstrap
 ```
 
-## Examples
+## Running the Examples
 
 For React example, after you have run and deploy the contracts using [Chainbridge](https://github.com/ChainSafe/chainbridge-core), go to the `examples` folder and simply run
 
@@ -32,7 +32,9 @@ For NodeJS example, simply run:
 yarn run:local-ex
 ```
 
-## Dependencies
+# How to use it
+
+## Environment
 
 In order for you to use our SDK you need to have installed on your local machine [chainbridge-hub](https://github.com/ChainSafe/chainbridge-hub) repo. The main dependency to run `chainbridge-hub` is to have `go` installed in your machine. After that follow the instructions to run the local example. Is going to take a couple of minutes for all the setup to be completed. If you want to check the logs of the deployed contracts you can do the following:
 
@@ -83,6 +85,8 @@ With this addresses you can use our SDK with the `basic fee` setup.
 
 There is a folder with examples ready to be used for the SDK. Currently we have two working with our current local setup. If you decide that is not for you, here is a little guide to get you started with our SDK.
 
+## How to use it from NodeJS
+
 Assuming you are going to use the local setup provider by [chainbridge-hub](https://github.com/ChainSafe/chainbridge-hub), the setup that you need to pass to the `Chainbrdige` class is going to have the following structure:
 
 ```ts
@@ -129,8 +133,40 @@ const chainbridge = new Chainbridge(setup)
 Now we are ready to initialize connection:
 
 ```ts
-const bridgeEvents = chainbridge.initilizeConnection(testAcc)
+const bridgeEvents = chainbridge.initializeConnectionRPC(testAcc)
 ```
+
+With this we can get the basicFee rate to use in our first deposit:
+
+```ts
+const basicFeeRate = await chainbridge.fetchFeeData({
+  amount: "1",
+  recipientAddress: "0xF4314cb9046bECe6AA54bb9533155434d0c76909",
+  from: "chain1",
+  to: "chain2"
+})
+```
+
+Once this, we can approve the amounts of tokens to transfer before we made the deposit:
+
+```ts
+const approvalTxReceipt = await (await chainbridge.approve({
+  amountForApproval: "1",
+  from: "chain1"
+})).wait(1)
+
+const deposit = await chainbridge.deposit({
+  amount: "1",
+  recipientAddress: "0xF4314cb9046bECe6AA54bb9533155434d0c76909",
+  from: "chain1",
+  to: "chain2",
+  feeData: basicFee.feeData
+})
+
+const txReceipt = await deposit.wait(1)
+```
+
+After that, you can watch the logs an see your funds being transfer from one of the networks to the other.
 
 
 ## Support
