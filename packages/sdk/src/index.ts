@@ -1,2 +1,2 @@
-export { Chainbridge } from './Chainbridge'
+export { Sygma } from './Sygma'
 export * from './types'

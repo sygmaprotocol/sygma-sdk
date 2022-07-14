@@ -4,14 +4,14 @@ import { Erc20DetailedFactory } from './Contracts/Erc20DetailedFactory';
 import { Erc20Detailed } from './Contracts/Erc20Detailed';
 
 import {
-  ChainbridgeSDK,
+  SygmaSDK,
   Setup,
   BridgeData,
   ChainbridgeContracts,
   Provider,
   Bridges,
   Signer,
-  ChainbridgeErc20Contracts,
+  SygmaErc20Contracts,
   BridgeEventCallback,
   Events,
   Directions,
@@ -30,18 +30,18 @@ import { ERC20Bridge } from './chains';
 import { calculateBasicfee, calculateFeeData } from './fee';
 
 /**
- * Chainbridge is the main class that allows you to have bridging capabilities
+ * @description Chainbridge is the main class that allows you to have bridging capabilities
  * with simple usage
  *
  */
 
-export class Chainbridge implements ChainbridgeSDK {
+export class Sygma implements SygmaSDK {
   private ethersProvider: Provider = undefined;
   private bridgeSetup: BridgeData;
   private bridges: Bridges = undefined;
   public bridgeEvents: Events = undefined;
   private signers: ConnectorSigner = undefined;
-  private erc20: ChainbridgeErc20Contracts = undefined;
+  private erc20: SygmaErc20Contracts = undefined;
   private providers: ConnectorProvider = undefined;
   private erc20Bridge: ERC20Bridge;
   private feeOracleSetup?: FeeOracleData;
@@ -196,6 +196,15 @@ export class Chainbridge implements ChainbridgeSDK {
     return bridgeEvent;
   }
 
+  /**
+   * @name deposit
+   * @description make deposit between two networks
+   * @param {string} amount
+   * @param {string} recipientAddress receiver of the deposit
+   * @param {Directions} from
+   * @param {Directions} to
+   * @param {string} feeData
+   */
   public async deposit(
     amount: string,
     recipientAddress: string,
@@ -222,6 +231,17 @@ export class Chainbridge implements ChainbridgeSDK {
     });
   }
 
+  /**
+   * @name fetchFeeData
+   * @description it fetches the fee data according to bridge setup
+   * @param {string} amount
+   * @param {string} recipientAddress - receiver of the deposit
+   * @param {Directions} from
+   * @param {Directions} to
+   * @param {string} overridedResourceId - matches local token in local setup with address of the token from where the price data is being fetched.
+   * Only used when doing bridge with fee oracle service
+   * @param {string} oraclePrivateKey
+   */
   public async fetchFeeData(params: {
     amount: string;
     recipientAddress: string;
@@ -340,6 +360,13 @@ export class Chainbridge implements ChainbridgeSDK {
     return receipt;
   }
 
+  /**
+   * @name hasTokenSupplies
+   * @description check if current token has supplies
+   * @param {number} amount
+   * @param {Directions} to
+   * @returns {Promise} boolan value
+   */
   public async hasTokenSupplies(amount: number, to: Directions): Promise<boolean> {
     const {
       erc20Address: destinationTokenAddress,
@@ -360,6 +387,12 @@ export class Chainbridge implements ChainbridgeSDK {
     return hasTokenSupplies;
   }
 
+  /**
+   * @name checkCurrentAllowance
+   * @description check the current allowance of the provided address
+   * @param {Directions} from
+   * @param {string} recipientAddress
+   */
   public async checkCurrentAllowance(from: Directions, recipientAddress: string) {
     const erc20ToUse = this.erc20![from];
     const { erc20HandlerAddress } = this.bridgeSetup[from];
@@ -401,6 +434,12 @@ export class Chainbridge implements ChainbridgeSDK {
     return await (this.signers![chain as keyof BridgeData] as Signer)?.getGasPrice();
   }
 
+  /**
+   * @name approve
+   * @description approve amount of tokens to spent
+   * @param {string} amounForApproval
+   * @param {Directions} from
+   */
   public async approve(amounForApproval: string, from: Directions) {
     const amountForApprovalBN = utils.parseUnits(amounForApproval, 18);
 

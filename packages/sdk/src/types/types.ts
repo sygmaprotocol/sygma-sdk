@@ -2,7 +2,7 @@ import { Erc20Detailed } from '../Contracts/Erc20Detailed';
 import { Bridge } from '@chainsafe/chainbridge-contracts';
 import { ethers } from 'ethers';
 
-export interface ChainbridgeSDK {}
+export interface SygmaSDK {}
 
 export type Directions = 'chain1' | 'chain2';
 
@@ -11,7 +11,7 @@ export type Setup = {
   feeOracleSetup?: FeeOracleData;
 };
 
-export type ChainbridgeBridgeSetup = {
+export type SygmaBridgeSetup = {
   bridgeAddress: string;
   erc20Address: string;
   erc20HandlerAddress: string;
@@ -27,8 +27,8 @@ export type ChainbridgeBridgeSetup = {
 };
 
 export type BridgeData = {
-  chain1: ChainbridgeBridgeSetup;
-  chain2: ChainbridgeBridgeSetup;
+  chain1: SygmaBridgeSetup;
+  chain2: SygmaBridgeSetup;
 };
 
 export type FeeOracleData = {
@@ -89,7 +89,7 @@ export type Events =
     }
   | undefined;
 
-export type ChainbridgeProviders =
+export type SygmaProviders =
   | {
       [chain: string]: {
         provider: ethers.providers.JsonRpcProvider;
@@ -98,7 +98,7 @@ export type ChainbridgeProviders =
     }
   | undefined;
 
-export type ChainbridgeErc20Contracts = { [chain: string]: Erc20Detailed } | undefined;
+export type SygmaErc20Contracts = { [chain: string]: Erc20Detailed } | undefined;
 
 export type Provider = ethers.providers.Provider | undefined;
 
