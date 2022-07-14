@@ -81,6 +81,8 @@ setup       | ===============================================
 
 With this addresses you can use our SDK with the `basic fee` setup.
 
+After that, you can watch the logs an see your funds being transfer from one of the networks to the other.
+
 ## Checking the examples folder
 
 There is a folder with examples ready to be used for the SDK. Currently we have two working with our current local setup. If you decide that is not for you, here is a little guide to get you started with our SDK.
@@ -168,7 +170,143 @@ const deposit = await sygma.deposit({
 const txReceipt = await deposit.wait(1)
 ```
 
-After that, you can watch the logs an see your funds being transfer from one of the networks to the other.
+## How to use it in the browser
+
+For usage in the browser with our local setup, provide the same bridge config that you use for the NodeJS context:
+
+```ts
+import { Sygma } from "@chainsafe/chainbridge-sdk-core";
+
+type LocalData = {
+  balance: BigNumber;
+  address: string;
+  gasPrice: BigNumber;
+  balanceOfTokens: BigNumber;
+  tokenName: string;
+};
+
+const bridgeSetup: BridgeData = {
+  chain1: {
+      bridgeAddress: "0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66",
+      erc20Address: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
+      erc20HandlerAddress: "0x3cA3808176Ad060Ad80c4e08F30d85973Ef1d99e",
+      feeHandlerAddress: "0x08CFcF164dc2C4AB1E0966F236E87F913DE77b69",
+      rpcURL: "http://localhost:8545",
+      domainId: "1",
+      erc20ResourceID:
+        "0x0000000000000000000000000000000000000000000000000000000000000000",
+      decimals: 18
+    },
+    chain2: {
+      bridgeAddress: "0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66",
+      erc20Address: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
+      erc20HandlerAddress: "0x3cA3808176Ad060Ad80c4e08F30d85973Ef1d99e",
+      feeHandlerAddress: "0x08CFcF164dc2C4AB1E0966F236E87F913DE77b69",
+      rpcURL: "http://localhost:8547",
+      domainId: "2",
+      erc20ResourceID:
+        "0x0000000000000000000000000000000000000000000000000000000000000000",
+      decimals: 18
+    },
+}
+```
+
+Then, inside your App, create some state variables and functions to get account data from your wallet (in this example the wallet is `Metamask`)
+
+```ts
+function App(){
+  const [bridge, setBridge] = useState<SetStateAction<any | undefined>>(undefined)
+
+  const [logicConnected, setLogicConnected] = useState<SetStateAction<boolean>>(
+    false
+  );
+
+  const [sygmaInstance, setSygmaInstance] = useState<
+    SetStateAction<Sygma | undefined>
+  >(undefined);
+
+  const getAccountData = async (sygma: Sygma) => {
+    try {
+      const balance =
+        (await sygma.getSignerBalance("chain1")) ?? BigNumber.from("0");
+      const address = await sygma.getSignerAddress("chain1");
+      const gasPrice = await sygma.getSignerGasPrice("chain1");
+      const { balanceOfTokens, tokenName } = await sygma.getTokenInfo(
+        "chain1"
+      );
+
+      setAccountData({
+        balance: balance!,
+        address: address!,
+        gasPrice: gasPrice!,
+        balanceOfTokens: balanceOfTokens!,
+        tokenName: tokenName!,
+      });
+      setIsReady(true);
+    } catch (e) {
+      console.log(e);
+      console.log("Perhaps you forget to deploy the bridge?")
+    }
+  };
+
+  useEffect(() => {
+    if (data !== undefined && sygmaInstance !== undefined) {
+      getAccountData(sygmaInstance! as Sygma);
+      setBridge((sygmaInstance! as Sygma).bridges!['chain2'])
+    }
+  }, [data, logicConnected]);
+
+  useEffect(() => {
+    console.log(metaIsConnected, data);
+    if (metaIsConnected && sygmaInstance !== undefined) {
+      handleConnect();
+      getAccountData(sygmaInstance! as Sygma);
+    }
+  }, [metaIsConnected]);
+
+}
+```
+
+If you are using `Metamask` you can create a function to trigger the connection to the extension and at the same time instantiate `Sygma` SDK:
+
+```ts
+// in the App component, below the last useEffect
+
+const handleConnect = () => {
+    // IF META IS NOT SIGNIN, TRIGGER POP OF THE WINDOW FOR THE EXTENSION
+    if (!metaIsConnected) {
+      return window.ethereum
+        .request({ method: "eth_requestAccounts" })
+        .then((r: any) => {
+          const [addr] = r;
+          setMetaIsConnected(true);
+          setAccountData({
+            ...(accountData as LocalData),
+            address: addr,
+          });
+        })
+        .catch((error: any) => {
+          if (error.code === 4001) {
+            // EIP-1193 userRejectedRequest error
+            console.log("Please connect to MetaMask.");
+          } else {
+            console.error(error);
+          }
+        });
+    } else if (metaIsConnected) {
+      const setup = { bridgeSetup };
+      const sygma = new Sygma(setup);
+
+      setSygmaInstance(sygma);
+
+      const data = sygma.initializeConnectionFromWeb3Provider(window.ethereum);
+
+      setData(data);
+      setLogicConnected(true);
+    }
+```
+
+With this you can use our SDK and create the render logic to show your tokens and your networks of the bridge. For a more in depth review, check out the `react-example`.
 
 
 ## Support
