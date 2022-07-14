@@ -1,14 +1,13 @@
-<p align="center"><a href="https://https://chainsafe.io/"><img width="250" title="Chainbridge UI" src='assets/chainsafe_logo.png'/></a></p>
+<p align="center"><a href="https://https://chainsafe.io/"><img width="250" title="Chainbridge UI" src='assets/full-logo.png'/></a></p>
 
 # Sygma SDK
 
 ## Introduction
-**Sygma SDK** is an OpenSource (under GNU Lesser General Public License v3.0) SDK for developers
-to work with Chainsafe [Chainbridge Hub](https://github.com/ChainSafe/chainbridge-core). SDK consist of methods for accomplish bridging capabilities between Ethereum networks.
+**Sygma SDK** is an OpenSource (under GNU Lesser General Public License v3.0) SDK for developers to work with  Chainsafe [Sygma](https://github.com/ChainSafe/sygma). The SDK consist of methods that enable bridging capabilities between Ethereum networks.
 
-***NOTE*** this is under an active development so can be broken occasionally.
+***NOTE*** the SDK is under an active development so can be broken occasionally.
 
-The current SDK has one package that comprises the whole bridging logic for transferring ERC20 tokens between Ethereum networks. Alongside with this we have two folder examples that demonstrate the usage of our SDK. If you want to run the examples alongside our bridging infrastructure, please make sure you have [Chainbridge](https://github.com/ChainSafe/chainbridge-core) in order for you to run `make local-setup` command.
+The current SDK has one package that comprises the whole bridging logic for transferring ERC20 tokens between Ethereum networks. Alongside this there are two folder examples that demonstrate the usage of our SDK. If you want to run the examples alongside our bridging infrastructure, please make sure you have [Sygma](https://github.com/ChainSafe/sygma#configuration) in order for you to run `make local-setup` command.
 
 ## Usefull commands.
 
@@ -32,11 +31,11 @@ For NodeJS example, simply run:
 yarn run:local-ex
 ```
 
-# How to use it
+# How to Use
 
 ## Environment
 
-In order for you to use our SDK you need to have installed on your local machine [chainbridge-hub](https://github.com/ChainSafe/chainbridge-hub) repo. The main dependency to run `chainbridge-hub` is to have `go` installed in your machine. After that follow the instructions to run the local example. Is going to take a couple of minutes for all the setup to be completed. If you want to check the logs of the deployed contracts you can do the following:
+In order for you to use our SDK [Sygma](https://github.com/ChainSafe/sygma) must be installed on your local machine. The main dependency to run `Sygma` is to have `go` installed in your machine. After that, follow the instructions to run the local example. It will take a couple of minutes for all the setup to be completed. If you want to check the logs of the deployed contracts you can do the following:
 
 ```bash
 # inside the root directory of chainbrdige-hub
@@ -83,13 +82,12 @@ With this addresses you can use our SDK with the `basic fee` setup.
 
 After that, you can watch the logs an see your funds being transfer from one of the networks to the other.
 
-## Checking the examples folder
+## Checking the Examples folder
 
 There is a folder with examples ready to be used for the SDK. Currently we have two working with our current local setup. If you decide that is not for you, here is a little guide to get you started with our SDK.
+## How to Use From NodeJS
 
-## How to use it from NodeJS
-
-Assuming you are going to use the local setup provider by [chainbridge-hub](https://github.com/ChainSafe/chainbridge-hub), the setup that you need to pass to the `Chainbrdige` class is going to have the following structure:
+Assuming you are going to use the local setup provider by [Sygma](https://github.com/ChainSafe/sygma), the setup that you need to pass to the `Sygma` class is going to have the following structure:
 
 ```ts
 import { Sygma } from "@chainsafe/chainbridge-sdk-core";
@@ -126,7 +124,7 @@ We are going to use the SDK with `NodeJS` so, you we are going to use one of the
  const testAcc = "0xF4314cb9046bECe6AA54bb9533155434d0c76909";
 ```
 
-Then we create a `setup` object to pass to the `Chainbridge` class:
+Then we create a `setup` object to pass to the `Sygma` class:
 
 ```ts
 const setup = { bridgeSetup }
@@ -140,7 +138,7 @@ Now we are ready to initialize connection:
 const bridgeEvents = sygma.initializeConnectionRPC(testAcc)
 ```
 
-With this we can get the basicFee rate to use in our first deposit:
+With this we can get the basic Fee rate to use in our first deposit:
 
 ```ts
 const basicFeeRate = await sygma.fetchFeeData({
@@ -151,7 +149,7 @@ const basicFeeRate = await sygma.fetchFeeData({
 })
 ```
 
-Once this, we can approve the amounts of tokens to transfer before we made the deposit:
+Once this is complete, we can approve the amount of tokens to transfer before we make the deposit:
 
 ```ts
 const approvalTxReceipt = await (await sygma.approve({
@@ -170,7 +168,7 @@ const deposit = await sygma.deposit({
 const txReceipt = await deposit.wait(1)
 ```
 
-## How to use it in the browser
+## How to Use in Browser
 
 For usage in the browser with our local setup, provide the same bridge config that you use for the NodeJS context:
 
