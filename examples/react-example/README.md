@@ -1,8 +1,8 @@
-<p align="center"><a href="https://https://chainsafe.io/"><img width="250" title="Chainbridge UI" src='../../assets/chainsafe_logo.png'/></a></p>
+<p align="center"><a href="https://https://chainsafe.io/"><img width="250" title="Chainbridge UI" src='../../assets/full-logo.png'/></a></p>
 
-## Chainbridge SDK React Example
+## Sygma SDK React Example
 
-This simple React application demonstrate the usage of our SDK methods, alongside with the [Chainbridge](https://github.com/ChainSafe/chainbridge-core) local setup.
+This simple React application demonstrate the usage of our SDK methods, alongside with the [Sygma](https://github.com/ChainSafe/sygma) local setup.
 
 ### Running
 
