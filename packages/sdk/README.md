@@ -1,13 +1,13 @@
 <p align="center"><a href="https://https://chainsafe.io/"><img width="250" title="Chainbridge UI" src='../../assets/chainsafe_logo.png'/></a></p>
 
-# Chainbridge SDK
+# Sygma SDK
 
 Core primitives for cross-chain comunication between EVM compatible networks.
 
 ## Getting started
 
 ```ts
-import { Chainbridge } from "@chainsafe/chainbridge-sdk-core";
+import { Sygma } from "@chainsafe/chainbridge-sdk-core";
 
 // Addresses come from Chainbridge-hub local setup
 const bridgeSetup: BridgeData = {
@@ -38,13 +38,13 @@ const bridgeSetup: BridgeData = {
 // Test account from Chainbridge-hub local setup
 const acc = '0xF4314cb9046bECe6AA54bb9533155434d0c76909'
 
-const chainbridge = new Chainbridge({ bridgeSetup })
+const sygma = new Sygma({ bridgeSetup })
 
 // Asuming that context of execution is NodeJS
-const bridgeEvents = chainbridge.initializeConnectionRPC(acc)
+const bridgeEvents = sygma.initializeConnectionRPC(acc)
 
 // Getting basic fee
-const basicFeeRate = await chainbridge.fetchFeeData({
+const basicFeeRate = await sygma.fetchFeeData({
   amount: "1",
   recipientAddress: "0xF4314cb9046bECe6AA54bb9533155434d0c76909",
   from: "chain1",
@@ -54,7 +54,7 @@ const basicFeeRate = await chainbridge.fetchFeeData({
 console.log("Basic fee is:", basicFeeRate.feeData)
 
 // Making a deposit. Approve first
-const approvalTxReceipt = await chainbridge.approve({
+const approvalTxReceipt = await sygma.approve({
   amountForApproval: "1",
   from: "chain1"
 })
@@ -64,7 +64,7 @@ const txReceipt = await approvalTxReceipt.wait(1)
 console.log("tx receipt status", txReceipt.status)
 
 // Make the deposit
-const deposit = await chainbridge.deposit({
+const deposit = await sygma.deposit({
   amount: "1",
   recipientAddress: "0xF4314cb9046bECe6AA54bb9533155434d0c76909",
   from: "chain1",
@@ -82,11 +82,11 @@ console.log("Tx receipt deposit:", txReceiptDeposit.status)
 ### Other useful methods are:
 
 ```ts
-const hasTokenSupplies = await chainbridge.hasTokenSupplies(
+const hasTokenSupplies = await sygma.hasTokenSupplies(
   10, "chain1"
 ) // true \\ false
 
-const checkCurrentAllowance = await chainbridge.checkCurrentAllowance("chain1", "0xF4314cb9046bECe6AA54bb9533155434d0c76909") // BigNumber
+const checkCurrentAllowance = await sygma.checkCurrentAllowance("chain1", "0xF4314cb9046bECe6AA54bb9533155434d0c76909") // BigNumber
 
-const getTokenInfo = await chainbridge.getTokenInfo("chain1") // { balanceOfTokens: BigNumber, tokenName: string }
+const getTokenInfo = await sygma.getTokenInfo("chain1") // { balanceOfTokens: BigNumber, tokenName: string }
 ```

@@ -1,9 +1,9 @@
 <p align="center"><a href="https://https://chainsafe.io/"><img width="250" title="Chainbridge UI" src='assets/chainsafe_logo.png'/></a></p>
 
-# Chainbridge SDK
+# Sygma SDK
 
 ## Introduction
-**Chainbridge SDK** is an OpenSource (under GNU Lesser General Public License v3.0) SDK for developers
+**Sygma SDK** is an OpenSource (under GNU Lesser General Public License v3.0) SDK for developers
 to work with Chainsafe [Chainbridge Hub](https://github.com/ChainSafe/chainbridge-core). SDK consist of methods for accomplish bridging capabilities between Ethereum networks.
 
 ***NOTE*** this is under an active development so can be broken occasionally.
@@ -90,7 +90,7 @@ There is a folder with examples ready to be used for the SDK. Currently we have 
 Assuming you are going to use the local setup provider by [chainbridge-hub](https://github.com/ChainSafe/chainbridge-hub), the setup that you need to pass to the `Chainbrdige` class is going to have the following structure:
 
 ```ts
-import { Chainbridge } from "@chainsafe/chainbridge-sdk-core";
+import { Sygma } from "@chainsafe/chainbridge-sdk-core";
 
 const bridgeSetup: BridgeData = {
   chain1: {
@@ -129,19 +129,19 @@ Then we create a `setup` object to pass to the `Chainbridge` class:
 ```ts
 const setup = { bridgeSetup }
 
-const chainbridge = new Chainbridge(setup)
+const chainbridge = new Sygma(setup)
 ```
 
 Now we are ready to initialize connection:
 
 ```ts
-const bridgeEvents = chainbridge.initializeConnectionRPC(testAcc)
+const bridgeEvents = sygma.initializeConnectionRPC(testAcc)
 ```
 
 With this we can get the basicFee rate to use in our first deposit:
 
 ```ts
-const basicFeeRate = await chainbridge.fetchFeeData({
+const basicFeeRate = await sygma.fetchFeeData({
   amount: "1",
   recipientAddress: "0xF4314cb9046bECe6AA54bb9533155434d0c76909",
   from: "chain1",
@@ -152,12 +152,12 @@ const basicFeeRate = await chainbridge.fetchFeeData({
 Once this, we can approve the amounts of tokens to transfer before we made the deposit:
 
 ```ts
-const approvalTxReceipt = await (await chainbridge.approve({
+const approvalTxReceipt = await (await sygma.approve({
   amountForApproval: "1",
   from: "chain1"
 })).wait(1)
 
-const deposit = await chainbridge.deposit({
+const deposit = await sygma.deposit({
   amount: "1",
   recipientAddress: "0xF4314cb9046bECe6AA54bb9533155434d0c76909",
   from: "chain1",

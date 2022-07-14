@@ -4,14 +4,14 @@ import { Erc20DetailedFactory } from './Contracts/Erc20DetailedFactory';
 import { Erc20Detailed } from './Contracts/Erc20Detailed';
 
 import {
-  ChainbridgeSDK,
+  SygmaSDK,
   Setup,
   BridgeData,
   ChainbridgeContracts,
   Provider,
   Bridges,
   Signer,
-  ChainbridgeErc20Contracts,
+  SygmaErc20Contracts,
   BridgeEventCallback,
   Events,
   Directions,
@@ -30,18 +30,18 @@ import { ERC20Bridge } from './chains';
 import { calculateBasicfee, calculateFeeData } from './fee';
 
 /**
- * Chainbridge is the main class that allows you to have bridging capabilities
+ * @description Chainbridge is the main class that allows you to have bridging capabilities
  * with simple usage
  *
  */
 
-export class Chainbridge implements ChainbridgeSDK {
+export class Sygma implements SygmaSDK {
   private ethersProvider: Provider = undefined;
   private bridgeSetup: BridgeData;
   private bridges: Bridges = undefined;
   public bridgeEvents: Events = undefined;
   private signers: ConnectorSigner = undefined;
-  private erc20: ChainbridgeErc20Contracts = undefined;
+  private erc20: SygmaErc20Contracts = undefined;
   private providers: ConnectorProvider = undefined;
   private erc20Bridge: ERC20Bridge;
   private feeOracleSetup?: FeeOracleData;
