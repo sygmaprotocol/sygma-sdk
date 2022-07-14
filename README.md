@@ -4,7 +4,7 @@
 
 ## Introduction
 **Chainbridge SDK** is an OpenSource (under GNU Lesser General Public License v3.0) SDK for developers
-to work with Chainsafe [Chainbridge](https://github.com/ChainSafe/chainbridge-core). SDK consist of methods for accomplish bridging capabilities between Ethereum networks.
+to work with Chainsafe [Chainbridge Hub](https://github.com/ChainSafe/chainbridge-core). SDK consist of methods for accomplish bridging capabilities between Ethereum networks.
 
 ***NOTE*** this is under an active development so can be broken occasionally.
 
@@ -90,6 +90,8 @@ There is a folder with examples ready to be used for the SDK. Currently we have 
 Assuming you are going to use the local setup provider by [chainbridge-hub](https://github.com/ChainSafe/chainbridge-hub), the setup that you need to pass to the `Chainbrdige` class is going to have the following structure:
 
 ```ts
+import { Chainbridge } from "@chainsafe/chainbridge-sdk-core";
+
 const bridgeSetup: BridgeData = {
   chain1: {
       bridgeAddress: "0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66",
