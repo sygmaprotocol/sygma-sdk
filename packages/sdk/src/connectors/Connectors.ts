@@ -23,6 +23,7 @@ export default class Connector {
       web3ProvideInstance,
       "any"
     )
+    // console.log("🚀 ~ file: Connectors.ts ~ line 26 ~ Connector ~ initFromWeb3 ~ provider.connectorProvider", provider.connectorProvider)
     provider.connectorSigner = (provider.connectorProvider as ethers.providers.Web3Provider).getSigner()
     return provider
   }

@@ -7,11 +7,14 @@ export interface ChainbridgeSDK {}
 export type Directions = 'chain1' | 'chain2';
 
 export type Setup = {
+  bridgeSetupList?: ChainbridgeBridgeSetupList;
   bridgeSetup: BridgeData;
   feeOracleSetup?: FeeOracleData;
 };
 
 export type ChainbridgeBridgeSetup = {
+  name: string;
+  networkId: string;
   bridgeAddress: string;
   erc20Address: string;
   erc20HandlerAddress: string;
@@ -25,6 +28,8 @@ export type ChainbridgeBridgeSetup = {
   domainId: string;
   decimals: number;
 };
+
+export type ChainbridgeBridgeSetupList = ChainbridgeBridgeSetup[]
 
 export type BridgeData = {
   chain1: ChainbridgeBridgeSetup;
@@ -48,13 +53,13 @@ export type OracleResource = {
   expirationTimestamp: number;
 };
 
-export type FeeOracleResult = {
+export type FeeDataResult = {
   calculatedRate: string;
   erc20TokenAddress: string;
   feeData: string;
 };
 
-export type Bridges = { [chain: string]: Bridge } | undefined;
+export type Bridges = { [chain: string]: Bridge | undefined } | undefined;
 
 export type ChainbridgeContracts = {
   [chain: string]: { bridge: Bridge; erc20: Erc20Detailed };
@@ -97,7 +102,8 @@ export type ChainbridgeProviders =
       };
     }
 
-export type ChainbridgeErc20Contracts = { [chain: string]: Erc20Detailed } | undefined;
+export type ChainbridgeErc20Contracts = Record<'chain1' | 'chain2', Erc20Detailed | undefined> | undefined;
+
 
 export type Provider = ethers.providers.Provider | undefined;
 

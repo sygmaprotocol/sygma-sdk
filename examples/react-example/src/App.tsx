@@ -7,11 +7,13 @@ import React, {
 import { BigNumber, utils } from "ethers";
 import { BridgeEvents } from "@chainsafe/chainbridge-sdk-core/dist/src/types/types";
 import { useForm } from "react-hook-form";
-import { Chainbridge, BridgeData } from "@chainsafe/chainbridge-sdk-core";
+import { Chainbridge, BridgeData, ChainbridgeBridgeSetupList } from "@chainsafe/chainbridge-sdk-core";
 
 // TODO: MOVE THIS TO ENV
 const bridgeSetup: BridgeData = {
   chain1: {
+    name: 'Local EVM 1',
+    networkId: '422',
     bridgeAddress: "0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66",
     erc20Address: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
     erc20HandlerAddress: "0x3cA3808176Ad060Ad80c4e08F30d85973Ef1d99e",
@@ -26,6 +28,8 @@ const bridgeSetup: BridgeData = {
     }
   },
   chain2: {
+    name: 'Local EVM 2',
+    networkId: '422',
     bridgeAddress: "0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66",
     erc20Address: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
     erc20HandlerAddress: "0x3cA3808176Ad060Ad80c4e08F30d85973Ef1d99e",
@@ -40,6 +44,57 @@ const bridgeSetup: BridgeData = {
     }
   },
 };
+
+const bridgeSetupList: ChainbridgeBridgeSetupList = [
+  {
+    domainId: "1",
+    name: 'Local EVM 1',
+    networkId: '422',
+    bridgeAddress: "0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66",
+    erc20Address: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
+    erc20HandlerAddress: "0x3cA3808176Ad060Ad80c4e08F30d85973Ef1d99e",
+    rpcURL: "http://localhost:8545",
+    erc20ResourceID:
+      "0x0000000000000000000000000000000000000000000000000000000000000000",
+    decimals: 18,
+    feeSettings: {
+      type: 'basic',
+      address: '0x08CFcF164dc2C4AB1E0966F236E87F913DE77b69'
+    }
+  },
+  {
+    domainId: "2",
+    name: 'Local EVM 2',
+    networkId: '422',
+    bridgeAddress: "0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66",
+    erc20Address: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
+    erc20HandlerAddress: "0x3cA3808176Ad060Ad80c4e08F30d85973Ef1d99e",
+    rpcURL: "http://localhost:8547",
+    erc20ResourceID:
+      "0x0000000000000000000000000000000000000000000000000000000000000000",
+    decimals: 18,
+    feeSettings: {
+      type: 'basic',
+      address: '0x08CFcF164dc2C4AB1E0966F236E87F913DE77b69'
+    }
+  },
+  {
+    domainId: "3",
+    name: 'Local EVM 3 (same as 1)',
+    networkId: '422',
+    bridgeAddress: "0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66",
+    erc20Address: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
+    erc20HandlerAddress: "0x3cA3808176Ad060Ad80c4e08F30d85973Ef1d99e",
+    rpcURL: "http://localhost:8545",
+    erc20ResourceID:
+      "0x0000000000000000000000000000000000000000000000000000000000000000",
+    decimals: 18,
+    feeSettings: {
+      type: 'basic',
+      address: '0x08CFcF164dc2C4AB1E0966F236E87F913DE77b69'
+    }
+  },
+];
 
 const feeOracleSetup = {
   feeOracleBaseUrl: 'http://localhost:8091',
@@ -95,10 +150,14 @@ function App() {
     defaultValues: {
       amount: "1",
       address: "0x4CEEf6139f00F9F4535Ad19640Ff7A0137708485",
-      from: "chain1",
-      to: 'chain2'
+      from: "1",
+      to: '2'
     }
   });
+  const watchFrom = watch("from", "1");
+  const watchTo = watch("to");
+
+
   const [data, setData] = useState<SetStateAction<ChainbridgeData | undefined>>(
     undefined
   );
@@ -122,12 +181,30 @@ function App() {
   );
   const [bridge, setBridge] = useState<SetStateAction<any | undefined>>(undefined)
   useEffect(() => {
-    if (bridge) {
-      (chainbridgeInstance as Chainbridge).homeChainDepositEventListener(depositEventLogs);
+    const setup = { bridgeSetupList, bridgeSetup };
+    const chainbridge = new Chainbridge(setup);
 
+    setChainbridgeInstance(chainbridge);
+  }, [])
+  useEffect(() => {
+    console.log('watchTo', watchTo)
+    if (chainbridgeInstance) {
+      (chainbridgeInstance as Chainbridge).setDestination(watchTo)
+    }
+  }, [watchTo, chainbridgeInstance])
+  useEffect(() => {
+    if (bridge) {
+      (chainbridgeInstance as Chainbridge).removeHomeChainDepositEventListener();
+      (chainbridgeInstance as Chainbridge).createHomeChainDepositEventListener(depositEventLogs);
+
+      (chainbridgeInstance as Chainbridge).removeDestinationProposalExecutionEventListener();
       (chainbridgeInstance as Chainbridge).destinationProposalExecutionEventListener(proposalExecutionEventsLogs);
     }
   }, [bridge])
+
+  useEffect(() => {
+
+  }, [])
 
   const getAccountData = async (chainbridge: Chainbridge) => {
     try {
@@ -187,8 +264,6 @@ function App() {
       {
         amount: amount,
         recipientAddress: address,
-        from,
-        to,
       }
     );
     if (!(basicFeeData instanceof Error)) {
@@ -207,7 +282,6 @@ function App() {
       ) {
         const approveTx = await (chainbridgeInstance as Chainbridge).approve({
           amounForApproval: "1",
-          from: "chain1",
         });
         console.log(
           "🚀 ~ file: App.tsx ~ line 259 ~ submit ~ approveTx",
@@ -216,8 +290,6 @@ function App() {
         const result = await (chainbridgeInstance as Chainbridge).deposit({
           amount,
           recipientAddress: address,
-          from,
-          to,
           feeData: basicFeeData.feeData,
         });
         console.log("result of transfer", result);
@@ -249,12 +321,9 @@ function App() {
           }
         });
     } else if (metaIsConnected) {
-      const setup = { bridgeSetup };
-      const chainbridge = new Chainbridge(setup);
+      // const setup = { bridgeSetup };
 
-      setChainbridgeInstance(chainbridge);
-
-      const data = chainbridge.initializeConnectionFromWeb3Provider(window.ethereum);
+      const data = (chainbridgeInstance as Chainbridge).initializeConnectionFromWeb3Provider(window.ethereum);
 
       console.log("data", data);
       //@ts-ignore-line
@@ -273,6 +342,7 @@ function App() {
     fontSize: "15px",
     borderRadius: "5px",
     marginBottom: "5px",
+    boxSizing: "border-box"
   };
 
   const buttonStyle: CSSProperties = {
@@ -314,13 +384,13 @@ function App() {
               <br />
               Balance of tokens:{" "}
               <span>
-                <b>{utils.formatUnits(
-                  (accountData as LocalData).balanceOfTokens,
-                  18
-                )}</b>
-                {" "}
-                of{" "}
-                {(accountData as LocalData).tokenName} tokens
+                <b>
+                  {utils.formatUnits(
+                    (accountData as LocalData).balanceOfTokens,
+                    18
+                  )}
+                </b>{" "}
+                of {(accountData as LocalData).tokenName} tokens
               </span>
             </p>
           </div>
@@ -348,18 +418,25 @@ function App() {
               {...register("address")}
               style={{ ...inputStyles }}
             />
-            <input
-              type="text"
-              placeholder="from"
-              {...register("from")}
-              style={{ ...inputStyles }}
-            />
-            <input
-              type="text"
-              placeholder="to"
+            <select {...register("from")} style={{ ...inputStyles }}>
+              {bridgeSetupList.map((bridgeItem) => (
+                <option key={bridgeItem.domainId} value={bridgeItem.domainId}>
+                  {bridgeItem.name}
+                </option>
+              ))}
+            </select>
+            <select
               {...register("to")}
               style={{ ...inputStyles }}
-            />
+            >
+              {bridgeSetupList
+                .filter((el) => el.domainId !== watchFrom)
+                .map((bridgeItem) => (
+                  <option key={bridgeItem.domainId} value={bridgeItem.domainId}>
+                    {bridgeItem.name}
+                  </option>
+                ))}
+            </select>
             <div
               style={{
                 display: "flex",
@@ -380,7 +457,7 @@ function App() {
               >
                 Bridge!
               </button>
-              <button
+              {/* <button
                 style={{
                   ...buttonStyle,
                   background: "white",
@@ -391,7 +468,7 @@ function App() {
                 }}
               >
                 Disconnect
-              </button>
+              </button> */}
             </div>
           </form>
         </>
