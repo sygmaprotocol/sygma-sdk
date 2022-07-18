@@ -32,7 +32,6 @@ export const calculateBasicfee = async ({
     provider
   )
   const _fee = await BasicFeeHandlerInstance._fee()
-  console.log("🚀 ~ file: basicFee.ts ~ line 35 ~ _fee", _fee)
   try {
     const calculatedFee = await BasicFeeHandlerInstance.calculateFee(
       sender,
@@ -42,10 +41,8 @@ export const calculateBasicfee = async ({
       depositData,
       feeData
     )
-    console.log("🚀 ~ file: basicFee.ts ~ line 45 ~ calculatedFee", calculatedFee)
 
     const [ fee, address ] = calculatedFee
-    console.log("🚀 ~ file: basicFee.ts ~ line 48 ~ fee", fee.toNumber())
     return {
       calculatedRate: ethers.utils.formatUnits(fee),
       erc20TokenAddress: address,

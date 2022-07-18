@@ -1,12 +1,6 @@
 import { ethers } from "ethers";
 import { Provider, Signer } from "../types";
 
-// interface IConnector {
-//   getSignerBalance(): Promise<ethers.BigNumber>
-//   getSignerAddress(): Promise<string>
-//   getSignerGasPrice(): Promise<ethers.BigNumber>
-// }
-
 export default class Connector {
   private connectorProvider: Provider | undefined
   private connectorSigner: Signer | undefined
@@ -23,7 +17,6 @@ export default class Connector {
       web3ProvideInstance,
       "any"
     )
-    // console.log("🚀 ~ file: Connectors.ts ~ line 26 ~ Connector ~ initFromWeb3 ~ provider.connectorProvider", provider.connectorProvider)
     provider.connectorSigner = (provider.connectorProvider as ethers.providers.Web3Provider).getSigner()
     return provider
   }

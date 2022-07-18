@@ -59,7 +59,7 @@ export class Chainbridge implements ChainbridgeSDK {
     this.feeOracleSetup = feeOracleSetup;
   }
 
-  public async initializeConnectionRPC(address: string): Promise<ConnectionEvents> {
+  public async initializeConnectionRPC(address: string) {
     const providersAndSigners = computeProvidersAndSignersRPC(this.bridgeSetup, address);
     this.providers = {
       chain1: providersAndSigners!['chain1' as keyof BridgeData]
@@ -82,26 +82,12 @@ export class Chainbridge implements ChainbridgeSDK {
     this.bridges = computeBridges(contracts);
 
     const areFeeSettings = this.checkFeeSettings(this.bridgeSetup);
-    let feeHandlerByNetwork;
 
     if (!areFeeSettings) {
       console.warn('No fee settings provided');
-      feeHandlerByNetwork = {
-        chain1: undefined,
-        chain2: undefined,
-      };
-    } else {
-      feeHandlerByNetwork = await this.checkFeeHandlerByNetwork(contracts);
     }
 
-    return {
-      chain1: {
-        feeHandler: feeHandlerByNetwork.chain1,
-      },
-      chain2: {
-        feeHandler: feeHandlerByNetwork.chain2,
-      },
-    };
+    return this
   }
 
   public async initializeConnectionFromWeb3Provider(
@@ -133,16 +119,9 @@ export class Chainbridge implements ChainbridgeSDK {
     this.bridges = computeBridges(contracts);
 
     const areFeeSettings = this.checkFeeSettings(this.bridgeSetup);
-    let feeHandlerByNetwork;
 
     if (!areFeeSettings) {
       console.warn('No fee settings provided');
-      feeHandlerByNetwork = {
-        chain1: undefined,
-        chain2: undefined,
-      };
-    } else {
-      feeHandlerByNetwork = await this.checkFeeHandlerByNetwork(contracts);
     }
     return this
   }
@@ -151,7 +130,7 @@ export class Chainbridge implements ChainbridgeSDK {
     const connector = setConnectorWeb3(web3ProviderInstance)
     const network = await connector.provider?.getNetwork()
     let chain1: ChainbridgeBridgeSetup | undefined
-    // DomainId for local setup
+    // DomainId is used only for Local Setup
     if (domainId) {
       chain1 = this.bridgeSetupList!.find((el) => el.domainId === domainId)
     } else {
@@ -410,7 +389,6 @@ export class Chainbridge implements ChainbridgeSDK {
     } = this.bridgeSetup.chain1;
     const { domainId: toDomainID } = this.bridgeSetup.chain2;
     const provider = this.providers!.chain1!;
-    // const sender = this.signers![from]?._address!;
     try {
       const sender = await this.signers!.chain1?.getAddress();
       const basicFee = await calculateBasicfee({
@@ -542,7 +520,6 @@ export class Chainbridge implements ChainbridgeSDK {
     const amountForApprovalBN = utils.parseUnits(amounForApproval, 18);
 
     const gasPrice = await this.isEIP1559MaxFeePerGas('chain1');
-    console.log("🚀 ~ file: Chainbridge.ts ~ line 465 ~ Chainbridge ~ approve ~ gasPrice", gasPrice)
 
     const erc20ToUse = this.erc20!.chain1!;
     const { erc20HandlerAddress } = this.bridgeSetup.chain1;

@@ -50,7 +50,6 @@ export default class ERC20Bridge {
 
     if (typeof gasPrice !== 'boolean') {
       gasPriceStringify = gasPrice.toString();
-      console.log("🚀 ~ file: ERC20Bridge.ts ~ line 53 ~ ERC20Bridge ~ gasPriceStringify", gasPriceStringify)
     }
 
     console.log("allowance before deposit", await this.checkCurrentAllowance(recipientAddress, erc20Intance, erc20HandlerAddress))
