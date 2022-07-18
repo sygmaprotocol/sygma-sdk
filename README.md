@@ -90,7 +90,7 @@ There is a folder with examples ready to be used for the SDK. Currently we have 
 Assuming you are going to use the local setup provider by [Sygma](https://github.com/ChainSafe/sygma), the setup that you need to pass to the `Sygma` class is going to have the following structure:
 
 ```ts
-import { Sygma } from "@chainsafe/chainbridge-sdk-core";
+import { Sygma } from "@chainsafe/sygma-sdk-core";
 
 const bridgeSetup: BridgeData = {
   chain1: {
@@ -169,7 +169,7 @@ const txReceipt = await deposit.wait(1)
 For usage in the browser with our local setup, provide the same bridge config that you use for the NodeJS context:
 
 ```ts
-import { Sygma } from "@chainsafe/chainbridge-sdk-core";
+import { Sygma } from "@chainsafe/sygma-sdk-core";
 
 type LocalData = {
   balance: BigNumber;
