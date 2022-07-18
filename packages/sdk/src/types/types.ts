@@ -7,11 +7,14 @@ export interface SygmaSDK {}
 export type Directions = 'chain1' | 'chain2';
 
 export type Setup = {
+  bridgeSetupList?: SygmaBridgeSetupList;
   bridgeSetup: BridgeData;
   feeOracleSetup?: FeeOracleData;
 };
 
 export type SygmaBridgeSetup = {
+  name: string;
+  networkId: string;
   bridgeAddress: string;
   erc20Address: string;
   erc20HandlerAddress: string;
@@ -25,6 +28,8 @@ export type SygmaBridgeSetup = {
   domainId: string;
   decimals: number;
 };
+
+export type SygmaBridgeSetupList = SygmaBridgeSetup[]
 
 export type BridgeData = {
   chain1: SygmaBridgeSetup;
@@ -48,16 +53,16 @@ export type OracleResource = {
   expirationTimestamp: number;
 };
 
-export type FeeOracleResult = {
+export type FeeDataResult = {
   calculatedRate: string;
   erc20TokenAddress: string;
   feeData: string;
 };
 
-export type Bridges = { [chain: string]: Bridge } | undefined;
+export type Bridges = { [chain: string]: Bridge | undefined } | undefined;
 
 export type ChainbridgeContracts = {
-  [chain: string]: { bridge: Bridge; bridgeEvent: any; erc20: Erc20Detailed };
+  [chain: string]: { bridge: Bridge; erc20: Erc20Detailed };
 };
 
 export type BridgeEventCallback = (fn: (...params: any) => void) => Bridge;
@@ -70,9 +75,6 @@ export type ChainbridgeEventsObject =
 
 export type BridgeEvents =
   | {
-      bridgeEvents: (func: any) => Bridge;
-      proposalEvents: ChainbridgeEventsObject;
-      voteEvents: ChainbridgeEventsObject;
       feeHandler: string;
     }
   | undefined;
@@ -92,13 +94,12 @@ export type Events =
 export type SygmaProviders =
   | {
       [chain: string]: {
-        provider: ethers.providers.JsonRpcProvider;
-        signer: ethers.providers.JsonRpcSigner;
+        provider: ethers.providers.JsonRpcProvider | Provider;
+        signer: ethers.providers.JsonRpcSigner | Signer;
       };
     }
-  | undefined;
 
-export type SygmaErc20Contracts = { [chain: string]: Erc20Detailed } | undefined;
+export type SygmaErc20Contracts = { [chain: string]: Erc20Detailed | undefined } | undefined;
 
 export type Provider = ethers.providers.Provider | undefined;
 

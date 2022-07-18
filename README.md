@@ -143,9 +143,7 @@ With this we can get the basic Fee rate to use in our first deposit:
 ```ts
 const basicFeeRate = await sygma.fetchFeeData({
   amount: "1",
-  recipientAddress: "0xF4314cb9046bECe6AA54bb9533155434d0c76909",
-  from: "chain1",
-  to: "chain2"
+  recipientAddress: "0xF4314cb9046bECe6AA54bb9533155434d0c76909"
 })
 ```
 
@@ -159,9 +157,7 @@ const approvalTxReceipt = await (await sygma.approve({
 
 const deposit = await sygma.deposit({
   amount: "1",
-  recipientAddress: "0xF4314cb9046bECe6AA54bb9533155434d0c76909",
-  from: "chain1",
-  to: "chain2",
+  recipientAddress: "0xF4314cb9046bECe6AA54bb9533155434d0c76909"
   feeData: basicFee.feeData
 })
 
@@ -303,6 +299,65 @@ const handleConnect = () => {
       setLogicConnected(true);
     }
 ```
+
+To listen to deposit events on the home network:
+
+````ts
+// initialization of Sygma class
+// ...
+sygmaInstance.createHomeChainDepositEventListener((
+  destinationDomainId: any,
+  resourceId: any,
+  depositNonce: any,
+  user: any,
+  data: any,
+  handleResponse: any,
+  tx: any
+) => {
+  console.log(
+    `bride deposit event deposit nonce: ${depositNonce.toString()} to contract with ResourceId: ${resourceId}`
+  );
+  console.log(` transaction hash: ${tx.transactionHash}`);
+  console.info("Deposit in transit!");
+});
+
+````
+
+To remove deposit events listener:
+
+````ts
+// initialization of Sygma class
+// sygmaInstance.createHomeChainDepositEventListener(...)
+// ...
+sygmaInstance.removeHomeChainDepositEventListener()
+````
+
+To listen for execution events on the destination network:
+
+````ts
+// initialization of Sygma class
+// ...
+sygmaInstance.destinationProposalExecutionEventListener((
+  originDomainId: any,
+  despositNonce: any,
+  dataHash: any,
+  tx: any
+) => {
+  console.warn("Proposal execution event!")
+  console.log({originDomainId, despositNonce, dataHash, tx} )
+  console.warn("Transfer complete!")
+});
+````
+
+To remove remove execution events listener:
+
+````ts
+// initialization of Sygma class
+// sygmaInstance.createHomeChainDepositEventListener(...)
+// ...
+sygmaInstance.removeDestinationProposalExecutionEventListener()
+````
+
 
 With this you can use our SDK and create the render logic to show your tokens and your networks of the bridge. For a more in depth review, check out the `react-example`.
 

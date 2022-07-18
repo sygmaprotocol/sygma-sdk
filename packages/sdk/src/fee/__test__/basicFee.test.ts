@@ -1,7 +1,7 @@
 import { calculateBasicfee } from '../basicFee'
 import { BasicFeeHandler__factory } from '@chainsafe/chainbridge-contracts'
 import { BigNumber, ethers } from 'ethers'
-import { FeeOracleResult } from 'types'
+import { FeeDataResult } from 'types'
 
 jest.mock('@chainsafe/chainbridge-contracts', () => ({
   ...jest.requireActual('@chainsafe/chainbridge-contracts'),
@@ -29,7 +29,7 @@ describe('CalculateBasicFee', () => {
       recipientAddress: '0xF4314cb9046bECe6AA54bb9533155434d0c76909'
     })
 
-    const { calculatedRate } = res as FeeOracleResult
+    const { calculatedRate } = res as FeeDataResult
 
     expect(calculatedRate).toBe('0x174876e800')
   })

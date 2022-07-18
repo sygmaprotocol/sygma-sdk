@@ -1,6 +1,6 @@
 {
   "name": "@chainsafe/chainbridge-sdk",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "Chainbridge SDK",
   "main": "index.js",
   "private": true,

@@ -1,6 +1,6 @@
 import { BasicFeeHandler__factory as BasicFeeHandler } from '@chainsafe/chainbridge-contracts'
 import { ethers } from 'ethers'
-import { FeeOracleResult } from 'types'
+import { FeeDataResult } from 'types'
 import { createERCDepositData } from '../utils/helpers'
 
 export const calculateBasicfee = async ({
@@ -23,7 +23,7 @@ export const calculateBasicfee = async ({
   recipientAddress: string;
 }
 
-): Promise<FeeOracleResult | Error> => {
+): Promise<FeeDataResult | Error> => {
   const depositData = createERCDepositData(tokenAmount, 20, recipientAddress)
   // WHY 0X00 AND NOT 0X0?
   const feeData = "0x00"
@@ -31,7 +31,7 @@ export const calculateBasicfee = async ({
     basicFeeHandlerAddress,
     provider
   )
-
+  const _fee = await BasicFeeHandlerInstance._fee()
   try {
     const calculatedFee = await BasicFeeHandlerInstance.calculateFee(
       sender,
@@ -44,9 +44,9 @@ export const calculateBasicfee = async ({
 
     const [ fee, address ] = calculatedFee
     return {
-      calculatedRate: fee.toHexString(),
+      calculatedRate: ethers.utils.formatUnits(fee),
       erc20TokenAddress: address,
-      feeData: feeData
+      feeData: fee.toHexString()
     }
   } catch(error){
     console.error(error)
