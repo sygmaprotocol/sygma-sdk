@@ -7,7 +7,7 @@ import React, {
 import { BigNumber, utils } from "ethers";
 import { BridgeEvents } from "@chainsafe/chainbridge-sdk-core/dist/src/types/types";
 import { useForm } from "react-hook-form";
-import { Chainbridge, BridgeData, ChainbridgeBridgeSetupList } from "@chainsafe/chainbridge-sdk-core";
+import { Sygma, BridgeData, SygmaBridgeSetupList } from "@chainsafe/chainbridge-sdk-core";
 
 // TODO: MOVE THIS TO ENV
 const bridgeSetup: BridgeData = {
@@ -45,7 +45,7 @@ const bridgeSetup: BridgeData = {
   },
 };
 
-const bridgeSetupList: ChainbridgeBridgeSetupList = [
+const bridgeSetupList: SygmaBridgeSetupList = [
   {
     domainId: "1",
     name: 'Local EVM 1',
@@ -111,7 +111,7 @@ type LocalData = {
   tokenName: string;
 };
 
-type ChainbridgeData = { chain1: BridgeEvents; chain2: BridgeEvents };
+type SygmaData = { chain1: BridgeEvents; chain2: BridgeEvents };
 
 const proposalExecutionEventsLogs = async (
   originDomainId: any,
@@ -158,12 +158,12 @@ function App() {
   const watchTo = watch("to");
 
 
-  const [data, setData] = useState<SetStateAction<ChainbridgeData | undefined>>(
+  const [data, setData] = useState<SetStateAction<SygmaData | undefined>>(
     undefined
   );
 
-  const [chainbridgeInstance, setChainbridgeInstance] = useState<
-    SetStateAction<Chainbridge | undefined>
+  const [chainbridgeInstance, setSygmaInstance] = useState<
+    SetStateAction<Sygma | undefined>
   >(undefined);
 
   const [accountData, setAccountData] = useState<
@@ -182,23 +182,23 @@ function App() {
   const [bridge, setBridge] = useState<SetStateAction<any | undefined>>(undefined)
   useEffect(() => {
     const setup = { bridgeSetupList, bridgeSetup };
-    const chainbridge = new Chainbridge(setup);
+    const chainbridge = new Sygma(setup);
 
-    setChainbridgeInstance(chainbridge);
+    setSygmaInstance(chainbridge);
   }, [])
   useEffect(() => {
     console.log('watchTo', watchTo)
     if (chainbridgeInstance) {
-      (chainbridgeInstance as Chainbridge).setDestination(watchTo)
+      (chainbridgeInstance as Sygma).setDestination(watchTo)
     }
   }, [watchTo, chainbridgeInstance])
   useEffect(() => {
     if (bridge) {
-      (chainbridgeInstance as Chainbridge).removeHomeChainDepositEventListener();
-      (chainbridgeInstance as Chainbridge).createHomeChainDepositEventListener(depositEventLogs);
+      (chainbridgeInstance as Sygma).removeHomeChainDepositEventListener();
+      (chainbridgeInstance as Sygma).createHomeChainDepositEventListener(depositEventLogs);
 
-      (chainbridgeInstance as Chainbridge).removeDestinationProposalExecutionEventListener();
-      (chainbridgeInstance as Chainbridge).destinationProposalExecutionEventListener(proposalExecutionEventsLogs);
+      (chainbridgeInstance as Sygma).removeDestinationProposalExecutionEventListener();
+      (chainbridgeInstance as Sygma).destinationProposalExecutionEventListener(proposalExecutionEventsLogs);
     }
   }, [bridge])
 
@@ -206,7 +206,7 @@ function App() {
 
   }, [])
 
-  const getAccountData = async (chainbridge: Chainbridge) => {
+  const getAccountData = async (chainbridge: Sygma) => {
     try {
       const balance =
         (await chainbridge.getSignerBalance("chain1")) ?? BigNumber.from("0");
@@ -244,8 +244,8 @@ function App() {
 
   useEffect(() => {
     if (data !== undefined && chainbridgeInstance !== undefined) {
-      getAccountData(chainbridgeInstance! as Chainbridge);
-      setBridge((chainbridgeInstance! as Chainbridge).bridges!['chain2'])
+      getAccountData(chainbridgeInstance! as Sygma);
+      setBridge((chainbridgeInstance! as Sygma).bridges!['chain2'])
     }
   }, [data, logicConnected]);
 
@@ -253,14 +253,14 @@ function App() {
     console.log(metaIsConnected, data);
     if (metaIsConnected && chainbridgeInstance !== undefined) {
       handleConnect();
-      getAccountData(chainbridgeInstance! as Chainbridge);
+      getAccountData(chainbridgeInstance! as Sygma);
     }
   }, [metaIsConnected]);
 
   const submit = async (values: any) => {
     const { amount, address, from, to } = values;
 
-    const basicFeeData = await (chainbridgeInstance as Chainbridge).fetchBasicFeeData(
+    const basicFeeData = await (chainbridgeInstance as Sygma).fetchBasicFeeData(
       {
         amount: amount,
         recipientAddress: address,
@@ -280,14 +280,14 @@ function App() {
           } tokens\n\nDo you really want to proceed?`
         )
       ) {
-        const approveTx = await (chainbridgeInstance as Chainbridge).approve({
+        const approveTx = await (chainbridgeInstance as Sygma).approve({
           amounForApproval: "1",
         });
         console.log(
           "🚀 ~ file: App.tsx ~ line 259 ~ submit ~ approveTx",
           approveTx
         );
-        const result = await (chainbridgeInstance as Chainbridge).deposit({
+        const result = await (chainbridgeInstance as Sygma).deposit({
           amount,
           recipientAddress: address,
           feeData: basicFeeData.feeData,
@@ -322,7 +322,7 @@ function App() {
     } else if (metaIsConnected) {
       // const setup = { bridgeSetup };
 
-      const data = (chainbridgeInstance as Chainbridge).initializeConnectionFromWeb3Provider(window.ethereum);
+      const data = (chainbridgeInstance as Sygma).initializeConnectionFromWeb3Provider(window.ethereum);
 
       console.log("data", data);
       //@ts-ignore-line

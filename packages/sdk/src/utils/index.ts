@@ -8,8 +8,8 @@ import {
   BridgeEvents,
   Bridges,
   ChainbridgeContracts,
-  ChainbridgeErc20Contracts,
-  ChainbridgeProviders,
+  SygmaErc20Contracts,
+  SygmaProviders,
   Provider,
 } from '../types';
 
@@ -24,7 +24,7 @@ export const computeBridges = (contracts: ChainbridgeContracts): Bridges =>
     return bridges;
   }, {});
 
-export const computeERC20Contracts = (contracts: ChainbridgeContracts): ChainbridgeErc20Contracts =>
+export const computeERC20Contracts = (contracts: ChainbridgeContracts): SygmaErc20Contracts =>
   Object.keys(contracts).reduce((erc20Contracts: any, chain) => {
     const { erc20 } = contracts[chain];
     erc20Contracts = {
@@ -38,7 +38,7 @@ export const computeERC20Contracts = (contracts: ChainbridgeContracts): Chainbri
 export const computeProvidersAndSignersRPC = (
   bridgeSetup: BridgeData,
   address?: string,
-): ChainbridgeProviders => {
+): SygmaProviders => {
   return {
     chain1: setConnectorRPC(bridgeSetup.chain1.rpcURL, address),
     chain2: setConnectorRPC(bridgeSetup.chain2.rpcURL, address),
@@ -48,7 +48,7 @@ export const computeProvidersAndSignersRPC = (
 export const computeProvidersAndSignersWeb3 = (
   bridgeSetup: BridgeData,
   web3providerInstance: any,
-): ChainbridgeProviders => {
+): SygmaProviders => {
   return {
     chain1: setConnectorWeb3(web3providerInstance),
     chain2: setConnectorRPC(bridgeSetup.chain2.rpcURL),
