@@ -2,17 +2,17 @@ import { Erc20Detailed } from '../Contracts/Erc20Detailed';
 import { Bridge } from '@chainsafe/chainbridge-contracts';
 import { ethers } from 'ethers';
 
-export interface ChainbridgeSDK {}
+export interface SygmaSDK {}
 
 export type Directions = 'chain1' | 'chain2';
 
 export type Setup = {
-  bridgeSetupList?: ChainbridgeBridgeSetupList;
+  bridgeSetupList?: SygmaBridgeSetupList;
   bridgeSetup: BridgeData;
   feeOracleSetup?: FeeOracleData;
 };
 
-export type ChainbridgeBridgeSetup = {
+export type SygmaBridgeSetup = {
   name: string;
   networkId: string;
   bridgeAddress: string;
@@ -29,11 +29,11 @@ export type ChainbridgeBridgeSetup = {
   decimals: number;
 };
 
-export type ChainbridgeBridgeSetupList = ChainbridgeBridgeSetup[]
+export type SygmaBridgeSetupList = SygmaBridgeSetup[]
 
 export type BridgeData = {
-  chain1: ChainbridgeBridgeSetup;
-  chain2: ChainbridgeBridgeSetup;
+  chain1: SygmaBridgeSetup;
+  chain2: SygmaBridgeSetup;
 };
 
 export type FeeOracleData = {
@@ -91,7 +91,7 @@ export type Events =
     }
   | undefined;
 
-export type ChainbridgeProviders =
+export type SygmaProviders =
   | {
       [chain: string]: {
         provider: ethers.providers.JsonRpcProvider | Provider;
@@ -99,8 +99,7 @@ export type ChainbridgeProviders =
       };
     }
 
-export type ChainbridgeErc20Contracts = Record<'chain1' | 'chain2', Erc20Detailed | undefined> | undefined;
-
+export type SygmaErc20Contracts = { [chain: string]: Erc20Detailed | undefined } | undefined;
 
 export type Provider = ethers.providers.Provider | undefined;
 

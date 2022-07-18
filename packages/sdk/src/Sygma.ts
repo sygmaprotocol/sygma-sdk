@@ -4,14 +4,14 @@ import { Erc20DetailedFactory } from './Contracts/Erc20DetailedFactory';
 import { Erc20Detailed } from './Contracts/Erc20Detailed';
 
 import {
-  ChainbridgeSDK,
+  SygmaSDK,
   Setup,
   BridgeData,
   ChainbridgeContracts,
   Provider,
   Bridges,
   Signer,
-  ChainbridgeErc20Contracts,
+  SygmaErc20Contracts,
   BridgeEventCallback,
   Events,
   Directions,
@@ -20,8 +20,8 @@ import {
   ConnectionEvents,
   FeeOracleData,
   FeeDataResult,
-  ChainbridgeBridgeSetupList,
-  ChainbridgeBridgeSetup
+  SygmaBridgeSetupList,
+  SygmaBridgeSetup
 } from './types';
 import {
   computeBridges,
@@ -36,18 +36,18 @@ import { calculateBasicfee, calculateFeeData } from './fee';
 import Connector from './connectors/Connectors';
 
 /**
- * Chainbridge is the main class that allows you to have bridging capabilities
+ * @description Chainbridge is the main class that allows you to have bridging capabilities
  * with simple usage
  *
  */
 
-export class Chainbridge implements ChainbridgeSDK {
-  public bridgeSetupList: ChainbridgeBridgeSetupList | undefined;
+ export class Sygma implements SygmaSDK {
+  public bridgeSetupList: SygmaBridgeSetupList | undefined;
   private ethersProvider: Provider = undefined;
   public bridgeSetup: BridgeData;
   public bridges: Bridges = {chain1: undefined, chain2: undefined};
   private signers: ConnectorSigner = {chain1: undefined, chain2: undefined};
-  private erc20: ChainbridgeErc20Contracts = {chain1: undefined, chain2: undefined};
+  private erc20: SygmaErc20Contracts = {chain1: undefined, chain2: undefined};
   private providers: ConnectorProvider = {chain1: undefined, chain2: undefined};
   private erc20Bridge: ERC20Bridge;
   private feeOracleSetup?: FeeOracleData;
@@ -129,7 +129,7 @@ export class Chainbridge implements ChainbridgeSDK {
   public async setHomeWeb3Provider(web3ProviderInstance: any, domainId?: string) {
     const connector = setConnectorWeb3(web3ProviderInstance)
     const network = await connector.provider?.getNetwork()
-    let chain1: ChainbridgeBridgeSetup | undefined
+    let chain1: SygmaBridgeSetup | undefined
     // DomainId is used only for Local Setup
     if (domainId) {
       chain1 = this.bridgeSetupList!.find((el) => el.domainId === domainId)
@@ -157,7 +157,7 @@ export class Chainbridge implements ChainbridgeSDK {
   }
 
   public async setDestination(domainId: string) {
-    let chain2: ChainbridgeBridgeSetup | undefined
+    let chain2: SygmaBridgeSetup | undefined
     if (domainId) {
       chain2 = this.bridgeSetupList!.find((el) => el.domainId === domainId)
     }
@@ -215,7 +215,7 @@ export class Chainbridge implements ChainbridgeSDK {
     }, {});
   }
 
-  public computeContract(config: ChainbridgeBridgeSetup, connector: Connector) {
+  public computeContract(config: SygmaBridgeSetup, connector: Connector) {
     const { bridgeAddress, erc20Address } = config;
 
     const signer = connector.signer ?? connector.provider
@@ -317,7 +317,14 @@ export class Chainbridge implements ChainbridgeSDK {
   public removeDestinationProposalExecutionEventListener() {
     return this.removeProposalExecutionEventListener('chain2')
   }
-
+  /**
+   * @name deposit
+   * @description make deposit between two networks
+   * @param {object} argument
+   * @param {string} params.amount
+   * @param {string} params.recipientAddress receiver of the deposit
+   * @param {string} params.feeData
+   */
   public async deposit({
     amount,
     recipientAddress,
@@ -346,6 +353,16 @@ export class Chainbridge implements ChainbridgeSDK {
     });
   }
 
+  /**
+   * @name fetchFeeData
+   * @description it fetches the fee data according to bridge setup
+   * @param {object} params
+   * @param {string} params.amount
+   * @param {string} params.recipientAddress - receiver of the deposit
+   * @param {string} params.overridedResourceId - matches local token in local setup with address of the token from where the price data is being fetched.
+   * Only used when doing bridge with fee oracle service
+   * @param {string} params.oraclePrivateKey
+   */
   public async fetchFeeData(params: {
     amount: string;
     recipientAddress: string;
@@ -454,7 +471,12 @@ export class Chainbridge implements ChainbridgeSDK {
     const receipt = await this.ethersProvider?.waitForTransaction(txHash, 1);
     return receipt;
   }
-
+  /**
+   * @name hasTokenSupplies
+   * @description check if current token has supplies on destination chain
+   * @param {number} amount
+   * @returns {Promise} boolean value
+   */
   public async hasTokenSupplies(amount: number): Promise<boolean> {
     const {
       erc20Address: destinationTokenAddress,
@@ -474,8 +496,12 @@ export class Chainbridge implements ChainbridgeSDK {
 
     return hasTokenSupplies;
   }
-
-  public async checkCurrentAllowance( recipientAddress: string) {
+  /**
+   * @name checkCurrentAllowance
+   * @description check the current allowance of the provided address
+   * @param {string} recipientAddress
+   */
+  public async checkCurrentAllowance(recipientAddress: string) {
     const erc20ToUse = this.erc20!.chain1!;
     const { erc20HandlerAddress } = this.bridgeSetup.chain1;
 
@@ -515,7 +541,12 @@ export class Chainbridge implements ChainbridgeSDK {
   public async getSignerGasPrice(chain: string) {
     return await (this.signers![chain as keyof BridgeData] as Signer)?.getGasPrice();
   }
-
+  /**
+   * @name approve
+   * @description approve amount of tokens to spent on home chain
+   * @param {object} argument
+   * @param {string} params.amounForApproval
+   */
   public async approve({ amounForApproval}: { amounForApproval: string }) {
     const amountForApprovalBN = utils.parseUnits(amounForApproval, 18);
 
