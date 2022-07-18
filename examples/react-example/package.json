@@ -1,9 +1,9 @@
 {
-  "name": "@chainsafe/chainbridge-sdk-react-example",
+  "name": "@chainsafe/sygma-sdk-react-example",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@chainsafe/chainbridge-sdk-core": "file:../../packages/sdk/dist",
+    "@chainsafe/sygma-sdk-core": "file:../../packages/sdk/dist",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.1.1",
     "@testing-library/user-event": "^13.5.0",

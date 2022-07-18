@@ -1,5 +1,3 @@
-<p align="center"><a href="https://https://chainsafe.io/"><img width="250" title="Chainbridge UI" src='../../assets/chainsafe_logo.png'/></a></p>
-
 # Sygma SDK
 
 Core primitives for cross-chain comunication between EVM compatible networks.
