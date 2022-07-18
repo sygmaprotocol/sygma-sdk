@@ -75,9 +75,6 @@ export type ChainbridgeEventsObject =
 
 export type BridgeEvents =
   | {
-      // bridgeEvents: (func: any) => Bridge;
-      // proposalEvents: ChainbridgeEventsObject;
-      // voteEvents: ChainbridgeEventsObject;
       feeHandler: string;
     }
   | undefined;

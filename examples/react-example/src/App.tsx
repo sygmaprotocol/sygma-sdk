@@ -296,7 +296,6 @@ function App() {
       }
     }
   };
-  // const basicFeeData = await(chainbridgeInstance as Chainbridge).fetch
 
   const handleConnect = () => {
     // IF META IS NOT SIGNIN, TRIGGER POP OF THE WINDOW FOR THE EXTENSION
@@ -457,18 +456,6 @@ function App() {
               >
                 Bridge!
               </button>
-              {/* <button
-                style={{
-                  ...buttonStyle,
-                  background: "white",
-                  color: "red",
-                  border: "1px solid red",
-                  fontWeight: "800",
-                  borderRadius: "5px",
-                }}
-              >
-                Disconnect
-              </button> */}
             </div>
           </form>
         </>
