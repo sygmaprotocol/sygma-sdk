@@ -19,7 +19,7 @@ npx lerna bootstrap
 
 ## Running the Examples
 
-For React example, after you have run and deploy the contracts using [Chainbridge](https://github.com/ChainSafe/chainbridge-core), go to the `examples` folder and simply run
+For React example, after you have run and deploy the contracts using [Sygma](https://github.com/ChainSafe/sygma), go to the `examples` folder and simply run
 
 ```bash
 yarn start
@@ -38,7 +38,7 @@ yarn run:local-ex
 In order for you to use our SDK [Sygma](https://github.com/ChainSafe/sygma) must be installed on your local machine. The main dependency to run `Sygma` is to have `go` installed in your machine. After that, follow the instructions to run the local example. It will take a couple of minutes for all the setup to be completed. If you want to check the logs of the deployed contracts you can do the following:
 
 ```bash
-# inside the root directory of chainbrdige-hub
+# inside the root directory of Sygma project
 cd example
 docker-compose -f ./docker-compose.yml logs setup
 ```
@@ -47,7 +47,7 @@ You should see something like this:
 
 ```bash
 setup       | ===============================================
-setup       | 🎉🎉🎉 ChainBridge Successfully Deployed 🎉🎉🎉
+setup       | 🎉🎉🎉 Sygma Successfully Deployed 🎉🎉🎉
 setup       |
 setup       | - Chain 1 -
 setup       | Bridge: 0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66
@@ -90,7 +90,7 @@ There is a folder with examples ready to be used for the SDK. Currently we have 
 Assuming you are going to use the local setup provider by [Sygma](https://github.com/ChainSafe/sygma), the setup that you need to pass to the `Sygma` class is going to have the following structure:
 
 ```ts
-import { Sygma } from "@chainsafe/chainbridge-sdk-core";
+import { Sygma } from "@chainsafe/sygma-sdk-core";
 
 const bridgeSetup: BridgeData = {
   chain1: {
@@ -169,7 +169,7 @@ const txReceipt = await deposit.wait(1)
 For usage in the browser with our local setup, provide the same bridge config that you use for the NodeJS context:
 
 ```ts
-import { Sygma } from "@chainsafe/chainbridge-sdk-core";
+import { Sygma } from "@chainsafe/sygma-sdk-core";
 
 type LocalData = {
   balance: BigNumber;

@@ -1,5 +1,3 @@
-<p align="center"><a href="https://https://chainsafe.io/"><img width="250" title="Chainbridge UI" src='../../assets/chainsafe_logo.png'/></a></p>
-
 # Sygma SDK
 
 Core primitives for cross-chain comunication between EVM compatible networks.
@@ -7,9 +5,9 @@ Core primitives for cross-chain comunication between EVM compatible networks.
 ## Getting started
 
 ```ts
-import { Sygma } from "@chainsafe/chainbridge-sdk-core";
+import { Sygma } from "@chainsafe/sygma-sdk-core";
 
-// Addresses come from Chainbridge-hub local setup
+// Addresses come from Sygma local setup
 const bridgeSetup: BridgeData = {
   chain1: {
       bridgeAddress: "0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66",
@@ -35,7 +33,7 @@ const bridgeSetup: BridgeData = {
     },
 }
 
-// Test account from Chainbridge-hub local setup
+// Test account from Sygma local setup
 const acc = '0xF4314cb9046bECe6AA54bb9533155434d0c76909'
 
 const sygma = new Sygma({ bridgeSetup })

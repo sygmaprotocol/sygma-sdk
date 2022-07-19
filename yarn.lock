@@ -1083,7 +1083,7 @@
   resolved "https://registry.yarnpkg.com/@chainsafe/chainbridge-contracts/-/chainbridge-contracts-3.0.1.tgz#d6ef0eb103a11746596633c9f18d3351055b24a5"
   integrity sha512-ZpuHICa82eSLSQZCwIskwRa6D9j5MaY/XrEY5iVpDSTPkbQTokfQuQ2sAPlgdtIT+U6Xt+eoEX/h96698QrU8w==
 
-"@chainsafe/chainbridge-sdk-core@file:packages/sdk/dist":
+"@chainsafe/sygma-sdk-core@file:packages/sdk/dist":
   version "0.0.0"
 
 "@changesets/apply-release-plan@^6.0.0":

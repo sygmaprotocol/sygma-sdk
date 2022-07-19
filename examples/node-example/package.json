@@ -1,5 +1,5 @@
 {
-  "name": "@chainsafe/chainbridge-sdk-node-example",
+  "name": "@chainsafe/sygma-sdk-node-example",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",

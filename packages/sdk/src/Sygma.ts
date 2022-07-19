@@ -36,7 +36,7 @@ import { calculateBasicfee, calculateFeeData } from './fee';
 import Connector from './connectors/Connectors';
 
 /**
- * @description Chainbridge is the main class that allows you to have bridging capabilities
+ * @description Sygma is the main class that allows you to have bridging capabilities
  * with simple usage
  *
  */

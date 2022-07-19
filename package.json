@@ -1,21 +1,21 @@
 {
-  "name": "@chainsafe/chainbridge-sdk",
+  "name": "@chainsafe/sygma-sdk",
   "version": "1.1.1",
-  "description": "Chainbridge SDK",
+  "description": "Sygma SDK",
   "main": "index.js",
   "private": true,
   "scripts": {
-    "sdk:build": "yarn wsrun -p @chainsafe/chainbridge-sdk-core -c build",
-    "sdk:cleanDist": "yarn wsrun -p @chainsafe/chainbridge-sdk -c clean",
-    "sdk:test": "yarn wsrun -p @chainsafe/chainbridge-sdk -c test",
-    "sdk:test:unit": "yarn wsrun -p @chainsafe/chainbridge-sdk -c test:unit",
-    "start:react-example": "yarn wsrun -p @chainsafe/chainbridge-sdk-react-example -c start",
-    "sdk:run-local-example": "yarn wsrun -p @chainsafe/chainbridge-sdk-node-example -c run:local-ex",
-    "sdk:run-ganache-example": "yarn wsrun -p @chainsafe/chainbridge-sdk-node-example -c run:ganache-ex"
+    "sdk:build": "yarn wsrun -p @chainsafe/sygma-sdk-core -c build",
+    "sdk:cleanDist": "yarn wsrun -p @chainsafe/sygma-sdk -c clean",
+    "sdk:test": "yarn wsrun -p @chainsafe/sygma-sdk -c test",
+    "sdk:test:unit": "yarn wsrun -p @chainsafe/sygma-sdk -c test:unit",
+    "start:react-example": "yarn wsrun -p @chainsafe/sygma-sdk-react-example -c start",
+    "sdk:run-local-example": "yarn wsrun -p @chainsafe/sygma-sdk-node-example -c run:local-ex",
+    "sdk:run-ganache-example": "yarn wsrun -p @chainsafe/sygma-sdk-node-example -c run:ganache-ex"
   },
   "keywords": [],
   "author": "Chainsafe product team",
-  "license": "MIT",
+  "license": "LGPL",
   "workspaces": {
     "packages": [
       "packages/*",
