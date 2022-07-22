@@ -1,11 +1,11 @@
-<p align="center"><a href="https://https://chainsafe.io/"><img width="250" title="Chainbridge UI" src='assets/full-logo.png'/></a></p>
+<p align="center"><a href="https://buildwithsygma.com"><img width="250" title="Chainbridge UI" src='assets/full-logo.png'/></a></p>
 
 **Disclaimer: The Sygma repo is currently closed as it is under audit. It will be made publicly available in August 2022 once the audit is complete.**
 
 # Sygma SDK
 
 ## Introduction
-**Sygma SDK** is an OpenSource (under GNU Lesser General Public License v3.0) SDK for developers to work with  Chainsafe [Sygma](https://github.com/ChainSafe/sygma). The SDK consist of methods that enable bridging capabilities between Ethereum networks.
+**Sygma SDK** is an OpenSource (under GNU Lesser General Public License v3.0) SDK for developers to work with [Sygma](https://github.com/ChainSafe/sygma). The SDK consist of methods that enable bridging capabilities between Ethereum networks.
 
 ***NOTE*** the SDK is under an active development so can be broken occasionally.
 
