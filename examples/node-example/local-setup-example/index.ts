@@ -1,4 +1,4 @@
-import { Sygma, BridgeData } from "@chainsafe/chainbridge-sdk-core";
+import { Sygma, BridgeData } from "@chainsafe/sygma-sdk-core";
 
 const depositEventhandler = ({
   destinationDomainId,
@@ -81,24 +81,24 @@ const proposalExecutionEventHandler = async (
     bridgeSetup,
   };
 
-  const chainbridge = new Sygma(setup);
-  console.log("🚀 ~ file: index.ts ~ line 101 ~ chainbridge", chainbridge)
+  const sygma = new Sygma(setup);
+  console.log("🚀 ~ file: index.ts ~ line 101 ~ sygma", sygma)
 
-  chainbridge.initializeConnectionRPC(notEve)
+  sygma.initializeConnectionRPC(notEve)
 
-  const basicFee = await chainbridge.fetchBasicFeeData({
+  const basicFee = await sygma.fetchBasicFeeData({
     amount: "1",
     recipientAddress: "0xF4314cb9046bECe6AA54bb9533155434d0c76909",
   });
   console.log("🚀 ~ file: index.ts ~ line 81 ~ basicFee", basicFee)
 
   if (!(basicFee instanceof Error)) {
-    const approvalTxReceipt = await chainbridge.approve({
+    const approvalTxReceipt = await sygma.approve({
       amounForApproval: "1",
     });
     console.log("🚀 ~ file: index.ts ~ line 89 ~ approvalTxReceipt", approvalTxReceipt)
 
-    const depositTxReceipt = await chainbridge.deposit({
+    const depositTxReceipt = await sygma.deposit({
       amount: "1",
       recipientAddress: "0xF4314cb9046bECe6AA54bb9533155434d0c76909",
       feeData: basicFee.feeData,
@@ -106,9 +106,9 @@ const proposalExecutionEventHandler = async (
 
     console.log("🚀 ~ file: index.ts ~ line 91 ~ depositReceipt", depositTxReceipt)
 
-    chainbridge.createHomeChainDepositEventListener(depositEventhandler)
+    sygma.createHomeChainDepositEventListener(depositEventhandler)
 
-    chainbridge.destinationProposalExecutionEventListener(proposalExecutionEventHandler)
+    sygma.destinationProposalExecutionEventListener(proposalExecutionEventHandler)
   }
 
 })();
