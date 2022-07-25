@@ -5,11 +5,11 @@
   "license": "MIT",
   "private": "true",
   "scripts": {
-    "run:ganache-ex": "ts-node ./ganache-example/index.ts",
     "run:local-ex": "ts-node ./local-setup-example/index.ts",
     "start:dev": "nodemon"
   },
   "dependencies": {
+    "@chainsafe/sygma-sdk-core": "1.1.4",
     "chalk": "^5.0.1",
     "ethereum-waffle": "^3.4.4",
     "ethers": "5.6.2",
