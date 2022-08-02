@@ -60,6 +60,7 @@ import Connector from './connectors/Connectors';
   }
 
   public async initializeConnectionRPC(address: string) {
+    this.bridgeSetupList = Object.values(this.bridgeSetup)
     const providersAndSigners = computeProvidersAndSignersRPC(this.bridgeSetup, address);
     this.providers = {
       chain1: providersAndSigners!['chain1' as keyof BridgeData]
@@ -93,6 +94,7 @@ import Connector from './connectors/Connectors';
   public async initializeConnectionFromWeb3Provider(
     web3ProviderInstance: any,
   ) {
+    this.bridgeSetupList = Object.values(this.bridgeSetup)
     const providersAndSigners = computeProvidersAndSignersWeb3(
       this.bridgeSetup,
       web3ProviderInstance,
@@ -453,7 +455,7 @@ import Connector from './connectors/Connectors';
       sender,
       recipientAddress,
       fromDomainID: parseInt(this.bridgeSetup.chain1.domainId),
-      toDomainID: parseInt(this.bridgeSetup.chain1.domainId),
+      toDomainID: parseInt(this.bridgeSetup.chain2.domainId),
       tokenResource: erc20Address,
       tokenAmount: Number(amount),
       feeOracleBaseUrl,
