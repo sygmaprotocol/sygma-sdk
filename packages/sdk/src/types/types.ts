@@ -12,21 +12,31 @@ export type Setup = {
   feeOracleSetup?: FeeOracleData;
 };
 
+export type TokenConfig = {
+  address: string;
+  name?: string;
+  symbol?: string;
+  imageUri?: string;
+  resourceId: string;
+  isNativeWrappedToken?: boolean;
+  decimals?: number;
+  isDoubleApproval?: boolean;
+};
+
 export type SygmaBridgeSetup = {
   name: string;
-  networkId: string;
+  networkId: number;
   bridgeAddress: string;
-  erc20Address: string;
   erc20HandlerAddress: string;
   feeOracleHandlerAddress?: string;
   feeSettings: {
     type: 'basic' | 'feeOracle' | 'none';
     address: string;
   };
-  erc20ResourceID: string;
   rpcURL: string;
   domainId: string;
   decimals: number;
+  tokens: TokenConfig[]
 };
 
 export type SygmaBridgeSetupList = SygmaBridgeSetup[]

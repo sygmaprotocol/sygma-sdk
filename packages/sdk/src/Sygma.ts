@@ -51,6 +51,7 @@ import Connector from './connectors/Connectors';
   private providers: ConnectorProvider = {chain1: undefined, chain2: undefined};
   private erc20Bridge: ERC20Bridge;
   private feeOracleSetup?: FeeOracleData;
+  public selectedToken: number = 0
 
   public constructor({ bridgeSetupList, bridgeSetup, feeOracleSetup }: Setup) {
     this.bridgeSetupList = bridgeSetupList ?? undefined;
@@ -91,10 +92,22 @@ import Connector from './connectors/Connectors';
     return this
   }
 
+  public selectHomeNetwork(homeNetworkChainId: number) {
+    return this.bridgeSetupList?.find(el => el.networkId === homeNetworkChainId)
+  }
+
+  public selectOneForDestination(homeNetworkChainId: number) {
+    return this.bridgeSetupList?.filter(el => el.networkId !== homeNetworkChainId)[0]
+  }
+
   public async initializeConnectionFromWeb3Provider(
     web3ProviderInstance: any,
   ) {
-    this.bridgeSetupList = Object.values(this.bridgeSetup)
+    const homeNetworkChainId = BigNumber.from(web3ProviderInstance.chainId).toNumber()
+    this.bridgeSetup = {
+      chain1: this.selectHomeNetwork(homeNetworkChainId)!,
+      chain2: this.selectOneForDestination(homeNetworkChainId)!
+    }
     const providersAndSigners = computeProvidersAndSignersWeb3(
       this.bridgeSetup,
       web3ProviderInstance,
@@ -203,7 +216,8 @@ import Connector from './connectors/Connectors';
 
   private computeContracts(): ChainbridgeContracts {
     return Object.keys(this.bridgeSetup).reduce((contracts: any, chain) => {
-      const { bridgeAddress, erc20Address } = this.bridgeSetup[chain as keyof BridgeData];
+      const { bridgeAddress } = this.bridgeSetup[chain as keyof BridgeData];
+      const erc20Address = this.bridgeSetup[chain as keyof BridgeData].tokens![this.selectedToken].address
 
       const signer = this.signers![chain as keyof BridgeData] ?? this.providers![chain as keyof BridgeData];
 
@@ -218,7 +232,8 @@ import Connector from './connectors/Connectors';
   }
 
   public computeContract(config: SygmaBridgeSetup, connector: Connector) {
-    const { bridgeAddress, erc20Address } = config;
+    const { bridgeAddress } = config;
+    const erc20Address = config.tokens![this.selectedToken].address
 
     const signer = connector.signer ?? connector.provider
 
@@ -340,7 +355,8 @@ import Connector from './connectors/Connectors';
     const provider = this.providers!.chain1;
     const bridgeToUse = this.bridges!.chain1!;
     const { erc20HandlerAddress } = this.bridgeSetup.chain1;
-    const { domainId, erc20ResourceID } = this.bridgeSetup.chain2;
+    const { domainId } = this.bridgeSetup.chain2;
+    const resourceId = this.getSelectedToken().resourceId
 
     return await this.erc20Bridge.transferERC20({
       amount,
@@ -350,7 +366,7 @@ import Connector from './connectors/Connectors';
       provider,
       erc20HandlerAddress,
       domainId,
-      resourceId: erc20ResourceID,
+      resourceId,
       feeData,
     });
   }
@@ -404,8 +420,8 @@ import Connector from './connectors/Connectors';
     const {
       feeSettings: { address: basicFeeHandlerAddress },
       domainId: fromDomainID,
-      erc20ResourceID: resourceID,
     } = this.bridgeSetup.chain1;
+    const resourceID = this.getSelectedToken().resourceId
     const { domainId: toDomainID } = this.bridgeSetup.chain2;
     const provider = this.providers!.chain1!;
     try {
@@ -435,16 +451,18 @@ import Connector from './connectors/Connectors';
     overridedResourceId?: string;
     oraclePrivateKey?: string;
   }) {
+    console.log(!this.feeOracleSetup, this.bridgeSetup.chain1.feeOracleHandlerAddress)
     if (
       !this.feeOracleSetup &&
-      this.bridgeSetup.chain1.feeOracleHandlerAddress
+      !this.bridgeSetup.chain1.feeSettings.address
     ) {
       console.log('No feeOracle config');
       return;
     }
     const { amount, recipientAddress, overridedResourceId, oraclePrivateKey } = params;
     const provider = this.providers!.chain1!;
-    const { erc20Address, feeOracleHandlerAddress = '' } = this.bridgeSetup.chain1;
+    const erc20Address = this.getSelectedTokenAddress()
+    const feeOracleHandlerAddress = this.bridgeSetup.chain1.feeSettings.address
     const { feeOracleBaseUrl } = this.feeOracleSetup!;
 
     // We use sender address or zero because of contracts
@@ -456,6 +474,7 @@ import Connector from './connectors/Connectors';
       recipientAddress,
       fromDomainID: parseInt(this.bridgeSetup.chain1.domainId),
       toDomainID: parseInt(this.bridgeSetup.chain2.domainId),
+
       tokenResource: erc20Address,
       tokenAmount: Number(amount),
       feeOracleBaseUrl,
@@ -481,10 +500,11 @@ import Connector from './connectors/Connectors';
    */
   public async hasTokenSupplies(amount: number): Promise<boolean> {
     const {
-      erc20Address: destinationTokenAddress,
       erc20HandlerAddress,
       decimals,
     } = this.bridgeSetup.chain2;
+    const destinationTokenAddress = this.bridgeSetup.chain2.tokens![this.selectedToken].address
+
     const provider = this.providers!.chain2;
 
     const hasTokenSupplies = await this.erc20Bridge.hasTokenSupplies(
@@ -521,11 +541,19 @@ import Connector from './connectors/Connectors';
   }
 
   public async getTokenInfo(chain: Directions) {
-    const { erc20Address } = this.bridgeSetup[chain];
+    const erc20Address = this.bridgeSetup[chain].tokens![this.selectedToken].address
     const provider = this.providers![chain];
     const address = await this.getSignerAddress(chain);
 
     return await this.erc20Bridge.getTokenInfo(erc20Address, address!, provider);
+  }
+
+  public getSelectedTokenAddress() {
+    return this.bridgeSetup.chain1.tokens[this.selectedToken].address
+  }
+
+  public getSelectedToken() {
+    return this.bridgeSetup.chain1.tokens[this.selectedToken]
   }
 
   public async getTokenBalance(erc20Contract: Erc20Detailed, address: string): Promise<BigNumber> {
