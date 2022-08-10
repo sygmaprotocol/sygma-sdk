@@ -1083,8 +1083,22 @@
   resolved "https://registry.yarnpkg.com/@chainsafe/chainbridge-contracts/-/chainbridge-contracts-3.0.1.tgz#d6ef0eb103a11746596633c9f18d3351055b24a5"
   integrity sha512-ZpuHICa82eSLSQZCwIskwRa6D9j5MaY/XrEY5iVpDSTPkbQTokfQuQ2sAPlgdtIT+U6Xt+eoEX/h96698QrU8w==
 
-"@chainsafe/sygma-sdk-core@file:packages/sdk/dist":
-  version "0.0.0"
+"@chainsafe/chainbridge-contracts@3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@chainsafe/chainbridge-contracts/-/chainbridge-contracts-3.1.0.tgz#a6a1ef4ec3d3901ca3c93b547b58885562597063"
+  integrity sha512-dpliIpw8ibBGFBSs7+RFuMBlNSm1NAVRT2YgeC7ohPp0D2csz46hIGCwqSLsa4XiKqTttDWMT7ZfotdiVRgixw==
+
+"@chainsafe/sygma-sdk-core@1.1.4":
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@chainsafe/sygma-sdk-core/-/sygma-sdk-core-1.1.4.tgz#8826321b81d9d8b6dacd111167f6d256a2da87fe"
+  integrity sha512-hpoDOGHeAAhY48JgsTj02jC/+OcCL8vFE355l+abG/pa5HNwwOXnznmU1uitZWwiR5p6LWSgMieudqMHiBEBJg==
+  dependencies:
+    "@chainsafe/chainbridge-contracts" "3.0.1"
+    eth-crypto "^2.3.0"
+    ganache "^7.1.0"
+    node-fetch "2.6.1"
+    react-hook-form "^7.30.0"
+    web3 "^1.7.3"
 
 "@changesets/apply-release-plan@^6.0.0":
   version "6.0.0"
