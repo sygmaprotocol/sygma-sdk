@@ -4,7 +4,7 @@
 	"description": "Core primitives for bridging and message passing",
 	"main": "dist/src/index.js",
 	"types": "dist/src/index.d.ts",
-	 "publishConfig": {
+	"publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
   },
@@ -16,7 +16,7 @@
 		"run:all": "concurrently \"yarn run prepareNodes\" \"yarn run test\"",
 		"build": "tsc",
 		"run:nodes": "docker-compose -f docker-compose.yml up",
-		"clean": "rm -rf ./dist",
+		"clean": "rm -rf ./dist"
 	},
 	"keywords": ["chainsafe", "web3", "bridge", "ethereum"],
 	"author": "Chainsafe Products Team",

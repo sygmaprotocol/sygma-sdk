@@ -421,7 +421,7 @@ import Connector from './connectors/Connectors';
       feeSettings: { address: basicFeeHandlerAddress },
       domainId: fromDomainID,
     } = this.bridgeSetup.chain1;
-    const resourceID = this.getSelectedToken().resourceId
+    const { resourceId: resourceID } = this.getSelectedToken();
     const { domainId: toDomainID } = this.bridgeSetup.chain2;
     const provider = this.providers!.chain1!;
     try {
@@ -451,7 +451,6 @@ import Connector from './connectors/Connectors';
     overridedResourceId?: string;
     oraclePrivateKey?: string;
   }) {
-    console.log(!this.feeOracleSetup, this.bridgeSetup.chain1.feeOracleHandlerAddress)
     if (
       !this.feeOracleSetup &&
       !this.bridgeSetup.chain1.feeSettings.address
@@ -462,7 +461,7 @@ import Connector from './connectors/Connectors';
     const { amount, recipientAddress, overridedResourceId, oraclePrivateKey } = params;
     const provider = this.providers!.chain1!;
     const erc20Address = this.getSelectedTokenAddress()
-    const feeOracleHandlerAddress = this.bridgeSetup.chain1.feeSettings.address
+    const { address: feeOracleHandlerAddress} = this.bridgeSetup.chain1.feeSettings
     const { feeOracleBaseUrl } = this.feeOracleSetup!;
 
     // We use sender address or zero because of contracts
