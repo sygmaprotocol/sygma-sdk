@@ -4,6 +4,10 @@
   "description": "Sygma SDK",
   "main": "index.js",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ChainSafe/sygma-sdk"
+  },
   "scripts": {
     "sdk:build": "yarn wsrun -p @chainsafe/sygma-sdk-core -c build",
     "sdk:cleanDist": "yarn wsrun -p @chainsafe/sygma-sdk -c clean",
