@@ -9,7 +9,8 @@ jest.mock('@chainsafe/chainbridge-contracts', () => ({
     connect: () => {
       console.log('connect')
       return {
-        calculateFee: async () => [BigNumber.from('0x174876e800'), '0x0']
+        calculateFee: async () => [BigNumber.from('0x174876e800'), '0x0'],
+        _fee: async () => BigNumber.from('0x174876e800')
       }
     }
   }
@@ -31,13 +32,14 @@ describe('CalculateBasicFee', () => {
 
     const { calculatedRate } = res as FeeDataResult
 
-    expect(calculatedRate).toBe('0x174876e800')
+    expect(calculatedRate).toBe('0.0000001')
   })
 
   it('Should return and error', async () => {
     (BasicFeeHandler__factory.connect as unknown) = async () => {
       return {
-        calculateFee: async () => Promise.reject(new Error('Fee Error'))
+        calculateFee: async () => Promise.reject(new Error('Fee Error')),
+        _fee: async () => BigNumber.from('0x174876e800')
       }
     }
 

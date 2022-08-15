@@ -43,11 +43,11 @@ export const createOracleFeeData = (
     toHex(oracleResponse.expirationTimestamp, 32).substr(2) + // timestamp: uint256
     toHex(oracleResponse.fromDomainID, 32).substr(2) + // fromDomainID: uint256
     toHex(oracleResponse.toDomainID, 32).substr(2) + // toDomainID: uint256
-    // addPadding(oracleResponse.resourceID, 32).substr(2); // resourceID: bytes32
-    addPadding(
-      tokenResource.substr(2) + toHex(oracleResponse.fromDomainID, 1).substr(2),
-      32,
-    ).substr(2);
+    (oracleResponse.resourceID).substr(2); // resourceID: bytes32
+    // addPadding(
+    //   tokenResource.substr(2) + toHex(oracleResponse.fromDomainID, 1).substr(2),
+    //   32,
+    // ).substr(2);
 
     let signature
     if (oraclePrivateKey) {
@@ -68,7 +68,7 @@ export const calculateFeeData = async ({
   recipientAddress,
   fromDomainID,
   toDomainID,
-  tokenResource,
+  resourceID,
   tokenAmount,
   feeOracleBaseUrl,
   feeOracleHandlerAddress,
@@ -80,14 +80,13 @@ export const calculateFeeData = async ({
   recipientAddress: string;
   fromDomainID: number;
   toDomainID: number;
-  tokenResource: string;
+  resourceID: string;
   tokenAmount: number;
   feeOracleBaseUrl: string;
   feeOracleHandlerAddress: string;
   overridedResourceId?: string;
   oraclePrivateKey?: string;
 }): Promise<FeeDataResult | undefined> => {
-  const resourceID = createResourceID(tokenResource, fromDomainID);
   const depositData = createERCDepositData(tokenAmount, 20, recipientAddress);
   let oracleResponse;
   try {
@@ -96,7 +95,7 @@ export const calculateFeeData = async ({
       fromDomainID,
       toDomainID,
       // tokenResource,
-      resourceID: overridedResourceId ? overridedResourceId : tokenResource, // dirty hack for localsetup
+      resourceID: overridedResourceId ? overridedResourceId : resourceID, // dirty hack for localsetup
     });
   } catch (e: any) {
     return e;
@@ -104,7 +103,7 @@ export const calculateFeeData = async ({
   const feeData = createOracleFeeData(
     oracleResponse as OracleResource,
     tokenAmount,
-    tokenResource,
+    resourceID,
     oraclePrivateKey,
   );
   const FeeHandlerWithOracleInstance = FeeHandlerWithOracle__factory.connect(
@@ -119,10 +118,12 @@ export const calculateFeeData = async ({
     depositData,
     feeData,
   );
-  const result = {
+  const result: FeeDataResult = {
+    fee: res.fee,
     calculatedRate: ethers.utils.formatEther(res.fee.toString()),
     erc20TokenAddress: res.tokenAddress,
     feeData,
+    type: 'feeOracle'
   };
   console.log('⛓️  ~ formatted result of feeHandler', result);
   return result;
@@ -141,7 +142,12 @@ export const requestFeeFromFeeOracle = async ({
 }) => {
   try {
     const response = await fetch(
-      `${feeOracleBaseUrl}/v1/rate/from/${fromDomainID}/to/${toDomainID}/token/${resourceID}`,
+      `${feeOracleBaseUrl}/v1/rate/from/${fromDomainID}/to/${toDomainID}/resourceid/${resourceID}`,
+      {
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      }
     );
     if (response.status !== 200) {
       throw(new Error(response.statusText));
