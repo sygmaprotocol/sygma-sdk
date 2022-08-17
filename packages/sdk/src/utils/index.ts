@@ -55,7 +55,7 @@ export const computeProvidersAndSignersWeb3 = (
   };
 };
 
-export const setConnectorRPC = (rpcUrl?: string, address?: string): Connector => {
+export const setConnectorRPC = (rpcUrl: string, address?: string): Connector => {
   return Connector.initRPC(rpcUrl, address);
 };
 
