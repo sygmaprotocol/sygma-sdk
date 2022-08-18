@@ -83,12 +83,6 @@ export class Sygma implements SygmaSDK {
     // setup bridges contracts
     this.bridges = computeBridges(contracts);
 
-    const areFeeSettings = this.checkFeeSettings(this.bridgeSetup);
-
-    if (!areFeeSettings) {
-      console.warn('No fee settings provided');
-    }
-
     return this;
   }
 
@@ -131,11 +125,6 @@ export class Sygma implements SygmaSDK {
     // setup bridges contracts
     this.bridges = computeBridges(contracts);
 
-    const areFeeSettings = this.checkFeeSettings(this.bridgeSetup);
-
-    if (!areFeeSettings) {
-      console.warn('No fee settings provided');
-    }
     return this;
   }
 
@@ -162,10 +151,6 @@ export class Sygma implements SygmaSDK {
     this.erc20!['chain1'] = contracts.erc20;
     this.bridges!['chain1'] = contracts.bridge;
 
-    if (!chain1.feeSettings) {
-      console.warn('No fee settings provided');
-    }
-
     return this;
   }
 
@@ -188,29 +173,9 @@ export class Sygma implements SygmaSDK {
     this.erc20!['chain2'] = contracts.erc20;
     this.bridges!['chain2'] = contracts.bridge;
 
-    if (!chain2.feeSettings) {
-      console.warn('No fee settings provided');
-    }
-
     return this;
   }
 
-  private checkFeeSettings(bridgeSetup: BridgeData): boolean {
-    return Object.keys(bridgeSetup)
-      .reduce((acc, chain) => {
-        const {
-          feeSettings: { type },
-        } = bridgeSetup[chain as keyof BridgeData];
-        if (type !== 'none') {
-          acc = [...acc, true];
-          return acc;
-        } else {
-          acc = [...acc, false];
-          return acc;
-        }
-      }, [] as boolean[])
-      .every(bool => !!bool);
-  }
 
   private computeContracts(): ChainbridgeContracts {
     return Object.keys(this.bridgeSetup).reduce((contracts: any, chain) => {
@@ -395,7 +360,7 @@ export class Sygma implements SygmaSDK {
     const { amount, overridedResourceId, oraclePrivateKey, recipientAddress } = params;
     const {
       feeSettings: { type },
-    } = this.bridgeSetup.chain1;
+    } = this.getSelectedToken()
 
     if (type === 'none') {
       console.warn('No fee settings provided');
@@ -420,9 +385,11 @@ export class Sygma implements SygmaSDK {
   public async fetchBasicFeeData(params: { amount: string; recipientAddress: string }) {
     const { amount, recipientAddress } = params;
     const {
-      feeSettings: { address: basicFeeHandlerAddress },
       domainId: fromDomainID,
     } = this.bridgeSetup.chain1;
+    const {
+      feeSettings: { address: basicFeeHandlerAddress },
+    } = this.getSelectedToken();
     const { resourceId: resourceID } = this.getSelectedToken();
     const { domainId: toDomainID } = this.bridgeSetup.chain2;
     const provider = this.providers!.chain1!;
@@ -453,14 +420,17 @@ export class Sygma implements SygmaSDK {
     overridedResourceId?: string;
     oraclePrivateKey?: string;
   }) {
-    if (!this.feeOracleSetup && !this.bridgeSetup.chain1.feeSettings.address) {
+
+    if (!this.feeOracleSetup && !this.getSelectedToken().feeSettings.address) {
       console.log('No feeOracle config');
       return;
     }
     const { amount, recipientAddress, overridedResourceId, oraclePrivateKey } = params;
     const provider = this.providers!.chain1!;
-    const { resourceId: resourceID } = this.getSelectedToken();
-    const { address: feeOracleHandlerAddress } = this.bridgeSetup.chain1.feeSettings;
+    const {
+      resourceId: resourceID,
+      feeSettings: { address: feeOracleHandlerAddress },
+    } = this.getSelectedToken();
     const { feeOracleBaseUrl } = this.feeOracleSetup!;
 
     // We use sender address or zero because of contracts
@@ -543,6 +513,14 @@ export class Sygma implements SygmaSDK {
     return await this.erc20Bridge.getTokenInfo(erc20Address, address!, provider);
   }
 
+  public setSelectedToken(address: string) {
+    const tokenIdx = this.bridgeSetup.chain1.tokens.findIndex(el => el.address === address);
+    const erc20Connected = this.connectERC20(address, this.providers?.chain1);
+    this.erc20!.chain1 = erc20Connected
+
+    this.selectedToken = tokenIdx
+  }
+
   public getSelectedTokenAddress() {
     return this.bridgeSetup.chain1.tokens[this.selectedToken].address;
   }
@@ -590,7 +568,7 @@ export class Sygma implements SygmaSDK {
 
   public async checkCurrentAllowanceForFeeHandler(recipientAddress: string) {
     const erc20ToUse = this.erc20!.chain1!;
-    const { address: erc20HandlerAddress } = this.bridgeSetup.chain1.feeSettings;
+    const { address: erc20HandlerAddress } = this.getSelectedToken();
 
     return await this.erc20Bridge.checkCurrentAllowance(
       recipientAddress,
@@ -604,7 +582,7 @@ export class Sygma implements SygmaSDK {
     const gasPrice = await this.isEIP1559MaxFeePerGas('chain1');
 
     const erc20ToUse = this.erc20!.chain1!;
-    const { address: erc20HandlerAddress } = this.bridgeSetup.chain1.feeSettings;
+    const { address: erc20HandlerAddress } = this.getSelectedToken();
 
     return await this.erc20Bridge.approve(
       amountForApprovalBN,

@@ -125,7 +125,7 @@ export const calculateFeeData = async ({
     feeData,
     type: 'feeOracle'
   };
-  console.log('⛓️  ~ formatted result of feeHandler', result);
+  console.log('⛓️ ~ formatted result of feeHandler', result);
   return result;
 };
 
