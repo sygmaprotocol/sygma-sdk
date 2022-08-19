@@ -40,8 +40,8 @@ export const computeProvidersAndSignersRPC = (
   address?: string,
 ): SygmaProviders => {
   return {
-    chain1: setConnectorRPC(bridgeSetup.chain1.rpcURL, address),
-    chain2: setConnectorRPC(bridgeSetup.chain2.rpcURL, address),
+    chain1: setConnectorRPC(bridgeSetup.chain1.rpcUrl, address),
+    chain2: setConnectorRPC(bridgeSetup.chain2.rpcUrl, address),
   };
 };
 
@@ -51,12 +51,12 @@ export const computeProvidersAndSignersWeb3 = (
 ): SygmaProviders => {
   return {
     chain1: setConnectorWeb3(web3providerInstance),
-    chain2: setConnectorRPC(bridgeSetup.chain2.rpcURL),
+    chain2: setConnectorRPC(bridgeSetup.chain2.rpcUrl),
   };
 };
 
-export const setConnectorRPC = (rpcURL?: string, address?: string): Connector => {
-  return Connector.initRPC(rpcURL, address);
+export const setConnectorRPC = (rpcUrl: string, address?: string): Connector => {
+  return Connector.initRPC(rpcUrl, address);
 };
 
 export const setConnectorWeb3 = (web3ProviderInstance: any): Connector => {

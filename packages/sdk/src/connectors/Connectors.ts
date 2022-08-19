@@ -28,7 +28,7 @@ export default class Connector {
    * @param [address]
    * @returns
    */
-  static initRPC(rpcURL?: string, address?: string) {
+  static initRPC(rpcURL: string, address?: string) {
     const provider = new Connector()
     provider.connectorProvider = new ethers.providers.JsonRpcProvider(rpcURL)
     if (address) {

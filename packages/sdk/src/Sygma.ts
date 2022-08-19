@@ -21,7 +21,7 @@ import {
   FeeOracleData,
   FeeDataResult,
   SygmaBridgeSetupList,
-  SygmaBridgeSetup
+  SygmaBridgeSetup,
 } from './types';
 import {
   computeBridges,
@@ -29,7 +29,7 @@ import {
   computeProvidersAndSignersWeb3,
   computeProvidersAndSignersRPC,
   setConnectorWeb3,
-  setConnectorRPC
+  setConnectorRPC,
 } from './utils';
 import { ERC20Bridge } from './chains';
 import { calculateBasicfee, calculateFeeData } from './fee';
@@ -41,17 +41,17 @@ import Connector from './connectors/Connectors';
  *
  */
 
- export class Sygma implements SygmaSDK {
+export class Sygma implements SygmaSDK {
   public bridgeSetupList: SygmaBridgeSetupList | undefined;
   private ethersProvider: Provider = undefined;
   public bridgeSetup: BridgeData;
-  public bridges: Bridges = {chain1: undefined, chain2: undefined};
-  private signers: ConnectorSigner = {chain1: undefined, chain2: undefined};
-  private erc20: SygmaErc20Contracts = {chain1: undefined, chain2: undefined};
-  private providers: ConnectorProvider = {chain1: undefined, chain2: undefined};
+  public bridges: Bridges = { chain1: undefined, chain2: undefined };
+  private signers: ConnectorSigner = { chain1: undefined, chain2: undefined };
+  private erc20: SygmaErc20Contracts = { chain1: undefined, chain2: undefined };
+  private providers: ConnectorProvider = { chain1: undefined, chain2: undefined };
   private erc20Bridge: ERC20Bridge;
   private feeOracleSetup?: FeeOracleData;
-  public selectedToken: number = 0
+  public selectedToken: number = 0;
 
   public constructor({ bridgeSetupList, bridgeSetup, feeOracleSetup }: Setup) {
     this.bridgeSetupList = bridgeSetupList ?? undefined;
@@ -61,7 +61,7 @@ import Connector from './connectors/Connectors';
   }
 
   public async initializeConnectionRPC(address: string) {
-    this.bridgeSetupList = Object.values(this.bridgeSetup)
+    this.bridgeSetupList = Object.values(this.bridgeSetup);
     const providersAndSigners = computeProvidersAndSignersRPC(this.bridgeSetup, address);
     this.providers = {
       chain1: providersAndSigners!['chain1' as keyof BridgeData]
@@ -89,25 +89,23 @@ import Connector from './connectors/Connectors';
       console.warn('No fee settings provided');
     }
 
-    return this
+    return this;
   }
 
   public selectHomeNetwork(homeNetworkChainId: number) {
-    return this.bridgeSetupList?.find(el => el.networkId === homeNetworkChainId)
+    return this.bridgeSetupList?.find(el => el.networkId === homeNetworkChainId);
   }
 
   public selectOneForDestination(homeNetworkChainId: number) {
-    return this.bridgeSetupList?.filter(el => el.networkId !== homeNetworkChainId)[0]
+    return this.bridgeSetupList?.filter(el => el.networkId !== homeNetworkChainId)[0];
   }
 
-  public async initializeConnectionFromWeb3Provider(
-    web3ProviderInstance: any,
-  ) {
-    const homeNetworkChainId = BigNumber.from(web3ProviderInstance.chainId).toNumber()
+  public async initializeConnectionFromWeb3Provider(web3ProviderInstance: any) {
+    const homeNetworkChainId = BigNumber.from(web3ProviderInstance.chainId).toNumber();
     this.bridgeSetup = {
       chain1: this.selectHomeNetwork(homeNetworkChainId)!,
-      chain2: this.selectOneForDestination(homeNetworkChainId)!
-    }
+      chain2: this.selectOneForDestination(homeNetworkChainId)!,
+    };
     const providersAndSigners = computeProvidersAndSignersWeb3(
       this.bridgeSetup,
       web3ProviderInstance,
@@ -138,63 +136,63 @@ import Connector from './connectors/Connectors';
     if (!areFeeSettings) {
       console.warn('No fee settings provided');
     }
-    return this
+    return this;
   }
 
   public async setHomeWeb3Provider(web3ProviderInstance: any, domainId?: string) {
-    const connector = setConnectorWeb3(web3ProviderInstance)
-    const network = await connector.provider?.getNetwork()
-    let chain1: SygmaBridgeSetup | undefined
+    const connector = setConnectorWeb3(web3ProviderInstance);
+    const network = await connector.provider?.getNetwork();
+    let chain1: SygmaBridgeSetup | undefined;
     // DomainId is used only for Local Setup
     if (domainId) {
-      chain1 = this.bridgeSetupList!.find((el) => el.domainId === domainId)
+      chain1 = this.bridgeSetupList!.find(el => el.domainId === domainId);
     } else {
-      chain1 = this.bridgeSetupList!.find((el) => Number(el.networkId) === network!.chainId)
+      chain1 = this.bridgeSetupList!.find(el => Number(el.networkId) === network!.chainId);
     }
 
     if (!chain1) {
-      throw `Cannot find network with chainId: ${network} in config`
+      throw `Cannot find network with chainId: ${network} in config`;
     }
 
-    this.bridgeSetup.chain1 = chain1
-    this.providers!.chain1 = connector.provider
-    this.signers!.chain1 = connector.signer
+    this.bridgeSetup.chain1 = chain1;
+    this.providers!.chain1 = connector.provider;
+    this.signers!.chain1 = connector.signer;
 
     const contracts = this.computeContract(chain1, connector);
-    this.erc20!['chain1'] = contracts.erc20
-    this.bridges!['chain1'] = contracts.bridge
+    this.erc20!['chain1'] = contracts.erc20;
+    this.bridges!['chain1'] = contracts.bridge;
 
     if (!chain1.feeSettings) {
       console.warn('No fee settings provided');
     }
 
-    return this
+    return this;
   }
 
   public async setDestination(domainId: string) {
-    let chain2: SygmaBridgeSetup | undefined
+    let chain2: SygmaBridgeSetup | undefined;
     if (domainId) {
-      chain2 = this.bridgeSetupList!.find((el) => el.domainId === domainId)
+      chain2 = this.bridgeSetupList!.find(el => el.domainId === domainId);
     }
 
     if (!chain2) {
-      throw `Cannot find network with domainID: ${domainId} in config`
+      throw `Cannot find network with domainID: ${domainId} in config`;
     }
 
-    const connector = setConnectorRPC(chain2.rpcURL)
+    const connector = setConnectorRPC(chain2.rpcUrl);
 
-    this.providers!.chain2 = connector.provider
-    this.signers!.chain2 = connector.signer
+    this.providers!.chain2 = connector.provider;
+    this.signers!.chain2 = connector.signer;
 
     const contracts = this.computeContract(chain2, connector);
-    this.erc20!['chain2'] = contracts.erc20
-    this.bridges!['chain2'] = contracts.bridge
+    this.erc20!['chain2'] = contracts.erc20;
+    this.bridges!['chain2'] = contracts.bridge;
 
     if (!chain2.feeSettings) {
       console.warn('No fee settings provided');
     }
 
-    return this
+    return this;
   }
 
   private checkFeeSettings(bridgeSetup: BridgeData): boolean {
@@ -217,9 +215,11 @@ import Connector from './connectors/Connectors';
   private computeContracts(): ChainbridgeContracts {
     return Object.keys(this.bridgeSetup).reduce((contracts: any, chain) => {
       const { bridgeAddress } = this.bridgeSetup[chain as keyof BridgeData];
-      const erc20Address = this.bridgeSetup[chain as keyof BridgeData].tokens![this.selectedToken].address
+      const erc20Address = this.bridgeSetup[chain as keyof BridgeData].tokens![this.selectedToken]
+        .address;
 
-      const signer = this.signers![chain as keyof BridgeData] ?? this.providers![chain as keyof BridgeData];
+      const signer =
+        this.signers![chain as keyof BridgeData] ?? this.providers![chain as keyof BridgeData];
 
       const bridge = this.connectToBridge(bridgeAddress, signer!);
       const erc20Connected = this.connectERC20(erc20Address, signer!);
@@ -233,13 +233,13 @@ import Connector from './connectors/Connectors';
 
   public computeContract(config: SygmaBridgeSetup, connector: Connector) {
     const { bridgeAddress } = config;
-    const erc20Address = config.tokens![this.selectedToken].address
+    const erc20Address = config.tokens![this.selectedToken].address;
 
-    const signer = connector.signer ?? connector.provider
+    const signer = connector.signer ?? connector.provider;
 
     const bridge = this.connectToBridge(bridgeAddress, signer!);
     const erc20 = this.connectERC20(erc20Address, signer!);
-    return { bridge, erc20 }
+    return { bridge, erc20 };
   }
 
   private connectToBridge(bridgeAddress: string, signer: Signer | Provider): Bridge {
@@ -270,10 +270,9 @@ import Connector from './connectors/Connectors';
     return Erc20DetailedFactory.connect(erc20Address, signer!);
   }
 
-  public createDepositEventListener(chain: Directions, signer: Signer): BridgeEventCallback {
+  public createDepositEventListener(chain: Directions, userAddress: string): BridgeEventCallback {
     const bridge = this.bridges![chain]!;
-
-    const depositFilter = bridge.filters.Deposit(null, null, null, signer!._address, null, null);
+    const depositFilter = bridge.filters.Deposit(null, null, null, userAddress, null, null);
 
     const depositEventListner = (callbackFn: any) =>
       bridge.once(
@@ -288,13 +287,14 @@ import Connector from './connectors/Connectors';
 
   public async removeDepositEventListener(chain: Directions, signer: Signer) {
     const bridge = this.bridges![chain]!;
-    const depositFilter = bridge.filters.Deposit(null, null, null, signer!._address, null, null);
-    return bridge.removeAllListeners(depositFilter)
+    const depositFilter = bridge.filters.Deposit(null, null, null, null, null, null);
+    return bridge.removeAllListeners(depositFilter);
   }
 
-  public createHomeChainDepositEventListener(callback: any) {
+  public async createHomeChainDepositEventListener(callback: any) {
     const signer = this.signers!['chain1'];
-    return this.createDepositEventListener('chain1', signer)(callback);
+    const userAddress = await signer?.getAddress()
+    return this.createDepositEventListener('chain1', userAddress!)(callback);
   }
 
   public removeHomeChainDepositEventListener() {
@@ -302,13 +302,18 @@ import Connector from './connectors/Connectors';
     return this.removeDepositEventListener('chain1', signer);
   }
 
-  public createProposalExecutionEventListener(chain: Directions) {
+  public createProposalExecutionEventListener(chain: Directions, homeDepositNonce: number) {
+    const destination = this.bridgeSetup[chain]
     const bridge = this.bridges![chain]!;
     const proposalFilter = bridge.filters.ProposalExecution(null, null, null);
 
     const proposalExecutionEventListener = (callbackFn: any) =>
-      bridge.once(proposalFilter, (originDomainId, despositNonce, dataHash, tx) => {
-        callbackFn(originDomainId, despositNonce, dataHash, tx);
+      bridge.on(proposalFilter, (originDomainId, depositNonce, dataHash, tx) => {
+        console.log("🚀 ~ file: Sygma.ts ~ line 306 ~ Sygma ~ createProposalExecutionEventListener ~ homeDepositNonce", homeDepositNonce)
+        console.log("🚀 ~ file: Sygma.ts ~ line 312 ~ Sygma ~ bridge.on ~ depositNonce", depositNonce.toNumber())
+        if (originDomainId === Number(destination.domainId) && depositNonce.toNumber() === homeDepositNonce) {
+          callbackFn(originDomainId, depositNonce, dataHash, tx);
+        }
       });
 
     return proposalExecutionEventListener;
@@ -317,22 +322,22 @@ import Connector from './connectors/Connectors';
   public proposalExecutionEventListenerCount(chain: Directions) {
     const bridge = this.bridges![chain]!;
     const proposalFilter = bridge.filters.ProposalExecution(null, null, null);
-    const count = bridge.listenerCount(proposalFilter)
+    const count = bridge.listenerCount(proposalFilter);
     return count;
   }
 
   public removeProposalExecutionEventListener(chain: Directions) {
     const bridge = this.bridges![chain]!;
     const proposalFilter = bridge.filters.ProposalExecution(null, null, null);
-    return bridge.removeAllListeners(proposalFilter)
+    return bridge.removeAllListeners(proposalFilter);
   }
 
-  public destinationProposalExecutionEventListener(callback: any) {
-    return this.createProposalExecutionEventListener('chain2')(callback);
+  public destinationProposalExecutionEventListener(homeDepositNonce: number, callback: any) {
+    return this.createProposalExecutionEventListener('chain2', homeDepositNonce)(callback);
   }
 
   public removeDestinationProposalExecutionEventListener() {
-    return this.removeProposalExecutionEventListener('chain2')
+    return this.removeProposalExecutionEventListener('chain2');
   }
   /**
    * @name deposit
@@ -349,14 +354,14 @@ import Connector from './connectors/Connectors';
   }: {
     amount: string;
     recipientAddress: string;
-    feeData: string;
+    feeData: FeeDataResult;
   }) {
     const erc20ToUse = this.erc20!.chain1!;
     const provider = this.providers!.chain1;
     const bridgeToUse = this.bridges!.chain1!;
     const { erc20HandlerAddress } = this.bridgeSetup.chain1;
     const { domainId } = this.bridgeSetup.chain2;
-    const resourceId = this.getSelectedToken().resourceId
+    const resourceId = this.getSelectedToken().resourceId;
 
     return await this.erc20Bridge.transferERC20({
       amount,
@@ -412,10 +417,7 @@ import Connector from './connectors/Connectors';
     }
   }
 
-  public async fetchBasicFeeData(params: {
-    amount: string;
-    recipientAddress: string;
-  }) {
+  public async fetchBasicFeeData(params: { amount: string; recipientAddress: string }) {
     const { amount, recipientAddress } = params;
     const {
       feeSettings: { address: basicFeeHandlerAddress },
@@ -451,21 +453,18 @@ import Connector from './connectors/Connectors';
     overridedResourceId?: string;
     oraclePrivateKey?: string;
   }) {
-    if (
-      !this.feeOracleSetup &&
-      !this.bridgeSetup.chain1.feeSettings.address
-    ) {
+    if (!this.feeOracleSetup && !this.bridgeSetup.chain1.feeSettings.address) {
       console.log('No feeOracle config');
       return;
     }
     const { amount, recipientAddress, overridedResourceId, oraclePrivateKey } = params;
     const provider = this.providers!.chain1!;
-    const erc20Address = this.getSelectedTokenAddress()
-    const { address: feeOracleHandlerAddress} = this.bridgeSetup.chain1.feeSettings
+    const { resourceId: resourceID } = this.getSelectedToken();
+    const { address: feeOracleHandlerAddress } = this.bridgeSetup.chain1.feeSettings;
     const { feeOracleBaseUrl } = this.feeOracleSetup!;
 
     // We use sender address or zero because of contracts
-    const sender = this.signers!.chain1?._address ?? ethers.constants.AddressZero;
+    const sender = await this.signers!.chain1?.getAddress() ?? ethers.constants.AddressZero;
 
     const feeData = calculateFeeData({
       provider,
@@ -474,7 +473,7 @@ import Connector from './connectors/Connectors';
       fromDomainID: parseInt(this.bridgeSetup.chain1.domainId),
       toDomainID: parseInt(this.bridgeSetup.chain2.domainId),
 
-      tokenResource: erc20Address,
+      resourceID,
       tokenAmount: Number(amount),
       feeOracleBaseUrl,
       feeOracleHandlerAddress,
@@ -498,11 +497,8 @@ import Connector from './connectors/Connectors';
    * @returns {Promise} boolean value
    */
   public async hasTokenSupplies(amount: number): Promise<boolean> {
-    const {
-      erc20HandlerAddress,
-      decimals,
-    } = this.bridgeSetup.chain2;
-    const destinationTokenAddress = this.bridgeSetup.chain2.tokens![this.selectedToken].address
+    const { erc20HandlerAddress, decimals } = this.bridgeSetup.chain2;
+    const destinationTokenAddress = this.bridgeSetup.chain2.tokens![this.selectedToken].address;
 
     const provider = this.providers!.chain2;
 
@@ -540,7 +536,7 @@ import Connector from './connectors/Connectors';
   }
 
   public async getTokenInfo(chain: Directions) {
-    const erc20Address = this.bridgeSetup[chain].tokens![this.selectedToken].address
+    const erc20Address = this.bridgeSetup[chain].tokens![this.selectedToken].address;
     const provider = this.providers![chain];
     const address = await this.getSignerAddress(chain);
 
@@ -548,11 +544,11 @@ import Connector from './connectors/Connectors';
   }
 
   public getSelectedTokenAddress() {
-    return this.bridgeSetup.chain1.tokens[this.selectedToken].address
+    return this.bridgeSetup.chain1.tokens[this.selectedToken].address;
   }
 
   public getSelectedToken() {
-    return this.bridgeSetup.chain1.tokens[this.selectedToken]
+    return this.bridgeSetup.chain1.tokens[this.selectedToken];
   }
 
   public async getTokenBalance(erc20Contract: Erc20Detailed, address: string): Promise<BigNumber> {
@@ -576,13 +572,39 @@ import Connector from './connectors/Connectors';
    * @param {object} argument
    * @param {string} params.amounForApproval
    */
-  public async approve({ amounForApproval}: { amounForApproval: string }) {
+  public async approve({ amounForApproval }: { amounForApproval: string }) {
     const amountForApprovalBN = utils.parseUnits(amounForApproval, 18);
 
     const gasPrice = await this.isEIP1559MaxFeePerGas('chain1');
 
     const erc20ToUse = this.erc20!.chain1!;
     const { erc20HandlerAddress } = this.bridgeSetup.chain1;
+
+    return await this.erc20Bridge.approve(
+      amountForApprovalBN,
+      erc20ToUse,
+      erc20HandlerAddress,
+      gasPrice as BigNumber,
+    );
+  }
+
+  public async checkCurrentAllowanceForFeeHandler(recipientAddress: string) {
+    const erc20ToUse = this.erc20!.chain1!;
+    const { address: erc20HandlerAddress } = this.bridgeSetup.chain1.feeSettings;
+
+    return await this.erc20Bridge.checkCurrentAllowance(
+      recipientAddress,
+      erc20ToUse,
+      erc20HandlerAddress,
+    );
+  }
+
+  public async approveFeeHandler({ amounForApproval }: { amounForApproval: string }) {
+    const amountForApprovalBN = utils.parseUnits(amounForApproval, 18);
+    const gasPrice = await this.isEIP1559MaxFeePerGas('chain1');
+
+    const erc20ToUse = this.erc20!.chain1!;
+    const { address: erc20HandlerAddress } = this.bridgeSetup.chain1.feeSettings;
 
     return await this.erc20Bridge.approve(
       amountForApprovalBN,

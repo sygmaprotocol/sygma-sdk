@@ -23,6 +23,8 @@ export type TokenConfig = {
   isDoubleApproval?: boolean;
 };
 
+export type FeeType = 'basic' | 'feeOracle' | 'none'
+
 export type SygmaBridgeSetup = {
   name: string;
   networkId: number;
@@ -30,10 +32,10 @@ export type SygmaBridgeSetup = {
   erc20HandlerAddress: string;
   feeOracleHandlerAddress?: string;
   feeSettings: {
-    type: 'basic' | 'feeOracle' | 'none';
+    type: FeeType;
     address: string;
   };
-  rpcURL: string;
+  rpcUrl: string;
   domainId: string;
   decimals: number;
   tokens: TokenConfig[]
@@ -64,6 +66,8 @@ export type OracleResource = {
 };
 
 export type FeeDataResult = {
+  type: FeeType,
+  fee: ethers.BigNumber;
   calculatedRate: string;
   erc20TokenAddress: string;
   feeData: string;

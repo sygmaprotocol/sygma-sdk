@@ -16,8 +16,8 @@ jest.mock('ethers', () => ({
   ethers: {
     providers: {
       Web3Provider: jest.fn(() => ({
-        getSigner: jest.fn()
-      }))
+        getSigner: jest.fn().mockReturnValue('0x00')
+      })),
     }
   }
 }))
@@ -26,14 +26,10 @@ describe("Connectors Browser", () => {
   global.window.ethereum = {}
 
   it("Should initialize Web3Provider", () => {
-    Connector.getInstance()
+    const connector = Connector.initFromWeb3(global.window.ethereum)
     expect(ethers.providers.Web3Provider).toHaveBeenCalled()
     expect(ethers.providers.Web3Provider).toHaveBeenCalledWith(window.ethereum, "any")
-  })
-  it("Should setup provider as undefined and get a warn message if no param is passed", () => {
-    delete global.window.ethereum
-    jest.spyOn(console, "warn")
-    Connector.getInstance()
-    expect(console.warn).toHaveBeenCalled()
+    expect(connector.signer).toEqual('0x00')
+
   })
 })

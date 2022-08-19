@@ -14,9 +14,9 @@
   },
 	"scripts": {
 		"prepareNodes": "cd ./integration/node1 && npx hardhat node --port 8545 & cd ./integration/node2 && npx hardhat node --port 8547 &",
-		"test": "jest --watchAll --detectOpenHandles",
+		"test": "jest --watchAll --detectOpenHandles --silent",
 		"test:unit": "jest --detectOpenHandles",
-		"testOracle": "jest --watchAll --testPathPattern=src",
+		"testOracle": "jest --watchAll --testPathPattern=src/fee/__test__/",
 		"run:all": "concurrently \"yarn run prepareNodes\" \"yarn run test\"",
 		"build": "tsc",
 		"run:nodes": "docker-compose -f docker-compose.yml up",
@@ -24,7 +24,7 @@
 	},
 	"keywords": ["chainsafe", "web3", "bridge", "ethereum"],
 	"author": "Chainsafe Products Team",
-	"license": "LGPL",
+	"license": "LGPL-3.0-or-later",
 	"devDependencies": {
 		"@types/jest": "27.4.1",
 		"concurrently": "7.0.0",

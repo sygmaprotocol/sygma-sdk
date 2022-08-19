@@ -41,12 +41,15 @@ export const calculateBasicfee = async ({
       depositData,
       feeData
     )
+    console.log("calculatedFee", calculatedFee[0])
 
     const [ fee, address ] = calculatedFee
     return {
+      fee,
       calculatedRate: ethers.utils.formatUnits(fee),
       erc20TokenAddress: address,
-      feeData: fee.toHexString()
+      feeData: fee.toHexString(),
+      type: 'basic'
     }
   } catch(error){
     console.error(error)

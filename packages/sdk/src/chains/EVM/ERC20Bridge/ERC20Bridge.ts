@@ -1,6 +1,6 @@
-import { Bridge, ERC20Handler__factory as Erc20HandlerFactory } from '@chainsafe/chainbridge-contracts'
+import { Bridge, ERC20Handler__factory as Erc20HandlerFactory, FeeHandlerRouter__factory } from '@chainsafe/chainbridge-contracts'
 import { utils, BigNumber, ContractReceipt } from 'ethers'
-import { Directions, Provider } from "../../../types";
+import { Directions, Provider, FeeDataResult } from "../../../types";
 import { processAmountForERC20Transfer, processLenRecipientAddress } from "../../../utils";
 import { Erc20Detailed } from '../../../Contracts/Erc20Detailed'
 import { Erc20DetailedFactory } from '../../../Contracts/Erc20DetailedFactory'
@@ -36,7 +36,7 @@ export default class ERC20Bridge {
     erc20HandlerAddress: string;
     domainId: string;
     resourceId: string;
-    feeData: string;
+    feeData: FeeDataResult;
   }): Promise<ContractReceipt | undefined> {
     const depositData = createERCDepositData(utils.parseUnits(amount), 20, recipientAddress);
 
@@ -56,10 +56,11 @@ export default class ERC20Bridge {
 
     console.warn('gas price stringified', gasPriceStringify);
 
+
     try {
-      const tx = await bridge.deposit(domainId, resourceId, depositData, feeData, {
+      const tx = await bridge.deposit(domainId, resourceId, depositData, feeData.feeData, {
         gasPrice: gasPriceStringify,
-        value: feeData,
+        value: feeData.type === 'basic' ? feeData.fee : undefined
       });
       const depositAction = await(tx).wait(1);
       return depositAction
