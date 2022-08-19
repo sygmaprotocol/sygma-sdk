@@ -31,7 +31,7 @@ export const calculateBasicfee = async ({
     basicFeeHandlerAddress,
     provider
   )
-  const _fee = await BasicFeeHandlerInstance._fee()
+
   try {
     const calculatedFee = await BasicFeeHandlerInstance.calculateFee(
       sender,
