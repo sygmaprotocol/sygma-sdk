@@ -44,10 +44,6 @@ export const createOracleFeeData = (
     toHex(oracleResponse.fromDomainID, 32).substr(2) + // fromDomainID: uint256
     toHex(oracleResponse.toDomainID, 32).substr(2) + // toDomainID: uint256
     (oracleResponse.resourceID).substr(2); // resourceID: bytes32
-    // addPadding(
-    //   tokenResource.substr(2) + toHex(oracleResponse.fromDomainID, 1).substr(2),
-    //   32,
-    // ).substr(2);
 
     let signature
     if (oraclePrivateKey) {
@@ -94,7 +90,6 @@ export const calculateFeeData = async ({
       feeOracleBaseUrl,
       fromDomainID,
       toDomainID,
-      // tokenResource,
       resourceID: overridedResourceId ? overridedResourceId : resourceID, // dirty hack for localsetup
     });
   } catch (e: any) {
