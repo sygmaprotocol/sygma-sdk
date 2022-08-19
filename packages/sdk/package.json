@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ChainSafe/sygma-sdk"
+    "url": "https://github.com/sygmaprotocol/sygma-sdk"
   },
 	"scripts": {
 		"prepareNodes": "cd ./integration/node1 && npx hardhat node --port 8545 & cd ./integration/node2 && npx hardhat node --port 8547 &",

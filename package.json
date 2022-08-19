@@ -6,7 +6,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/ChainSafe/sygma-sdk"
+    "url": "https://github.com/sygmaprotocol/sygma-sdk"
   },
   "scripts": {
     "sdk:build": "yarn wsrun -p @chainsafe/sygma-sdk-core -c build",
