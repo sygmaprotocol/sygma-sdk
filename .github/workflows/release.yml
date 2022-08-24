@@ -2,8 +2,10 @@ name: Publish Sygma SDK to GitHub Package Registry
 
 on:
   push:
-    tags:
-      - "v*.*.*"
+    # tags:
+    #   - "v*.*.*"
+    branch:
+      - mmuftic/gh-package-publish
 
 jobs:
   publish:
