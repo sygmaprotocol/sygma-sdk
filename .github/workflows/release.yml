@@ -22,4 +22,4 @@ jobs:
           env:
             NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           run: |
-            yarn publish
+            yarn publish --access public
