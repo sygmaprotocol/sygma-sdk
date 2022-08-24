@@ -3,7 +3,7 @@ name: Publish Sygma SDK to GitHub Package Registry
 on:
   push:
     tags:
-      - "*.*.*"
+      - "v*.*.*"
 
 jobs:
   publish:
