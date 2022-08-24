@@ -9,6 +9,7 @@
     "url": "https://github.com/sygmaprotocol/sygma-sdk"
   },
   "publishConfig": {
+    "access": "public",
     "registry": "https://npm.pkg.github.com"
   },
   "scripts": {
