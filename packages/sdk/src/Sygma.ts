@@ -575,7 +575,9 @@ export class Sygma implements SygmaSDK {
 
   public async checkCurrentAllowanceForFeeHandler(recipientAddress: string) {
     const erc20ToUse = this.erc20!.chain1!;
-    const { address: erc20HandlerAddress } = this.getSelectedToken();
+    const {
+      feeSettings: { address: erc20HandlerAddress },
+    } = this.getSelectedToken();
 
     return await this.erc20Bridge.checkCurrentAllowance(
       recipientAddress,
@@ -589,7 +591,9 @@ export class Sygma implements SygmaSDK {
     const gasPrice = await this.isEIP1559MaxFeePerGas('chain1');
 
     const erc20ToUse = this.erc20!.chain1!;
-    const { address: erc20HandlerAddress } = this.getSelectedToken();
+    const {
+      feeSettings: { address: erc20HandlerAddress },
+    } = this.getSelectedToken();
 
     return await this.erc20Bridge.approve(
       amountForApprovalBN,
