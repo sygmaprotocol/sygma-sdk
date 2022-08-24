@@ -2,18 +2,18 @@ name: Publish Sygma SDK to GitHub Package Registry
 
 on:
   push:
-    branches:
-      - mmuftic/package-publish
+    tags:
+      - 1.**
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-        - uses: actions/checkout@v2
-        - uses: actions/setup-node@v2
+        - uses: actions/checkout@v3
+        - uses: actions/setup-node@v3
           with:
-            registry-url: https://npm.pkg.github.com/
-            node-version: 16.x
+            registry-url: 'https://npm.pkg.github.com'
+            node-version: '16.x'
             scope: '@sygmaprotocol'
         - name: npm install and build
           run: |
@@ -21,6 +21,6 @@ jobs:
             yarn sdk:build      
         - name: publish
           env:
-            NODE_AUTH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+            NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           run: |
             yarn publish --workspace=@symgaprotocol/sygma-sdk publish --access public
