@@ -23,7 +23,7 @@
   },
   "keywords": [],
   "author": "Sygmaprotocol product team",
-  "license": "LGPL",
+  "license": "LGPL-3.0-or-later",
   "workspaces": {
     "packages": [
       "packages/*",
