@@ -16,10 +16,11 @@ jobs:
           with:
             registry-url: 'https://npm.pkg.github.com'
             node-version: '16.x'
-            scope: '@sygmaprotocol'
-        - run: yarn      
+            cache: 'yarn'
+        - run: yarn install --ignore-scripts
+        - run: yarn build 
         - name: publish
           env:
             NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           run: |
-            yarn publish --access public
+            npm publish --access public
