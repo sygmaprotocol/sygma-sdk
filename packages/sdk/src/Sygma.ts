@@ -1,5 +1,6 @@
 import { BigNumber, ethers, utils, Event } from 'ethers';
 import { Bridge__factory as BridgeFactory, Bridge } from '@chainsafe/chainbridge-contracts';
+import { DepositEvent} from "@chainsafe/chainbridge-contracts/dist/ethers/Bridge"
 import { Erc20DetailedFactory } from './Contracts/Erc20DetailedFactory';
 import { Erc20Detailed } from './Contracts/Erc20Detailed';
 
@@ -279,8 +280,8 @@ export class Sygma implements SygmaSDK {
       tx: Event,
     ) => void) =>
       bridge.on(proposalFilter, (originDomainId, depositNonce, dataHash, tx) => {
+        console.log(originDomainId, destination.domainId, depositNonce, homeDepositNonce)
         if (
-          originDomainId === Number(destination.domainId) &&
           depositNonce.toNumber() === homeDepositNonce
         ) {
           callbackFn(originDomainId, depositNonce, dataHash, tx);
@@ -522,7 +523,7 @@ export class Sygma implements SygmaSDK {
 
   public setSelectedToken(address: string) {
     const tokenIdx = this.bridgeSetup.chain1.tokens.findIndex(el => el.address === address);
-    const erc20Connected = this.connectERC20(address, this.providers?.chain1);
+    const erc20Connected = this.connectERC20(address, this.signers?.chain1);
     this.erc20!.chain1 = erc20Connected;
 
     this.selectedToken = tokenIdx;
@@ -601,5 +602,13 @@ export class Sygma implements SygmaSDK {
       erc20HandlerAddress,
       gasPrice as BigNumber,
     );
+  }
+
+  public async getDepositEventFromReceipt(depositTx: ethers.ContractReceipt) {
+    const bridgeContract = this.bridges!.chain1!
+    const depositFilter = bridgeContract.filters.Deposit()
+    const events = await bridgeContract.queryFilter(depositFilter, depositTx.blockHash);
+    const event = events[0]
+    return event
   }
 }
