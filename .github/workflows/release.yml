@@ -1,41 +1,43 @@
-# name: Release
+name: Publish Sygma SDK to GitHub Package Registry
 
-# on:
-#   push:
-#     paths:
-#       - "packages/chainbridge-ui-core/**"
-#   #   branches:
-#   #     - master
-#   #   # when any of these versions receive a push
-#     tags:
-#       - "v*.*.*"
-#   # pull_request:
-#   #   paths:
-#   #   - "packages/core/**"
-#   #   branches: [main]
-#   #   tags:
-#   #     - "v*.*.*"
-#   # when any releases are created
-#   release:
-#     types:
-#       - created
+on:
+  push:
+    branches:
+      - master
+jobs:
+  maybe-release:
+    name: release
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    steps:
+        # you should probably do this after your regular CI checks passes
+      - uses: google-github-actions/release-please-action@v3 # it will analyze commits and create PR with new version and updated CHANGELOG:md file. On merging it will create github release page with changelog
+        id: release
+        with:
+          release-type: node
+          package-name: release-please-action
+          changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false}]'
+      
+      - uses: actions/checkout@v3
+        # these if statements ensure that a publication only occurs when
+        # a new release is created:
+        if: ${{ steps.release.outputs.release_created }}
+        
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'yarn'
+          node-version: 16
+          registry-url: 'https://npm.pkg.github.com'
+        if: ${{ steps.release.outputs.release_created }}
+      
+      - run: yarn install --ignore-scripts
+        if: ${{ steps.release.outputs.release_created }}
+      
+      - run: yarn build
+        if: ${{ steps.release.outputs.release_created }}
 
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v2
-#       # Setup .npmrc file to publish to npm
-#       - uses: actions/setup-node@v2
-#         with:
-#           always-auth: true
-#           node-version: '16.x'
-#           cache: 'yarn'
-#           registry-url: 'https://registry.npmjs.org'
-#           # Defaults to the user or organization that owns the workflow file
-#           scope: '@chainsafe'
-#       - run: yarn
-#       - run: yarn workspace @chainsafe/chainbridge-sdk-core build
-#       - run: npm publish --workspace=@chainsafe/chainbridge-sdk-core publish --access public
-#         env:
-#           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+        if: ${{ steps.release.outputs.release_created }}
+

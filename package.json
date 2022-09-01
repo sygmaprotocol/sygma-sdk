@@ -1,25 +1,29 @@
 {
-  "name": "@chainsafe/sygma-sdk",
-  "version": "1.1.1",
+  "name": "@sygamprotocol/sygma-sdk",
+  "version": "1.0.0",
   "description": "Sygma SDK",
   "main": "index.js",
-  "private": true,
+  "private": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/sygmaprotocol/sygma-sdk"
   },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
+  },
   "scripts": {
-    "sdk:build": "yarn wsrun -p @chainsafe/sygma-sdk-core -c build",
-    "sdk:cleanDist": "yarn wsrun -p @chainsafe/sygma-sdk -c clean",
-    "sdk:test": "yarn wsrun -p @chainsafe/sygma-sdk -c test",
-    "sdk:test:unit": "yarn wsrun -p @chainsafe/sygma-sdk -c test:unit",
-    "start:react-example": "yarn wsrun -p @chainsafe/sygma-sdk-react-example -c start",
-    "sdk:run-local-example": "yarn wsrun -p @chainsafe/sygma-sdk-node-example -c run:local-ex",
-    "sdk:run-ganache-example": "yarn wsrun -p @chainsafe/sygma-sdk-node-example -c run:ganache-ex"
+    "sdk:build": "yarn wsrun -p @sygmaprotocol/sygma-sdk-core -c build",
+    "sdk:cleanDist": "yarn wsrun -p @sygmaprotocol/sygma-sdk -c clean",
+    "sdk:test": "yarn wsrun -p @sygmaprotocol/sygma-sdk -c test",
+    "sdk:test:unit": "yarn wsrun -p @sygmaprotocol/sygma-sdk -c test:unit",
+    "start:react-example": "yarn wsrun -p @sygmaprotocol/sygma-sdk-react-example -c start",
+    "sdk:run-local-example": "yarn wsrun -p @sygmaprotocol/sygma-sdk-node-example -c run:local-ex",
+    "sdk:run-ganache-example": "yarn wsrun -p @sygmaprotocol/sygma-sdk-node-example -c run:ganache-ex"
   },
   "keywords": [],
-  "author": "Chainsafe product team",
-  "license": "LGPL",
+  "author": "Sygmaprotocol product team",
+  "license": "LGPL-3.0-or-later",
   "workspaces": {
     "packages": [
       "packages/*",
