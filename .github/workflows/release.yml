@@ -8,7 +8,7 @@ jobs:
   maybe-release:
     name: release
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
         # you should probably do this after your regular CI checks passes
       - uses: google-github-actions/release-please-action@v3 # it will analyze commits and create PR with new version and updated CHANGELOG:md file. On merging it will create github release page with changelog
