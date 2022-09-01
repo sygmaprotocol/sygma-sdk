@@ -21,6 +21,10 @@ export type TokenConfig = {
   isNativeWrappedToken?: boolean;
   decimals?: number;
   isDoubleApproval?: boolean;
+  feeSettings: {
+    type: FeeType;
+    address: string;
+  };
 };
 
 export type FeeType = 'basic' | 'feeOracle' | 'none'
@@ -31,10 +35,6 @@ export type SygmaBridgeSetup = {
   bridgeAddress: string;
   erc20HandlerAddress: string;
   feeOracleHandlerAddress?: string;
-  feeSettings: {
-    type: FeeType;
-    address: string;
-  };
   rpcUrl: string;
   domainId: string;
   decimals: number;
