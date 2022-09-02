@@ -30,7 +30,7 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
         if: ${{ steps.release.outputs.release_created }}
       
-      - run: yarn install --ignore-scripts
+      - run: yarn install --immutable
         if: ${{ steps.release.outputs.release_created }}
       
       - run: yarn sdk:build
