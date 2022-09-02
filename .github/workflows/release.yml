@@ -36,7 +36,7 @@ jobs:
       - run: yarn sdk:build
         if: ${{ steps.release.outputs.release_created }}
 
-      - run: npm publish --access public
+      - run: yarn workspace @sygmaprotocol/sygma-sdk-core npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
         if: ${{ steps.release.outputs.release_created }}
