@@ -1,5 +1,5 @@
 {
-  "name": "@chainsafe/sygma-sdk-react-example",
+  "name": "@sygmaprotocol/sygma-sdk-react-example",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
