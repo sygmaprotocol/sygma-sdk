@@ -1,9 +1,8 @@
 {
-  "name": "@chainsafe/sygma-sdk-node-example",
+  "name": "@sygmaprotocol/sygma-sdk-node-example",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
-  "private": "true",
   "scripts": {
     "run:local-ex": "ts-node ./local-setup-example/index.ts",
     "start:dev": "nodemon"
@@ -19,8 +18,8 @@
     "web3": "^1.7.3"
   },
   "devDependencies": {
-    "typescript": "^4.6.3",
+    "nodemon": "2.0.16",
     "ts-node": "^10.7.0",
-    "nodemon": "2.0.16"
+    "typescript": "^4.6.3"
   }
 }

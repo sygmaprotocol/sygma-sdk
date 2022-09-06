@@ -1,25 +1,28 @@
 {
-  "name": "@chainsafe/sygma-sdk",
-  "version": "1.1.1",
+  "name": "@sygmaprotocol/sygma-sdk",
+  "version": "1.0.0",
   "description": "Sygma SDK",
   "main": "index.js",
-  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/sygmaprotocol/sygma-sdk"
   },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
+  },
   "scripts": {
-    "sdk:build": "yarn wsrun -p @chainsafe/sygma-sdk-core -c build",
-    "sdk:cleanDist": "yarn wsrun -p @chainsafe/sygma-sdk -c clean",
-    "sdk:test": "yarn wsrun -p @chainsafe/sygma-sdk -c test",
-    "sdk:test:unit": "yarn wsrun -p @chainsafe/sygma-sdk -c test:unit",
-    "start:react-example": "yarn wsrun -p @chainsafe/sygma-sdk-react-example -c start",
-    "sdk:run-local-example": "yarn wsrun -p @chainsafe/sygma-sdk-node-example -c run:local-ex",
-    "sdk:run-ganache-example": "yarn wsrun -p @chainsafe/sygma-sdk-node-example -c run:ganache-ex"
+    "sdk:build": "yarn workspace @sygmaprotocol/sygma-sdk-core build",
+    "sdk:cleanDist": "yarn workspace @sygmaprotocol/sygma-sdk clean",
+    "sdk:test": "yarn workspace @sygmaprotocol/sygma-sdk test",
+    "sdk:test:unit": "yarn workspace @sygmaprotocol/sygma-sdk test:unit",
+    "start:react-example": "yarn workspace @sygmaprotocol/sygma-sdk-react-example start",
+    "sdk:run-local-example": "yarn workspace @sygmaprotocol/sygma-sdk-node-example run:local-ex",
+    "sdk:run-ganache-example": "yarn workspace @sygmaprotocol/sygma-sdk-node-example run:ganache-ex"
   },
   "keywords": [],
-  "author": "Chainsafe product team",
-  "license": "LGPL",
+  "author": "Sygmaprotocol product team",
+  "license": "LGPL-3.0-or-later",
   "workspaces": {
     "packages": [
       "packages/*",
@@ -33,16 +36,15 @@
   "dependencies": {
     "@changesets/cli": "^2.14.1",
     "ethers": "5.4.5",
-    "prettier": "2.1.2",
-    "wsrun": "5.2.4"
+    "prettier": "2.1.2"
   },
   "devDependencies": {
     "@types/node": "^17.0.23",
     "eslint": "^8.12.0",
     "jest": "^27.5.1",
-    "lerna": "^4.0.0",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.3"
-  }
+  },
+  "packageManager": "yarn@3.2.3"
 }
