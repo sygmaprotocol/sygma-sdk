@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/sygmaprotocol/sygma-sdk/compare/v1.0.0...v1.0.1) (2022-09-07)
+
+
+### Miscellaneous
+
+* updating package to sygma-contracts ([#36](https://github.com/sygmaprotocol/sygma-sdk/issues/36)) ([e3af317](https://github.com/sygmaprotocol/sygma-sdk/commit/e3af31750a12564ff8c4df01fef453053b02c8d9))
+
 ## [1.0.0](https://github.com/sygmaprotocol/sygma-sdk/compare/v1.0.0...v1.0.0) (2022-09-02)
 
 
