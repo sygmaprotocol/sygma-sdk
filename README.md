@@ -365,7 +365,7 @@ With this you can use our SDK and create the render logic to show your tokens an
 
 ## Using Sygma SDK on your project
 
-TODO
+`TODO`
 
 
 ## Support
