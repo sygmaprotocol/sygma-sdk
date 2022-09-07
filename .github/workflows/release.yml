@@ -46,8 +46,6 @@ jobs:
               npmRegistryServer: https://npm.pkg.github.com
                 npmAuthToken: "$NODE_AUTH_TOKEN"" >> ./.yarnrc.yml
       
-      - run: cat ./.yarnrc.yml
-
       - run: yarn workspace @sygmaprotocol/sygma-sdk-core npm publish --access public
         if: ${{ steps.release.outputs.release_created }}
 
