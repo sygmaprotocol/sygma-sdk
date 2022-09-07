@@ -50,6 +50,7 @@
 	],
 	"dependencies": {
 		"@sygmaprotocol/sygma-contracts": "1.0.0",
+		"eth-crypto": "2.3.0",
 		"ganache": "^7.1.0",
 		"node-fetch": "2.6.1",
 		"react-hook-form": "^7.30.0",

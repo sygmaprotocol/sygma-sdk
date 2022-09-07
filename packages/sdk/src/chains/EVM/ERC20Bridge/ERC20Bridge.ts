@@ -1,4 +1,4 @@
-import { Bridge, ERC20Handler__factory as Erc20HandlerFactory, FeeHandlerRouter__factory } from '@chainsafe/chainbridge-contracts'
+import { Bridge, ERC20Handler__factory as Erc20HandlerFactory, FeeHandlerRouter__factory } from '@sygmaprotocol/sygma-contracts'
 import { utils, BigNumber, ContractReceipt } from 'ethers'
 import { Directions, Provider, FeeDataResult } from "../../../types";
 import { processAmountForERC20Transfer, processLenRecipientAddress } from "../../../utils";

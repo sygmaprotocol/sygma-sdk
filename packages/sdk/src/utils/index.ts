@@ -1,4 +1,4 @@
-import { Bridge } from '@chainsafe/chainbridge-contracts';
+import { Bridge } from '@sygmaprotocol/sygma-contracts';
 import { utils, BigNumber } from 'ethers';
 import { Connector } from '../connectors';
 
