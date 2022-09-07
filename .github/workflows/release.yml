@@ -23,6 +23,12 @@ jobs:
         # a new release is created:
         if: ${{ steps.release.outputs.release_created }}
         
+      - env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        if: ${{ steps.release.outputs.releases_created }}
+        run: |
+          echo $NODE_AUTH_TOKEN >> ./.yarnrc.yml
+          
       - uses: actions/setup-node@v3
         with:
           cache: 'yarn'
@@ -30,11 +36,6 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
         if: ${{ steps.release.outputs.release_created }}
 
-      - env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        if: ${{ steps.release.outputs.releases_created }}
-        run: |
-          echo $NODE_AUTH_TOKEN >> ./.yarnrc.yml
       
       - run: yarn install --immutable
         if: ${{ steps.release.outputs.release_created }}
