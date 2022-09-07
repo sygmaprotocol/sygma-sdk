@@ -1,5 +1,5 @@
 import { Erc20Detailed } from '../Contracts/Erc20Detailed';
-import { Bridge } from '@chainsafe/chainbridge-contracts';
+import { Bridge } from '@sygmaprotocol/sygma-contracts';
 import { ethers } from 'ethers';
 
 export interface SygmaSDK {}

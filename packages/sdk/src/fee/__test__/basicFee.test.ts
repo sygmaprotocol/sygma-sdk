@@ -1,10 +1,10 @@
 import { calculateBasicfee } from '../basicFee'
-import { BasicFeeHandler__factory } from '@chainsafe/chainbridge-contracts'
+import { BasicFeeHandler__factory } from '@sygmaprotocol/sygma-contracts'
 import { BigNumber, ethers } from 'ethers'
 import { FeeDataResult } from 'types'
 
-jest.mock('@chainsafe/chainbridge-contracts', () => ({
-  ...jest.requireActual('@chainsafe/chainbridge-contracts'),
+jest.mock('@sygmaprotocol/sygma-contracts', () => ({
+  ...jest.requireActual('@sygmaprotocol/sygma-contracts'),
   BasicFeeHandler__factory: {
     connect: () => {
       console.log('connect')
