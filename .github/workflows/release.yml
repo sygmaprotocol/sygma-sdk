@@ -29,12 +29,6 @@ jobs:
           node-version: 16
           registry-url: 'https://npm.pkg.github.com'
         if: ${{ steps.release.outputs.release_created }}
-      
-      - run: yarn install --immutable
-        if: ${{ steps.release.outputs.release_created }}
-      
-      - run: yarn sdk:build
-        if: ${{ steps.release.outputs.release_created }}
 
       - env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
@@ -46,8 +40,12 @@ jobs:
               npmRegistryServer: https://npm.pkg.github.com
                 npmAuthToken: "$NODE_AUTH_TOKEN"" >> ./.yarnrc.yml
       
-      - run: cat ./.yarnrc.yml
-
+      - run: yarn install --immutable
+        if: ${{ steps.release.outputs.release_created }}
+      
+      - run: yarn sdk:build
+        if: ${{ steps.release.outputs.release_created }}
+      
       - run: yarn workspace @sygmaprotocol/sygma-sdk-core npm publish --access public
         if: ${{ steps.release.outputs.release_created }}
 
