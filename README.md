@@ -363,6 +363,10 @@ sygmaInstance.removeDestinationProposalExecutionEventListener()
 
 With this you can use our SDK and create the render logic to show your tokens and your networks of the bridge. For a more in depth review, check out the `react-example`.
 
+## Using Sygma SDK on your project
+
+`TODO`
+
 
 ## Support
 <a href="https://discord.gg/ykXsJKfhgq">
