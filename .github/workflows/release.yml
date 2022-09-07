@@ -34,7 +34,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
         if: ${{ steps.release.outputs.releases_created }}
         run: |
-          echo "\n\t\tnpmAuthToken: "$NODE_AUTH_TOKEN"" >> ./.yarnrc.yml
+          echo $NODE_AUTH_TOKEN >> ./.yarnrc.yml
       
       - run: yarn install --immutable
         if: ${{ steps.release.outputs.release_created }}
