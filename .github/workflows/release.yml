@@ -35,6 +35,10 @@ jobs:
           node-version: 16
           registry-url: 'https://npm.pkg.github.com'
         if: ${{ steps.release.outputs.release_created }}
+
+      - run: echo "@sygmaprotocol:registry=https://npm.pkg.github.com" >> .npmrc
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       
       - run: yarn install --immutable
         if: ${{ steps.release.outputs.release_created }}
