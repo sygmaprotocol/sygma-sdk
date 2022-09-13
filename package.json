@@ -1,8 +1,9 @@
 {
   "name": "@sygmaprotocol/sygma-sdk",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "Sygma SDK",
   "main": "index.js",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/sygmaprotocol/sygma-sdk"
