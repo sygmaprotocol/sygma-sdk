@@ -29,8 +29,6 @@ jobs:
         run: |
           echo $NODE_AUTH_TOKEN >> ./.yarnrc.yml
         
-      - run: cat ./.yarnrc.yml
-          
       - uses: actions/setup-node@v3
         with:
           cache: 'yarn'
