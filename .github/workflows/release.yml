@@ -33,15 +33,21 @@ jobs:
         with:
           cache: 'yarn'
           node-version: 16
+          always-auth: true
           registry-url: 'https://npm.pkg.github.com'
+          scope: '@sygmaprotocol'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: ${{ steps.release.outputs.release_created }}
 
       - run: echo "@sygmaprotocol:registry=https://npm.pkg.github.com" >> .npmrc
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       
-      - run: yarn install --immutable
-        if: ${{ steps.release.outputs.release_created }}
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --non-interactive --ignore-optional
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - run: yarn sdk:build
         if: ${{ steps.release.outputs.release_created }}
