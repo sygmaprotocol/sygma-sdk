@@ -1,6 +1,5 @@
 {
-  "name": "@sygmaprotocol/sygma-sdk",
-  "version": "1.0.0",
+  "name": "@buildwithsygma/sygma-sdk",
   "description": "Sygma SDK",
   "main": "index.js",
   "private": true,
@@ -8,18 +7,14 @@
     "type": "git",
     "url": "https://github.com/sygmaprotocol/sygma-sdk"
   },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com"
-  },
   "scripts": {
-    "sdk:build": "yarn workspace @sygmaprotocol/sygma-sdk-core build",
-    "sdk:cleanDist": "yarn workspace @sygmaprotocol/sygma-sdk clean",
-    "sdk:test": "yarn workspace @sygmaprotocol/sygma-sdk test",
-    "sdk:test:unit": "yarn workspace @sygmaprotocol/sygma-sdk test:unit",
-    "start:react-example": "yarn workspace @sygmaprotocol/sygma-sdk-react-example start",
-    "sdk:run-local-example": "yarn workspace @sygmaprotocol/sygma-sdk-node-example run:local-ex",
-    "sdk:run-ganache-example": "yarn workspace @sygmaprotocol/sygma-sdk-node-example run:ganache-ex"
+    "sdk:build": "yarn workspace @buildwithsygma/sygma-sdk-core build",
+    "sdk:cleanDist": "yarn workspace @buildwithsygma/sygma-sdk clean",
+    "sdk:test": "yarn workspace @buildwithsygma/sygma-sdk test",
+    "sdk:test:unit": "yarn workspace @buildwithsygma/sygma-sdk test:unit",
+    "start:react-example": "yarn workspace @buildwithsygma/sygma-sdk-react-example start",
+    "sdk:run-local-example": "yarn workspace @buildwithsygma/sygma-sdk-node-example run:local-ex",
+    "sdk:run-ganache-example": "yarn workspace @buildwithsygma/sygma-sdk-node-example run:ganache-ex"
   },
   "keywords": [],
   "author": "Sygmaprotocol product team",
@@ -46,6 +41,5 @@
     "ts-jest": "^27.1.4",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.3"
-  },
-  "packageManager": "yarn@3.2.3"
+  }
 }

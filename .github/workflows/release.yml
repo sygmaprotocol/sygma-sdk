@@ -22,37 +22,25 @@ jobs:
         # these if statements ensure that a publication only occurs when
         # a new release is created:
         if: ${{ steps.release.outputs.release_created }}
-      
-      - env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        if: ${{ steps.release.outputs.releases_created }}
-        run: |
-          echo npmAuthToken: "$NODE_AUTH_TOKEN" >> ./.yarnrc
         
       - uses: actions/setup-node@v3
         with:
           cache: 'yarn'
           node-version: 16
           always-auth: true
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@sygmaprotocol'
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@buildwithsygma'
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         if: ${{ steps.release.outputs.release_created }}
-
-      - run: echo "@sygmaprotocol:registry=https://npm.pkg.github.com" >> .npmrc
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       
       - name: Install dependencies
         run: yarn install --frozen-lockfile --non-interactive --ignore-optional
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - run: yarn sdk:build
         if: ${{ steps.release.outputs.release_created }}
 
-      
-      - run: yarn workspace @sygmaprotocol/sygma-sdk-core npm publish --access public
+      - run: yarn workspace @buildwithsygma/sygma-sdk-core npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: ${{ steps.release.outputs.release_created }}
-
