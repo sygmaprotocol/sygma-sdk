@@ -1,6 +1,6 @@
 {
 	"name": "@buildwithsygma/sygma-sdk-core",
-	"version": "0.0.9",
+	"version": "1.0.0",
 	"description": "Core primitives for bridging and message passing",
 	"main": "dist/src/index.js",
 	"types": "dist/src/index.d.ts",
