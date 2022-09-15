@@ -1,13 +1,9 @@
 {
-	"name": "@sygmaprotocol/sygma-sdk-core",
+	"name": "@buildwithsygma/sygma-sdk-core",
 	"version": "1.0.0",
 	"description": "Core primitives for bridging and message passing",
 	"main": "dist/src/index.js",
 	"types": "dist/src/index.d.ts",
-	"publishConfig": {
-		"access": "public",
-		"registry": "https://npm.pkg.github.com"
-	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/sygmaprotocol/sygma-sdk"
