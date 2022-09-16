@@ -8,8 +8,7 @@
         "bumpMinorPreMajor": false,
         "bumpPatchForMinorPreMajor": false,
         "changelogPath": "CHANGELOG.md",
-        "versioning": "default",
-        "release-as": "1.0.0"
+        "versioning": "default"
       }
     }
   }
