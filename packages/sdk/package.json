@@ -26,7 +26,7 @@
 		"bridge",
 		"ethereum"
 	],
-	"author": "Sygmaprotocol product team",
+	"author": "Sygmaprotocol Product Team",
 	"license": "LGPL-3.0-or-later",
 	"devDependencies": {
 		"@types/jest": "27.4.1",
