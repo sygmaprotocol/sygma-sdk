@@ -17,7 +17,7 @@
     "sdk:run-ganache-example": "yarn workspace @buildwithsygma/sygma-sdk-node-example run:ganache-ex"
   },
   "keywords": [],
-  "author": "Sygmaprotocol product team",
+  "author": "Sygmaprotocol Product Team",
   "license": "LGPL-3.0-or-later",
   "workspaces": {
     "packages": [

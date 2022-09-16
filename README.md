@@ -11,14 +11,6 @@
 
 The current SDK has one package that comprises the whole bridging logic for transferring ERC20 tokens between Ethereum networks. Alongside this there are two folder examples that demonstrate the usage of our SDK. If you want to run the examples alongside our bridging infrastructure, please make sure you have [Sygma](https://github.com/ChainSafe/sygma#configuration) in order for you to run `make local-setup` command.
 
-## Usefull commands.
-
-After cloning the repo, simply run
-
-```bash
-npx lerna bootstrap
-```
-
 ## Running the Examples
 
 For React example, after you have run and deploy the contracts using [Sygma](https://github.com/ChainSafe/sygma), go to the `examples` folder and simply run

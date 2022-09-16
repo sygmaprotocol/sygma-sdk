@@ -19,12 +19,14 @@
 		"clean": "rm -rf ./dist"
 	},
 	"keywords": [
-		"chainsafe",
+		"sygma",
+		"sygmaprotocol",
+		"buildwithsygma",
 		"web3",
 		"bridge",
 		"ethereum"
 	],
-	"author": "Chainsafe Products Team",
+	"author": "Sygmaprotocol Product Team",
 	"license": "LGPL-3.0-or-later",
 	"devDependencies": {
 		"@types/jest": "27.4.1",
