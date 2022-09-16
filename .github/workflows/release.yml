@@ -14,11 +14,11 @@ jobs:
       - uses: google-github-actions/release-please-action@v3 # it will analyze commits and create PR with new version and updated CHANGELOG:md file. On merging it will create github release page with changelog
         id: release
         with:
+          command: manifest
           release-type: node
-          package-name: release-please-action
+          token: ${{secrets.GITHUB_TOKEN}}
           monorepo-tags: true
           default-branch: main
-          command: manifest
           changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false},{"type":"revert","hidden":true}]'
       
       - uses: actions/checkout@v3
@@ -30,7 +30,6 @@ jobs:
         with:
           cache: 'yarn'
           node-version: 16
-          always-auth: true
           registry-url: 'https://registry.npmjs.org'
           scope: '@buildwithsygma'
         env:
@@ -39,6 +38,7 @@ jobs:
       
       - name: Install dependencies
         run: yarn install --frozen-lockfile --non-interactive --ignore-optional
+        if: ${{ steps.release.outputs.release_created }}
       
       - run: yarn sdk:build
         if: ${{ steps.release.outputs.release_created }}
