@@ -1089,10 +1089,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@chainsafe/chainbridge-contracts@3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@chainsafe/chainbridge-contracts/-/chainbridge-contracts-3.1.0.tgz#a6a1ef4ec3d3901ca3c93b547b58885562597063"
-  integrity sha512-dpliIpw8ibBGFBSs7+RFuMBlNSm1NAVRT2YgeC7ohPp0D2csz46hIGCwqSLsa4XiKqTttDWMT7ZfotdiVRgixw==
+"@buildwithsygma/sygma-contracts@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@buildwithsygma/sygma-contracts/-/sygma-contracts-1.0.0.tgz#8cf3430726bdb324e7259c65f4568ed361165a21"
+  integrity sha512-RlEMW6g36a1jyk0En1zCaPr+imB2S2o6b+hlNF6tp63BnJnoAMfrtQgvCG/vNuGyWWBNOjL1P+oebURECzTWHw==
 
 "@changesets/apply-release-plan@^6.1.0":
   version "6.1.0"
@@ -3368,23 +3368,6 @@
     "@svgr/plugin-jsx" "^5.5.0"
     "@svgr/plugin-svgo" "^5.5.0"
     loader-utils "^2.0.0"
-
-"@sygmaprotocol/sygma-contracts@1.0.0":
-  version "1.0.0"
-  resolved "https://npm.pkg.github.com/download/@sygmaprotocol/sygma-contracts/1.0.0/4ae4b297148f3562cf567808d921a1d12c4b3606#4ae4b297148f3562cf567808d921a1d12c4b3606"
-  integrity sha512-xxYwCk4svddltsoxVilpsENzLdCa/NbSaAEAqPMFE53gPSxuqsojQlxBv6I/vbbzFRyuJXJ7NUWDG20hTA2qCA==
-
-"@sygmaprotocol/sygma-sdk-core@1.0.0":
-  version "1.0.0"
-  resolved "https://npm.pkg.github.com/download/@sygmaprotocol/sygma-sdk-core/1.0.0/04da8f3e5ce3aea07d7d6eceb7ac5782ee18533a#04da8f3e5ce3aea07d7d6eceb7ac5782ee18533a"
-  integrity sha512-YfdDXJrd5EkiXgnrZxkQfxp/FvinRapVKj9mmljSmn7tqXlSGfiG9lFT16s2OreB47Y2t0GsAc5i5dY8hMo4oQ==
-  dependencies:
-    "@chainsafe/chainbridge-contracts" "3.1.0"
-    eth-crypto "^2.3.0"
-    ganache "^7.1.0"
-    node-fetch "2.6.1"
-    react-hook-form "^7.30.0"
-    web3 "^1.7.3"
 
 "@szmarczak/http-timer@^1.1.2":
   version "1.1.2"
@@ -7961,7 +7944,7 @@ eth-block-tracker@^3.0.0:
     pify "^2.3.0"
     tape "^4.6.3"
 
-eth-crypto@2.3.0, eth-crypto@^2.3.0:
+eth-crypto@2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/eth-crypto/-/eth-crypto-2.3.0.tgz#e5bbfc3540bd118cec85468bb310f41dcf40e507"
   integrity sha512-kTRdMuqIO4OBuk5XKL3FNQ6HVQV54dc/mxGgSoeUscp+7eiZ3C5xBsBj2DGY2HM9Woa0sMuzvpi6HwjyXL6E8w==
