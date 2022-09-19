@@ -1,4 +1,4 @@
-import { Bridge } from '@sygmaprotocol/sygma-contracts';
+import { Bridge } from '@buildwithsygma/sygma-contracts';
 import { utils, BigNumber } from 'ethers';
 import { Connector } from '../connectors';
 
