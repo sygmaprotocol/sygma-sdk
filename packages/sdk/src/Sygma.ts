@@ -1,6 +1,6 @@
 import { BigNumber, ethers, utils, Event } from 'ethers';
-import { Bridge__factory as BridgeFactory, Bridge } from '@sygmaprotocol/sygma-contracts';
-import { DepositEvent} from "@sygmaprotocol/sygma-contracts/dist/ethers/Bridge"
+import { Bridge__factory as BridgeFactory, Bridge } from '@buildwithsygma/sygma-contracts';
+import { DepositEvent} from "@buildwithsygma/sygma-contracts/dist/ethers/Bridge"
 import { Erc20DetailedFactory } from './Contracts/Erc20DetailedFactory';
 import { Erc20Detailed } from './Contracts/Erc20Detailed';
 

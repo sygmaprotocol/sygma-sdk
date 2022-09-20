@@ -1,4 +1,4 @@
-import { BasicFeeHandler__factory as BasicFeeHandler } from '@sygmaprotocol/sygma-contracts'
+import { BasicFeeHandler__factory as BasicFeeHandler } from '@buildwithsygma/sygma-contracts'
 import { ethers } from 'ethers'
 import { FeeDataResult } from 'types'
 import { createERCDepositData } from '../utils/helpers'

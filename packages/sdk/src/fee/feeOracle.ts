@@ -1,6 +1,6 @@
 import {
   FeeHandlerWithOracle__factory,
-} from '@sygmaprotocol/sygma-contracts';
+} from '@buildwithsygma/sygma-contracts';
 import { utils, BigNumber, ethers } from 'ethers';
 import fetch from 'node-fetch';
 import EthCrypto from 'eth-crypto';

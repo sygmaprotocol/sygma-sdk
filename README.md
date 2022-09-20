@@ -4,6 +4,16 @@
 
 # Sygma SDK
 
+## Installing
+
+Using npm:
+
+`npm install @buildwithsygma/sygma-sdk-core`
+
+Using yarn:
+
+`yarn add @buildwithsygma/sygma-sdk-core`
+
 ## Introduction
 **Sygma SDK** is an OpenSource (under GNU Lesser General Public License v3.0) SDK for developers to work with [Sygma](https://github.com/ChainSafe/sygma). The SDK consist of methods that enable bridging capabilities between Ethereum networks.
 

@@ -1,13 +1,13 @@
 import { utils, BigNumber, ethers } from 'ethers';
 import { requestFeeFromFeeOracle, createOracleFeeData, calculateFeeData } from '../feeOracle';
 import fetch from 'node-fetch';
-import {FeeHandlerWithOracle__factory} from '@sygmaprotocol/sygma-contracts';
+import {FeeHandlerWithOracle__factory} from '@buildwithsygma/sygma-contracts';
 
 jest.mock('node-fetch');
 const { Response } = jest.requireActual('node-fetch');
 
-jest.mock('@sygmaprotocol/sygma-contracts', () => ({
-  ...jest.requireActual('@sygmaprotocol/sygma-contracts'),
+jest.mock('@buildwithsygma/sygma-contracts', () => ({
+  ...jest.requireActual('@buildwithsygma/sygma-contracts'),
   FeeHandlerWithOracle__factory: {
     connect: (args: any)=> {
       return {
