@@ -1,5 +1,5 @@
 import { Erc20Detailed } from '../Contracts/Erc20Detailed';
-import { Bridge } from '@buildwithsygma/sygma-contracts';
+import { Bridge, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts';
 import { ethers } from 'ethers';
 
 export interface SygmaSDK {}
@@ -13,6 +13,7 @@ export type Setup = {
 };
 
 export type TokenConfig = {
+  type: "erc20" | 'erc721'
   address: string;
   name?: string;
   symbol?: string;
@@ -34,6 +35,7 @@ export type SygmaBridgeSetup = {
   networkId: number;
   bridgeAddress: string;
   erc20HandlerAddress: string;
+  erc721HandlerAddress: string;
   feeOracleHandlerAddress?: string;
   rpcUrl: string;
   domainId: string;
@@ -113,7 +115,7 @@ export type SygmaProviders =
       };
     }
 
-export type SygmaErc20Contracts = { [chain: string]: Erc20Detailed | undefined } | undefined;
+export type SygmaErc20Contracts = { [chain: string]: Erc20Detailed | ERC721MinterBurnerPauser | undefined } | undefined;
 
 export type Provider = ethers.providers.Provider | undefined;
 
