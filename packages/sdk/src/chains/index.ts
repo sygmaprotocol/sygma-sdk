@@ -1,1 +1,1 @@
-export { default as ERC20Bridge } from './EVM'
+export { default as EvmBridge } from './EVM'
