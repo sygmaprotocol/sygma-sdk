@@ -16,8 +16,7 @@
 		"run:all": "concurrently \"yarn run prepareNodes\" \"yarn run test\"",
 		"build": "tsc",
 		"run:nodes": "docker-compose -f docker-compose.yml up",
-		"clean": "rm -rf ./dist",
-		"runOracle": "ts-node ./src/fee/feeOracleScript.ts"
+		"clean": "rm -rf ./dist"
 	},
 	"keywords": [
 		"sygma",
