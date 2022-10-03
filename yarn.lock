@@ -1094,6 +1094,16 @@
   resolved "https://registry.yarnpkg.com/@buildwithsygma/sygma-contracts/-/sygma-contracts-1.0.0.tgz#8cf3430726bdb324e7259c65f4568ed361165a21"
   integrity sha512-RlEMW6g36a1jyk0En1zCaPr+imB2S2o6b+hlNF6tp63BnJnoAMfrtQgvCG/vNuGyWWBNOjL1P+oebURECzTWHw==
 
+"@buildwithsygma/sygma-sdk-core@link:packages/sdk":
+  version "1.0.0"
+  dependencies:
+    "@buildwithsygma/sygma-contracts" "1.0.0"
+    eth-crypto "2.3.0"
+    ganache "^7.1.0"
+    node-fetch "2.6.1"
+    react-hook-form "^7.30.0"
+    web3 "^1.7.3"
+
 "@changesets/apply-release-plan@^6.1.0":
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/@changesets/apply-release-plan/-/apply-release-plan-6.1.0.tgz#97d755a7725bdcc1152aa54d8c7fbc85a5bf1e40"
