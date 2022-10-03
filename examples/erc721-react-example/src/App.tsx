@@ -14,90 +14,6 @@ import {
   FeeDataResult
 } from "@buildwithsygma/sygma-sdk-core";
 
-// TODO: MOVE THIS TO ENV
-const bridgeSetup: BridgeData = {
-  chain1: {
-    domainId: "1",
-    networkId: 422,
-    name: "Local EVM 1",
-    decimals: 18,
-    bridgeAddress: "0xF75ABb9ABED5975d1430ddCF420bEF954C8F5235",
-    erc20HandlerAddress: "0x7ec51Af51bf6f6f4e3C2E87096381B2cf94f6d74",
-    erc721HandlerAddress: "0x1cd88Fa5848389E4027d29B267BAB561300CEA2A",
-    rpcUrl: "http://localhost:8545",
-    tokens: [
-      {
-        type: "erc20",
-        address: "0xDA8556C2485048eee3dE91085347c3210785323c",
-        name: "csUSD",
-        symbol: "csUSD",
-        imageUri: "ETHIcon",
-        decimals: 18,
-        resourceId:
-          "0x0000000000000000000000000000000000000000000000000000000000000000",
-        feeSettings: {
-          type: "basic",
-          address: "0xA8254f6184b82D7307257966b95D7569BD751a90",
-        },
-      },
-      {
-        type: "erc721",
-        address: "0xd6D787253cc022E6839583aD0cBECfc9c60b581c",
-        name: "NFT",
-        symbol: "NFT",
-        imageUri: "ETHIcon",
-        decimals: 0,
-        resourceId:
-          "0x0000000000000000000000000000000000000000000000000000000000000200",
-        feeSettings: {
-          type: "basic",
-          address: "0xA8254f6184b82D7307257966b95D7569BD751a90",
-        },
-      },
-    ],
-  },
-  chain2: {
-    domainId: "2",
-    networkId: 1214,
-    name: "Local EVM 2",
-    decimals: 18,
-    bridgeAddress: "0xF75ABb9ABED5975d1430ddCF420bEF954C8F5235",
-    erc20HandlerAddress: "0x7ec51Af51bf6f6f4e3C2E87096381B2cf94f6d74",
-    erc721HandlerAddress: "0x1cd88Fa5848389E4027d29B267BAB561300CEA2A",
-    rpcUrl: "http://localhost:8547",
-    tokens: [
-      {
-        type: "erc20",
-        address: "0xDA8556C2485048eee3dE91085347c3210785323c",
-        name: "csUSD",
-        symbol: "csUSD",
-        imageUri: "ETHIcon",
-        decimals: 18,
-        resourceId:
-          "0x0000000000000000000000000000000000000000000000000000000000000000",
-        feeSettings: {
-          type: "basic",
-          address: "0xA8254f6184b82D7307257966b95D7569BD751a90",
-        },
-      },
-      {
-        type: "erc721",
-        address: "0xd6D787253cc022E6839583aD0cBECfc9c60b581c",
-        name: "NFT",
-        symbol: "NFT",
-        imageUri: "ETHIcon",
-        decimals: 0,
-        resourceId:
-          "0x0000000000000000000000000000000000000000000000000000000000000200",
-        feeSettings: {
-          type: "basic",
-          address: "0xA8254f6184b82D7307257966b95D7569BD751a90",
-        },
-      },
-    ],
-  },
-};
-
 const bridgeSetupList: SygmaBridgeSetupList = [
   {
     domainId: "1",
@@ -110,20 +26,6 @@ const bridgeSetupList: SygmaBridgeSetupList = [
     rpcUrl: "http://localhost:8545",
     tokens: [
       {
-        type: "erc20",
-        address: "0xDA8556C2485048eee3dE91085347c3210785323c",
-        name: "csUSD",
-        symbol: "csUSD",
-        imageUri: "ETHIcon",
-        decimals: 18,
-        resourceId:
-          "0x0000000000000000000000000000000000000000000000000000000000000000",
-        feeSettings: {
-          type: "basic",
-          address: "0xA8254f6184b82D7307257966b95D7569BD751a90",
-        },
-      },
-      {
         type: "erc721",
         address: "0xd6D787253cc022E6839583aD0cBECfc9c60b581c",
         name: "NFT",
@@ -149,20 +51,6 @@ const bridgeSetupList: SygmaBridgeSetupList = [
     erc721HandlerAddress: "0x1cd88Fa5848389E4027d29B267BAB561300CEA2A",
     rpcUrl: "http://localhost:8547",
     tokens: [
-      {
-        type: "erc20",
-        address: "0xDA8556C2485048eee3dE91085347c3210785323c",
-        name: "csUSD",
-        symbol: "csUSD",
-        imageUri: "ETHIcon",
-        decimals: 18,
-        resourceId:
-          "0x0000000000000000000000000000000000000000000000000000000000000000",
-        feeSettings: {
-          type: "basic",
-          address: "0xA8254f6184b82D7307257966b95D7569BD751a90",
-        },
-      },
       {
         type: "erc721",
         address: "0xd6D787253cc022E6839583aD0cBECfc9c60b581c",
@@ -231,6 +119,7 @@ function App() {
   );
 
   const [sygmaInstance, setSygmaInstance] = useState<Sygma | undefined>(undefined);
+  const [tokenList, setTokenList]  = useState<[string]>()
   const [homeDepositNonce, setHomeDepositNonce] = useState<number | undefined>(undefined)
   const [accountData, setAccountData] = useState<LocalData | undefined>(undefined);
   const [metaIsConnected, setMetaIsConnected] = useState<boolean>(false);
@@ -259,7 +148,7 @@ function App() {
   const watchTo = watch("to");
 
   useEffect(() => {
-    const setup = { bridgeSetupList, bridgeSetup };
+    const setup = { bridgeSetupList };
     const chainbridge = new Sygma(setup);
 
     setSygmaInstance(chainbridge);
@@ -288,19 +177,21 @@ function App() {
     }
   }, [sygmaInstance, homeDepositNonce]);
 
-  const getAccountData = async (chainbridge: Sygma) => {
+  const getAccountData = async (sygma: Sygma) => {
     try {
       const balance =
-        (await chainbridge.getSignerBalance("chain1")) ?? BigNumber.from("0");
-      const address = await chainbridge.getSignerAddress("chain1");
-      const gasPrice = await chainbridge.getSignerGasPrice("chain1");
-      const { balanceOfTokens, tokenName } = await chainbridge.getTokenInfo(
+        (await sygma.getSignerBalance("chain1")) ?? BigNumber.from("0");
+      const address = await sygma.getSignerAddress("chain1");
+      const gasPrice = await sygma.getSignerGasPrice("chain1");
+      // const balanceOfTokens = BigNumber.from("0")
+      // const tokenName = ""
+      const { balanceOfTokens, tokenName } = await sygma.getTokenInfo(
         "chain1"
       );
       console.log("signer balance", utils.formatEther(balance!));
       console.log("signer address", address);
       console.log("gas price", utils.formatEther(gasPrice!));
-      console.log("balance of tokens", utils.formatUnits(balanceOfTokens, 18));
+      // console.log("balance of tokens", utils.formatUnits(balanceOfTokens, 18));
       setValue("address", address!)
       setAccountData({
         balance: balance!,
@@ -309,6 +200,10 @@ function App() {
         balanceOfTokens: balanceOfTokens!,
         tokenName: tokenName!,
       });
+      // const tokenIds = listTokensOfOwner()
+      console.log("🚀 ~ file: App.tsx ~ line 204 ~ getAccountData ~ address", address)
+      const tokenList = await sygma.listErc721TokenIdsOfOwner(address!)
+      setTokenList(tokenList)
       setIsReady(true);
     } catch (e) {
       console.log(e);
@@ -360,7 +255,7 @@ function App() {
         )
       ) {
         const approveTx = await (sygmaInstance as Sygma).approve({
-          amountOrIdForApproval: "1",
+          amountOrIdForApproval: amount,
         });
         console.log(
           "🚀 ~ file: App.tsx ~ line 259 ~ submit ~ approveTx",
@@ -403,7 +298,7 @@ function App() {
         });
     } else if (metaIsConnected) {
 
-      const data = (sygmaInstance as Sygma).initializeConnectionFromWeb3Provider(
+      const data = sygmaInstance?.initializeConnectionFromWeb3Provider(
         window.ethereum
       );
 
@@ -477,13 +372,8 @@ function App() {
               <br />
               Balance of tokens:{" "}
               <span>
-                <b>
-                  {utils.formatUnits(
-                    (accountData as LocalData).balanceOfTokens,
-                    18
-                  )}
-                </b>{" "}
-                of {(accountData as LocalData).tokenName} tokens
+                <b>{accountData.balanceOfTokens.toString()}</b> of{" "}
+                {accountData.tokenName} tokens
               </span>
             </p>
           </div>
@@ -499,21 +389,30 @@ function App() {
               flexDirection: "column",
             }}
           >
-            <label htmlFor="amount" style={{...labelStyles}}>Amount</label>
-            <input
-              type="text"
-              placeholder="amount"
-              {...register("amount")}
-              style={{ ...inputStyles }}
-            />
-            <label htmlFor="address" style={{...labelStyles}}>Recepient address</label>
+            <label htmlFor="amount" style={{ ...labelStyles }}>
+              ERC721 Token IDs:
+            </label>
+            <select {...register("amount")} style={{ ...inputStyles }}>
+              {tokenList && tokenList.map((tokenId) => (
+                <option key={tokenId} value={tokenId}>
+                  {tokenId}
+                </option>
+              ))}
+
+            </select>
+
+            <label htmlFor="address" style={{ ...labelStyles }}>
+              Recepient address
+            </label>
             <input
               type="text"
               placeholder="address"
               {...register("address")}
               style={{ ...inputStyles }}
             />
-            <label htmlFor="from" style={{...labelStyles}}>Home chain</label>
+            <label htmlFor="from" style={{ ...labelStyles }}>
+              Home chain
+            </label>
             <select {...register("from")} style={{ ...inputStyles }}>
               {bridgeSetupList.map((bridgeItem) => (
                 <option key={bridgeItem.domainId} value={bridgeItem.domainId}>
@@ -521,7 +420,9 @@ function App() {
                 </option>
               ))}
             </select>
-            <label htmlFor="to" style={{...labelStyles}}>Destination chain</label>
+            <label htmlFor="to" style={{ ...labelStyles }}>
+              Destination chain
+            </label>
             <select {...register("to")} style={{ ...inputStyles }}>
               {bridgeSetupList
                 .filter((el) => el.domainId !== watchFrom)
