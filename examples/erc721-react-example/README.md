@@ -19,7 +19,8 @@ yarn
 
 then compile sdk with following command:
 ```bash
-cd ./packages/sygma-sdk-core
+# from the repository root
+cd ./packages/sdk
 yarn tsc
 ```
 
@@ -33,7 +34,7 @@ In the end you should have 2 geth nodes running on `localhost:8545` and `localho
 first change directory to erc721 directory:
 
 ```bash
-# from the root directory
+# from the repository root
 cd examples/erc721-react-example
 ```
 
