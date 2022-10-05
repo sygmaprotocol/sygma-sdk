@@ -344,7 +344,6 @@ export class Sygma implements SygmaSDK {
     recipientAddress: string;
     feeData: FeeDataResult;
   }) {
-    console.log("🚀 ~ file: Sygma.ts ~ line 346 ~ Sygma ~ amount", amount)
     const erc20ToUse = this.tokens!.chain1!;
     const provider = this.providers!.chain1;
     const bridgeToUse = this.bridges!.chain1!;
@@ -591,12 +590,14 @@ export class Sygma implements SygmaSDK {
   public async approve({ amountOrIdForApproval  }: { amountOrIdForApproval: string }) {
     const selectedToken = this.getSelectedToken();
 
-    const amountForApprovalBN = selectedToken.type === 'erc20' ? BigNumber.from(amountOrIdForApproval) : BigNumber.from(amountOrIdForApproval);
+    // const amountForApprovalBN = selectedToken.type === 'erc20' ? BigNumber.from(amountOrIdForApproval) : BigNumber.from(amountOrIdForApproval);
+    const amountForApprovalBN = selectedToken.type === 'erc20' ? utils.parseUnits(amountOrIdForApproval, 18) : BigNumber.from(amountOrIdForApproval);
 
     const gasPrice = await this.isEIP1559MaxFeePerGas('chain1');
 
     const erc20ToUse = this.tokens!.chain1!;
     const { erc20HandlerAddress, erc721HandlerAddress } = this.bridgeSetup!.chain1;
+
     const handlerAddress = selectedToken.type === 'erc20' ? erc20HandlerAddress : erc721HandlerAddress
 
     return await this.currentBridge.approve(

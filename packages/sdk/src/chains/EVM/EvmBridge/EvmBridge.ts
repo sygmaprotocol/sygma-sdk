@@ -5,7 +5,6 @@ import {
   ERC721MinterBurnerPauser,
   ERC721MinterBurnerPauser__factory as Erc721Factory,
   ERC721Handler__factory as Erc721handlerFactory,
-
 } from '@buildwithsygma/sygma-contracts';
 import { utils, BigNumber, ContractReceipt } from 'ethers';
 import { Directions, Provider, FeeDataResult, TokenConfig } from '../../../types';
@@ -70,8 +69,6 @@ export default class EvmBridge {
       );
     }
 
-    console.warn('gas price stringified', gasPriceStringify);
-
     try {
       const tx = await bridge.deposit(domainId, resourceId, depositData, feeData.feeData, {
         gasPrice: gasPriceStringify,
@@ -90,8 +87,7 @@ export default class EvmBridge {
     handlerAddress: string,
     gasPrice: BigNumber,
   ) {
-    console.log("🚀 ~ file: EvmBridge.ts ~ line 94 ~ EvmBridge ~ gasPrice", gasPrice)
-    console.log("🚀 ~ file: EvmBridge.ts ~ line 94 ~ EvmBridge ~ amountForApproval", amountForApproval)
+
     try {
       const tx = await tokenInstance.approve(handlerAddress, amountForApproval, {
         gasPrice,
