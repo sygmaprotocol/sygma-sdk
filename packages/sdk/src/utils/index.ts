@@ -1,4 +1,4 @@
-import { Bridge } from '@buildwithsygma/sygma-contracts';
+import { Bridge, ERC721MinterBurnerPauser__factory } from '@buildwithsygma/sygma-contracts';
 import { utils, BigNumber } from 'ethers';
 import { Connector } from '../connectors';
 
@@ -82,3 +82,41 @@ export const processLenRecipientAddress = (recipientAddress: string): string => 
 
   return toHexString;
 };
+
+export async function listTokensOfOwner({ token: tokenAddress, account, signer }: any) {
+  const token = ERC721MinterBurnerPauser__factory.connect(tokenAddress, signer);
+
+  console.warn(await token.name(), 'tokens owned by', account);
+
+  const sentLogs = await token.queryFilter(
+    token.filters.Transfer(account, null),
+  );
+  const receivedLogs = await token.queryFilter(
+    token.filters.Transfer(null, account),
+  );
+
+  const logs = sentLogs.concat(receivedLogs)
+    .sort(
+      (a, b) =>
+        a.blockNumber - b.blockNumber ||
+        a.transactionIndex - b.transactionIndex,
+    );
+
+  const owned = new Set();
+
+  for (const log of logs) {
+    const { from, to, tokenId } = log.args;
+
+    if (addressEqual(to, account)) {
+      owned.add(tokenId.toString());
+    } else if (addressEqual(from, account)) {
+      owned.delete(tokenId.toString());
+    }
+  }
+
+  return [...owned] as [string]
+};
+
+function addressEqual(a: string, b: string) {
+  return a.toLowerCase() === b.toLowerCase();
+}

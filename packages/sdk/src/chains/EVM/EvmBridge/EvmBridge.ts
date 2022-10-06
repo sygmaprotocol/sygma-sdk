@@ -3,8 +3,8 @@ import {
   ERC20Handler__factory as Erc20HandlerFactory,
   FeeHandlerRouter__factory,
   ERC721MinterBurnerPauser,
+  ERC721MinterBurnerPauser__factory as Erc721Factory,
   ERC721Handler__factory as Erc721handlerFactory,
-
 } from '@buildwithsygma/sygma-contracts';
 import { utils, BigNumber, ContractReceipt } from 'ethers';
 import { Directions, Provider, FeeDataResult, TokenConfig } from '../../../types';
@@ -69,9 +69,6 @@ export default class EvmBridge {
       );
     }
 
-
-    console.warn('gas price stringified', gasPriceStringify);
-
     try {
       const tx = await bridge.deposit(domainId, resourceId, depositData, feeData.feeData, {
         gasPrice: gasPriceStringify,
@@ -90,6 +87,7 @@ export default class EvmBridge {
     handlerAddress: string,
     gasPrice: BigNumber,
   ) {
+
     try {
       const tx = await tokenInstance.approve(handlerAddress, amountForApproval, {
         gasPrice,
@@ -162,11 +160,20 @@ export default class EvmBridge {
     }
   }
 
-  public async getTokenInfo(erc20Address: string, accountAddress: string, provider: Provider) {
-    const erc20Contract = Erc20DetailedFactory.connect(erc20Address, provider!);
+  public async getErc20TokenInfo(ercAddress: string, accountAddress: string, provider: Provider) {
+    const erc20Contract = Erc20DetailedFactory.connect(ercAddress, provider!);
 
     const balanceOfTokens = await erc20Contract.balanceOf(accountAddress);
     const tokenName = await erc20Contract.name();
+
+    return { balanceOfTokens, tokenName };
+  }
+
+  public async getErc721TokenInfo(ercAddress: string, accountAddress: string, provider: Provider) {
+    const ercContract = Erc721Factory.connect(ercAddress, provider!);
+
+    const balanceOfTokens = await ercContract.balanceOf(accountAddress);
+    const tokenName = await ercContract.name();
 
     return { balanceOfTokens, tokenName };
   }
