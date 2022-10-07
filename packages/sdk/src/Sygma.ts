@@ -367,6 +367,25 @@ export class Sygma implements SygmaSDK {
     });
   }
 
+  // @ts-ignore
+  public async depostiGeneric(
+    resourceId: any, depositData: any, fee: any
+  ){
+    console.log("🚀 ~ file: Sygma.ts ~ line 374 ~ Sygma ~ depositData", depositData)
+    console.log("🚀 ~ file: Sygma.ts ~ line 374 ~ Sygma ~ fee", fee)
+    const { domainId } = this.bridgeSetup!.chain2;
+    const bridgeToUse = this.bridges!.chain1!;
+    return bridgeToUse.deposit(
+      domainId,
+      resourceId,
+      depositData,
+      fee,
+      {
+        value: fee.fee
+      }
+    )
+  }
+
   /**
    * @name fetchFeeData
    * @description it fetches the fee data according to bridge setup
