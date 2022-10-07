@@ -13,73 +13,209 @@ Using yarn:
 `yarn add @buildwithsygma/sygma-sdk-core`
 
 ## Introduction
-**Sygma SDK** is an OpenSource (under GNU Lesser General Public License v3.0) SDK for developers to work with [Sygma](https://github.com/ChainSafe/sygma). The SDK consist of methods that enable bridging capabilities between Ethereum networks.
+**Sygma SDK** is an OpenSource (under GNU Lesser General Public License v3.0) SDK for developers to work with [Sygma bridge](https://github.com/sygmaprotocol/sygma-relayer). The SDK consist of methods that enable bridging capabilities between Ethereum networks.
 
 ***NOTE*** the SDK is under an active development so can be broken occasionally.
 
-The current SDK has one package that comprises the whole bridging logic for transferring ERC20 tokens between Ethereum networks. Alongside this there are two folder examples that demonstrate the usage of our SDK. If you want to run the examples alongside our bridging infrastructure, please make sure you have [Sygma](https://github.com/ChainSafe/sygma#configuration) in order for you to run `make local-setup` command.
+The current SDK has one package that comprises the whole bridging logic for transferring ERC20 tokens between Ethereum networks. Alongside this there are two folder examples that demonstrate the usage of our SDK. If you want to run the examples alongside our bridging infrastructure, please make sure you have [Sygma bridge](https://github.com/sygmaprotocol/sygma-relayer#local-environment) in order for you to run `make example` command.
 
 ## Running the Examples
 
-For React example, after you have run and deploy the contracts using [Sygma](https://github.com/ChainSafe/sygma), go to the `examples` folder and simply run
+For React example, after you have run and deployed the contracts using [Sygma bridge](https://github.com/sygmaprotocol/sygma-relayer), go to the [examples](https://github.com/sygmaprotocol/sygma-sdk/tree/main/examples) folder and follow the instructions in their README
 
-```bash
-yarn start
-```
-
-For NodeJS example, simply run:
-
-```bash
-yarn run:local-ex
-```
 
 # How to Use
 
 ## Environment
 
-In order for you to use our SDK [Sygma](https://github.com/ChainSafe/sygma) must be installed on your local machine. The main dependency to run `Sygma` is to have `go` installed in your machine. After that, follow the instructions to run the local example. It will take a couple of minutes for all the setup to be completed. If you want to check the logs of the deployed contracts you can do the following:
+In order for you to use our SDK, first you need to clone [Sygma bridge](https://github.com/sygmaprotocol/sygma-relayer) repository to your local machine. After that, follow the instructions to run the local example. It will use docker and docker-compose to run 2 local RPC node and 2 relayers.
 
 ```bash
 # inside the root directory of Sygma project
-cd example
-docker-compose -f ./docker-compose.yml logs setup
+make example
 ```
-
+<details>
+  <summary>show example of the log from local setup</summary>
 You should see something like this:
 
 ```bash
-setup       | ===============================================
-setup       | 🎉🎉🎉 Sygma Successfully Deployed 🎉🎉🎉
-setup       |
-setup       | - Chain 1 -
-setup       | Bridge: 0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66
-setup       | Fee Handler: 0x08CFcF164dc2C4AB1E0966F236E87F913DE77b69 (is basic fee handler: true, fee amount: 100000000000 wei)
-setup       | ERC20: 0xb83065680e6AEc805774d8545516dF4e936F0dC0
-setup       | ERC20 Handler: 0x3cA3808176Ad060Ad80c4e08F30d85973Ef1d99e
-setup       | ERC721: 0x05C5AFACf64A6082D4933752FfB447AED63581b1
-setup       | ERC721 Handler: 0x75dF75bcdCa8eA2360c562b4aaDBAF3dfAf5b19b
-setup       | Generic Handler: 0xe1588E2c6a002AE93AeD325A910Ed30961874109
-setup       | Asset Store: 0x7573B1c6de00a73e98CDac5Cd2c4a252BdC87600
-setup       | ERC20 resourceId:
-setup       | ERC721 resourceId:
-setup       | Generic resourceId:
-setup       |
-setup       | - Chain 2 -
-setup       | Bridge: 0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66
-setup       | Fee Handler: 0x08CFcF164dc2C4AB1E0966F236E87F913DE77b69 (is basic fee handler: true, fee amount: 100000000000 wei)
-setup       | ERC20: 0xb83065680e6AEc805774d8545516dF4e936F0dC0
-setup       | ERC20 Handler: 0x3cA3808176Ad060Ad80c4e08F30d85973Ef1d99e
-setup       | ERC721: 0x05C5AFACf64A6082D4933752FfB447AED63581b1
-setup       | ERC721 Handler: 0x75dF75bcdCa8eA2360c562b4aaDBAF3dfAf5b19b
-setup       | Generic Handler: 0xe1588E2c6a002AE93AeD325A910Ed30961874109
-setup       | Asset Store: 0x7573B1c6de00a73e98CDac5Cd2c4a252BdC87600
-setup       | ERC20 resourceId:
-setup       | ERC721 resourceId:
-setup       | Generic resourceId:
-setup       |
-setup       | ===============================================
-```
+Attaching to evm1-1, evm2-1, example_relayer1, example_relayer2, example_relayer3, fee-oracle
+example_relayer3  | {"level":"info","peerID":"QmYAYuLUPNwYEBYJaKHcE7NKjUhiUV8txx2xDXHvcYa1xK","time":"2022-10-07T15:57:41Z","message":"new libp2p host created with address: /ip4/172.21.0.4/tcp/9002"}
+example_relayer3  | {"level":"debug","Module":"communication","Peer":"QmYAYuLUPNwYEBYJaKHcE7NKjUhiUV8txx2xDXHvcYa1xK","MsgType":"UnknownMsg","SessionID":"health-session","time":"2022-10-07T15:57:41Z","message":"broadcasting message"}
+example_relayer3  | panic: dial tcp 172.21.0.2:8545: connect: connection refused
+example_relayer3  |
+example_relayer3  | goroutine 1 [running]:
+example_relayer3  | github.com/ChainSafe/sygma-relayer/example/app.Run()
+example_relayer3  | 	/src/example/app/app.go:112 +0x1f45
+example_relayer3  | github.com/ChainSafe/sygma-relayer/example/cmd.glob..func1(0x231a0a0?, {0x1337a60?, 0x3?, 0x3?})
+example_relayer3  | 	/src/example/cmd/cmd.go:24 +0x17
+example_relayer3  | github.com/spf13/cobra.(*Command).execute(0x231a0a0, {0xc0000c5860, 0x3, 0x3})
+example_relayer3  | 	/go/pkg/mod/github.com/spf13/cobra@v1.2.1/command.go:856 +0x67c
+example_relayer3  | github.com/spf13/cobra.(*Command).ExecuteC(0x25f26c0)
+example_relayer3  | 	/go/pkg/mod/github.com/spf13/cobra@v1.2.1/command.go:974 +0x3b4
+example_relayer3  | github.com/spf13/cobra.(*Command).Execute(...)
+example_relayer3  | 	/go/pkg/mod/github.com/spf13/cobra@v1.2.1/command.go:902
+example_relayer3  | github.com/ChainSafe/sygma-relayer/example/cmd.Execute()
+example_relayer3  | 	/src/example/cmd/cmd.go:38 +0x52
+example_relayer3  | main.main()
+example_relayer3  | 	/src/example/main.go:11 +0x17
+example_relayer2  | {"level":"info","peerID":"QmeTuMtdpPB7zKDgmobEwSvxodrf5aFVSmBXX3SQJVjJaT","time":"2022-10-07T15:57:41Z","message":"new libp2p host created with address: /ip4/172.21.0.5/tcp/9001"}
+example_relayer2  | {"level":"debug","Module":"communication","Peer":"QmeTuMtdpPB7zKDgmobEwSvxodrf5aFVSmBXX3SQJVjJaT","MsgType":"UnknownMsg","SessionID":"health-session","time":"2022-10-07T15:57:41Z","message":"broadcasting message"}
+example_relayer2  | panic: dial tcp 172.21.0.2:8545: connect: connection refused
+example_relayer2  |
+example_relayer2  | goroutine 1 [running]:
+example_relayer2  | github.com/ChainSafe/sygma-relayer/example/app.Run()
+example_relayer2  | 	/src/example/app/app.go:112 +0x1f45
+example_relayer2  | github.com/ChainSafe/sygma-relayer/example/cmd.glob..func1(0x231a0a0?, {0x1337a60?, 0x3?, 0x3?})
+example_relayer2  | 	/src/example/cmd/cmd.go:24 +0x17
+example_relayer2  | github.com/spf13/cobra.(*Command).execute(0x231a0a0, {0xc0005dadb0, 0x3, 0x3})
+example_relayer2  | 	/go/pkg/mod/github.com/spf13/cobra@v1.2.1/command.go:856 +0x67c
+example_relayer2  | github.com/spf13/cobra.(*Command).ExecuteC(0x25f26c0)
+example_relayer2  | 	/go/pkg/mod/github.com/spf13/cobra@v1.2.1/command.go:974 +0x3b4
+example_relayer2  | github.com/spf13/cobra.(*Command).Execute(...)
+example_relayer2  | 	/go/pkg/mod/github.com/spf13/cobra@v1.2.1/command.go:902
+example_relayer2  | github.com/ChainSafe/sygma-relayer/example/cmd.Execute()
+example_relayer2  | 	/src/example/cmd/cmd.go:38 +0x52
+example_relayer2  | main.main()
+example_relayer2  | 	/src/example/main.go:11 +0x17
+example_relayer1  | {"level":"info","peerID":"QmcvEg7jGvuxdsUFRUiE4VdrL2P1Yeju5L83BsJvvXz7zX","time":"2022-10-07T15:57:41Z","message":"new libp2p host created with address: /ip4/172.21.0.7/tcp/9000"}
+example_relayer1  | {"level":"debug","Module":"communication","Peer":"QmcvEg7jGvuxdsUFRUiE4VdrL2P1Yeju5L83BsJvvXz7zX","MsgType":"UnknownMsg","SessionID":"health-session","time":"2022-10-07T15:57:41Z","message":"broadcasting message"}
+example_relayer1  | panic: dial tcp 172.21.0.2:8545: connect: connection refused
+example_relayer1  |
+example_relayer1  | goroutine 1 [running]:
+example_relayer1  | github.com/ChainSafe/sygma-relayer/example/app.Run()
+example_relayer1  | 	/src/example/app/app.go:112 +0x1f45
+example_relayer1  | github.com/ChainSafe/sygma-relayer/example/cmd.glob..func1(0x231a0a0?, {0x1337a60?, 0x3?, 0x3?})
+example_relayer1  | 	/src/example/cmd/cmd.go:24 +0x17
+example_relayer1  | github.com/spf13/cobra.(*Command).execute(0x231a0a0, {0xc0004db740, 0x3, 0x3})
+example_relayer1  | 	/go/pkg/mod/github.com/spf13/cobra@v1.2.1/command.go:856 +0x67c
+example_relayer1  | github.com/spf13/cobra.(*Command).ExecuteC(0x25f26c0)
+example_relayer1  | 	/go/pkg/mod/github.com/spf13/cobra@v1.2.1/command.go:974 +0x3b4
+example_relayer1  | github.com/spf13/cobra.(*Command).Execute(...)
+example_relayer1  | 	/go/pkg/mod/github.com/spf13/cobra@v1.2.1/command.go:902
+example_relayer1  | github.com/ChainSafe/sygma-relayer/example/cmd.Execute()
+example_relayer1  | 	/src/example/cmd/cmd.go:38 +0x52
+example_relayer1  | main.main()
+example_relayer1  | 	/src/example/main.go:11 +0x17
+example_relayer3 exited with code 2
+example_relayer2 exited with code 2
+evm1-1            | Ganache CLI v6.12.2 (ganache-core: 2.13.2)
+evm1-1            | (node:1) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+evm1-1            | (Use `node --trace-deprecation ...` to show where the warning was created)
+evm1-1            |
+evm1-1            | Available Accounts
+evm1-1            | ==================
+evm1-1            | (0) 0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1 (100 ETH)
+evm1-1            | (1) 0xFFcf8FDEE72ac11b5c542428B35EEF5769C409f0 (100 ETH)
+evm1-1            | (2) 0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b (100 ETH)
+evm1-1            | (3) 0xE11BA2b4D45Eaed5996Cd0823791E0C93114882d (100 ETH)
+evm1-1            | (4) 0xd03ea8624C8C5987235048901fB614fDcA89b117 (100 ETH)
+evm1-1            | (5) 0x95cED938F7991cd0dFcb48F0a06a40FA1aF46EBC (100 ETH)
+evm1-1            | (6) 0x3E5e9111Ae8eB78Fe1CC3bb8915d5D461F3Ef9A9 (100 ETH)
+evm1-1            | (7) 0x28a8746e75304c0780E011BEd21C72cD78cd535E (100 ETH)
+evm1-1            | (8) 0xACa94ef8bD5ffEE41947b4585a84BdA5a3d3DA6E (100 ETH)
+evm1-1            | (9) 0x1dF62f291b2E969fB0849d99D9Ce41e2F137006e (100 ETH)
+evm1-1            |
+evm1-1            | Private Keys
+evm1-1            | ==================
+evm1-1            | (0) 0x4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b1d
+evm1-1            | (1) 0x6cbed15c793ce57650b9877cf6fa156fbef513c4e6134f022a85b1ffdd59b2a1
+evm1-1            | (2) 0x6370fd033278c143179d81c5526140625662b8daa446c22ee2d73db3707e620c
+evm1-1            | (3) 0x646f1ce2fdad0e6deeeb5c7e8e5543bdde65e86029e2fd9fc169899c440a7913
+evm1-1            | (4) 0xadd53f9a7e588d003326d1cbf9e4a43c061aadd9bc938c843a79e7b4fd2ad743
+evm1-1            | (5) 0x395df67f0c2d2d9fe1ad08d1bc8b6627011959b79c53d7dd6a3536a33ab8a4fd
+evm1-1            | (6) 0xe485d098507f54e7733a205420dfddbe58db035fa577fc294ebd14db90767a52
+evm1-1            | (7) 0xa453611d9419d0e56f499079478fd72c37b251a94bfde4d19872c44cf65386e3
+evm1-1            | (8) 0x829e924fdf021ba3dbbc4225edfece9aca04b929d6e75613329ca6f1d31c0bb4
+evm1-1            | (9) 0xb0057716d5917badaf911b193b12b910811c1497b5bada8d7711f758981c3773
+evm1-1            |
+evm1-1            | HD Wallet
+evm1-1            | ==================
+evm1-1            | Mnemonic:      myth like bonus scare over problem client lizard pioneer submit female collect
+evm1-1            | Base HD Path:  m/44'/60'/0'/0/{account_index}
+evm1-1            |
+evm1-1            | Gas Price
+evm1-1            | ==================
+evm1-1            | 20000000000
+evm1-1            |
+evm1-1            | Gas Limit
+evm1-1            | ==================
+evm1-1            | 6721975
+evm1-1            |
+evm1-1            | Call Gas Limit
+evm1-1            | ==================
+evm1-1            | 9007199254740991
+evm1-1            |
+evm1-1            | Listening on 0.0.0.0:8545
+evm2-1            | Ganache CLI v6.12.2 (ganache-core: 2.13.2)
+evm2-1            | (node:1) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+evm2-1            | (Use `node --trace-deprecation ...` to show where the warning was created)
+evm2-1            |
+evm2-1            | Available Accounts
+evm2-1            | ==================
+evm2-1            | (0) 0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1 (100 ETH)
+evm2-1            | (1) 0xFFcf8FDEE72ac11b5c542428B35EEF5769C409f0 (100 ETH)
+evm2-1            | (2) 0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b (100 ETH)
+evm2-1            | (3) 0xE11BA2b4D45Eaed5996Cd0823791E0C93114882d (100 ETH)
+evm2-1            | (4) 0xd03ea8624C8C5987235048901fB614fDcA89b117 (100 ETH)
+evm2-1            | (5) 0x95cED938F7991cd0dFcb48F0a06a40FA1aF46EBC (100 ETH)
+evm2-1            | (6) 0x3E5e9111Ae8eB78Fe1CC3bb8915d5D461F3Ef9A9 (100 ETH)
+evm2-1            | (7) 0x28a8746e75304c0780E011BEd21C72cD78cd535E (100 ETH)
+evm2-1            | (8) 0xACa94ef8bD5ffEE41947b4585a84BdA5a3d3DA6E (100 ETH)
+evm2-1            | (9) 0x1dF62f291b2E969fB0849d99D9Ce41e2F137006e (100 ETH)
+evm2-1            |
+evm2-1            | Private Keys
+evm2-1            | ==================
+evm2-1            | (0) 0x4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b1d
+evm2-1            | (1) 0x6cbed15c793ce57650b9877cf6fa156fbef513c4e6134f022a85b1ffdd59b2a1
+evm2-1            | (2) 0x6370fd033278c143179d81c5526140625662b8daa446c22ee2d73db3707e620c
+evm2-1            | (3) 0x646f1ce2fdad0e6deeeb5c7e8e5543bdde65e86029e2fd9fc169899c440a7913
+evm2-1            | (4) 0xadd53f9a7e588d003326d1cbf9e4a43c061aadd9bc938c843a79e7b4fd2ad743
+evm2-1            | (5) 0x395df67f0c2d2d9fe1ad08d1bc8b6627011959b79c53d7dd6a3536a33ab8a4fd
+evm2-1            | (6) 0xe485d098507f54e7733a205420dfddbe58db035fa577fc294ebd14db90767a52
+evm2-1            | (7) 0xa453611d9419d0e56f499079478fd72c37b251a94bfde4d19872c44cf65386e3
+evm2-1            | (8) 0x829e924fdf021ba3dbbc4225edfece9aca04b929d6e75613329ca6f1d31c0bb4
+evm2-1            | (9) 0xb0057716d5917badaf911b193b12b910811c1497b5bada8d7711f758981c3773
+evm2-1            |
+evm2-1            | HD Wallet
+evm2-1            | ==================
+evm2-1            | Mnemonic:      myth like bonus scare over problem client lizard pioneer submit female collect
+evm2-1            | Base HD Path:  m/44'/60'/0'/0/{account_index}
+evm2-1            |
+evm2-1            | Gas Price
+evm2-1            | ==================
+evm2-1            | 20000000000
+evm2-1            |
+evm2-1            | Gas Limit
+evm2-1            | ==================
+evm2-1            | 6721975
+evm2-1            |
+evm2-1            | Call Gas Limit
+evm2-1            | ==================
+evm2-1            | 9007199254740991
+evm2-1            |
+evm2-1            | Listening on 0.0.0.0:8545
+example_relayer1 exited with code 0
+fee-oracle        | time="2022-10-07T15:57:45Z" level=info msg="log level: debug"
+fee-oracle        | time="2022-10-07T15:57:45Z" level=info msg="fee oracle indentity address: 0x70B7D7448982b15295150575541D1d3b862f7FE9\n" base=base
+fee-oracle        | time="2022-10-07T15:57:45Z" level=warning msg="remote param operator is disabled" base=base
+fee-oracle        | time="2022-10-07T15:57:45Z" level=info msg="running in: dev" base=base
+fee-oracle        | time="2022-10-07T15:57:45Z" level=info msg="running mode: debug" base=base
+fee-oracle        | time="2022-10-07T15:57:45Z" level=info msg="fee oracle app init success" base=base
+fee-oracle        | time="2022-10-07T15:57:45Z" level=info msg="http server starts on port :8091 " base=base
+fee-oracle        | time="2022-10-07T15:57:45Z" level=info msg="http server mode: debug " base=base
+fee-oracle        | [GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+fee-oracle        |  - using env:	export GIN_MODE=release
+fee-oracle        |  - using code:	gin.SetMode(gin.ReleaseMode)
+fee-oracle        |
+fee-oracle        | [GIN-debug] GET    /health                   --> github.com/ChainSafe/sygma-fee-oracle/api.(*Handler).healthCheck-fm (3 handlers)
+fee-oracle        | [GIN-debug] GET    /v1/rate/from/:fromDomainID/to/:toDomainID/resourceid/:resourceID --> github.com/ChainSafe/sygma-fee-oracle/api.(*Handler).debugGetRate-fm (3 handlers)
+fee-oracle        | [GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+fee-oracle        | Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+fee-oracle        | [GIN-debug] Listening and serving HTTP on :8091
 
+```
+</details>
 With this addresses you can use our SDK with the `basic fee` setup.
 
 After that, you can watch the logs an see your funds being transfer from one of the networks to the other.
@@ -92,32 +228,62 @@ There is a folder with examples ready to be used for the SDK. Currently we have 
 Assuming you are going to use the local setup provider by [Sygma](https://github.com/ChainSafe/sygma), the setup that you need to pass to the `Sygma` class is going to have the following structure:
 
 ```ts
-import { Sygma } from "@chainsafe/sygma-sdk-core";
+import { Sygma } from "@buildwithsygma/sygma-sdk-core";
 
-const bridgeSetup: BridgeData = {
-  chain1: {
-      bridgeAddress: "0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66",
-      erc20Address: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
-      erc20HandlerAddress: "0x3cA3808176Ad060Ad80c4e08F30d85973Ef1d99e",
-      feeHandlerAddress: "0x08CFcF164dc2C4AB1E0966F236E87F913DE77b69",
-      rpcURL: "http://localhost:8545",
-      domainId: "1",
-      erc20ResourceID:
-        "0x0000000000000000000000000000000000000000000000000000000000000000",
-      decimals: 18
-    },
-    chain2: {
-      bridgeAddress: "0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66",
-      erc20Address: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
-      erc20HandlerAddress: "0x3cA3808176Ad060Ad80c4e08F30d85973Ef1d99e",
-      feeHandlerAddress: "0x08CFcF164dc2C4AB1E0966F236E87F913DE77b69",
-      rpcURL: "http://localhost:8547",
-      domainId: "2",
-      erc20ResourceID:
-        "0x0000000000000000000000000000000000000000000000000000000000000000",
-      decimals: 18
-    },
-}
+const bridgeSetupList: SygmaBridgeSetupList = [
+  {
+    domainId: "1",
+    networkId: 1337,
+    name: "Local EVM 1",
+    decimals: 18,
+    bridgeAddress: "0x6CdE2Cd82a4F8B74693Ff5e194c19CA08c2d1c68",
+    erc20HandlerAddress: "0x1ED1d77911944622FCcDDEad8A731fd77E94173e",
+    erc721HandlerAddress: "0x481f97f9C82a971B3844a422936a4d3c4082bF84",
+    rpcUrl: "http://localhost:8545",
+    tokens: [
+      {
+        type: "erc20",
+        address: "0x1CcB4231f2ff299E1E049De76F0a1D2B415C563A",
+        name: "ERC20LRTST",
+        symbol: "ETHIcon",
+        imageUri: "ETHIcon",
+        decimals: 18,
+        resourceId:
+          "0x0000000000000000000000000000000000000000000000000000000000000300",
+        feeSettings: {
+          type: "basic",
+          address: "0x78E5b9cEC9aEA29071f070C8cC561F692B3511A6",
+        },
+      },
+    ],
+  },
+  {
+    domainId: "2",
+    networkId: 1338,
+    name: "Local EVM 2",
+    decimals: 18,
+    bridgeAddress: "0x6CdE2Cd82a4F8B74693Ff5e194c19CA08c2d1c68",
+    erc20HandlerAddress: "0x1ED1d77911944622FCcDDEad8A731fd77E94173e",
+    erc721HandlerAddress: "0x481f97f9C82a971B3844a422936a4d3c4082bF84",
+    rpcUrl: "http://localhost:8547",
+    tokens: [
+      {
+        type: "erc20",
+        address: "0x1CcB4231f2ff299E1E049De76F0a1D2B415C563A",
+        name: "ERC20LRTST",
+        symbol: "ETHIcon",
+        imageUri: "ETHIcon",
+        decimals: 18,
+        resourceId:
+          "0x0000000000000000000000000000000000000000000000000000000000000300",
+        feeSettings: {
+          type: "basic",
+          address: "0x78E5b9cEC9aEA29071f070C8cC561F692B3511A6",
+        },
+      },
+    ],
+  },
+];
 ```
 
 We are going to use the SDK with `NodeJS` so, you we are going to use one of the testing accounts from the local setup:
@@ -154,13 +320,12 @@ Once this is complete, we can approve the amount of tokens to transfer before we
 ```ts
 const approvalTxReceipt = await (await sygma.approve({
   amountForApproval: "1",
-  from: "chain1"
 })).wait(1)
 
 const deposit = await sygma.deposit({
   amount: "1",
   recipientAddress: "0xF4314cb9046bECe6AA54bb9533155434d0c76909"
-  feeData: basicFee.feeData
+  feeData: basicFee
 })
 
 const txReceipt = await deposit.wait(1)
@@ -171,7 +336,7 @@ const txReceipt = await deposit.wait(1)
 For usage in the browser with our local setup, provide the same bridge config that you use for the NodeJS context:
 
 ```ts
-import { Sygma } from "@chainsafe/sygma-sdk-core";
+import { Sygma } from "@buildwithsygma/sygma-sdk-core";
 
 type LocalData = {
   balance: BigNumber;
@@ -181,45 +346,71 @@ type LocalData = {
   tokenName: string;
 };
 
-const bridgeSetup: BridgeData = {
-  chain1: {
-      bridgeAddress: "0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66",
-      erc20Address: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
-      erc20HandlerAddress: "0x3cA3808176Ad060Ad80c4e08F30d85973Ef1d99e",
-      feeHandlerAddress: "0x08CFcF164dc2C4AB1E0966F236E87F913DE77b69",
-      rpcURL: "http://localhost:8545",
-      domainId: "1",
-      erc20ResourceID:
-        "0x0000000000000000000000000000000000000000000000000000000000000000",
-      decimals: 18
-    },
-    chain2: {
-      bridgeAddress: "0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66",
-      erc20Address: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
-      erc20HandlerAddress: "0x3cA3808176Ad060Ad80c4e08F30d85973Ef1d99e",
-      feeHandlerAddress: "0x08CFcF164dc2C4AB1E0966F236E87F913DE77b69",
-      rpcURL: "http://localhost:8547",
-      domainId: "2",
-      erc20ResourceID:
-        "0x0000000000000000000000000000000000000000000000000000000000000000",
-      decimals: 18
-    },
-}
+const bridgeSetupList: SygmaBridgeSetupList = [
+  {
+    domainId: "1",
+    networkId: 1337,
+    name: "Local EVM 1",
+    decimals: 18,
+    bridgeAddress: "0x6CdE2Cd82a4F8B74693Ff5e194c19CA08c2d1c68",
+    erc20HandlerAddress: "0x1ED1d77911944622FCcDDEad8A731fd77E94173e",
+    erc721HandlerAddress: "0x481f97f9C82a971B3844a422936a4d3c4082bF84",
+    rpcUrl: "http://localhost:8545",
+    tokens: [
+      {
+        type: "erc20",
+        address: "0x1CcB4231f2ff299E1E049De76F0a1D2B415C563A",
+        name: "ERC20LRTST",
+        symbol: "ETHIcon",
+        imageUri: "ETHIcon",
+        decimals: 18,
+        resourceId:
+          "0x0000000000000000000000000000000000000000000000000000000000000300",
+        feeSettings: {
+          type: "basic",
+          address: "0x78E5b9cEC9aEA29071f070C8cC561F692B3511A6",
+        },
+      },
+    ],
+  },
+  {
+    domainId: "2",
+    networkId: 1338,
+    name: "Local EVM 2",
+    decimals: 18,
+    bridgeAddress: "0x6CdE2Cd82a4F8B74693Ff5e194c19CA08c2d1c68",
+    erc20HandlerAddress: "0x1ED1d77911944622FCcDDEad8A731fd77E94173e",
+    erc721HandlerAddress: "0x481f97f9C82a971B3844a422936a4d3c4082bF84",
+    rpcUrl: "http://localhost:8547",
+    tokens: [
+      {
+        type: "erc20",
+        address: "0x1CcB4231f2ff299E1E049De76F0a1D2B415C563A",
+        name: "ERC20LRTST",
+        symbol: "ETHIcon",
+        imageUri: "ETHIcon",
+        decimals: 18,
+        resourceId:
+          "0x0000000000000000000000000000000000000000000000000000000000000300",
+        feeSettings: {
+          type: "basic",
+          address: "0x78E5b9cEC9aEA29071f070C8cC561F692B3511A6",
+        },
+      },
+    ],
+  },
+];
 ```
 
 Then, inside your App, create some state variables and functions to get account data from your wallet (in this example the wallet is `Metamask`)
 
 ```ts
 function App(){
-  const [bridge, setBridge] = useState<SetStateAction<any | undefined>>(undefined)
+  const [bridge, setBridge] = useState<any | undefined>(undefined)
 
-  const [logicConnected, setLogicConnected] = useState<SetStateAction<boolean>>(
-    false
-  );
+  const [logicConnected, setLogicConnected] = useState<boolean>(false);
 
-  const [sygmaInstance, setSygmaInstance] = useState<
-    SetStateAction<Sygma | undefined>
-  >(undefined);
+  const [sygmaInstance, setSygmaInstance] = useState<Sygma | undefined>(undefined);
 
   const getAccountData = async (sygma: Sygma) => {
     try {
@@ -230,7 +421,11 @@ function App(){
       const { balanceOfTokens, tokenName } = await sygma.getTokenInfo(
         "chain1"
       );
-
+      console.log("signer balance", utils.formatEther(balance!));
+      console.log("signer address", address);
+      console.log("gas price", utils.formatEther(gasPrice!));
+      console.log("balance of tokens", utils.formatUnits(balanceOfTokens, 18));
+      setValue("address", address!)
       setAccountData({
         balance: balance!,
         address: address!,
@@ -241,22 +436,23 @@ function App(){
       setIsReady(true);
     } catch (e) {
       console.log(e);
-      console.log("Perhaps you forget to deploy the bridge?")
+      console.log("Perhaps you forget to deploy the bridge?");
     }
   };
 
   useEffect(() => {
     if (data !== undefined && sygmaInstance !== undefined) {
-      getAccountData(sygmaInstance! as Sygma);
-      setBridge((sygmaInstance! as Sygma).bridges!['chain2'])
+      getAccountData(sygmaInstance);
     }
   }, [data, logicConnected]);
 
   useEffect(() => {
-    console.log(metaIsConnected, data);
     if (metaIsConnected && sygmaInstance !== undefined) {
       handleConnect();
       getAccountData(sygmaInstance! as Sygma);
+      // Update form values using useForm
+      setValue("from", sygmaInstance.bridgeSetup?.chain1.domainId!)
+      setValue("to", sygmaInstance.bridgeSetup?.chain2.domainId!)
     }
   }, [metaIsConnected]);
 
@@ -268,12 +464,13 @@ If you are using `Metamask` you can create a function to trigger the connection 
 ```ts
 // in the App component, below the last useEffect
 
-const handleConnect = () => {
+  const handleConnect = () => {
     // IF META IS NOT SIGNIN, TRIGGER POP OF THE WINDOW FOR THE EXTENSION
     if (!metaIsConnected) {
       return window.ethereum
         .request({ method: "eth_requestAccounts" })
         .then((r: any) => {
+          console.log("request to unlock metamask", r);
           const [addr] = r;
           setMetaIsConnected(true);
           setAccountData({
@@ -290,16 +487,16 @@ const handleConnect = () => {
           }
         });
     } else if (metaIsConnected) {
-      const setup = { bridgeSetup };
-      const sygma = new Sygma(setup);
 
-      setSygmaInstance(sygma);
+      const data = (sygmaInstance as Sygma).initializeConnectionFromWeb3Provider(
+        window.ethereum
+      );
 
-      const data = sygma.initializeConnectionFromWeb3Provider(window.ethereum);
-
+      //@ts-ignore-line
       setData(data);
       setLogicConnected(true);
     }
+  };
 ```
 
 To listen to deposit events on the home network:
