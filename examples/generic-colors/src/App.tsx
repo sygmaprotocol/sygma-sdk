@@ -200,14 +200,14 @@ function App() {
       (await managedSignerNode1.getAddress()).substr(2)
     }`;
 
-    const basicFeeData = await (sygmaInstance as Sygma).fetchBasicFeeData({
-      amount: "1000000",
-      recipientAddress: bridgeAdmin,
-    });
-    console.log(
-      "🚀 ~ file: App.tsx ~ line 169 ~ handleClick ~ basicFeeData",
-      basicFeeData,
-    );
+    // const basicFeeData = await (sygmaInstance as Sygma).fetchBasicFeeData({
+    //   amount: "1000000",
+    //   recipientAddress: bridgeAdmin,
+    // });
+    // console.log(
+    //   "🚀 ~ file: App.tsx ~ line 169 ~ handleClick ~ basicFeeData",
+    //   basicFeeData,
+    // );
 
     let feeData;
 
@@ -269,7 +269,7 @@ function App() {
       const { depositNonce } = depositEvent.args;
       console.log(
         "🚀 ~ file: App.tsx ~ line 265 ~ handleClick ~ depositNonce",
-        depositNonce.toNumber(),
+        depositNonce,
       );
       console.log("result of transfer", depositTx);
     } catch (e) {
@@ -342,7 +342,7 @@ function App() {
     );
     const color = await colorContractNode1
       .connect(managedSignerNode1)
-      .colorsArray(3);
+      .colorsArray(0);
     const decodedColor = `#${ethers.utils
       .hexStripZeros(color)
       .substr(2)
