@@ -14,167 +14,56 @@ import {
   FeeDataResult
 } from "@buildwithsygma/sygma-sdk-core";
 
-// TODO: MOVE THIS TO ENV
-const bridgeSetup: BridgeData = {
-  chain1: {
-    domainId: "1",
-    networkId: 422,
-    name: "Local EVM 1",
-    decimals: 18,
-    bridgeAddress: "0xF75ABb9ABED5975d1430ddCF420bEF954C8F5235",
-    erc20HandlerAddress: "0x7ec51Af51bf6f6f4e3C2E87096381B2cf94f6d74",
-    erc721HandlerAddress: "0x1cd88Fa5848389E4027d29B267BAB561300CEA2A",
-    rpcUrl: "http://localhost:8545",
-    tokens: [
-      {
-        type: "erc20",
-        address: "0xDA8556C2485048eee3dE91085347c3210785323c",
-        name: "csUSD",
-        symbol: "csUSD",
-        imageUri: "ETHIcon",
-        decimals: 18,
-        resourceId:
-          "0x0000000000000000000000000000000000000000000000000000000000000000",
-        feeSettings: {
-          type: "basic",
-          address: "0xA8254f6184b82D7307257966b95D7569BD751a90",
-        },
-      },
-      {
-        type: "erc721",
-        address: "0xd6D787253cc022E6839583aD0cBECfc9c60b581c",
-        name: "NFT",
-        symbol: "NFT",
-        imageUri: "ETHIcon",
-        decimals: 0,
-        resourceId:
-          "0x0000000000000000000000000000000000000000000000000000000000000200",
-        feeSettings: {
-          type: "basic",
-          address: "0xA8254f6184b82D7307257966b95D7569BD751a90",
-        },
-      },
-    ],
-  },
-  chain2: {
-    domainId: "2",
-    networkId: 1214,
-    name: "Local EVM 2",
-    decimals: 18,
-    bridgeAddress: "0xF75ABb9ABED5975d1430ddCF420bEF954C8F5235",
-    erc20HandlerAddress: "0x7ec51Af51bf6f6f4e3C2E87096381B2cf94f6d74",
-    erc721HandlerAddress: "0x1cd88Fa5848389E4027d29B267BAB561300CEA2A",
-    rpcUrl: "http://localhost:8547",
-    tokens: [
-      {
-        type: "erc20",
-        address: "0xDA8556C2485048eee3dE91085347c3210785323c",
-        name: "csUSD",
-        symbol: "csUSD",
-        imageUri: "ETHIcon",
-        decimals: 18,
-        resourceId:
-          "0x0000000000000000000000000000000000000000000000000000000000000000",
-        feeSettings: {
-          type: "basic",
-          address: "0xA8254f6184b82D7307257966b95D7569BD751a90",
-        },
-      },
-      {
-        type: "erc721",
-        address: "0xd6D787253cc022E6839583aD0cBECfc9c60b581c",
-        name: "NFT",
-        symbol: "NFT",
-        imageUri: "ETHIcon",
-        decimals: 0,
-        resourceId:
-          "0x0000000000000000000000000000000000000000000000000000000000000200",
-        feeSettings: {
-          type: "basic",
-          address: "0xA8254f6184b82D7307257966b95D7569BD751a90",
-        },
-      },
-    ],
-  },
-};
 
 const bridgeSetupList: SygmaBridgeSetupList = [
   {
     domainId: "1",
-    networkId: 422,
+    networkId: 1337,
     name: "Local EVM 1",
     decimals: 18,
-    bridgeAddress: "0xF75ABb9ABED5975d1430ddCF420bEF954C8F5235",
-    erc20HandlerAddress: "0x7ec51Af51bf6f6f4e3C2E87096381B2cf94f6d74",
-    erc721HandlerAddress: "0x1cd88Fa5848389E4027d29B267BAB561300CEA2A",
+    bridgeAddress: "0x6CdE2Cd82a4F8B74693Ff5e194c19CA08c2d1c68",
+    erc20HandlerAddress: "0x1ED1d77911944622FCcDDEad8A731fd77E94173e",
+    erc721HandlerAddress: "0x481f97f9C82a971B3844a422936a4d3c4082bF84",
     rpcUrl: "http://localhost:8545",
     tokens: [
       {
         type: "erc20",
-        address: "0xDA8556C2485048eee3dE91085347c3210785323c",
-        name: "csUSD",
-        symbol: "csUSD",
+        address: "0x1CcB4231f2ff299E1E049De76F0a1D2B415C563A",
+        name: "ERC20LRTST",
+        symbol: "ETHIcon",
         imageUri: "ETHIcon",
         decimals: 18,
         resourceId:
-          "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x0000000000000000000000000000000000000000000000000000000000000300",
         feeSettings: {
           type: "basic",
-          address: "0xA8254f6184b82D7307257966b95D7569BD751a90",
-        },
-      },
-      {
-        type: "erc721",
-        address: "0xd6D787253cc022E6839583aD0cBECfc9c60b581c",
-        name: "NFT",
-        symbol: "NFT",
-        imageUri: "ETHIcon",
-        decimals: 0,
-        resourceId:
-          "0x0000000000000000000000000000000000000000000000000000000000000200",
-        feeSettings: {
-          type: "basic",
-          address: "0xA8254f6184b82D7307257966b95D7569BD751a90",
+          address: "0x78E5b9cEC9aEA29071f070C8cC561F692B3511A6",
         },
       },
     ],
   },
   {
     domainId: "2",
-    networkId: 1214,
+    networkId: 1338,
     name: "Local EVM 2",
     decimals: 18,
-    bridgeAddress: "0xF75ABb9ABED5975d1430ddCF420bEF954C8F5235",
-    erc20HandlerAddress: "0x7ec51Af51bf6f6f4e3C2E87096381B2cf94f6d74",
-    erc721HandlerAddress: "0x1cd88Fa5848389E4027d29B267BAB561300CEA2A",
+    bridgeAddress: "0x6CdE2Cd82a4F8B74693Ff5e194c19CA08c2d1c68",
+    erc20HandlerAddress: "0x1ED1d77911944622FCcDDEad8A731fd77E94173e",
+    erc721HandlerAddress: "0x481f97f9C82a971B3844a422936a4d3c4082bF84",
     rpcUrl: "http://localhost:8547",
     tokens: [
       {
         type: "erc20",
-        address: "0xDA8556C2485048eee3dE91085347c3210785323c",
-        name: "csUSD",
-        symbol: "csUSD",
+        address: "0x1CcB4231f2ff299E1E049De76F0a1D2B415C563A",
+        name: "ERC20LRTST",
+        symbol: "ETHIcon",
         imageUri: "ETHIcon",
         decimals: 18,
         resourceId:
-          "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x0000000000000000000000000000000000000000000000000000000000000300",
         feeSettings: {
           type: "basic",
-          address: "0xA8254f6184b82D7307257966b95D7569BD751a90",
-        },
-      },
-      {
-        type: "erc721",
-        address: "0xd6D787253cc022E6839583aD0cBECfc9c60b581c",
-        name: "NFT",
-        symbol: "NFT",
-        imageUri: "ETHIcon",
-        decimals: 0,
-        resourceId:
-          "0x0000000000000000000000000000000000000000000000000000000000000200",
-        feeSettings: {
-          type: "basic",
-          address: "0xA8254f6184b82D7307257966b95D7569BD751a90",
+          address: "0x78E5b9cEC9aEA29071f070C8cC561F692B3511A6",
         },
       },
     ],
@@ -259,10 +148,11 @@ function App() {
   const watchTo = watch("to");
 
   useEffect(() => {
-    const setup = { bridgeSetupList, bridgeSetup };
-    const chainbridge = new Sygma(setup);
+    const setup = { bridgeSetupList };
+    const sygma = new Sygma(setup);
+    console.log("🚀 ~ file: App.tsx ~ line 153 ~ useEffect ~ sygma", sygma)
 
-    setSygmaInstance(chainbridge);
+    setSygmaInstance(sygma);
   }, []);
 
 
@@ -288,13 +178,13 @@ function App() {
     }
   }, [sygmaInstance, homeDepositNonce]);
 
-  const getAccountData = async (chainbridge: Sygma) => {
+  const getAccountData = async (sygma: Sygma) => {
     try {
       const balance =
-        (await chainbridge.getSignerBalance("chain1")) ?? BigNumber.from("0");
-      const address = await chainbridge.getSignerAddress("chain1");
-      const gasPrice = await chainbridge.getSignerGasPrice("chain1");
-      const { balanceOfTokens, tokenName } = await chainbridge.getTokenInfo(
+        (await sygma.getSignerBalance("chain1")) ?? BigNumber.from("0");
+      const address = await sygma.getSignerAddress("chain1");
+      const gasPrice = await sygma.getSignerGasPrice("chain1");
+      const { balanceOfTokens, tokenName } = await sygma.getTokenInfo(
         "chain1"
       );
       console.log("signer balance", utils.formatEther(balance!));
@@ -335,6 +225,8 @@ function App() {
     if (metaIsConnected && sygmaInstance !== undefined) {
       handleConnect();
       getAccountData(sygmaInstance! as Sygma);
+      setValue("from", sygmaInstance.bridgeSetup?.chain1.domainId!)
+      setValue("to", sygmaInstance.bridgeSetup?.chain2.domainId!)
     }
   }, [metaIsConnected]);
 
@@ -441,7 +333,7 @@ function App() {
   const buttonStyle: CSSProperties = {
     display: "flex",
     alignSelf: "center",
-    width: "20%",
+    width: "23%",
     padding: "10px",
     marginTop: "15px",
     justifyContent: "center",
@@ -549,7 +441,7 @@ function App() {
                   borderRadius: "5px",
                 }}
               >
-                Bridge!
+                Approve & transfer
               </button>
             </div>
           </form>

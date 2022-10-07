@@ -17,7 +17,7 @@ import {
 const bridgeSetupList: SygmaBridgeSetupList = [
   {
     domainId: "1",
-    networkId: 1,
+    networkId: 1337,
     name: "Local EVM 1",
     decimals: 18,
     bridgeAddress: "0x6CdE2Cd82a4F8B74693Ff5e194c19CA08c2d1c68",
@@ -43,7 +43,7 @@ const bridgeSetupList: SygmaBridgeSetupList = [
   },
   {
     domainId: "2",
-    networkId: 2,
+    networkId: 1338,
     name: "Local EVM 2",
     decimals: 18,
     bridgeAddress: "0x6CdE2Cd82a4F8B74693Ff5e194c19CA08c2d1c68",
