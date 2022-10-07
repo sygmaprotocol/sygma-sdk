@@ -223,7 +223,6 @@ function App() {
 
   useEffect(() => {
     if (metaIsConnected && sygmaInstance !== undefined) {
-      console.log("SYGMA INSTANCE", sygmaInstance.bridgeSetup)
       handleConnect();
       getAccountData(sygmaInstance! as Sygma);
       setValue("from", sygmaInstance.bridgeSetup?.chain1.domainId!)
