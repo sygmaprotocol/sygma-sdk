@@ -18,7 +18,7 @@ import {
 const bridgeSetupList: SygmaBridgeSetupList = [
   {
     domainId: "1",
-    networkId: 1,
+    networkId: 1337,
     name: "Local EVM 1",
     decimals: 18,
     bridgeAddress: "0x6CdE2Cd82a4F8B74693Ff5e194c19CA08c2d1c68",
@@ -44,7 +44,7 @@ const bridgeSetupList: SygmaBridgeSetupList = [
   },
   {
     domainId: "2",
-    networkId: 2,
+    networkId: 1338,
     name: "Local EVM 2",
     decimals: 18,
     bridgeAddress: "0x6CdE2Cd82a4F8B74693Ff5e194c19CA08c2d1c68",
@@ -149,9 +149,10 @@ function App() {
 
   useEffect(() => {
     const setup = { bridgeSetupList };
-    const chainbridge = new Sygma(setup);
+    const sygma = new Sygma(setup);
+    console.log("🚀 ~ file: App.tsx ~ line 153 ~ useEffect ~ sygma", sygma)
 
-    setSygmaInstance(chainbridge);
+    setSygmaInstance(sygma);
   }, []);
 
 
@@ -177,13 +178,13 @@ function App() {
     }
   }, [sygmaInstance, homeDepositNonce]);
 
-  const getAccountData = async (chainbridge: Sygma) => {
+  const getAccountData = async (sygma: Sygma) => {
     try {
       const balance =
-        (await chainbridge.getSignerBalance("chain1")) ?? BigNumber.from("0");
-      const address = await chainbridge.getSignerAddress("chain1");
-      const gasPrice = await chainbridge.getSignerGasPrice("chain1");
-      const { balanceOfTokens, tokenName } = await chainbridge.getTokenInfo(
+        (await sygma.getSignerBalance("chain1")) ?? BigNumber.from("0");
+      const address = await sygma.getSignerAddress("chain1");
+      const gasPrice = await sygma.getSignerGasPrice("chain1");
+      const { balanceOfTokens, tokenName } = await sygma.getTokenInfo(
         "chain1"
       );
       console.log("signer balance", utils.formatEther(balance!));
@@ -222,6 +223,7 @@ function App() {
 
   useEffect(() => {
     if (metaIsConnected && sygmaInstance !== undefined) {
+      console.log("SYGMA INSTANCE", sygmaInstance.bridgeSetup)
       handleConnect();
       getAccountData(sygmaInstance! as Sygma);
       setValue("from", sygmaInstance.bridgeSetup?.chain1.domainId!)
