@@ -64,7 +64,7 @@ const bridgeSetupList: SygmaBridgeSetupList = [
 ];
 
 // Test account from Sygma local setup
-const acc = '0xF4314cb9046bECe6AA54bb9533155434d0c76909'
+const acc = '0x5C1F5961696BaD2e73f73417f07EF55C62a2dC5b'
 
 const sygma = new Sygma({ bridgeSetupList })
 
@@ -74,7 +74,7 @@ const bridgeEvents = sygma.initializeConnectionRPC(acc)
 // Getting basic fee
 const basicFee = await sygma.fetchBasicFeeData({
   amount: "1",
-  recipientAddress: "0xF4314cb9046bECe6AA54bb9533155434d0c76909",
+  recipientAddress: "0x5C1F5961696BaD2e73f73417f07EF55C62a2dC5b",
 })
 
 console.log("Basic fee is:", basicFee.feeData)
@@ -91,7 +91,7 @@ console.log("tx receipt status", txReceipt.status)
 // Make the deposit
 const deposit = await sygma.deposit({
   amount: "1",
-  recipientAddress: "0xF4314cb9046bECe6AA54bb9533155434d0c76909",
+  recipientAddress: "0x5C1F5961696BaD2e73f73417f07EF55C62a2dC5b",
   feeData: basicFee
 })
 
@@ -115,7 +115,7 @@ const hasTokenSupplies = await sygma.hasTokenSupplies(
   10
 ) // true \\ false
 
-const checkCurrentAllowance = await sygma.checkCurrentAllowance("0xF4314cb9046bECe6AA54bb9533155434d0c76909") // BigNumber
+const checkCurrentAllowance = await sygma.checkCurrentAllowance("0x5C1F5961696BaD2e73f73417f07EF55C62a2dC5b") // BigNumber
 
 const getTokenInfo = await sygma.getTokenInfo("chain1") // { balanceOfTokens: BigNumber, tokenName: string }
 ```
