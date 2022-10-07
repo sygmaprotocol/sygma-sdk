@@ -5,56 +5,83 @@ Core primitives for cross-chain comunication between EVM compatible networks.
 ## Getting started
 
 ```ts
-import { Sygma } from "@chainsafe/sygma-sdk-core";
+import { Sygma } from "@buildwithsygma/sygma-sdk-core";
 
 // Addresses come from Sygma local setup
-const bridgeSetup: BridgeData = {
-  chain1: {
-      bridgeAddress: "0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66",
-      erc20Address: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
-      erc20HandlerAddress: "0x3cA3808176Ad060Ad80c4e08F30d85973Ef1d99e",
-      feeHandlerAddress: "0x08CFcF164dc2C4AB1E0966F236E87F913DE77b69",
-      rpcURL: "http://localhost:8545",
-      domainId: "1",
-      erc20ResourceID:
-        "0x0000000000000000000000000000000000000000000000000000000000000000",
-      decimals: 18
-    },
-    chain2: {
-      bridgeAddress: "0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66",
-      erc20Address: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
-      erc20HandlerAddress: "0x3cA3808176Ad060Ad80c4e08F30d85973Ef1d99e",
-      feeHandlerAddress: "0x08CFcF164dc2C4AB1E0966F236E87F913DE77b69",
-      rpcURL: "http://localhost:8547",
-      domainId: "2",
-      erc20ResourceID:
-        "0x0000000000000000000000000000000000000000000000000000000000000000",
-      decimals: 18
-    },
-}
+const bridgeSetupList: SygmaBridgeSetupList = [
+  {
+    domainId: "1",
+    networkId: 1337,
+    name: "Local EVM 1",
+    decimals: 18,
+    bridgeAddress: "0x6CdE2Cd82a4F8B74693Ff5e194c19CA08c2d1c68",
+    erc20HandlerAddress: "0x1ED1d77911944622FCcDDEad8A731fd77E94173e",
+    erc721HandlerAddress: "0x481f97f9C82a971B3844a422936a4d3c4082bF84",
+    rpcUrl: "http://localhost:8545",
+    tokens: [
+      {
+        type: "erc20",
+        address: "0x1CcB4231f2ff299E1E049De76F0a1D2B415C563A",
+        name: "ERC20LRTST",
+        symbol: "ETHIcon",
+        imageUri: "ETHIcon",
+        decimals: 18,
+        resourceId:
+          "0x0000000000000000000000000000000000000000000000000000000000000300",
+        feeSettings: {
+          type: "basic",
+          address: "0x78E5b9cEC9aEA29071f070C8cC561F692B3511A6",
+        },
+      },
+    ],
+  },
+  {
+    domainId: "2",
+    networkId: 1338,
+    name: "Local EVM 2",
+    decimals: 18,
+    bridgeAddress: "0x6CdE2Cd82a4F8B74693Ff5e194c19CA08c2d1c68",
+    erc20HandlerAddress: "0x1ED1d77911944622FCcDDEad8A731fd77E94173e",
+    erc721HandlerAddress: "0x481f97f9C82a971B3844a422936a4d3c4082bF84",
+    rpcUrl: "http://localhost:8547",
+    tokens: [
+      {
+        type: "erc20",
+        address: "0x1CcB4231f2ff299E1E049De76F0a1D2B415C563A",
+        name: "ERC20LRTST",
+        symbol: "ETHIcon",
+        imageUri: "ETHIcon",
+        decimals: 18,
+        resourceId:
+          "0x0000000000000000000000000000000000000000000000000000000000000300",
+        feeSettings: {
+          type: "basic",
+          address: "0x78E5b9cEC9aEA29071f070C8cC561F692B3511A6",
+        },
+      },
+    ],
+  },
+];
 
 // Test account from Sygma local setup
 const acc = '0xF4314cb9046bECe6AA54bb9533155434d0c76909'
 
-const sygma = new Sygma({ bridgeSetup })
+const sygma = new Sygma({ bridgeSetupList })
 
 // Asuming that context of execution is NodeJS
 const bridgeEvents = sygma.initializeConnectionRPC(acc)
 
 // Getting basic fee
-const basicFeeRate = await sygma.fetchFeeData({
+const basicFee = await sygma.fetchBasicFeeData({
   amount: "1",
   recipientAddress: "0xF4314cb9046bECe6AA54bb9533155434d0c76909",
-  from: "chain1",
-  to: "chain2"
 })
 
-console.log("Basic fee is:", basicFeeRate.feeData)
+console.log("Basic fee is:", basicFee.feeData)
 
 // Making a deposit. Approve first
 const approvalTxReceipt = await sygma.approve({
   amountForApproval: "1",
-  from: "chain1"
 })
 
 const txReceipt = await approvalTxReceipt.wait(1)
@@ -65,14 +92,18 @@ console.log("tx receipt status", txReceipt.status)
 const deposit = await sygma.deposit({
   amount: "1",
   recipientAddress: "0xF4314cb9046bECe6AA54bb9533155434d0c76909",
-  from: "chain1",
-  to: "chain2",
-  feeData: basicFee.feeData
+  feeData: basicFee
 })
 
 const txReceiptDeposit = await deposit.wait(1)
 
 console.log("Tx receipt deposit:", txReceiptDeposit.status)
+
+// Getting deposit nonce
+
+const depositEvent = await sygma.getDepositEventFromReceipt(txReceiptDeposit)
+const { depositNonce } = depositEvent.args;
+console.log("Deposit Nonce:", depositNonce)
 
 // Check the logs on your local setup
 ```
@@ -81,10 +112,10 @@ console.log("Tx receipt deposit:", txReceiptDeposit.status)
 
 ```ts
 const hasTokenSupplies = await sygma.hasTokenSupplies(
-  10, "chain1"
+  10
 ) // true \\ false
 
-const checkCurrentAllowance = await sygma.checkCurrentAllowance("chain1", "0xF4314cb9046bECe6AA54bb9533155434d0c76909") // BigNumber
+const checkCurrentAllowance = await sygma.checkCurrentAllowance("0xF4314cb9046bECe6AA54bb9533155434d0c76909") // BigNumber
 
 const getTokenInfo = await sygma.getTokenInfo("chain1") // { balanceOfTokens: BigNumber, tokenName: string }
 ```
