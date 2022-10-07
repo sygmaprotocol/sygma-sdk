@@ -1,7 +1,5 @@
 <p align="center"><a href="https://buildwithsygma.com"><img width="250" title="Chainbridge UI" src='assets/full-logo.png'/></a></p>
 
-**Disclaimer: The Sygma repo is currently closed as it is under audit. It will be made publicly available in August 2022 once the audit is complete.**
-
 # Sygma SDK
 
 ## Installing

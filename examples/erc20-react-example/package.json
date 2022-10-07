@@ -1,9 +1,10 @@
 {
-  "name": "@buildwithsygma/sygma-sdk-react-example",
+  "name": "@buildwithsygma/sygma-sdk-erc20-react-example",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@buildwithsygma/sygma-sdk-core": "1.0.0",
+    "@buildwithsygma/sygma-sdk-core": "link:../packages/sdk",
+    "@buildwithsygma/sygma-contracts": "1.0.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.1.1",
     "@testing-library/user-event": "^13.5.0",
@@ -19,6 +20,7 @@
     "react-hook-form": "^7.30.0",
     "react-scripts": "5.0.1",
     "ts-node": "^10.7.0",
+    "ethers": "5.6.2",
     "typescript": "^4.6.3",
     "web-vitals": "^2.1.4",
     "web3": "^1.7.3"
@@ -27,7 +29,8 @@
     "start": "PORT=3001 BROWSER=none react-app-rewired start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "mintERC20": "ts-node ./src/scripts/mint.ts"
   },
   "eslintConfig": {
     "extends": [
