@@ -18,3 +18,22 @@ export const createERCDepositData = (tokenAmountOrID: string | number | BigNumbe
 			toHex(lenRecipientAddress, 32).substr(2) + // len(recipientAddress)          (32 bytes)
 			recipientAddress.substr(2);               // recipientAddress               (?? bytes)
 };
+
+// @ts-ignore
+export const createGenericDepositDataV1 = (executeFunctionSignature, executeContractAddress, maxFee, depositor, executionData, depositorCheck = true) => {
+  let metaData = toHex(depositor, 32).substr(2) + executionData.substr(2);
+
+  if (depositorCheck) {
+    // if "depositorCheck" is true -> append depositor address for destination chain check
+    metaData = metaData.concat(toHex(depositor, 32).substr(2));
+  }
+
+  const metaDataLength = metaData.length / 2;
+
+  return '0x' +
+    toHex(metaDataLength, 32).substr(2) +           // len(metaData) (32 bytes)
+    toHex(executeFunctionSignature, 32).substr(2) +  // bytes4        (padded to 32 bytes)
+    toHex(executeContractAddress, 32).substr(2) +   // address       (padded to 32 bytes)
+    toHex(maxFee, 32).substr(2) +                   // uint256
+    metaData                                        // bytes
+};

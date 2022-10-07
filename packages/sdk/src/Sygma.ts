@@ -35,6 +35,7 @@ import {
 import { ERC20Bridge } from './chains';
 import { calculateBasicfee, calculateFeeData } from './fee';
 import Connector from './connectors/Connectors';
+import { createGenericDepositDataV1 } from 'utils/helpers';
 
 /**
  * @description Sygma is the main class that allows you to have bridging capabilities
@@ -610,5 +611,19 @@ export class Sygma implements SygmaSDK {
     const events = await bridgeContract.queryFilter(depositFilter, depositTx.blockHash);
     const event = events[0]
     return event
+  }
+
+  // @ts-ignore
+  public async createGenericDepositDataV1(executeFunctionSignature, executeContractAddress, maxFee, depositor, executionData, depositorCheck = true) {
+    const depositData = createGenericDepositDataV1(
+      executeFunctionSignature,
+      executeContractAddress,
+      maxFee,
+      depositor,
+      executionData,
+      depositorCheck
+    )
+
+    return depositData
   }
 }
