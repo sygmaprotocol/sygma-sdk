@@ -200,14 +200,14 @@ function App() {
       (await managedSignerNode1.getAddress()).substr(2)
     }`;
 
-    // const basicFeeData = await (sygmaInstance as Sygma).fetchBasicFeeData({
-    //   amount: "1000000",
-    //   recipientAddress: bridgeAdmin,
-    // });
-    // console.log(
-    //   "🚀 ~ file: App.tsx ~ line 169 ~ handleClick ~ basicFeeData",
-    //   basicFeeData,
-    // );
+    const basicFeeData = await (sygmaInstance as Sygma).fetchBasicFeeData({
+      amount: "1000000",
+      recipientAddress: bridgeAdmin,
+    });
+    console.log(
+      "🚀 ~ file: App.tsx ~ line 169 ~ handleClick ~ basicFeeData",
+      basicFeeData,
+    );
 
     let feeData;
 
@@ -253,6 +253,9 @@ function App() {
     // } catch (e) {
     //   console.log("Error on deposit", e);
     // }
+
+    // const feeData = basicFeeData.feeData
+    console.log("🚀 ~ file: App.tsx ~ line 258 ~ handleClick ~ feeData", feeData)
 
     try {
       const depositTx = await sygmaInstance.depostiGeneric(

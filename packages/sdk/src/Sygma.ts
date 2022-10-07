@@ -381,7 +381,7 @@ export class Sygma implements SygmaSDK {
       depositData,
       fee,
       {
-        value: fee.fee
+        value: fee
       }
     )
   }
