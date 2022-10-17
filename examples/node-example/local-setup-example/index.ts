@@ -1,84 +1,93 @@
-import { Sygma, BridgeData } from "@chainsafe/sygma-sdk-core";
+import { Sygma, BridgeData, SygmaBridgeSetupList } from "@buildwithsygma/sygma-sdk-core";
 
-const depositEventhandler = ({
-  destinationDomainId,
-  resourceId,
-  depositNonce,
-  user,
-  data,
-  handleResponse,
-  tx,
-}: {
-  destinationDomainId: any;
-  resourceId: any;
-  depositNonce: any;
-  user: any;
-  data: any;
-  handleResponse: any;
-  tx: any;
-}) => {
-  console.log("");
+const depositEventLogs = (
+  destinationDomainId: any,
+  resourceId: any,
+  depositNonce: any,
+  user: any,
+  data: any,
+  handleResponse: any,
+  tx: any
+) => {
   console.log(
-    `bridge deposit event deposit nonce: ${depositNonce.toString()}, transaction hash: ${
-      tx.transactionHash
-    }`
+    `bride deposit event deposit nonce: ${depositNonce.toString()} to contract with ResourceId: ${resourceId}`
   );
-  console.log("");
-  console.log("IN TRANSIT!");
+  console.log(` transaction hash: ${tx.transactionHash}`);
+  console.info("Deposit in transit!");
 };
 
-const proposalExecutionEventHandler = async (
+const proposalExecutionEventsLogs = async (
   originDomainId: any,
   despositNonce: any,
   dataHash: any,
   tx: any
 ) => {
-  console.warn("Proposal execution event!")
-  console.log({originDomainId, despositNonce, dataHash, tx} )
-  console.warn("Transfer complete!")
+  console.warn("Proposal execution event!");
+  console.log({ originDomainId, despositNonce, dataHash, tx });
+  console.warn("Transfer complete!");
 };
 
 (async () => {
   // CHAIN 1 ADRESSES
-  const bridgeSetup: BridgeData = {
-    chain1: {
-      name: 'Local EVM 1',
-      networkId: '422',
-      bridgeAddress: "0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66",
-      erc20Address: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
-      erc20HandlerAddress: "0x3cA3808176Ad060Ad80c4e08F30d85973Ef1d99e",
-      rpcURL: "http://localhost:8545",
+  const bridgeSetupList: SygmaBridgeSetupList = [
+    {
       domainId: "1",
-      erc20ResourceID:
-        "0x0000000000000000000000000000000000000000000000000000000000000000",
+      networkId: 1337,
+      name: "Local EVM 1",
       decimals: 18,
-      feeSettings: {
-        type: 'basic',
-        address: '0x08CFcF164dc2C4AB1E0966F236E87F913DE77b69'
-      }
+      bridgeAddress: "0x6CdE2Cd82a4F8B74693Ff5e194c19CA08c2d1c68",
+      erc20HandlerAddress: "0x1ED1d77911944622FCcDDEad8A731fd77E94173e",
+      erc721HandlerAddress: "0x481f97f9C82a971B3844a422936a4d3c4082bF84",
+      rpcUrl: "http://localhost:8545",
+      tokens: [
+        {
+          type: "erc20",
+          address: "0x1CcB4231f2ff299E1E049De76F0a1D2B415C563A",
+          name: "ERC20LRTST",
+          symbol: "ETHIcon",
+          imageUri: "ETHIcon",
+          decimals: 18,
+          resourceId:
+            "0x0000000000000000000000000000000000000000000000000000000000000300",
+          feeSettings: {
+            type: "basic",
+            address: "0x78E5b9cEC9aEA29071f070C8cC561F692B3511A6",
+          },
+        },
+      ],
     },
-    chain2: {
-      name: 'Local EVM 2',
-      networkId: '422',
-      bridgeAddress: "0xd606A00c1A39dA53EA7Bb3Ab570BBE40b156EB66",
-      erc20Address: "0xb83065680e6AEc805774d8545516dF4e936F0dC0",
-      erc20HandlerAddress: "0x3cA3808176Ad060Ad80c4e08F30d85973Ef1d99e",
-      rpcURL: "http://localhost:8547",
+    {
       domainId: "2",
-      erc20ResourceID:
-        "0x0000000000000000000000000000000000000000000000000000000000000000",
+      networkId: 1338,
+      name: "Local EVM 2",
       decimals: 18,
-      feeSettings: {
-        type: 'basic',
-        address: '0x08CFcF164dc2C4AB1E0966F236E87F913DE77b69'
-      }
+      bridgeAddress: "0x6CdE2Cd82a4F8B74693Ff5e194c19CA08c2d1c68",
+      erc20HandlerAddress: "0x1ED1d77911944622FCcDDEad8A731fd77E94173e",
+      erc721HandlerAddress: "0x481f97f9C82a971B3844a422936a4d3c4082bF84",
+      rpcUrl: "http://localhost:8547",
+      tokens: [
+        {
+          type: "erc20",
+          address: "0x1CcB4231f2ff299E1E049De76F0a1D2B415C563A",
+          name: "ERC20LRTST",
+          symbol: "ETHIcon",
+          imageUri: "ETHIcon",
+          decimals: 18,
+          resourceId:
+            "0x0000000000000000000000000000000000000000000000000000000000000300",
+          feeSettings: {
+            type: "basic",
+            address: "0x78E5b9cEC9aEA29071f070C8cC561F692B3511A6",
+          },
+        },
+      ],
     },
-  };
+  ];
 
   const notEve = "0xF4314cb9046bECe6AA54bb9533155434d0c76909";
 
   const setup = {
-    bridgeSetup,
+    bridgeSetupList,
   };
 
   const sygma = new Sygma(setup);
@@ -94,21 +103,26 @@ const proposalExecutionEventHandler = async (
 
   if (!(basicFee instanceof Error)) {
     const approvalTxReceipt = await sygma.approve({
-      amounForApproval: "1",
+      amountOrIdForApproval: "1",
     });
     console.log("🚀 ~ file: index.ts ~ line 89 ~ approvalTxReceipt", approvalTxReceipt)
 
     const depositTxReceipt = await sygma.deposit({
       amount: "1",
       recipientAddress: "0xF4314cb9046bECe6AA54bb9533155434d0c76909",
-      feeData: basicFee.feeData,
+      feeData: basicFee,
     });
 
     console.log("🚀 ~ file: index.ts ~ line 91 ~ depositReceipt", depositTxReceipt)
 
-    sygma.createHomeChainDepositEventListener(depositEventhandler)
+    const depositEvent = await sygma.getDepositEventFromReceipt(depositTxReceipt!)
+    const { depositNonce } = depositEvent.args;
+    console.log("Deposit Nonce:", depositNonce)
 
-    sygma.destinationProposalExecutionEventListener(proposalExecutionEventHandler)
+
+    sygma.createHomeChainDepositEventListener(depositEventLogs)
+
+    sygma.destinationProposalExecutionEventListener(depositNonce.toNumber(), proposalExecutionEventsLogs)
   }
 
 })();
