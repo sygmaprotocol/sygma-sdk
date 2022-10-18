@@ -218,7 +218,7 @@ fee-oracle        | [GIN-debug] Listening and serving HTTP on :8091
 </details>
 With this addresses you can use our SDK with the `basic fee` setup.
 
-After that, you can watch the logs an see your funds being transfer from one of the networks to the other.
+After that, you can watch the logs and see your funds being transferred from one of the networks to the other.
 
 ## Checking the Examples folder
 
@@ -286,7 +286,7 @@ const bridgeSetupList: SygmaBridgeSetupList = [
 ];
 ```
 
-We are going to use the SDK with `NodeJS` so, you we are going to use one of the testing accounts from the local setup:
+We are going to use the SDK with `NodeJS` so, we are going to use one of the testing accounts from the local setup:
 
 ```ts
  const testAcc = "0xF4314cb9046bECe6AA54bb9533155434d0c76909";
@@ -548,7 +548,7 @@ sygmaInstance.destinationProposalExecutionEventListener((
 });
 ````
 
-To remove remove execution events listener:
+To remove execution events listener:
 
 ````ts
 // initialization of Sygma class
@@ -558,7 +558,7 @@ sygmaInstance.removeDestinationProposalExecutionEventListener()
 ````
 
 
-With this you can use our SDK and create the render logic to show your tokens and your networks of the bridge. For a more in depth review, check out the `react-example`.
+With this you can use our SDK and create the render logic to show your tokens and your networks of the bridge. For a more in-depth review, check out the `react-example`.
 
 ## Using Sygma SDK on your project
 
