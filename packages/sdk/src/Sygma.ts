@@ -367,8 +367,15 @@ export class Sygma implements SygmaSDK {
     });
   }
 
-  // @ts-ignore
-  public async depostiGeneric(
+  /**
+   * @name depositGeneric
+   * @description call generic handler to achieve general message passing
+   * @param {string} resourceId
+   * @param {string} depositData 
+   * @param {string} fee 
+   * @returns 
+   */
+  public async depositGeneric(
     resourceId: any, depositData: any, fee: any
   ){
     console.log("🚀 ~ file: Sygma.ts ~ line 374 ~ Sygma ~ depositData", depositData)
