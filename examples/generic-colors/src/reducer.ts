@@ -1,8 +1,25 @@
-// @ts-nocheck
+import { Sygma } from "@buildwithsygma/sygma-sdk-core"
 
-export const reducer = (state, action) => {
-  switch(action.type){
-    case 'getColorNode1': {
+export type State = {
+  colorsNode1: Array<any>,
+  colorsNode2: Array<any>,
+  txInit: boolean,
+  removeColors: boolean,
+  newLength: number,
+  metamaskConnected: boolean | undefined
+  accountData: string | undefined,
+  sygmaInstance: Sygma,
+  data: any | undefined,
+  accountDataFromSygma: { balance: string, gasPrice: string } | undefined,
+  homeChainUrl: string,
+  destinationChainUrl: string
+}
+
+export type Actions = { type: 'connectMetamask', payload: boolean } | { type: 'getColorsNode1', payload: any } | { type: 'getColorsNode2', payload: any } | { type: 'txInit', payload: boolean } | { type: 'removeColors', payload: any } | { type: 'changeLength', payload: any } | { type: 'setAccountData', payload: string } | { type: 'setSygmaInstance', payload: Sygma } | { type: 'setData', payload: any } | { type: 'setAccounDataFromSygma', payload: any } | { type: 'getColorsNode1', payload: any } | { type: 'getColorsNode2', payload: any } | { type: 'setHomeChain', payload: string } | { type: 'setDestinationChain', payload: string }
+
+export const reducer = (state: State, action: Actions): State => {
+  switch (action.type) {
+    case 'getColorsNode1': {
       console.log("🚀 ~ file: reducer.ts ~ line 6 ~ reducer ~ getColorNode1")
       const colors = action.payload
       return {
@@ -34,6 +51,49 @@ export const reducer = (state, action) => {
       return {
         ...state,
         newLength: action.payload
+      }
+    }
+    case "connectMetamask": {
+      return {
+        ...state,
+        metamaskConnected: action.payload
+      }
+    }
+    case 'setAccountData': {
+      return {
+        ...state,
+        accountData: action.payload
+      }
+    }
+    case "setSygmaInstance": {
+      return {
+        ...state,
+        sygmaInstance: action.payload
+      }
+    }
+    case 'setData': {
+      console.log("setData", action.payload)
+      return {
+        ...state,
+        data: action.payload
+      }
+    }
+    case 'setAccounDataFromSygma': {
+      return {
+        ...state,
+        accountDataFromSygma: action.payload
+      }
+    }
+    case 'setHomeChain': {
+      return {
+        ...state,
+        homeChainUrl: action.payload
+      }
+    }
+    case 'setDestinationChain': {
+      return {
+        ...state,
+        destinationChainUrl: action.payload
       }
     }
     default: {

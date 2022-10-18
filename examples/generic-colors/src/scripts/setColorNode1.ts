@@ -1,9 +1,12 @@
-const { ethers, BigNumber } = require('ethers')
-const { NonceManager } = require("@ethersproject/experimental");
+import { ethers, BigNumber } from 'ethers'
+import { NonceManager } from '@ethersproject/experimental'
+import ColorsAbi from '../abis/colors-abi.json'
+// const { ethers, BigNumber } = require('ethers')
+// const { NonceManager } = require("@ethersproject/experimental");
+// const ColorsAbi = require("../abis/colors-abi.json");
 const colorsAddress = "0xE54Dc792c226AEF99D6086527b98b36a4ADDe56a";
-const ColorsAbi = require("../abis/colors-abi.json");
 
-const toHex = (covertThis, padding) => {
+const toHex = (covertThis: string, padding: number) => {
 	return ethers.utils.hexZeroPad(ethers.utils.hexlify(BigNumber.from(covertThis)), padding);
 };
 

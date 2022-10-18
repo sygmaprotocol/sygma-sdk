@@ -690,4 +690,14 @@ export class Sygma implements SygmaSDK {
   public toHex(toConvert, padding){
     return toHex(toConvert, padding)
   }
+
+  public getSigner(chain: string) {
+    // ADD A WARNING OR MESSAGE BECAUSE THERE IS NO SIGNER FOR DESTINATION CHAIN
+    console.warn("this signers", this.signers?.chain1)
+    return this.signers![chain as keyof BridgeData]
+  }
+
+  public getDestinationChainProvider (){
+    return this.providers!.chain2 as ethers.providers.JsonRpcProvider
+  }
 }
