@@ -12,10 +12,11 @@ export type State = {
   data: any | undefined,
   accountDataFromSygma: { balance: string, gasPrice: string } | undefined,
   homeChainUrl: string,
-  destinationChainUrl: string
+  destinationChainUrl: string,
+  depositStatus: string
 }
 
-export type Actions = { type: 'connectMetamask', payload: boolean } | { type: 'getColorsNode1', payload: any } | { type: 'getColorsNode2', payload: any } | { type: 'txInit', payload: boolean } | { type: 'removeColors', payload: any } | { type: 'changeLength', payload: any } | { type: 'setAccountData', payload: string } | { type: 'setSygmaInstance', payload: Sygma } | { type: 'setData', payload: any } | { type: 'setAccounDataFromSygma', payload: any } | { type: 'getColorsNode1', payload: any } | { type: 'getColorsNode2', payload: any } | { type: 'setHomeChain', payload: string } | { type: 'setDestinationChain', payload: string }
+export type Actions = { type: 'connectMetamask', payload: boolean } | { type: 'getColorsNode1', payload: any } | { type: 'getColorsNode2', payload: any } | { type: 'txInit', payload: boolean } | { type: 'removeColors', payload: any } | { type: 'changeLength', payload: any } | { type: 'setAccountData', payload: string } | { type: 'setSygmaInstance', payload: Sygma } | { type: 'setData', payload: any } | { type: 'setAccounDataFromSygma', payload: any } | { type: 'getColorsNode1', payload: any } | { type: 'getColorsNode2', payload: any } | { type: 'setHomeChain', payload: string } | { type: 'setDestinationChain', payload: string } | { type: 'depositSuccess', payload: "init" | "done" | "error" | "none" }
 
 export const reducer = (state: State, action: Actions): State => {
   switch (action.type) {
@@ -94,6 +95,13 @@ export const reducer = (state: State, action: Actions): State => {
       return {
         ...state,
         destinationChainUrl: action.payload
+      }
+    }
+    case "depositSuccess": {
+      console.warn("DEPOSIT STATUS", action.payload)
+      return {
+        ...state,
+        depositStatus: action.payload
       }
     }
     default: {

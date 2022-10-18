@@ -18,14 +18,27 @@ function GetColors(state: State, dispatch: React.Dispatch<Actions>, colorContrac
   }
 
   const getColorDestinationChain = async (signerNode2: ethers.providers.JsonRpcSigner) => {
-    const color = await colorContractNode2.connect(signerNode2).colorsArray(0)
+    
+    const colorLength = await colorContractNode2.connect(signerNode2).getColorsArrayLenght()
+    const iterable = Array.from(Array(colorLength.toNumber()).keys()).map(i => i)
+
+    let colorsDecoded = []
+    for await (let k of iterable){
+      const color = await colorContractNode2.connect(signerNode2).colorsArray(k)
     const colorDecoded = decodeColor(color)
+      colorsDecoded.push(colorDecoded)
+    }
 
     dispatch({
       type: 'getColorsNode2',
-      payload: [colorDecoded]
+      payload: colorsDecoded
     })
+
   }
+
+
+  const providerDestinationChain = state?.sygmaInstance && state.sygmaInstance.getDestinationChainProvider()
+  const signerDestinationChain = providerDestinationChain && providerDestinationChain!.getSigner(state.accountData)
 
   useEffect(() => {
     if(state.sygmaInstance && state.accountData && state.accountDataFromSygma){
@@ -34,12 +47,17 @@ function GetColors(state: State, dispatch: React.Dispatch<Actions>, colorContrac
       const signerChain1 = state.sygmaInstance.getSigner('chain1')
       getColorHomeChain(signerChain1!)
 
-      const providerDestinationChain = state.sygmaInstance.getDestinationChainProvider()
-      const signerDestinationChain = providerDestinationChain!.getSigner(state.accountData)
       getColorDestinationChain(signerDestinationChain)
+      // getColorsArrayLenght(signerDestinationChain)
       
     }
   }, [state.sygmaInstance, state.accountData, state.accountDataFromSygma])
+
+  useEffect(() => {
+    if(state.depositStatus === 'done'){
+      getColorDestinationChain(signerDestinationChain)
+    }
+  }, [state.depositStatus])
 }
 
 export { GetColors }
