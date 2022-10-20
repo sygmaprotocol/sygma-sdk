@@ -26,8 +26,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "setupColorNode1": "ts-node ./src/scripts/setColorNode1.ts",
-    "setupColorNode2": "ts-node ./src/scripts/setColorNode2.ts"
+    "setupColors": "ts-node ./src/scripts/setColors.ts"
   },
   "eslintConfig": {
     "extends": [

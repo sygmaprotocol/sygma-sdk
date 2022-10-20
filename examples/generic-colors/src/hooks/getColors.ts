@@ -5,34 +5,40 @@ import { decodeColor } from "../utils";
 
 function GetColors(state: State, dispatch: React.Dispatch<Actions>, colorContractNode1: ethers.Contract, colorContractNode2: ethers.Contract){
   const getColorHomeChain = async (signerNode1: ethers.providers.JsonRpcSigner) => {
-    const color = await colorContractNode1.connect(signerNode1).colorsArray(0)
-    console.log("🚀 ~ file: getColors.ts ~ line 8 ~ getColorNode1 ~ color", color)
-    
-    const colorDecoded = decodeColor(color)
-    console.log("🚀 ~ file: getColors.ts ~ line 12 ~ getColorNode1 ~ colorDecoded", colorDecoded)
-
-    dispatch({
-      type: 'getColorsNode1',
-      payload: [colorDecoded]
-    })
+    const colorLength = await colorContractNode1.connect(signerNode1).getColorsArrayLenght()
+    if(colorLength.toNumber() !== 0) {
+      const color = await colorContractNode1.connect(signerNode1).colorsArray(0)
+      console.log("🚀 ~ file: getColors.ts ~ line 8 ~ getColorNode1 ~ color", color)
+      
+      const colorDecoded = decodeColor(color)
+      console.log("🚀 ~ file: getColors.ts ~ line 12 ~ getColorNode1 ~ colorDecoded", colorDecoded)
+  
+      dispatch({
+        type: 'getColorsNode1',
+        payload: [colorDecoded]
+      })
+    }
   }
 
   const getColorDestinationChain = async (signerNode2: ethers.providers.JsonRpcSigner) => {
     
     const colorLength = await colorContractNode2.connect(signerNode2).getColorsArrayLenght()
-    const iterable = Array.from(Array(colorLength.toNumber()).keys()).map(i => i)
-
-    let colorsDecoded = []
-    for await (let k of iterable){
-      const color = await colorContractNode2.connect(signerNode2).colorsArray(k)
-    const colorDecoded = decodeColor(color)
-      colorsDecoded.push(colorDecoded)
+    if(colorLength.toNumber() !== 0){
+      console.warn("🚀 ~ file: getColors.ts ~ line 32 ~ getColorsArrayLenght ~ colorLength", colorLength.toString())
+      const iterable = Array.from(Array(colorLength.toNumber()).keys()).map(i => i)
+  
+      let colorsDecoded = []
+      for await (let k of iterable){
+        const color = await colorContractNode2.connect(signerNode2).colorsArray(k)
+        const colorDecoded = decodeColor(color)
+        colorsDecoded.push(colorDecoded)
+      }
+      
+      dispatch({
+        type: 'getColorsNode2',
+        payload: colorsDecoded
+      })
     }
-
-    dispatch({
-      type: 'getColorsNode2',
-      payload: colorsDecoded
-    })
 
   }
 
@@ -48,7 +54,6 @@ function GetColors(state: State, dispatch: React.Dispatch<Actions>, colorContrac
       getColorHomeChain(signerChain1!)
 
       getColorDestinationChain(signerDestinationChain)
-      // getColorsArrayLenght(signerDestinationChain)
       
     }
   }, [state.sygmaInstance, state.accountData, state.accountDataFromSygma])

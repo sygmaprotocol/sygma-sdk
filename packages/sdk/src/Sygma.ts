@@ -376,21 +376,22 @@ export class Sygma implements SygmaSDK {
    * @returns 
    */
   public async depositGeneric(
-    resourceId: any, depositData: any, fee: any
+    resourceId: string, depositData: string, fee: FeeDataResult
   ){
     console.log("🚀 ~ file: Sygma.ts ~ line 374 ~ Sygma ~ depositData", depositData)
     console.log("🚀 ~ file: Sygma.ts ~ line 374 ~ Sygma ~ fee", fee)
     const { domainId } = this.bridgeSetup!.chain2;
+    const provider = this.providers!.chain1
     const bridgeToUse = this.bridges!.chain1!;
-    return bridgeToUse.deposit(
+
+    return await this.currentBridge.depositGeneric({
       domainId,
       resourceId,
       depositData,
       fee,
-      {
-        value: fee
-      }
-    )
+      bridge: bridgeToUse,
+      provider
+    })
   }
 
   /**
@@ -598,6 +599,8 @@ export class Sygma implements SygmaSDK {
   }
 
   public async getSignerBalance(chain: string) {
+    console.log("Signers data", this.signers!['chain1'])
+    console.log("BALANCE SYGMA", await (await this.signers!['chain1']?.getBalance())?.toString())
     return await (this.signers![chain as keyof BridgeData] as Signer)?.getBalance();
   }
 
