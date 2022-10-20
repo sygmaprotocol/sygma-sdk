@@ -33,7 +33,8 @@ export const reducer = (state: State, action: Actions): State => {
       const colors = action.payload
       return {
         ...state,
-        colorsNode2: colors
+        colorsNode2: colors,
+        depositStatus: 'none'
       }
     }
     case 'txInit': {
