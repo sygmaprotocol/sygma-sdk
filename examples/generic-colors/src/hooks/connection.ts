@@ -73,6 +73,9 @@ function Connection(state: State, dispatch: React.Dispatch<Actions>) {
 
   useEffect(() => {
     if (window.ethereum !== undefined) {
+      (window.ethereum as any).on("chainChanged", (ch: any) => {
+        window.location.reload();
+      });
       window.ethereum._metamask.isUnlocked().then((res: boolean) => {
         console.log("is metamask unlocked?", res);
         dispatch({

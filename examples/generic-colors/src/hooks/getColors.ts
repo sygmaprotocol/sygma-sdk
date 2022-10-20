@@ -7,15 +7,17 @@ function GetColors(state: State, dispatch: React.Dispatch<Actions>, colorContrac
   const getColorHomeChain = async (signerNode1: ethers.providers.JsonRpcSigner) => {
     const colorLength = await colorContractNode1.connect(signerNode1).getColorsArrayLenght()
     if(colorLength.toNumber() !== 0) {
-      const color = await colorContractNode1.connect(signerNode1).colorsArray(0)
-      console.log("🚀 ~ file: getColors.ts ~ line 8 ~ getColorNode1 ~ color", color)
-      
-      const colorDecoded = decodeColor(color)
-      console.log("🚀 ~ file: getColors.ts ~ line 12 ~ getColorNode1 ~ colorDecoded", colorDecoded)
-  
+      const iterable = Array.from(Array(colorLength.toNumber()).keys()).map(i => i)
+
+      let colorsDecoded = []
+      for await (let k of iterable){
+        const color = await colorContractNode2.connect(signerNode1).colorsArray(k)
+        const colorDecoded = decodeColor(color)
+        colorsDecoded.push(colorDecoded)
+      }
       dispatch({
         type: 'getColorsNode1',
-        payload: [colorDecoded]
+        payload: colorsDecoded
       })
     }
   }
