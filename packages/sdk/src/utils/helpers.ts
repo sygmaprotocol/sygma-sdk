@@ -19,8 +19,7 @@ export const createERCDepositData = (tokenAmountOrID: string | number | BigNumbe
 			recipientAddress.substr(2);               // recipientAddress               (?? bytes)
 };
 
-// @ts-ignore
-export const createGenericDepositDataV1 = (executeFunctionSignature, executeContractAddress, maxFee, depositor, executionData, depositorCheck = true) => {
+export const createGenericDepositDataV1 = (executeFunctionSignature:string , executeContractAddress: string, maxFee: string, depositor: string, executionData: string, depositorCheck = true) => {
   let metaData = toHex(depositor, 32).substr(2) + executionData.substr(2);
 
   if (depositorCheck) {

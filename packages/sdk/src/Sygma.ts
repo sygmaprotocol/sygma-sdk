@@ -377,9 +377,7 @@ export class Sygma implements SygmaSDK {
    */
   public async depositGeneric(
     resourceId: string, depositData: string, fee: FeeDataResult
-  ){
-    console.log("🚀 ~ file: Sygma.ts ~ line 374 ~ Sygma ~ depositData", depositData)
-    console.log("🚀 ~ file: Sygma.ts ~ line 374 ~ Sygma ~ fee", fee)
+  ) {
     const { domainId } = this.bridgeSetup!.chain2;
     const provider = this.providers!.chain1
     const bridgeToUse = this.bridges!.chain1!;
@@ -617,7 +615,7 @@ export class Sygma implements SygmaSDK {
    * @param {object} argument
    * @param {string} params.amounForApproval
    */
-  public async approve({ amountOrIdForApproval  }: { amountOrIdForApproval: string }) {
+  public async approve({ amountOrIdForApproval }: { amountOrIdForApproval: string }) {
     const selectedToken = this.getSelectedToken();
 
     // const amountForApprovalBN = selectedToken.type === 'erc20' ? BigNumber.from(amountOrIdForApproval) : BigNumber.from(amountOrIdForApproval);
@@ -675,15 +673,14 @@ export class Sygma implements SygmaSDK {
     const event = events[0]
     return event
   }
-  
+
   public async listErc721TokenIdsOfOwner(account: string) {
     const { address: token } = this.getSelectedToken()
     const signer = this.signers?.chain1
-    return await listTokensOfOwner({token, account, signer})
+    return await listTokensOfOwner({ token, account, signer })
   }
 
-  // @ts-ignore
-  public createGenericDepositDataV1(executeFunctionSignature, executeContractAddress, maxFee, depositor, executionData, depositorCheck = true) {
+  public createGenericDepositDataV1(executeFunctionSignature: string, executeContractAddress: string, maxFee: string, depositor: string, executionData: string, depositorCheck = true) {
     const depositData = createGenericDepositDataV1(
       executeFunctionSignature,
       executeContractAddress,
@@ -696,18 +693,15 @@ export class Sygma implements SygmaSDK {
     return depositData
   }
 
-    // @ts-ignore
-  public toHex(toConvert, padding){
+  public toHex(toConvert: string, padding: number) {
     return toHex(toConvert, padding)
   }
 
   public getSigner(chain: string) {
-    // ADD A WARNING OR MESSAGE BECAUSE THERE IS NO SIGNER FOR DESTINATION CHAIN
-    console.warn("this signers", this.signers?.chain1)
     return this.signers![chain as keyof BridgeData]
   }
 
-  public getDestinationChainProvider (){
+  public getDestinationChainProvider() {
     return this.providers!.chain2 as ethers.providers.JsonRpcProvider
   }
 }
