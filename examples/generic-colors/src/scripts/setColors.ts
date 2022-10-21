@@ -4,7 +4,7 @@ import ColorsAbi from '../abis/colors-abi.json'
 const colorsAddress = "0xE54Dc792c226AEF99D6086527b98b36a4ADDe56a";
 
 const toHex = (covertThis: string, padding: number) => {
-	return ethers.utils.hexZeroPad(ethers.utils.hexlify(BigNumber.from(covertThis)), padding);
+  return ethers.utils.hexZeroPad(ethers.utils.hexlify(BigNumber.from(covertThis)), padding);
 };
 
 const setColor = async () => {
@@ -51,24 +51,24 @@ const setColor = async () => {
   })
   const depositData = toHex(bridgeAdmin, 32)
 
-  for await (let colorHexed of colorsToHexNode1){
+  for await (let colorHexed of colorsToHexNode1) {
     try {
       await (
         await colorContract.connect(managedSignerNode1).setColor(depositData, colorHexed)
       ).wait(1)
       console.log(`Success to setup color ${colorHexed} on Node 1`)
-    } catch(e){
+    } catch (e) {
       console.log("Error on setting up color", e)
     }
   }
 
-  for await (let colorsHexed of colorsToHexNode2){
+  for await (let colorsHexed of colorsToHexNode2) {
     try {
       await (
         await colorContract.connect(managedSignerNode2).setColor(depositData, colorsHexed)
       ).wait(1)
       console.log(`Success to setup color ${colorsHexed} on Node 2`)
-    } catch(e){
+    } catch (e) {
       console.log("Error on setting up color", e)
     }
   }

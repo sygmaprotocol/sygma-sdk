@@ -73,7 +73,6 @@ const reducer = (state: State, action: Actions): State => {
       }
     }
     case 'setData': {
-      console.log("setData", action.payload)
       return {
         ...state,
         data: action.payload
