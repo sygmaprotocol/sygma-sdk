@@ -126,7 +126,7 @@ function App() {
     const depositData = state?.sygmaInstance!.createGenericDepositDataV1(
       depositFunctionSignature,
       colorsAddress,
-      2000000,
+      '2000000',
       bridgeAdmin,
       hexColor,
       false,
