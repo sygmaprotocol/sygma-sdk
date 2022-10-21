@@ -42,7 +42,6 @@ const handleConnect = (state: State, dispatch: React.Dispatch<Actions>) => {
       const data = await state.sygmaInstance?.initializeConnectionFromWeb3Provider(
         window.ethereum,
       );
-      console.warn("NETWORK DATA", data.selectHomeNetwork(1338))
       dispatch({
         type: 'setData',
         payload: data
@@ -99,13 +98,6 @@ function Connection(state: State, dispatch: React.Dispatch<Actions>) {
       handleConnect(state, dispatch);
     }
   }, [state.metamaskConnected]);
-
-  // useEffect(() => {
-  //   if(state.data !== undefined){
-  //     console.log("state data", state.data)
-  //     state.data.signers['chain1'].getBalance().then((b: any) => console.log("balance", b))
-  //   }
-  // }, [state.data])
 }
 
 export { Connection, handleConnect }

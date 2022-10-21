@@ -1,10 +1,9 @@
-// @ts-nocheck
 import React, { useReducer } from "react";
 import { NonceManager } from "@ethersproject/experimental";
 import { ethers } from "ethers";
-import { Sygma } from "@buildwithsygma/sygma-sdk-core";
+import { FeeDataResult, Sygma } from "@buildwithsygma/sygma-sdk-core";
 import "./App.css";
-import { reducer, State } from "./reducer";
+import { reducer, State } from "./reducers";
 import ColorsAbi from "./abis/colors-abi.json";
 import {
   colorsAddress,
@@ -15,6 +14,7 @@ import {
 import { Connection, handleConnect } from "./hooks/connection";
 import { AccountData } from "./hooks/accountData";
 import { GetColors } from "./hooks/getColors";
+import { useRef } from "react";
 
 const providerNode1 = new ethers.providers.JsonRpcProvider(node1RpcUrl);
 const providerNode2 = new ethers.providers.JsonRpcProvider(node2RpcUrl);
@@ -30,16 +30,8 @@ const walletNode2 = ethers.Wallet.fromMnemonic(
 );
 
 const walletSignerNode1 = walletNode1.connect(providerNode1);
-console.log(
-  "🚀 ~ file: colors.local.tx.ts ~ line 33 ~ walletSignerNode1",
-  walletSignerNode1.address,
-);
 
 const walletSignerNode2 = walletNode2.connect(providerNode2);
-console.log(
-  "🚀 ~ file: colors.local.tx.ts ~ line 35 ~ walletSignerNode2",
-  walletSignerNode2.address,
-);
 
 const managedSignerNode1 = new NonceManager(walletSignerNode1);
 const managedSignerNode2 = new NonceManager(walletSignerNode2);
@@ -54,10 +46,16 @@ const initState: State = {
   accountData: undefined,
   data: undefined,
   accountDataFromSygma: undefined,
-  depositStatus: "none"
+  depositStatus: "none",
+  colorSelected: undefined,
+  sygmaInstance: undefined,
+  homeChainUrl: '',
+  destinationChainUrl: ''
 };
 
 function App() {
+  const checkboxRefColor1 = useRef(null)
+  const checkboxRefColor2 = useRef(null)
   const [state, dispatch] = useReducer(reducer, initState);
 
   const colorContractNode1 = new ethers.Contract(colorsAddress, ColorsAbi.abi);
@@ -85,14 +83,13 @@ function App() {
   /**
    * Hook that gets the colors from the contract
    */
-  GetColors(state, dispatch, colorContractNode1, colorContractNode2)
+  GetColors(state, dispatch, colorContractNode1, colorContractNode2);
 
   const handleConnectInit = () => handleConnect(state, dispatch);
 
   const handleClick = async () => {
-    console.log("handleClick");
-    const first = state.colorsNode1[0];
-    const formatedHex = first.substr(1);
+    const first = state.colorSelected;
+    const formatedHex = first!.substr(1);
     const depositFunctionSignature = "0x103b854b";
     const colorsResouceId =
       "0x0000000000000000000000000000000000000000000000000000000000000500";
@@ -100,27 +97,33 @@ function App() {
       "🚀 ~ file: App.tsx ~ line 148 ~ handleClick ~ first",
       formatedHex,
     );
-
+    
     const depositDataFee = `0x${
+      // @ts-ignore-next-line
       ethers.utils.hexZeroPad(100, 32).substr(2) +
+      // @ts-ignore-next-line
       ethers.utils.hexZeroPad(bridgeAdmin.length, 32).substr(2) +
       (await managedSignerNode1.getAddress()).substr(2)
     }`;
-    console.log("🚀 ~ file: App.tsx ~ line 127 ~ handleClick ~ depositDataFee", depositDataFee)
+    console.log(
+      "🚀 ~ file: App.tsx ~ line 127 ~ handleClick ~ depositDataFee",
+      depositDataFee,
+    );
 
-    const basicFeeData = await (state.sygmaInstance as Sygma).fetchBasicFeeData({
-      amount: "1000000",
-      recipientAddress: bridgeAdmin,
-    });
+    const basicFeeData = await (state.sygmaInstance as Sygma).fetchBasicFeeData(
+      {
+        amount: "1000000",
+        recipientAddress: bridgeAdmin,
+      },
+    );
     console.log(
       "🚀 ~ file: App.tsx ~ line 169 ~ handleClick ~ basicFeeData",
       basicFeeData,
     );
 
-    const hexColor = state.sygmaInstance.toHex(`0x${formatedHex}`, 32);
-    console.log("🚀 ~ file: App.tsx ~ line 162 ~ handleClick ~ hexColor", hexColor)
+    const hexColor = state?.sygmaInstance!.toHex(`0x${formatedHex}`, 32);
 
-    const depositData = state.sygmaInstance.createGenericDepositDataV1(
+    const depositData = state?.sygmaInstance!.createGenericDepositDataV1(
       depositFunctionSignature,
       colorsAddress,
       2000000,
@@ -128,25 +131,45 @@ function App() {
       hexColor,
       false,
     );
-    console.log("🚀 ~ file: App.tsx ~ line 172 ~ handleClick ~ depositData", depositData)
+    console.log(
+      "🚀 ~ file: App.tsx ~ line 172 ~ handleClick ~ depositData",
+      depositData,
+    );
 
     try {
-      const depositTx = await state.sygmaInstance.depositGeneric(
+      const depositTx = await state?.sygmaInstance!.depositGeneric(
         colorsResouceId,
         depositData,
-        basicFeeData,
+        basicFeeData as FeeDataResult,
       );
-      console.log("🚀 ~ file: App.tsx ~ line 160 ~ handleClick ~ depositTx", depositTx)
+      console.log(
+        "🚀 ~ file: App.tsx ~ line 160 ~ handleClick ~ depositTx",
+        depositTx,
+      );
+
+      if((checkboxRefColor1.current as any).value === state.colorSelected){
+        (checkboxRefColor1.current as any).checked = false
+      } else if ((checkboxRefColor2.current as any).value === state.colorSelected){
+        (checkboxRefColor2.current as any).checked = false
+      }
 
       setTimeout(() => {
         dispatch({
           type: "depositSuccess",
-          payload: "done"
-        })
+          payload: "done",
+        });
       }, 20000);
-
     } catch (e) {
       console.log("Error on deposit with Sygma to generic", e);
+    }
+  };
+
+  const handleColorSelected = ({ target: { value, checked }}: any) => {
+    if (checked) {
+      dispatch({
+        type: "selectColor",
+        payload: value,
+      });
     }
   };
 
@@ -156,7 +179,7 @@ function App() {
     <div className="App">
       <div className="title">
         <div className="title-info">
-          <h1>Generic Colors</h1>
+          <h1>Sygma Generic Colors</h1>
 
           <h3>
             Connected Address:{" "}
@@ -173,7 +196,10 @@ function App() {
       </div>
       <div className="main-content">
         <div className="box">
-          <h4>Home Chain: {state?.homeChainUrl ? state.homeChainUrl : 'No home chain'}</h4>
+          <h4>
+            Home Chain:{" "}
+            {state?.homeChainUrl ? state.homeChainUrl : "No home chain"}
+          </h4>
           <ul>
             {state?.colorsNode1.length &&
               state.colorsNode1.map((color, idx) => (
@@ -185,6 +211,12 @@ function App() {
                     marginBottom: "10px",
                   }}
                 >
+                  <input
+                    type="checkbox"
+                    onClick={handleColorSelected}
+                    value={color}
+                    ref={idx === 0 ? checkboxRefColor1 : checkboxRefColor2}
+                  />
                   {`Color: ${color}`}{" "}
                   <span
                     style={{
@@ -200,7 +232,12 @@ function App() {
           </ul>
         </div>
         <div className="box">
-          <h4>Destination Chain: {state?.destinationChainUrl ? state.destinationChainUrl : 'No destination chain' }</h4>
+          <h4>
+            Destination Chain:{" "}
+            {state?.destinationChainUrl
+              ? state.destinationChainUrl
+              : "No destination chain"}
+          </h4>
           <ul>
             {state?.colorsNode2.length &&
               state.colorsNode2.map((color, idx) => (
@@ -228,18 +265,20 @@ function App() {
         </div>
       </div>
       <div className="start-button">
-        <button onClick={handleClick}>Start transactions</button>
-        <button
-          onClick={handleConnectInit}
-          style={{
-            background: "dodgerblue",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-          }}
-        >
-          Connect
-        </button>
+        <button onClick={handleClick}>Start transfer</button>
+        {!state.metamaskConnected && (
+          <button
+            onClick={handleConnectInit}
+            style={{
+              background: "dodgerblue",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+            }}
+          >
+            Connect
+          </button>
+        )}
       </div>
     </div>
   );

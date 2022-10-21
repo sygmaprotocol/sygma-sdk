@@ -26,7 +26,6 @@ function GetColors(state: State, dispatch: React.Dispatch<Actions>, colorContrac
     
     const colorLength = await colorContractNode2.connect(signerNode2).getColorsArrayLenght()
     if(colorLength.toNumber() !== 0){
-      console.warn("🚀 ~ file: getColors.ts ~ line 32 ~ getColorsArrayLenght ~ colorLength", colorLength.toString())
       const iterable = Array.from(Array(colorLength.toNumber()).keys()).map(i => i)
   
       let colorsDecoded = []
@@ -50,19 +49,17 @@ function GetColors(state: State, dispatch: React.Dispatch<Actions>, colorContrac
 
   useEffect(() => {
     if(state.sygmaInstance && state.accountData && state.accountDataFromSygma){
-      console.warn("Getting colors data")
-      console.log("Color node 1", colorContractNode1)
       const signerChain1 = state.sygmaInstance.getSigner('chain1')
       getColorHomeChain(signerChain1!)
 
-      getColorDestinationChain(signerDestinationChain)
+      getColorDestinationChain(signerDestinationChain!)
       
     }
   }, [state.sygmaInstance, state.accountData, state.accountDataFromSygma])
 
   useEffect(() => {
     if(state.depositStatus === 'done'){
-      getColorDestinationChain(signerDestinationChain)
+      getColorDestinationChain(signerDestinationChain!)
     }
   }, [state.depositStatus])
 }

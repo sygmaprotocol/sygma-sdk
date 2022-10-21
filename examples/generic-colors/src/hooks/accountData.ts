@@ -5,8 +5,8 @@ import { Actions, State } from "../reducers";
 function AccountData(state: State, dispatch: React.Dispatch<Actions>) {
   const getData = async () => {
     if(state.accountDataFromSygma === undefined){
-      const balance = await state.sygmaInstance.getSignerBalance('chain1')
-      const gasPrice = await state.sygmaInstance.getSignerGasPrice('chain1')
+      const balance = await state?.sygmaInstance!.getSignerBalance('chain1')
+      const gasPrice = await state?.sygmaInstance!.getSignerGasPrice('chain1')
       dispatch({
         type: 'setAccounDataFromSygma',
         payload: { balance: utils.formatEther(balance!), gasPrice: gasPrice?.toString() }

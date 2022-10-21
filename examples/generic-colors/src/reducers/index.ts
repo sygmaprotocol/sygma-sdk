@@ -8,20 +8,20 @@ export type State = {
   newLength: number,
   metamaskConnected: boolean | undefined
   accountData: string | undefined,
-  sygmaInstance: Sygma,
+  sygmaInstance: Sygma | undefined,
   data: any | undefined,
   accountDataFromSygma: { balance: string, gasPrice: string } | undefined,
   homeChainUrl: string,
   destinationChainUrl: string,
-  depositStatus: string
+  depositStatus: string,
+  colorSelected: string | undefined
 }
 
-export type Actions = { type: 'connectMetamask', payload: boolean } | { type: 'getColorsNode1', payload: any } | { type: 'getColorsNode2', payload: any } | { type: 'txInit', payload: boolean } | { type: 'removeColors', payload: any } | { type: 'changeLength', payload: any } | { type: 'setAccountData', payload: string } | { type: 'setSygmaInstance', payload: Sygma } | { type: 'setData', payload: any } | { type: 'setAccounDataFromSygma', payload: any } | { type: 'getColorsNode1', payload: any } | { type: 'getColorsNode2', payload: any } | { type: 'setHomeChain', payload: string } | { type: 'setDestinationChain', payload: string } | { type: 'depositSuccess', payload: "init" | "done" | "error" | "none" }
+export type Actions = { type: 'connectMetamask', payload: boolean } | { type: 'getColorsNode1', payload: any } | { type: 'getColorsNode2', payload: any } | { type: 'txInit', payload: boolean } | { type: 'removeColors', payload: any } | { type: 'changeLength', payload: any } | { type: 'setAccountData', payload: string } | { type: 'setSygmaInstance', payload: Sygma } | { type: 'setData', payload: any } | { type: 'setAccounDataFromSygma', payload: any } | { type: 'getColorsNode1', payload: any } | { type: 'getColorsNode2', payload: any } | { type: 'setHomeChain', payload: string } | { type: 'setDestinationChain', payload: string } | { type: 'depositSuccess', payload: "init" | "done" | "error" | "none" } | { type: 'selectColor', payload: string }
 
 const reducer = (state: State, action: Actions): State => {
   switch (action.type) {
     case 'getColorsNode1': {
-      console.log("🚀 ~ file: reducer.ts ~ line 6 ~ reducer ~ getColorNode1")
       const colors = action.payload
       return {
         ...state,
@@ -29,7 +29,6 @@ const reducer = (state: State, action: Actions): State => {
       }
     }
     case 'getColorsNode2': {
-      console.log("🚀 ~ file: reducer.ts ~ line 14 ~ reducer ~ getColorsNode2")
       const colors = action.payload
       return {
         ...state,
@@ -103,6 +102,12 @@ const reducer = (state: State, action: Actions): State => {
       return {
         ...state,
         depositStatus: action.payload
+      }
+    }
+    case 'selectColor': {
+      return {
+        ...state,
+        colorSelected: action.payload
       }
     }
     default: {
