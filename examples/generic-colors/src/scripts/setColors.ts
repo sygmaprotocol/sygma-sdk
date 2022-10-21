@@ -39,30 +39,38 @@ const setColor = async () => {
     ColorsAbi.abi
   )
 
-  const colorNode1 = '0x70F3FF'
-  const colorNode2 = '0xFF8787'
-  const colorToHexNode1 = toHex(colorNode1, 32)
-  console.log("🚀 ~ file: setColors.ts ~ line 45 ~ setColor ~ colorToHexNode1", colorToHexNode1)
-  const colorToHexNode2 = toHex(colorNode2, 32)
-  console.log("🚀 ~ file: setColors.ts ~ line 47 ~ setColor ~ colorToHexNode2", colorToHexNode2)
+  const colorsNode1 = ['0x70F3FF', '0xB2B2B2']
+  const colorsNode2 = ['0xFF8787', '0x00ABB3']
+  const colorsToHexNode1 = colorsNode1.map(color => toHex(color, 32))
+  colorsToHexNode1.forEach(color => {
+    console.log("🚀 ~ file: setColors.ts ~ line 47 ~ setColor ~ color node 1", color)
+  })
+  const colorsToHexNode2 = colorsNode2.map(color => toHex(color, 32))
+  colorsToHexNode2.forEach(color => {
+    console.log("🚀 ~ file: setColors.ts ~ line 47 ~ setColor ~ color node 2", color)
+  })
   const depositData = toHex(bridgeAdmin, 32)
 
-  try {
-    await (
-      await colorContract.connect(managedSignerNode1).setColor(depositData, colorToHexNode1)
-    ).wait(1)
-    console.log(`Success to setup color ${colorNode1} on Node 1`)
-  } catch(e){
-    console.log("Error on setting up color", e)
+  for await (let colorHexed of colorsToHexNode1){
+    try {
+      await (
+        await colorContract.connect(managedSignerNode1).setColor(depositData, colorHexed)
+      ).wait(1)
+      console.log(`Success to setup color ${colorHexed} on Node 1`)
+    } catch(e){
+      console.log("Error on setting up color", e)
+    }
   }
 
-  try {
-    await (
-      await colorContract.connect(managedSignerNode2).setColor(depositData, colorToHexNode2)
-    ).wait(1)
-    console.log(`Success to setup color ${colorNode2} on Node 2`)
-  } catch(e){
-    console.log("Error on setting up color", e)
+  for await (let colorsHexed of colorsToHexNode2){
+    try {
+      await (
+        await colorContract.connect(managedSignerNode2).setColor(depositData, colorsHexed)
+      ).wait(1)
+      console.log(`Success to setup color ${colorsHexed} on Node 2`)
+    } catch(e){
+      console.log("Error on setting up color", e)
+    }
   }
 
 }

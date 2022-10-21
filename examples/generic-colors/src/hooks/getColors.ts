@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { useEffect } from "react";
-import { Actions, State } from "../reducer";
+import { Actions, State } from "../reducers";
 import { decodeColor } from "../utils";
 
 function GetColors(state: State, dispatch: React.Dispatch<Actions>, colorContractNode1: ethers.Contract, colorContractNode2: ethers.Contract){

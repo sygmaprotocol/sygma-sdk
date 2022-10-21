@@ -18,7 +18,7 @@ export type State = {
 
 export type Actions = { type: 'connectMetamask', payload: boolean } | { type: 'getColorsNode1', payload: any } | { type: 'getColorsNode2', payload: any } | { type: 'txInit', payload: boolean } | { type: 'removeColors', payload: any } | { type: 'changeLength', payload: any } | { type: 'setAccountData', payload: string } | { type: 'setSygmaInstance', payload: Sygma } | { type: 'setData', payload: any } | { type: 'setAccounDataFromSygma', payload: any } | { type: 'getColorsNode1', payload: any } | { type: 'getColorsNode2', payload: any } | { type: 'setHomeChain', payload: string } | { type: 'setDestinationChain', payload: string } | { type: 'depositSuccess', payload: "init" | "done" | "error" | "none" }
 
-export const reducer = (state: State, action: Actions): State => {
+const reducer = (state: State, action: Actions): State => {
   switch (action.type) {
     case 'getColorsNode1': {
       console.log("🚀 ~ file: reducer.ts ~ line 6 ~ reducer ~ getColorNode1")
@@ -110,3 +110,5 @@ export const reducer = (state: State, action: Actions): State => {
     }
   }
 }
+
+export { reducer }

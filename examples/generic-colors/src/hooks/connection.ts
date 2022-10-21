@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Actions, State } from "../reducer";
+import { Actions, State } from "../reducers";
 import { bridgeSetupList } from '../bridgeSetup'
 import { Sygma } from '@buildwithsygma/sygma-sdk-core';
 import { BigNumber, ethers } from 'ethers';

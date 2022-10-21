@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { utils } from 'ethers'
-import { Actions, State } from "../reducer";
+import { Actions, State } from "../reducers";
 
 function AccountData(state: State, dispatch: React.Dispatch<Actions>) {
   const getData = async () => {

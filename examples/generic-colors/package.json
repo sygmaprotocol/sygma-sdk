@@ -19,7 +19,8 @@
     "web-vitals": "^2.1.0",
     "ethers": "5.7.1",
     "@ethersproject/experimental": "^5.7.0",
-    "ts-node": ">=8.0.0"
+    "ts-node": ">=8.0.0",
+    "react-hook-form": "^7.30.0"
   },
   "scripts": {
     "start": "PORT=3006 BROWSER=none react-app-rewired start",
