@@ -597,8 +597,6 @@ export class Sygma implements SygmaSDK {
   }
 
   public async getSignerBalance(chain: string): Promise<BigNumber | undefined> {
-    console.log("Signers data", this.signers!['chain1'])
-    console.log("BALANCE SYGMA", await (await this.signers!['chain1']?.getBalance())?.toString())
     return await (this.signers![chain as keyof BridgeData] as Signer)?.getBalance();
   }
 
