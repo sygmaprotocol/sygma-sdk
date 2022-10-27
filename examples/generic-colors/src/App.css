@@ -76,6 +76,18 @@
   background-color: #ad4018;
 }
 
+.start-button > button.connect-button {
+  background: dodgerblue;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+
+.start-button > button.connect-button:active {
+  background-color: #24588b;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

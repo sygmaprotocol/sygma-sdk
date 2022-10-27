@@ -4,10 +4,7 @@ import { FeeDataResult, Sygma } from "@buildwithsygma/sygma-sdk-core";
 import "./App.css";
 import { reducer, State } from "./reducers";
 import ColorsAbi from "./abis/colors-abi.json";
-import {
-  colorsAddress,
-  bridgeAdmin,
-} from "./bridgeSetup";
+import { colorsAddress, bridgeAdmin } from "./bridgeSetup";
 import { Connection, handleConnect } from "./hooks/connection";
 import { AccountData } from "./hooks/accountData";
 import { GetColors } from "./hooks/getColors";
@@ -29,6 +26,7 @@ const initState: State = {
   sygmaInstance: undefined,
   homeChainUrl: "",
   destinationChainUrl: "",
+  loading: false,
 };
 
 function App() {
@@ -72,7 +70,7 @@ function App() {
       "🚀 ~ file: App.tsx ~ line 148 ~ handleClick ~ first",
       formatedHex,
     );
-    
+
     const depositDataFee = `0x${
       // @ts-ignore-next-line
       ethers.utils.hexZeroPad(100, 32).substr(2) +
@@ -122,6 +120,11 @@ function App() {
         depositTx,
       );
 
+      dispatch({
+        type: "depositSuccess",
+        payload: "init",
+      });
+
       if ((checkboxRefColor1.current as any).value === state.colorSelected) {
         (checkboxRefColor1.current as any).checked = false;
       } else if (
@@ -129,6 +132,11 @@ function App() {
       ) {
         (checkboxRefColor2.current as any).checked = false;
       }
+
+      dispatch({
+        type: "loading",
+        payload: true,
+      });
     } catch (e) {
       console.log("Error on deposit with Sygma to generic", e);
     }
@@ -162,6 +170,11 @@ function App() {
               ? state.accountDataFromSygma.balance
               : "No balance"}
           </h4>
+          <div>
+            {state.loading && state.depositStatus === "init" && (
+              <span>Transferring...</span>
+            )}
+          </div>
         </div>
       </div>
       <div className="main-content">
@@ -243,17 +256,15 @@ function App() {
           Start transfer
         </button>
         {!state.metamaskConnected && (
-          <button
-            onClick={handleConnectInit}
-            style={{
-              background: "dodgerblue",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-            }}
-          >
-            Connect
-          </button>
+          <>
+            <br />
+            <button
+              onClick={handleConnectInit}
+              className='connect-button'
+            >
+              Connect
+            </button>
+          </>
         )}
       </div>
     </div>

@@ -8,7 +8,7 @@ import { ethers } from 'ethers';
 
 const ColorsDestinationChainListener = (state: State, dispatch: React.Dispatch<Actions>) => {
   useEffect(() => {
-    if(state.metamaskConnected && state.accountData){
+    if (state.metamaskConnected && state.accountData && state.sygmaInstance && state.accountDataFromSygma) {
       const colorsContractDestinationChain = new ethers.Contract(
         colorsAddress,
         ColorsAbi.abi
@@ -27,7 +27,7 @@ const ColorsDestinationChainListener = (state: State, dispatch: React.Dispatch<A
       })
 
     }
-  }, [state.accountData, state.metamaskConnected])
+  }, [state.accountData, state.metamaskConnected, state.sygmaInstance, state.accountDataFromSygma])
 }
 
 export { ColorsDestinationChainListener }

@@ -14,10 +14,11 @@ export type State = {
   homeChainUrl: string,
   destinationChainUrl: string,
   depositStatus: string,
-  colorSelected: string | undefined
+  colorSelected: string | undefined,
+  loading: boolean
 }
 
-export type Actions = { type: 'connectMetamask', payload: boolean } | { type: 'getColorsNode1', payload: any } | { type: 'getColorsNode2', payload: any } | { type: 'txInit', payload: boolean } | { type: 'removeColors', payload: any } | { type: 'changeLength', payload: any } | { type: 'setAccountData', payload: string } | { type: 'setSygmaInstance', payload: Sygma } | { type: 'setData', payload: any } | { type: 'setAccounDataFromSygma', payload: any } | { type: 'getColorsNode1', payload: any } | { type: 'getColorsNode2', payload: any } | { type: 'setHomeChain', payload: string } | { type: 'setDestinationChain', payload: string } | { type: 'depositSuccess', payload: "init" | "done" | "error" | "none" } | { type: 'selectColor', payload: string }
+export type Actions = { type: 'connectMetamask', payload: boolean } | { type: 'getColorsNode1', payload: any } | { type: 'getColorsNode2', payload: any } | { type: 'txInit', payload: boolean } | { type: 'removeColors', payload: any } | { type: 'changeLength', payload: any } | { type: 'setAccountData', payload: string } | { type: 'setSygmaInstance', payload: Sygma } | { type: 'setData', payload: any } | { type: 'setAccounDataFromSygma', payload: any } | { type: 'getColorsNode1', payload: any } | { type: 'getColorsNode2', payload: any } | { type: 'setHomeChain', payload: string } | { type: 'setDestinationChain', payload: string } | { type: 'depositSuccess', payload: "init" | "done" | "error" | "none" } | { type: 'selectColor', payload: string } | { type: 'loading', payload: boolean }
 
 const reducer = (state: State, action: Actions): State => {
   switch (action.type) {
@@ -100,13 +101,20 @@ const reducer = (state: State, action: Actions): State => {
       console.warn("DEPOSIT STATUS", action.payload)
       return {
         ...state,
-        depositStatus: action.payload
+        depositStatus: action.payload,
+        loading: false
       }
     }
     case 'selectColor': {
       return {
         ...state,
         colorSelected: action.payload
+      }
+    }
+    case 'loading': {
+      return {
+        ...state,
+        loading: action.payload
       }
     }
     default: {
