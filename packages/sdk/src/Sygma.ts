@@ -596,7 +596,7 @@ export class Sygma implements SygmaSDK {
     return await this.currentBridge.getERC20Balance(erc20Contract, address);
   }
 
-  public async getSignerBalance(chain: string) {
+  public async getSignerBalance(chain: string): Promise<BigNumber | undefined> {
     console.log("Signers data", this.signers!['chain1'])
     console.log("BALANCE SYGMA", await (await this.signers!['chain1']?.getBalance())?.toString())
     return await (this.signers![chain as keyof BridgeData] as Signer)?.getBalance();
@@ -606,7 +606,7 @@ export class Sygma implements SygmaSDK {
     return await (this.signers![chain as keyof BridgeData] as Signer)?.getAddress();
   }
 
-  public async getSignerGasPrice(chain: string) {
+  public async getSignerGasPrice(chain: string): Promise<BigNumber | undefined> {
     return await (this.signers![chain as keyof BridgeData] as Signer)?.getGasPrice();
   }
   /**
@@ -697,7 +697,7 @@ export class Sygma implements SygmaSDK {
     return toHex(toConvert, padding)
   }
 
-  public getSigner(chain: string) {
+  public getSigner(chain: string): Signer {
     return this.signers![chain as keyof BridgeData]
   }
 

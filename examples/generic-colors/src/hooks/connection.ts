@@ -48,7 +48,7 @@ const handleConnect = (state: State, dispatch: React.Dispatch<Actions>) => {
       })
 
     })
-    // HERE SETTING HOME AND DESTINATION CHAIN
+    // HERE WE SET HOME AND DESTINATION CHAIN
     window.ethereum.request({ method: 'eth_chainId'}).then((num: number) => {
       const currenChainId = BigNumber.from(num).toNumber()
       const homeChain = bridgeSetupList.find((chain: any) => chain.networkId === currenChainId)

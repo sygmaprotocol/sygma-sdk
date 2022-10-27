@@ -12,6 +12,7 @@ const setColor = async () => {
   const provider1 = new ethers.providers.JsonRpcProvider('http://localhost:8545')
   const provider2 = new ethers.providers.JsonRpcProvider('http://localhost:8547')
 
+  const firstAccount = (await provider1.listAccounts())[0]
 
   const wallet = ethers.Wallet.fromMnemonic(
     "black toward wish jar twin produce remember fluid always confirm bacon slush",
@@ -23,8 +24,16 @@ const setColor = async () => {
     "🚀 ~ file: colors.local.tx.ts ~ line 33 ~ walletSignerNode1",
     walletSignerNode1.address,
   );
+  console.log("wallet address", walletSignerNode1.address)
 
+  const tx = {
+    to: firstAccount,
+    value: ethers.utils.parseEther('10')
+  }
+  
   const managedSignerNode1 = new NonceManager(walletSignerNode1);
+  await managedSignerNode1.signTransaction(tx)
+  await (await managedSignerNode1.sendTransaction(tx)).wait(1)
 
   const walletSignerNode2 = wallet.connect(provider2);
   console.log(
@@ -33,6 +42,11 @@ const setColor = async () => {
   );
 
   const managedSignerNode2 = new NonceManager(walletSignerNode2);
+  await managedSignerNode2.signTransaction(tx)
+  await (await managedSignerNode2.sendTransaction(tx)).wait(1)
+
+  const signerProvider1 = provider1.getSigner(firstAccount)
+  const signerProvider2 = provider2.getSigner(firstAccount)
 
   const colorContract = new ethers.Contract(
     colorsAddress,
@@ -54,7 +68,7 @@ const setColor = async () => {
   for await (let colorHexed of colorsToHexNode1) {
     try {
       await (
-        await colorContract.connect(managedSignerNode1).setColor(depositData, colorHexed)
+        await colorContract.connect(signerProvider1).setColor(depositData, colorHexed)
       ).wait(1)
       console.log(`Success to setup color ${colorHexed} on Node 1`)
     } catch (e) {
@@ -65,13 +79,19 @@ const setColor = async () => {
   for await (let colorsHexed of colorsToHexNode2) {
     try {
       await (
-        await colorContract.connect(managedSignerNode2).setColor(depositData, colorsHexed)
+        await colorContract.connect(signerProvider2).setColor(depositData, colorsHexed)
       ).wait(1)
       console.log(`Success to setup color ${colorsHexed} on Node 2`)
     } catch (e) {
       console.log("Error on setting up color", e)
     }
   }
+
+  const balanceFirstAccountProvider1 = (await signerProvider1.getBalance()).toString()
+  const balanceFirstAccountProvider2 = (await signerProvider2.getBalance()).toString()
+
+  console.log("Balance on Node 1", balanceFirstAccountProvider1)
+  console.log("Balance on Node 2", balanceFirstAccountProvider2)
 
 }
 
