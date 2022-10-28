@@ -109,6 +109,10 @@ function App() {
       depositData,
     );
 
+    dispatch({
+      type: "resetColorSelected"
+    });
+
     try {
       const depositTx = await state?.sygmaInstance!.depositGeneric(
         colorsResouceId,
@@ -148,6 +152,10 @@ function App() {
         type: "selectColor",
         payload: value,
       });
+    } else {
+      dispatch({
+        type: "resetColorSelected",
+      });
     }
   };
 
@@ -170,11 +178,6 @@ function App() {
               ? state.accountDataFromSygma.balance
               : "No balance"}
           </h4>
-          <div>
-            {state.loading && state.depositStatus === "init" && (
-              <span>Transferring...</span>
-            )}
-          </div>
         </div>
       </div>
       <div className="main-content">
@@ -247,26 +250,27 @@ function App() {
           </ul>
         </div>
       </div>
-      <div className="start-button">
-        <button
-          onClick={handleClick}
-          disabled={!state.colorSelected}
-          className={!state.colorSelected ? "disabled" : "enabled"}
-        >
-          Start transfer
-        </button>
-        {!state.metamaskConnected && (
-          <>
-            <br />
-            <button
-              onClick={handleConnectInit}
-              className='connect-button'
-            >
-              Connect
-            </button>
-          </>
-        )}
-      </div>
+      {state.loading && state.depositStatus === "init" ? (
+        <span>Transferring...</span>
+      ) : (
+        <div className="start-button">
+          <button
+            onClick={handleClick}
+            disabled={!state.colorSelected}
+            className={!state.colorSelected ? "disabled" : "enabled"}
+          >
+            Start transfer
+          </button>
+          {!state.metamaskConnected && (
+            <>
+              <br />
+              <button onClick={handleConnectInit} className="connect-button">
+                Connect
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
