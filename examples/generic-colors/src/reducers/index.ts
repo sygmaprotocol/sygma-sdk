@@ -18,7 +18,25 @@ export type State = {
   loading: boolean
 }
 
-export type Actions = { type: 'connectMetamask', payload: boolean } | { type: 'getColorsNode1', payload: any } | { type: 'getColorsNode2', payload: any } | { type: 'txInit', payload: boolean } | { type: 'removeColors', payload: any } | { type: 'changeLength', payload: any } | { type: 'setAccountData', payload: string } | { type: 'setSygmaInstance', payload: Sygma } | { type: 'setData', payload: any } | { type: 'setAccounDataFromSygma', payload: any } | { type: 'getColorsNode1', payload: any } | { type: 'getColorsNode2', payload: any } | { type: 'setHomeChain', payload: string } | { type: 'setDestinationChain', payload: string } | { type: 'depositSuccess', payload: "init" | "done" | "error" | "none" } | { type: 'selectColor', payload: string } | { type: 'loading', payload: boolean }
+export type Actions =
+  | { type: "connectMetamask"; payload: boolean }
+  | { type: "getColorsNode1"; payload: any }
+  | { type: "getColorsNode2"; payload: any }
+  | { type: "txInit"; payload: boolean }
+  | { type: "removeColors"; payload: any }
+  | { type: "changeLength"; payload: any }
+  | { type: "setAccountData"; payload: string }
+  | { type: "setSygmaInstance"; payload: Sygma }
+  | { type: "setData"; payload: any }
+  | { type: "setAccounDataFromSygma"; payload: any }
+  | { type: "getColorsNode1"; payload: any }
+  | { type: "getColorsNode2"; payload: any }
+  | { type: "setHomeChain"; payload: string }
+  | { type: "setDestinationChain"; payload: string }
+  | { type: "depositSuccess"; payload: "init" | "done" | "error" | "none" }
+  | { type: "selectColor"; payload: string }
+  | { type: "resetColorSelected" }
+  | { type: "loading"; payload: boolean };
 
 const reducer = (state: State, action: Actions): State => {
   switch (action.type) {
@@ -109,6 +127,12 @@ const reducer = (state: State, action: Actions): State => {
       return {
         ...state,
         colorSelected: action.payload
+      }
+    }
+    case 'resetColorSelected': {
+      return {
+        ...state,
+        colorSelected: undefined
       }
     }
     case 'loading': {
