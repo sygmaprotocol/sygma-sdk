@@ -42,6 +42,7 @@ import {
 import { EvmBridge } from './chains';
 import { calculateBasicfee, calculateFeeData } from './fee';
 import Connector from './connectors/Connectors';
+import { createGenericDepositDataV1, toHex } from './utils/helpers';
 
 /**
  * @description Sygma is the main class that allows you to have bridging capabilities
@@ -367,6 +368,31 @@ export class Sygma implements SygmaSDK {
   }
 
   /**
+   * @name depositGeneric
+   * @description call generic handler to achieve general message passing
+   * @param {string} resourceId
+   * @param {string} depositData 
+   * @param {string} fee 
+   * @returns 
+   */
+  public async depositGeneric(
+    resourceId: string, depositData: string, fee: FeeDataResult
+  ) {
+    const { domainId } = this.bridgeSetup!.chain2;
+    const provider = this.providers!.chain1
+    const bridgeToUse = this.bridges!.chain1!;
+
+    return await this.currentBridge.depositGeneric({
+      domainId,
+      resourceId,
+      depositData,
+      fee,
+      bridge: bridgeToUse,
+      provider
+    })
+  }
+
+  /**
    * @name fetchFeeData
    * @description it fetches the fee data according to bridge setup
    * @param {object} params
@@ -570,7 +596,7 @@ export class Sygma implements SygmaSDK {
     return await this.currentBridge.getERC20Balance(erc20Contract, address);
   }
 
-  public async getSignerBalance(chain: string) {
+  public async getSignerBalance(chain: string): Promise<BigNumber | undefined> {
     return await (this.signers![chain as keyof BridgeData] as Signer)?.getBalance();
   }
 
@@ -578,7 +604,7 @@ export class Sygma implements SygmaSDK {
     return await (this.signers![chain as keyof BridgeData] as Signer)?.getAddress();
   }
 
-  public async getSignerGasPrice(chain: string) {
+  public async getSignerGasPrice(chain: string): Promise<BigNumber | undefined> {
     return await (this.signers![chain as keyof BridgeData] as Signer)?.getGasPrice();
   }
   /**
@@ -587,7 +613,7 @@ export class Sygma implements SygmaSDK {
    * @param {object} argument
    * @param {string} params.amounForApproval
    */
-  public async approve({ amountOrIdForApproval  }: { amountOrIdForApproval: string }) {
+  public async approve({ amountOrIdForApproval }: { amountOrIdForApproval: string }) {
     const selectedToken = this.getSelectedToken();
 
     // const amountForApprovalBN = selectedToken.type === 'erc20' ? BigNumber.from(amountOrIdForApproval) : BigNumber.from(amountOrIdForApproval);
@@ -649,6 +675,31 @@ export class Sygma implements SygmaSDK {
   public async listErc721TokenIdsOfOwner(account: string) {
     const { address: token } = this.getSelectedToken()
     const signer = this.signers?.chain1
-    return await listTokensOfOwner({token, account, signer})
+    return await listTokensOfOwner({ token, account, signer })
+  }
+
+  public createGenericDepositDataV1(executeFunctionSignature: string, executeContractAddress: string, maxFee: string, depositor: string, executionData: string, depositorCheck = true) {
+    const depositData = createGenericDepositDataV1(
+      executeFunctionSignature,
+      executeContractAddress,
+      maxFee,
+      depositor,
+      executionData,
+      depositorCheck
+    )
+
+    return depositData
+  }
+
+  public toHex(toConvert: string, padding: number) {
+    return toHex(toConvert, padding)
+  }
+
+  public getSigner(chain: string): Signer {
+    return this.signers![chain as keyof BridgeData]
+  }
+
+  public getDestinationChainProvider() {
+    return this.providers!.chain2 as ethers.providers.JsonRpcProvider
   }
 }

@@ -81,6 +81,33 @@ export default class EvmBridge {
     }
   }
 
+
+  public async depositGeneric({ domainId, resourceId, depositData, fee, bridge, provider }: { domainId: string, resourceId: string, depositData: string, fee: FeeDataResult, bridge: Bridge, provider: Provider }) {
+    const { feeData, type } = fee
+    const gasPrice = await this.isEIP1559MaxFeePerGas(provider);
+
+    let gasPriceStringify;
+
+    if (typeof gasPrice !== 'boolean') {
+      gasPriceStringify = gasPrice.toString();
+    }
+
+    try {
+      const tx = bridge.deposit(
+        domainId,
+        resourceId,
+        depositData,
+        feeData, {
+        gasPrice: gasPriceStringify,
+        value: type === 'basic' ? feeData : undefined }
+      )
+      const depositAction = await (await tx).wait(1)
+      return depositAction
+    } catch (error) {
+      console.log("Error on generic deposit", error)
+    }
+  }
+
   public async approve(
     amountForApproval: BigNumber,
     tokenInstance: Erc20Detailed | ERC721MinterBurnerPauser,
