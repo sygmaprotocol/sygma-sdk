@@ -57,12 +57,35 @@
   border: 1px solid white;
   border-radius: 8px;
   color: white;
-  background-color: coral;
   font-size: 16px;
+}
+
+.start-button > .disabled {
+  background-color: grey;
+}
+
+.start-button > .disabled:active {
+  background-color: #282c34;
+}
+
+.start-button > .enabled {
+  background-color: coral;
 }
 
 .start-button > button:active {
   background-color: #ad4018;
+}
+
+.start-button > button.connect-button {
+  background: dodgerblue;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+
+.start-button > button.connect-button:active {
+  background-color: #24588b;
 }
 
 .App-logo {

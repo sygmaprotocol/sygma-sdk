@@ -1,17 +1,19 @@
+import { Signer } from "@buildwithsygma/sygma-sdk-core";
 import { ethers } from "ethers";
 import { useEffect } from "react";
 import { Actions, State } from "../reducers";
 import { decodeColor } from "../utils";
 
 function GetColors(state: State, dispatch: React.Dispatch<Actions>, colorContractNode1: ethers.Contract, colorContractNode2: ethers.Contract){
-  const getColorHomeChain = async (signerNode1: ethers.providers.JsonRpcSigner) => {
-    const colorLength = await colorContractNode1.connect(signerNode1).getColorsArrayLenght()
+
+  const getColorHomeChain = async (signerNode1: Signer) => {
+    const colorLength = await colorContractNode1.connect(signerNode1!).getColorsArrayLenght()
     if(colorLength.toNumber() !== 0) {
       const iterable = Array.from(Array(colorLength.toNumber()).keys()).map(i => i)
 
       let colorsDecoded = []
       for await (let k of iterable){
-        const color = await colorContractNode2.connect(signerNode1).colorsArray(k)
+        const color = await colorContractNode2.connect(signerNode1!).colorsArray(k)
         const colorDecoded = decodeColor(color)
         colorsDecoded.push(colorDecoded)
       }
@@ -22,15 +24,15 @@ function GetColors(state: State, dispatch: React.Dispatch<Actions>, colorContrac
     }
   }
 
-  const getColorDestinationChain = async (signerNode2: ethers.providers.JsonRpcSigner) => {
+  const getColorDestinationChain = async (signerNode2: Signer) => {
     
-    const colorLength = await colorContractNode2.connect(signerNode2).getColorsArrayLenght()
+    const colorLength = await colorContractNode2.connect(signerNode2!).getColorsArrayLenght()
     if(colorLength.toNumber() !== 0){
       const iterable = Array.from(Array(colorLength.toNumber()).keys()).map(i => i)
   
       let colorsDecoded = []
       for await (let k of iterable){
-        const color = await colorContractNode2.connect(signerNode2).colorsArray(k)
+        const color = await colorContractNode2.connect(signerNode2!).colorsArray(k)
         const colorDecoded = decodeColor(color)
         colorsDecoded.push(colorDecoded)
       }

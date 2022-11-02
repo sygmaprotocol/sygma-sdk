@@ -1,40 +1,15 @@
 import React, { useReducer } from "react";
-import { NonceManager } from "@ethersproject/experimental";
 import { ethers } from "ethers";
 import { FeeDataResult, Sygma } from "@buildwithsygma/sygma-sdk-core";
 import "./App.css";
 import { reducer, State } from "./reducers";
 import ColorsAbi from "./abis/colors-abi.json";
-import {
-  colorsAddress,
-  node1RpcUrl,
-  node2RpcUrl,
-  bridgeAdmin,
-} from "./bridgeSetup";
+import { colorsAddress, bridgeAdmin } from "./bridgeSetup";
 import { Connection, handleConnect } from "./hooks/connection";
 import { AccountData } from "./hooks/accountData";
 import { GetColors } from "./hooks/getColors";
 import { useRef } from "react";
-
-const providerNode1 = new ethers.providers.JsonRpcProvider(node1RpcUrl);
-const providerNode2 = new ethers.providers.JsonRpcProvider(node2RpcUrl);
-
-const walletNode1 = ethers.Wallet.fromMnemonic(
-  "black toward wish jar twin produce remember fluid always confirm bacon slush",
-  "m/44'/60'/0'/0/0",
-);
-
-const walletNode2 = ethers.Wallet.fromMnemonic(
-  "black toward wish jar twin produce remember fluid always confirm bacon slush",
-  "m/44'/60'/0'/0/0",
-);
-
-const walletSignerNode1 = walletNode1.connect(providerNode1);
-
-const walletSignerNode2 = walletNode2.connect(providerNode2);
-
-const managedSignerNode1 = new NonceManager(walletSignerNode1);
-const managedSignerNode2 = new NonceManager(walletSignerNode2);
+import { ColorsDestinationChainListener } from "./hooks/colorsDestinationChainListener";
 
 const initState: State = {
   colorsNode1: [],
@@ -49,26 +24,19 @@ const initState: State = {
   depositStatus: "none",
   colorSelected: undefined,
   sygmaInstance: undefined,
-  homeChainUrl: '',
-  destinationChainUrl: ''
+  homeChainUrl: "",
+  destinationChainUrl: "",
+  loading: false,
 };
 
 function App() {
-  const checkboxRefColor1 = useRef(null)
-  const checkboxRefColor2 = useRef(null)
+  const checkboxRefColor1 = useRef(null);
+  const checkboxRefColor2 = useRef(null);
   const [state, dispatch] = useReducer(reducer, initState);
 
   const colorContractNode1 = new ethers.Contract(colorsAddress, ColorsAbi.abi);
 
   const colorContractNode2 = new ethers.Contract(colorsAddress, ColorsAbi.abi);
-
-  const filtersNode2 = colorContractNode2
-    .connect(managedSignerNode2)
-    .filters.setColorEvent();
-
-  colorContractNode2
-    .connect(managedSignerNode2)
-    .on(filtersNode2, (color) => console.log("color being set", color));
 
   /**
    * Initialization of hooks for data and connection
@@ -85,6 +53,11 @@ function App() {
    */
   GetColors(state, dispatch, colorContractNode1, colorContractNode2);
 
+  /**
+   * Hooks that setups listener over colors contract on destination chain
+   */
+  ColorsDestinationChainListener(state, dispatch);
+
   const handleConnectInit = () => handleConnect(state, dispatch);
 
   const handleClick = async () => {
@@ -97,13 +70,12 @@ function App() {
       "🚀 ~ file: App.tsx ~ line 148 ~ handleClick ~ first",
       formatedHex,
     );
-    
     const depositDataFee = `0x${
       // @ts-ignore-next-line
       ethers.utils.hexZeroPad(100, 32).substr(2) +
       // @ts-ignore-next-line
       ethers.utils.hexZeroPad(bridgeAdmin.length, 32).substr(2) +
-      (await managedSignerNode1.getAddress()).substr(2)
+      state.accountData!.substr(2)
     }`;
     console.log(
       "🚀 ~ file: App.tsx ~ line 127 ~ handleClick ~ depositDataFee",
@@ -113,7 +85,7 @@ function App() {
     const basicFeeData = await (state.sygmaInstance as Sygma).fetchBasicFeeData(
       {
         amount: "1000000",
-        recipientAddress: bridgeAdmin,
+        recipientAddress: state.accountData!,
       },
     );
     console.log(
@@ -126,8 +98,8 @@ function App() {
     const depositData = state?.sygmaInstance!.createGenericDepositDataV1(
       depositFunctionSignature,
       colorsAddress,
-      '2000000',
-      bridgeAdmin,
+      "2000000",
+      state.accountData!,
       hexColor,
       false,
     );
@@ -135,6 +107,10 @@ function App() {
       "🚀 ~ file: App.tsx ~ line 172 ~ handleClick ~ depositData",
       depositData,
     );
+
+    dispatch({
+      type: "resetColorSelected"
+    });
 
     try {
       const depositTx = await state?.sygmaInstance!.depositGeneric(
@@ -147,28 +123,37 @@ function App() {
         depositTx,
       );
 
-      if((checkboxRefColor1.current as any).value === state.colorSelected){
-        (checkboxRefColor1.current as any).checked = false
-      } else if ((checkboxRefColor2.current as any).value === state.colorSelected){
-        (checkboxRefColor2.current as any).checked = false
+      dispatch({
+        type: "depositSuccess",
+        payload: "init",
+      });
+
+      if ((checkboxRefColor1.current as any).value === state.colorSelected) {
+        (checkboxRefColor1.current as any).checked = false;
+      } else if (
+        (checkboxRefColor2.current as any).value === state.colorSelected
+      ) {
+        (checkboxRefColor2.current as any).checked = false;
       }
 
-      setTimeout(() => {
-        dispatch({
-          type: "depositSuccess",
-          payload: "done",
-        });
-      }, 20000);
+      dispatch({
+        type: "loading",
+        payload: true,
+      });
     } catch (e) {
       console.log("Error on deposit with Sygma to generic", e);
     }
   };
 
-  const handleColorSelected = ({ target: { value, checked }}: any) => {
+  const handleColorSelected = ({ target: { value, checked } }: any) => {
     if (checked) {
       dispatch({
         type: "selectColor",
         payload: value,
+      });
+    } else {
+      dispatch({
+        type: "resetColorSelected",
       });
     }
   };
@@ -264,22 +249,27 @@ function App() {
           </ul>
         </div>
       </div>
-      <div className="start-button">
-        <button onClick={handleClick}>Start transfer</button>
-        {!state.metamaskConnected && (
+      {state.loading && state.depositStatus === "init" ? (
+        <span>Transferring...</span>
+      ) : (
+        <div className="start-button">
           <button
-            onClick={handleConnectInit}
-            style={{
-              background: "dodgerblue",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-            }}
+            onClick={handleClick}
+            disabled={!state.colorSelected}
+            className={!state.colorSelected ? "disabled" : "enabled"}
           >
-            Connect
+            Start transfer
           </button>
-        )}
-      </div>
+          {!state.metamaskConnected && (
+            <>
+              <br />
+              <button onClick={handleConnectInit} className="connect-button">
+                Connect
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
