@@ -14,7 +14,7 @@ const handleConnect = (state: State, dispatch: React.Dispatch<Actions>) => {
         const [addr] = address;
         dispatch({
           type: 'connectMetamask',
-          payload: truet
+          payload: true
         })
         dispatch({
           type: 'setAccountData',

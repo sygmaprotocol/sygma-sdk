@@ -7,7 +7,7 @@ export interface SygmaSDK {}
 export type Directions = 'chain1' | 'chain2';
 
 export type Setup = {
-  bridgeSetupList?: SygmaBridgeSetupList;
+  bridgeSetupList: SygmaBridgeSetupList;
   bridgeSetup?: BridgeData;
   feeOracleSetup?: FeeOracleData;
 };
