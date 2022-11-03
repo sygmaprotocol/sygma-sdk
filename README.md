@@ -541,7 +541,7 @@ sygmaInstance.removeDestinationProposalExecutionEventListener()
 ````
 
 
-With this you can use our SDK and create the render logic to show your tokens and your networks of the bridge. For a more in depth review, check out our `erc20` and `erc721` examples.
+With this you can use our SDK and create the render logic to show your tokens and your networks of the bridge. For a more in depth review, check out our `erc20`,  `erc721` and `generic handler` examples.
 
 
 ## Support
