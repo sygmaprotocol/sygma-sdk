@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useState } from "react";
 import { ethers } from "ethers";
 import { FeeDataResult, Sygma } from "@buildwithsygma/sygma-sdk-core";
 import "./App.css";
@@ -32,6 +32,7 @@ const initState: State = {
 function App() {
   const checkboxRefColor1 = useRef(null);
   const checkboxRefColor2 = useRef(null);
+  const [nodeId, setNodeId] = useState<string | undefined>(undefined)
   const [state, dispatch] = useReducer(reducer, initState);
 
   const colorContractNode1 = new ethers.Contract(colorsAddress, ColorsAbi.abi);
@@ -62,6 +63,7 @@ function App() {
 
   const handleClick = async () => {
     const first = state.colorSelected;
+    const nodeElement = document.getElementById(nodeId!)
     const formatedHex = first!.substr(1);
     const depositFunctionSignature = "0x103b854b";
     const colorsResouceId =
@@ -129,13 +131,7 @@ function App() {
         payload: "init",
       });
 
-      if ((checkboxRefColor1.current as any).value === state.colorSelected) {
-        (checkboxRefColor1.current as any).checked = false;
-      } else if (
-        (checkboxRefColor2.current as any).value === state.colorSelected
-      ) {
-        (checkboxRefColor2.current as any).checked = false;
-      }
+      (nodeElement! as HTMLInputElement).checked = false
 
       dispatch({
         type: "loading",
@@ -146,7 +142,8 @@ function App() {
     }
   };
 
-  const handleColorSelected = ({ target: { value, checked } }: any) => {
+  const handleColorSelected =(colorId: string) => ({ target: { value, checked } }: any) => {
+    setNodeId(colorId)
     if (checked) {
       dispatch({
         type: "selectColor",
@@ -198,8 +195,9 @@ function App() {
                   }}
                 >
                   <input
+                    id={`${idx}-${color}`}
                     type="checkbox"
-                    onClick={handleColorSelected}
+                    onClick={handleColorSelected(`${idx}-${color}`)}
                     value={color}
                     ref={idx === 0 ? checkboxRefColor1 : checkboxRefColor2}
                   />
