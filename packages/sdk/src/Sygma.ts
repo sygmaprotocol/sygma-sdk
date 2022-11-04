@@ -162,7 +162,7 @@ export class Sygma implements SygmaSDK {
     return this;
   }
 
-  public async setDestination(domainId: string) {
+  public setDestination(domainId: string) {
     let chain2: SygmaBridgeSetup | undefined;
     if (domainId) {
       chain2 = this.bridgeSetupList!.find(el => el.domainId === domainId);
@@ -171,6 +171,8 @@ export class Sygma implements SygmaSDK {
     if (!chain2) {
       throw `Cannot find network with domainID: ${domainId} in config`;
     }
+
+    this.bridgeSetup!.chain2 = chain2
 
     const connector = setConnectorRPC(chain2.rpcUrl);
 
@@ -370,9 +372,9 @@ export class Sygma implements SygmaSDK {
    * @name depositGeneric
    * @description call generic handler to achieve general message passing
    * @param {string} resourceId
-   * @param {string} depositData 
-   * @param {string} fee 
-   * @returns 
+   * @param {string} depositData
+   * @param {string} fee
+   * @returns
    */
   public async depositGeneric(
     resourceId: string, depositData: string, fee: FeeDataResult
