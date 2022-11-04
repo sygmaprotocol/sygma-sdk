@@ -32,7 +32,6 @@ const initState: State = {
 function App() {
   const checkboxRefColor1 = useRef(null);
   const checkboxRefColor2 = useRef(null);
-  const [nodeId, setNodeId] = useState<string | undefined>(undefined)
   const [state, dispatch] = useReducer(reducer, initState);
 
   const colorContractNode1 = new ethers.Contract(colorsAddress, ColorsAbi.abi);
@@ -63,7 +62,6 @@ function App() {
 
   const handleClick = async () => {
     const first = state.colorSelected;
-    const nodeElement = document.getElementById(nodeId!)
     const formatedHex = first!.substr(1);
     const depositFunctionSignature = "0x103b854b";
     const colorsResouceId =
@@ -131,8 +129,6 @@ function App() {
         payload: "init",
       });
 
-      (nodeElement! as HTMLInputElement).checked = false
-
       dispatch({
         type: "loading",
         payload: true,
@@ -143,7 +139,6 @@ function App() {
   };
 
   const handleColorSelected =(colorId: string) => ({ target: { value, checked } }: any) => {
-    setNodeId(colorId)
     if (checked) {
       dispatch({
         type: "selectColor",
@@ -190,18 +185,23 @@ function App() {
                   key={idx}
                   style={{
                     display: "flex",
-                    justifyContent: "center",
+                    alignItems: 'center',
                     marginBottom: "10px",
+                    width: 168
                   }}
                 >
                   <input
                     id={`${idx}-${color}`}
                     type="checkbox"
-                    onClick={handleColorSelected(`${idx}-${color}`)}
+                    onChange={handleColorSelected(`${idx}-${color}`)}
                     value={color}
                     ref={idx === 0 ? checkboxRefColor1 : checkboxRefColor2}
+                    checked={state.colorSelected === color}
                   />
-                  {`Color: ${color}`}{" "}
+                  <label htmlFor={`${idx}-${color}`}>
+                    {`Color: ${color}`}{" "}
+                  </label>
+
                   <span
                     style={{
                       border: "1px solid",
