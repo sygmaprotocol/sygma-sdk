@@ -70,7 +70,6 @@ export class Sygma implements SygmaSDK {
   }
 
   public async initializeConnectionRPC(address: string) {
-    // this.bridgeSetupList = Object.values(this.bridgeSetup);
     const providersAndSigners = computeProvidersAndSignersRPC(this.bridgeSetup!, address);
     this.providers = {
       chain1: providersAndSigners!['chain1' as keyof BridgeData]

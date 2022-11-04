@@ -70,7 +70,6 @@ function App() {
       "🚀 ~ file: App.tsx ~ line 148 ~ handleClick ~ first",
       formatedHex,
     );
-
     const depositDataFee = `0x${
       // @ts-ignore-next-line
       ethers.utils.hexZeroPad(100, 32).substr(2) +
