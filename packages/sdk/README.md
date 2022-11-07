@@ -118,4 +118,7 @@ const hasTokenSupplies = await sygma.hasTokenSupplies(
 const checkCurrentAllowance = await sygma.checkCurrentAllowance("0x5C1F5961696BaD2e73f73417f07EF55C62a2dC5b") // BigNumber
 
 const getTokenInfo = await sygma.getTokenInfo("chain1") // { balanceOfTokens: BigNumber, tokenName: string }
+
+// Check approval for tokenID of selected ERC721
+const isApproved = await sygma.getAppoved(123)
 ```
