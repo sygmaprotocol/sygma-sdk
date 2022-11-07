@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.0.1...sygma-sdk-core-v1.1.0) (2022-11-04)
+
+
+### Features
+
+* Create ERC721 example application and documents ([#83](https://github.com/sygmaprotocol/sygma-sdk/issues/83)) ([f6ce371](https://github.com/sygmaprotocol/sygma-sdk/commit/f6ce371c0a1f410050ddd4b01954f00c38d1f571))
+* node example for generic handler ([#100](https://github.com/sygmaprotocol/sygma-sdk/issues/100)) ([247dd7b](https://github.com/sygmaprotocol/sygma-sdk/commit/247dd7bf19ff97dd3fe3955168f2829f6f9fe62f))
+* sdk support for generic handler and generic example app ([#85](https://github.com/sygmaprotocol/sygma-sdk/issues/85)) ([3365923](https://github.com/sygmaprotocol/sygma-sdk/commit/3365923b7aa215988cedc9e9b6019dece1b2e86d))
+
+
+### Bug Fixes
+
+* updated readme ([#87](https://github.com/sygmaprotocol/sygma-sdk/issues/87)) ([f99d237](https://github.com/sygmaprotocol/sygma-sdk/commit/f99d2374a06c80c4af41f7dad13f7eff1598c753))
+
 ## [1.0.1](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v0.0.9...sygma-sdk-core-v1.0.1) (2022-09-28)
 
 
