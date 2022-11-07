@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.0.3...sygma-sdk-core-v1.0.4) (2022-11-07)
+
+
+### Bug Fixes
+
+* destination network selection  ([#104](https://github.com/sygmaprotocol/sygma-sdk/issues/104)) ([3f2dbb1](https://github.com/sygmaprotocol/sygma-sdk/commit/3f2dbb163219395715b4b6f418903181be81f5bc))
+
 ## [1.0.3](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.0.2...sygma-sdk-core-v1.0.3) (2022-11-07)
 
 
