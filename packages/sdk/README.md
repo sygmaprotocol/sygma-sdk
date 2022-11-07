@@ -81,7 +81,7 @@ console.log("Basic fee is:", basicFee.feeData)
 
 // Making a deposit. Approve first
 const approvalTxReceipt = await sygma.approve({
-  amountForApproval: "1",
+  amountOrIdForApproval: "1",
 })
 
 const txReceipt = await approvalTxReceipt.wait(1)
