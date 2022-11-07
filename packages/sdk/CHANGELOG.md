@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.0.2...sygma-sdk-core-v1.0.3) (2022-11-07)
+
+
+### Bug Fixes
+
+* add getApproved to the readme ([#120](https://github.com/sygmaprotocol/sygma-sdk/issues/120)) ([ae4981b](https://github.com/sygmaprotocol/sygma-sdk/commit/ae4981bca9327f830ebc8af89ca374fc369063a7))
+
 ## [1.0.2](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.0.1...sygma-sdk-core-v1.0.2) (2022-11-07)
 
 
