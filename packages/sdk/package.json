@@ -14,7 +14,9 @@
 		"test:unit": "jest --detectOpenHandles",
 		"testOracle": "jest --watchAll --silent --testPathPattern=src/fee/__test__/",
 		"run:all": "concurrently \"yarn run prepareNodes\" \"yarn run test\"",
-		"build": "tsc",
+		"build": "tsc -p tsconfig.build.json",
+		"lint": "eslint '{src,integration}/**/*.ts'",
+		"lint:fix": "yarn run lint --fix",
 		"run:nodes": "docker-compose -f docker-compose.yml up",
 		"clean": "rm -rf ./dist",
 		"runOracle": "ts-node ./src/fee/feeOracleScript.ts"

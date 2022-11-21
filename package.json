@@ -9,9 +9,11 @@
   },
   "scripts": {
     "sdk:build": "yarn workspace @buildwithsygma/sygma-sdk-core build",
-    "sdk:cleanDist": "yarn workspace @buildwithsygma/sygma-sdk clean",
-    "sdk:test": "yarn workspace @buildwithsygma/sygma-sdk test",
-    "sdk:test:unit": "yarn workspace @buildwithsygma/sygma-sdk test:unit",
+    "sdk:cleanDist": "yarn workspace @buildwithsygma/sygma-sdk-core clean",
+    "sdk:test": "yarn workspace @buildwithsygma/sygma-sdk-core test",
+    "sdk:lint": "yarn workspace @buildwithsygma/sygma-sdk-core lint",
+    "sdk:lint:fix": "yarn workspace @buildwithsygma/sygma-sdk-core lint:fix",
+    "sdk:test:unit": "yarn workspace @buildwithsygma/sygma-sdk-core test:unit",
     "start:react-example": "yarn workspace @buildwithsygma/sygma-sdk-react-example start",
     "sdk:run-local-example": "yarn workspace @buildwithsygma/sygma-sdk-node-example run:local-ex",
     "sdk:run-ganache-example": "yarn workspace @buildwithsygma/sygma-sdk-node-example run:ganache-ex"
@@ -35,8 +37,10 @@
     "prettier": "2.1.2"
   },
   "devDependencies": {
+    "@chainsafe/eslint-config": "^1.1.0",
+    "@rushstack/eslint-patch": "^1.2.0",
     "@types/node": "^17.0.23",
-    "eslint": "^8.12.0",
+    "eslint": "8",
     "jest": "^27.5.1",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.7.0",

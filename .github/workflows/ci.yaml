@@ -1,0 +1,28 @@
+name: 'ci / test'
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - '**'
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [16, 18]
+      fail-fast: true
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'yarn' # cache node modules
+          node-version: ${{ matrix.node }}
+      - run: corepack enable
+      - run: yarn
+      - run: yarn run sdk:lint # lint code
+      - run: yarn run sdk:build # compile typescript into javascript
+      # - run: yarn run test:unit # run unit tests
+      # - run: yarn run test:integrations # run integration tests tests
