@@ -47,7 +47,10 @@ export default class EvmBridge {
     resourceId: string;
     feeData: FeeDataResult;
   }): Promise<ContractReceipt | undefined> {
-    const depositData = tokenType === 'erc20' ? createERCDepositData(utils.parseUnits(amount, 18), 20, recipientAddress) : createERCDepositData(amount, 20, recipientAddress);
+    const depositData =
+      tokenType === 'erc20'
+        ? createERCDepositData(utils.parseUnits(amount, 18), 20, recipientAddress)
+        : createERCDepositData(amount, 20, recipientAddress);
 
     const gasPrice = await this.isEIP1559MaxFeePerGas(provider);
 
@@ -60,12 +63,20 @@ export default class EvmBridge {
     if (tokenType === 'erc721') {
       console.log(
         'approval before deposit',
-        await this.getApproved(Number(amount), tokenInstance as ERC721MinterBurnerPauser, handlerAddress),
+        await this.getApproved(
+          Number(amount),
+          tokenInstance as ERC721MinterBurnerPauser,
+          handlerAddress,
+        ),
       );
     } else {
       console.log(
         'allowance before deposit',
-        await this.checkCurrentAllowance(recipientAddress, tokenInstance as Erc20Detailed, handlerAddress),
+        await this.checkCurrentAllowance(
+          recipientAddress,
+          tokenInstance as Erc20Detailed,
+          handlerAddress,
+        ),
       );
     }
 
@@ -81,9 +92,22 @@ export default class EvmBridge {
     }
   }
 
-
-  public async depositGeneric({ domainId, resourceId, depositData, fee, bridge, provider }: { domainId: string, resourceId: string, depositData: string, fee: FeeDataResult, bridge: Bridge, provider: Provider }) {
-    const { feeData, type } = fee
+  public async depositGeneric({
+    domainId,
+    resourceId,
+    depositData,
+    fee,
+    bridge,
+    provider,
+  }: {
+    domainId: string;
+    resourceId: string;
+    depositData: string;
+    fee: FeeDataResult;
+    bridge: Bridge;
+    provider: Provider;
+  }) {
+    const { feeData, type } = fee;
     const gasPrice = await this.isEIP1559MaxFeePerGas(provider);
 
     let gasPriceStringify;
@@ -93,18 +117,14 @@ export default class EvmBridge {
     }
 
     try {
-      const tx = bridge.deposit(
-        domainId,
-        resourceId,
-        depositData,
-        feeData, {
+      const tx = bridge.deposit(domainId, resourceId, depositData, feeData, {
         gasPrice: gasPriceStringify,
-        value: type === 'basic' ? feeData : undefined }
-      )
-      const depositAction = await (await tx).wait(1)
-      return depositAction
+        value: type === 'basic' ? feeData : undefined,
+      });
+      const depositAction = await (await tx).wait(1);
+      return depositAction;
     } catch (error) {
-      console.log("Error on generic deposit", error)
+      console.log('Error on generic deposit', error);
     }
   }
 
@@ -114,7 +134,6 @@ export default class EvmBridge {
     handlerAddress: string,
     gasPrice: BigNumber,
   ) {
-
     try {
       const tx = await tokenInstance.approve(handlerAddress, amountForApproval, {
         gasPrice,
@@ -171,8 +190,8 @@ export default class EvmBridge {
     tokenInstance: ERC721MinterBurnerPauser,
     handlerAddress: string,
   ) {
-    const approvedAddress = await tokenInstance.getApproved(tokenId)
-    const isApproved = approvedAddress === handlerAddress
+    const approvedAddress = await tokenInstance.getApproved(tokenId);
+    const isApproved = approvedAddress === handlerAddress;
     return isApproved;
   }
 
