@@ -19,7 +19,7 @@ export const createERCDepositData = (tokenAmountOrID: string | number | BigNumbe
     recipientAddress.substr(2);               // recipientAddress               (?? bytes)
 };
 
-export const createPermissionedGenericDepositData = (hexMetaData) => {
+export const createPermissionedGenericDepositData = (hexMetaData: string) => {
   if (hexMetaData === null) {
     return '0x' +
       toHex(0, 32).substr(2) // len(metaData) (32 bytes)
