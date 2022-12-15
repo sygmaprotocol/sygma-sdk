@@ -42,7 +42,7 @@ import {
 import { EvmBridge } from './chains';
 import { calculateBasicfee, calculateFeeData } from './fee';
 import Connector from './connectors/Connectors';
-import { createGenericDepositDataV1, toHex } from './utils/helpers';
+import { createPermissionlessGenericDepositData, toHex } from './utils/helpers';
 
 /**
  * @description Sygma is the main class that allows you to have bridging capabilities
@@ -679,8 +679,8 @@ export class Sygma implements SygmaSDK {
     return await listTokensOfOwner({ token, account, signer })
   }
 
-  public createGenericDepositDataV1(executeFunctionSignature: string, executeContractAddress: string, maxFee: string, depositor: string, executionData: string, depositorCheck = true) {
-    const depositData = createGenericDepositDataV1(
+  public formatPermissionlessGenericDepositData(executeFunctionSignature: string, executeContractAddress: string, maxFee: string, depositor: string, executionData: string, depositorCheck: boolean = true) {
+    const depositData = createPermissionlessGenericDepositData(
       executeFunctionSignature,
       executeContractAddress,
       maxFee,
