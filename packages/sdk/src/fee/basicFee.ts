@@ -1,7 +1,7 @@
-import { BasicFeeHandler__factory as BasicFeeHandler } from '@buildwithsygma/sygma-contracts'
-import { ethers } from 'ethers'
-import { FeeDataResult } from 'types'
-import { createERCDepositData } from '../utils/helpers'
+import { BasicFeeHandler__factory as BasicFeeHandler } from '@buildwithsygma/sygma-contracts';
+import { ethers } from 'ethers';
+import { FeeDataResult } from 'types';
+import { createERCDepositData } from '../utils/helpers';
 
 export const calculateBasicfee = async ({
   basicFeeHandlerAddress,
@@ -11,7 +11,7 @@ export const calculateBasicfee = async ({
   toDomainID,
   resourceID,
   tokenAmount,
-  recipientAddress
+  recipientAddress,
 }: {
   basicFeeHandlerAddress: string;
   provider: ethers.providers.Provider;
@@ -21,16 +21,11 @@ export const calculateBasicfee = async ({
   resourceID: string;
   tokenAmount: number;
   recipientAddress: string;
-}
-
-): Promise<FeeDataResult | Error> => {
-  const depositData = createERCDepositData(tokenAmount, 20, recipientAddress)
+}): Promise<FeeDataResult | Error> => {
+  const depositData = createERCDepositData(tokenAmount, 20, recipientAddress);
   // WHY 0X00 AND NOT 0X0?
-  const feeData = "0x00"
-  const BasicFeeHandlerInstance = BasicFeeHandler.connect(
-    basicFeeHandlerAddress,
-    provider
-  )
+  const feeData = '0x00';
+  const BasicFeeHandlerInstance = BasicFeeHandler.connect(basicFeeHandlerAddress, provider);
 
   try {
     const calculatedFee = await BasicFeeHandlerInstance.calculateFee(
@@ -39,22 +34,20 @@ export const calculateBasicfee = async ({
       toDomainID,
       resourceID,
       depositData,
-      feeData
-    )
-    console.log("calculatedFee", calculatedFee[0])
+      feeData,
+    );
+    console.log('calculatedFee', calculatedFee[0]);
 
-    const [ fee, address ] = calculatedFee
+    const [fee, address] = calculatedFee;
     return {
       fee,
       calculatedRate: ethers.utils.formatUnits(fee),
       erc20TokenAddress: address,
       feeData: fee.toHexString(),
-      type: 'basic'
-    }
-  } catch(error){
-    console.error(error)
-    return Promise.reject(new Error("Invalidad basic fee response"))
+      type: 'basic',
+    };
+  } catch (error) {
+    console.error(error);
+    return Promise.reject(new Error('Invalidad basic fee response'));
   }
-
-
-}
+};

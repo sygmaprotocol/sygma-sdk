@@ -1,6 +1,7 @@
-import { Erc20Detailed } from '../Contracts/Erc20Detailed';
 import { Bridge, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts';
 import { ethers } from 'ethers';
+
+import { Erc20Detailed } from '../Contracts/Erc20Detailed';
 
 export interface SygmaSDK {}
 
@@ -13,7 +14,7 @@ export type Setup = {
 };
 
 export type TokenConfig = {
-  type: "erc20" | 'erc721'
+  type: 'erc20' | 'erc721';
   address: string;
   name?: string;
   symbol?: string;
@@ -28,7 +29,7 @@ export type TokenConfig = {
   };
 };
 
-export type FeeType = 'basic' | 'feeOracle' | 'none'
+export type FeeType = 'basic' | 'feeOracle' | 'none';
 
 export type SygmaBridgeSetup = {
   name: string;
@@ -40,10 +41,10 @@ export type SygmaBridgeSetup = {
   rpcUrl: string;
   domainId: string;
   decimals: number;
-  tokens: TokenConfig[]
+  tokens: TokenConfig[];
 };
 
-export type SygmaBridgeSetupList = SygmaBridgeSetup[]
+export type SygmaBridgeSetupList = SygmaBridgeSetup[];
 
 export type BridgeData = {
   chain1: SygmaBridgeSetup;
@@ -68,7 +69,7 @@ export type OracleResource = {
 };
 
 export type FeeDataResult = {
-  type: FeeType,
+  type: FeeType;
   fee: ethers.BigNumber;
   calculatedRate: string;
   erc20TokenAddress: string;
@@ -107,15 +108,16 @@ export type Events =
     }
   | undefined;
 
-export type SygmaProviders =
-  | {
-      [chain: string]: {
-        provider: ethers.providers.JsonRpcProvider | Provider;
-        signer: ethers.providers.JsonRpcSigner | Signer;
-      };
-    }
+export type SygmaProviders = {
+  [chain: string]: {
+    provider: ethers.providers.JsonRpcProvider | Provider;
+    signer: ethers.providers.JsonRpcSigner | Signer;
+  };
+};
 
-export type SygmaErc20Contracts = { [chain: string]: Erc20Detailed | ERC721MinterBurnerPauser | undefined } | undefined;
+export type SygmaErc20Contracts =
+  | { [chain: string]: Erc20Detailed | ERC721MinterBurnerPauser | undefined }
+  | undefined;
 
 export type Provider = ethers.providers.Provider | undefined;
 
