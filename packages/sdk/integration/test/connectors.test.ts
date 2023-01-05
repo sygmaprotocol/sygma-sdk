@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { BigNumber, ethers } from "ethers"
 import { Connector } from "../../src/connectors"
 

@@ -1,20 +1,17 @@
-import { Bridge, ERC721MinterBurnerPauser__factory } from '@buildwithsygma/sygma-contracts';
-import { utils, BigNumber } from 'ethers';
+import { ERC721MinterBurnerPauser__factory } from '@buildwithsygma/sygma-contracts';
+import { utils, BigNumber, providers } from 'ethers';
 import { Connector } from '../connectors';
 
 import {
   BridgeData,
-  BridgeEventCallback,
-  BridgeEvents,
   Bridges,
   ChainbridgeContracts,
   SygmaErc20Contracts,
   SygmaProviders,
-  Provider,
 } from '../types';
 
 export const computeBridges = (contracts: ChainbridgeContracts): Bridges =>
-  Object.keys(contracts).reduce((bridges: any, chain) => {
+  Object.keys(contracts).reduce((bridges, chain) => {
     const { bridge } = contracts[chain];
     bridges = {
       ...bridges,
@@ -25,7 +22,7 @@ export const computeBridges = (contracts: ChainbridgeContracts): Bridges =>
   }, {});
 
 export const computeERC20Contracts = (contracts: ChainbridgeContracts): SygmaErc20Contracts =>
-  Object.keys(contracts).reduce((erc20Contracts: any, chain) => {
+  Object.keys(contracts).reduce((erc20Contracts, chain) => {
     const { erc20 } = contracts[chain];
     erc20Contracts = {
       ...erc20Contracts,
@@ -47,7 +44,7 @@ export const computeProvidersAndSignersRPC = (
 
 export const computeProvidersAndSignersWeb3 = (
   bridgeSetup: BridgeData,
-  web3providerInstance: any,
+  web3providerInstance: providers.ExternalProvider,
 ): SygmaProviders => {
   return {
     chain1: setConnectorWeb3(web3providerInstance),
@@ -59,7 +56,7 @@ export const setConnectorRPC = (rpcUrl: string, address?: string): Connector => 
   return Connector.initRPC(rpcUrl, address);
 };
 
-export const setConnectorWeb3 = (web3ProviderInstance: any): Connector => {
+export const setConnectorWeb3 = (web3ProviderInstance: providers.ExternalProvider): Connector => {
   return Connector.initFromWeb3(web3ProviderInstance);
 };
 
@@ -83,24 +80,25 @@ export const processLenRecipientAddress = (recipientAddress: string): string => 
   return toHexString;
 };
 
-export async function listTokensOfOwner({ token: tokenAddress, account, signer }: any) {
+export async function listTokensOfOwner({
+  token: tokenAddress,
+  account,
+  signer,
+}: {
+  token: string;
+  account: string;
+  signer: providers.Provider | providers.JsonRpcSigner;
+}): Promise<[string]> {
   const token = ERC721MinterBurnerPauser__factory.connect(tokenAddress, signer);
 
   console.warn(await token.name(), 'tokens owned by', account);
 
-  const sentLogs = await token.queryFilter(
-    token.filters.Transfer(account, null),
-  );
-  const receivedLogs = await token.queryFilter(
-    token.filters.Transfer(null, account),
-  );
+  const sentLogs = await token.queryFilter(token.filters.Transfer(account, null));
+  const receivedLogs = await token.queryFilter(token.filters.Transfer(null, account));
 
-  const logs = sentLogs.concat(receivedLogs)
-    .sort(
-      (a, b) =>
-        a.blockNumber - b.blockNumber ||
-        a.transactionIndex - b.transactionIndex,
-    );
+  const logs = sentLogs
+    .concat(receivedLogs)
+    .sort((a, b) => a.blockNumber - b.blockNumber || a.transactionIndex - b.transactionIndex);
 
   const owned = new Set();
 
@@ -114,9 +112,9 @@ export async function listTokensOfOwner({ token: tokenAddress, account, signer }
     }
   }
 
-  return [...owned] as [string]
-};
+  return [...owned] as [string];
+}
 
-function addressEqual(a: string, b: string) {
+function addressEqual(a: string, b: string): boolean {
   return a.toLowerCase() === b.toLowerCase();
 }

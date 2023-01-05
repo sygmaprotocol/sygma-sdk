@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { Chainbridge } from '../../src';
 import { BridgeData } from '../../src/types';
 import { calculateFeeData, calculateBasicfee } from '../../src/fee';

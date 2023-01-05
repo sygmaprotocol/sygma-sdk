@@ -1,24 +1,22 @@
-import { ethers } from "ethers";
-import { Provider, Signer } from "../types";
+import { ethers, providers } from 'ethers';
+import { Provider, Signer } from '../types';
 
 export default class Connector {
-  private connectorProvider: Provider | undefined
-  private connectorSigner: Signer | undefined
-
+  private connectorProvider: Provider | undefined;
+  private connectorSigner: Signer | undefined;
 
   /**
    * Inits instance of Connector class from web3 provider instace
    * @param web3ProvideInstance
    * @returns
    */
-  static initFromWeb3(web3ProvideInstance: any) {
-    const provider = new Connector()
-    provider.connectorProvider = new ethers.providers.Web3Provider(
-      web3ProvideInstance,
-      "any"
-    )
-    provider.connectorSigner = (provider.connectorProvider as ethers.providers.Web3Provider).getSigner()
-    return provider
+  static initFromWeb3(web3ProvideInstance: providers.ExternalProvider): Connector {
+    const provider = new Connector();
+    provider.connectorProvider = new ethers.providers.Web3Provider(web3ProvideInstance, 'any');
+    provider.connectorSigner = (
+      provider.connectorProvider as ethers.providers.Web3Provider
+    ).getSigner();
+    return provider;
   }
 
   /**
@@ -28,36 +26,40 @@ export default class Connector {
    * @param [address]
    * @returns
    */
-  static initRPC(rpcURL: string, address?: string) {
-    const provider = new Connector()
-    provider.connectorProvider = new ethers.providers.JsonRpcProvider(rpcURL)
+  static initRPC(rpcURL: string, address?: string): Connector {
+    const provider = new Connector();
+    provider.connectorProvider = new ethers.providers.JsonRpcProvider(rpcURL);
     if (address) {
-      provider.connectorSigner = (provider.connectorProvider as ethers.providers.JsonRpcProvider).getSigner(address)
+      provider.connectorSigner = (
+        provider.connectorProvider as ethers.providers.JsonRpcProvider
+      ).getSigner(address);
     }
-    return provider
+    return provider;
   }
 
   public async getSignerAddress(): Promise<string> {
-    return await this.signer!.getAddress()
+    return await this.signer!.getAddress();
   }
 
   public async getSignerBalance(): Promise<ethers.BigNumber> {
-    return await this.signer!.getBalance()
+    return await this.signer!.getBalance();
   }
 
   public async getSignerGasPrice(): Promise<ethers.BigNumber> {
-    return await this.signer!.getGasPrice()
+    return await this.signer!.getGasPrice();
   }
 
-  public setSigner(address: string) {
-    this.connectorSigner = (this.connectorProvider as ethers.providers.JsonRpcProvider)!.getSigner(address)
+  public setSigner(address: string): void {
+    this.connectorSigner = (this.connectorProvider as ethers.providers.JsonRpcProvider)!.getSigner(
+      address,
+    );
   }
 
-  get signer() {
-    return this.connectorSigner
+  get signer(): Signer {
+    return this.connectorSigner;
   }
 
-  get provider() {
-    return this.connectorProvider
+  get provider(): Provider {
+    return this.connectorProvider;
   }
 }
