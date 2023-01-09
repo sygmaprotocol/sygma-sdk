@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { BigNumber, ethers } from 'ethers';
-import { FeeDataResult } from 'types';
+import { FeeDataResult } from '../../types';
 import { BasicFeeHandler__factory } from '@buildwithsygma/sygma-contracts';
 import { calculateBasicfee } from '../basicFee';
 

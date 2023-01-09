@@ -1,6 +1,6 @@
 import { BasicFeeHandler__factory as BasicFeeHandler } from '@buildwithsygma/sygma-contracts';
 import { ethers } from 'ethers';
-import { FeeDataResult } from 'types';
+import { FeeDataResult } from '../types';
 import { createERCDepositData } from '../utils/helpers';
 
 export const calculateBasicfee = async ({
