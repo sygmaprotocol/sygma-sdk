@@ -42,6 +42,7 @@ export type SygmaBridgeSetup = {
   domainId: string;
   decimals: number;
   tokens: TokenConfig[];
+  confirmations?: number;
 };
 
 export type SygmaBridgeSetupList = SygmaBridgeSetup[];
