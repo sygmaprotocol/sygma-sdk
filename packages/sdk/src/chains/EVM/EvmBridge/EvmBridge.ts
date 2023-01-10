@@ -1,14 +1,11 @@
 import {
   Bridge,
   ERC20Handler__factory as Erc20HandlerFactory,
-  FeeHandlerRouter__factory,
   ERC721MinterBurnerPauser,
   ERC721MinterBurnerPauser__factory as Erc721Factory,
-  ERC721Handler__factory as Erc721handlerFactory,
 } from '@buildwithsygma/sygma-contracts';
 import { utils, BigNumber, ContractReceipt } from 'ethers';
-import { Directions, Provider, FeeDataResult, TokenConfig } from '../../../types';
-import { processAmountForERC20Transfer, processLenRecipientAddress } from '../../../utils';
+import { Directions, Provider, FeeDataResult } from '../../../types';
 import { Erc20Detailed } from '../../../Contracts/Erc20Detailed';
 import { Erc20DetailedFactory } from '../../../Contracts/Erc20DetailedFactory';
 
@@ -17,7 +14,7 @@ import { createERCDepositData } from '../../../utils/helpers';
 export default class EvmBridge {
   private static instance: EvmBridge;
 
-  public static getInstance() {
+  public static getInstance(): EvmBridge {
     if (!this.instance) {
       return new EvmBridge();
     }
@@ -106,7 +103,7 @@ export default class EvmBridge {
     fee: FeeDataResult;
     bridge: Bridge;
     provider: Provider;
-  }) {
+  }): Promise<ContractReceipt | undefined> {
     const { feeData, type } = fee;
     const gasPrice = await this.isEIP1559MaxFeePerGas(provider);
 
@@ -133,7 +130,7 @@ export default class EvmBridge {
     tokenInstance: Erc20Detailed | ERC721MinterBurnerPauser,
     handlerAddress: string,
     gasPrice: BigNumber,
-  ) {
+  ): Promise<ContractReceipt | undefined> {
     try {
       const tx = await tokenInstance.approve(handlerAddress, amountForApproval, {
         gasPrice,
@@ -152,7 +149,7 @@ export default class EvmBridge {
     destinationERC20Address: string,
     erc20HandlerAddress: string,
     decimals: number,
-  ) {
+  ): Promise<boolean> {
     const erc20DestinationToken = Erc20DetailedFactory.connect(destinationERC20Address, provider!);
 
     const destinationERC20HandlerInstance = Erc20HandlerFactory.connect(
@@ -189,7 +186,7 @@ export default class EvmBridge {
     tokenId: number,
     tokenInstance: ERC721MinterBurnerPauser,
     handlerAddress: string,
-  ) {
+  ): Promise<boolean> {
     const approvedAddress = await tokenInstance.getApproved(tokenId);
     const isApproved = approvedAddress === handlerAddress;
     return isApproved;
@@ -206,7 +203,14 @@ export default class EvmBridge {
     }
   }
 
-  public async getErc20TokenInfo(ercAddress: string, accountAddress: string, provider: Provider) {
+  public async getErc20TokenInfo(
+    ercAddress: string,
+    accountAddress: string,
+    provider: Provider,
+  ): Promise<{
+    balanceOfTokens: BigNumber;
+    tokenName: string;
+  }> {
     const erc20Contract = Erc20DetailedFactory.connect(ercAddress, provider!);
 
     const balanceOfTokens = await erc20Contract.balanceOf(accountAddress);
@@ -215,7 +219,14 @@ export default class EvmBridge {
     return { balanceOfTokens, tokenName };
   }
 
-  public async getErc721TokenInfo(ercAddress: string, accountAddress: string, provider: Provider) {
+  public async getErc721TokenInfo(
+    ercAddress: string,
+    accountAddress: string,
+    provider: Provider,
+  ): Promise<{
+    balanceOfTokens: BigNumber;
+    tokenName: string;
+  }> {
     const ercContract = Erc721Factory.connect(ercAddress, provider!);
 
     const balanceOfTokens = await ercContract.balanceOf(accountAddress);

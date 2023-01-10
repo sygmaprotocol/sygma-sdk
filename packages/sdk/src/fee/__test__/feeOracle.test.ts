@@ -1,7 +1,8 @@
-import { utils, BigNumber, ethers } from 'ethers';
-import { requestFeeFromFeeOracle, createOracleFeeData, calculateFeeData } from '../feeOracle';
+/* eslint-disable */
+
+import { BigNumber, ethers } from 'ethers';
 import fetch from 'node-fetch';
-import {FeeHandlerWithOracle__factory} from '@buildwithsygma/sygma-contracts';
+import { requestFeeFromFeeOracle, createOracleFeeData, calculateFeeData } from '../feeOracle';
 
 jest.mock('node-fetch');
 const { Response } = jest.requireActual('node-fetch');
@@ -9,16 +10,16 @@ const { Response } = jest.requireActual('node-fetch');
 jest.mock('@buildwithsygma/sygma-contracts', () => ({
   ...jest.requireActual('@buildwithsygma/sygma-contracts'),
   FeeHandlerWithOracle__factory: {
-    connect: (args: any)=> {
+    connect: (args: any) => {
       return {
-        calculateFee: jest.fn(async () =>({
-          fee: BigNumber.from("10"),
-          tokenAddress: "0x141F8690A87A7E57C2E270ee77Be94935970c035"
-        }))
-      }
-    }
-  }
-}))
+        calculateFee: jest.fn(async () => ({
+          fee: BigNumber.from('10'),
+          tokenAddress: '0x141F8690A87A7E57C2E270ee77Be94935970c035',
+        })),
+      };
+    },
+  },
+}));
 
 const oracleResponse = {
   response: {
@@ -74,13 +75,18 @@ describe('feeOracle', () => {
   });
 
   describe('createOracleFeeData', () => {
-    it("builds feeData", () => {
-      const feeData = createOracleFeeData(oracleResponse.response, 10, "0x0000000000000000000000000000000000000000000000000000000000000001", '0x6937d1d0b52f2fa7f4e071c7e64934ad988a8f21c6bf4f323fc19af4c77e3c5e')
+    it('builds feeData', () => {
+      const feeData = createOracleFeeData(
+        oracleResponse.response,
+        10,
+        '0x0000000000000000000000000000000000000000000000000000000000000001',
+        '0x6937d1d0b52f2fa7f4e071c7e64934ad988a8f21c6bf4f323fc19af4c77e3c5e',
+      );
       expect(feeData).toBe(
         '0x0000000000000000000000000000000000000000000000000001656e7165900000000000000000000000000000000000000000000000000076d6981ee7faf00000000000000000000000000000000000000000000000000000000007badfcc00000000000000000000000000000000000000000000000000000000006272f4cc000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001bd8e74f3168db3a616cfb793d8223d3065911eafe0f6b29aa422265f27757ed2572b18962de97a5487097ef5c4b8be0f0c0f978dd196b05a542d3dc6a47213681b000000000000000000000000000000000000000000000000000000000000000a',
       );
-    })
-  })
+    });
+  });
 
   describe('calculateFeeData', () => {
     it('get the fee data', async () => {
@@ -100,20 +106,20 @@ describe('feeOracle', () => {
         feeOracleBaseUrl: 'http://localhost:8091',
         feeOracleHandlerAddress: '0xa9ddD97e1762920679f3C20ec779D79a81903c0B',
         overridedResourceId: '0xbA2aE424d960c26247Dd6c32edC70B295c744C43',
-        oraclePrivateKey: '0x6937d1d0b52f2fa7f4e071c7e64934ad988a8f21c6bf4f323fc19af4c77e3c5e'
+        oraclePrivateKey: '0x6937d1d0b52f2fa7f4e071c7e64934ad988a8f21c6bf4f323fc19af4c77e3c5e',
       });
-      console.log("🚀 ~ file: feeOracle.test.ts ~ line 99 ~ it ~ feeData", feeData)
+      console.log('🚀 ~ file: feeOracle.test.ts ~ line 99 ~ it ~ feeData', feeData);
       expect(feeData).toMatchObject({
         calculatedRate: '0.00000000000000001',
         erc20TokenAddress: '0x141F8690A87A7E57C2E270ee77Be94935970c035',
-        feeData: '0x0000000000000000000000000000000000000000000000000001656e7165900000000000000000000000000000000000000000000000000076d6981ee7faf00000000000000000000000000000000000000000000000000000000007badfcc00000000000000000000000000000000000000000000000000000000006272f4cc000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001bd8e74f3168db3a616cfb793d8223d3065911eafe0f6b29aa422265f27757ed2572b18962de97a5487097ef5c4b8be0f0c0f978dd196b05a542d3dc6a47213681b0000000000000000000000000000000000000000000000000000000000000064'
+        feeData:
+          '0x0000000000000000000000000000000000000000000000000001656e7165900000000000000000000000000000000000000000000000000076d6981ee7faf00000000000000000000000000000000000000000000000000000000007badfcc00000000000000000000000000000000000000000000000000000000006272f4cc000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001bd8e74f3168db3a616cfb793d8223d3065911eafe0f6b29aa422265f27757ed2572b18962de97a5487097ef5c4b8be0f0c0f978dd196b05a542d3dc6a47213681b0000000000000000000000000000000000000000000000000000000000000064',
       });
     });
 
     it('get error', async () => {
-      (fetch as jest.MockedFunction<typeof fetch>).mockRejectedValue("Err")
+      (fetch as jest.MockedFunction<typeof fetch>).mockRejectedValue('Err');
       try {
-
         const provider = new ethers.providers.JsonRpcProvider();
         const feeData = await calculateFeeData({
           provider,
@@ -126,12 +132,11 @@ describe('feeOracle', () => {
           feeOracleBaseUrl: 'http://localhost:8091',
           feeOracleHandlerAddress: '0xa9ddD97e1762920679f3C20ec779D79a81903c0B',
           overridedResourceId: '0xbA2aE424d960c26247Dd6c32edC70B295c744C43',
-          oraclePrivateKey: '0x6937d1d0b52f2fa7f4e071c7e64934ad988a8f21c6bf4f323fc19af4c77e3c5e'
+          oraclePrivateKey: '0x6937d1d0b52f2fa7f4e071c7e64934ad988a8f21c6bf4f323fc19af4c77e3c5e',
         });
       } catch (e) {
-        expect(e).toMatch("Err");
+        expect(e).toMatch('Err');
       }
     });
   });
-
 });

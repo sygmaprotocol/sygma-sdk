@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { Bridge__factory } from '@chainsafe/chainbridge-contracts'
 import { Erc20DetailedFactory } from '../../src/Contracts/Erc20DetailedFactory'
 import { BridgeData, ChainbridgeContracts, Signer } from '../../src/types'

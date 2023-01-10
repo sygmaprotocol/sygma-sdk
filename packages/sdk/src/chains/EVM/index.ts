@@ -1,1 +1,1 @@
-export { default } from './EvmBridge'
+export { default } from './EvmBridge';
