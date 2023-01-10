@@ -25,29 +25,36 @@ export const createERCDepositData = (
   ); // recipientAddress               (?? bytes)
 };
 
-export const createGenericDepositDataV1 = (
+export const createPermissionedGenericDepositData = (hexMetaData: string): string => {
+  if (hexMetaData === null) {
+    return '0x' + toHex(0, 32).substr(2); // len(metaData) (32 bytes)
+  }
+  const hexMetaDataLength = hexMetaData.substr(2).length / 2;
+  return '0x' + toHex(hexMetaDataLength, 32).substr(2) + hexMetaData.substr(2);
+};
+
+export const createPermissionlessGenericDepositData = (
   executeFunctionSignature: string,
   executeContractAddress: string,
   maxFee: string,
   depositor: string,
   executionData: string,
-  depositorCheck = true,
+  depositorCheck: boolean = true,
 ): string => {
-  let metaData = toHex(depositor, 32).substr(2) + executionData.substr(2);
-
   if (depositorCheck) {
     // if "depositorCheck" is true -> append depositor address for destination chain check
-    metaData = metaData.concat(toHex(depositor, 32).substr(2));
+    executionData = executionData.concat(toHex(depositor, 32).substr(2));
   }
-
-  const metaDataLength = metaData.length / 2;
-
   return (
     '0x' +
-    toHex(metaDataLength, 32).substr(2) + // len(metaData) (32 bytes)
-    toHex(executeFunctionSignature, 32).substr(2) + // bytes4        (padded to 32 bytes)
-    toHex(executeContractAddress, 32).substr(2) + // address       (padded to 32 bytes)
     toHex(maxFee, 32).substr(2) + // uint256
-    metaData
-  ); // bytes
+    toHex(executeFunctionSignature.substr(2).length / 2, 2).substr(2) + // uint16
+    executeFunctionSignature.substr(2) + // bytes
+    toHex(executeContractAddress.substr(2).length / 2, 1).substr(2) + // uint8
+    executeContractAddress.substr(2) + // bytes
+    toHex(32, 1).substr(2) + // uint8
+    toHex(depositor, 32).substr(2) + // bytes32
+    executionData.substr(2)
+  ) // bytes
+    .toLowerCase();
 };
