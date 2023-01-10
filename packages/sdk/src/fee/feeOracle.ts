@@ -138,7 +138,7 @@ export const requestFeeFromFeeOracle = async ({
   fromDomainID: number;
   toDomainID: number;
   resourceID: string;
-  gasLimit: number;
+  msgGasLimit?: number;
 }): Promise<OracleResource | undefined> => {
   try {
     const response = await fetch(
