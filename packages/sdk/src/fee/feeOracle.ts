@@ -19,34 +19,39 @@ export const createOracleFeeData = (
 ): string => {
   /*
         feeData structure:
-            ber*10^18: uint256
-            ter*10^18: uint256
-            dstGasPrice: uint256
-            timestamp: uint256
+            ber*10^18:    uint256
+            ter*10^18:    uint2a56
+            dstGasPrice:  uint256
+            timestamp:    uint256
             fromDomainID: uint8 encoded as uint256
-            toDomainID: uint8 encoded as uint256
-            resourceID: bytes32
-            sig: bytes(65 bytes)
+            toDomainID:   uint8 encoded as uint256
+            resourceID:   bytes32
+            msgGasLimit:  uint256
+            sig:          bytes(65 bytes)
 
         total in bytes:
         message:
-            32 * 7  = 224
+            32 * 8  = 256
         message + sig:
-            224 + 65 = 289
+            256 + 65 = 321
 
             amount: uint256
-        total feeData length: 321
+        total feeData length: 353
     */
 
-  const oracleMessage =
-    '0x' +
-    toHex(ethers.utils.parseEther(oracleResponse.baseEffectiveRate), 32).substr(2) + // ber*10^18: uint256 (32 bytes)
-    toHex(ethers.utils.parseEther(oracleResponse.tokenEffectiveRate), 32).substr(2) + // ter*10^18: uint256 (32 bytes)
-    toHex(ethers.utils.parseUnits(oracleResponse.dstGasPrice, 'wei'), 32).substr(2) + // dstGasPrice: uint256 (32 bytes)
-    toHex(oracleResponse.expirationTimestamp, 32).substr(2) + // timestamp: uint256
-    toHex(oracleResponse.fromDomainID, 32).substr(2) + // fromDomainID: uint256
-    toHex(oracleResponse.toDomainID, 32).substr(2) + // toDomainID: uint256
-    oracleResponse.resourceID.substr(2); // resourceID: bytes32
+  const oracleMessage = ethers.utils.solidityPack(
+    ['uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'bytes32', 'uint256'],
+    [
+      ethers.utils.parseEther(oracleResponse.baseEffectiveRate),
+      ethers.utils.parseEther(oracleResponse.tokenEffectiveRate),
+      ethers.utils.parseUnits(oracleResponse.dstGasPrice, 'wei'),
+      oracleResponse.expirationTimestamp,
+      oracleResponse.fromDomainID,
+      oracleResponse.toDomainID,
+      oracleResponse.resourceID,
+      oracleResponse.msgGasLimit,
+    ],
+  );
 
   let signature;
   if (oraclePrivateKey) {
@@ -123,7 +128,6 @@ export const calculateFeeData = async ({
     feeData,
     type: 'feeOracle',
   };
-  console.log('⛓️ ~ formatted result of feeHandler', result);
   return result;
 };
 
