@@ -13,6 +13,7 @@ import { createERCDepositData } from '../../../utils/helpers';
 
 export default class EvmBridge {
   private static instance: EvmBridge;
+  public confirmations: number = 10;
 
   public static getInstance(): EvmBridge {
     if (!this.instance) {
@@ -82,7 +83,7 @@ export default class EvmBridge {
         gasPrice: gasPriceStringify,
         value: feeData.type === 'basic' ? feeData.fee : undefined,
       });
-      const depositAction = await tx.wait(1);
+      const depositAction = await tx.wait(this.confirmations);
       return depositAction;
     } catch (error) {
       console.log('Error on deposit', error);
@@ -118,7 +119,7 @@ export default class EvmBridge {
         gasPrice: gasPriceStringify,
         value: type === 'basic' ? feeData : undefined,
       });
-      const depositAction = await (await tx).wait(1);
+      const depositAction = await (await tx).wait(this.confirmations);
       return depositAction;
     } catch (error) {
       console.log('Error on generic deposit', error);
@@ -135,7 +136,7 @@ export default class EvmBridge {
       const tx = await tokenInstance.approve(handlerAddress, amountForApproval, {
         gasPrice,
       });
-      const approvalAction = await tx.wait(1);
+      const approvalAction = await tx.wait(this.confirmations);
       return approvalAction;
     } catch (error) {
       console.log('Error on deposit', error);
