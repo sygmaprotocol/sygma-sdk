@@ -136,7 +136,7 @@ export const requestFeeFromFeeOracle = async ({
   fromDomainID,
   toDomainID,
   resourceID,
-  msgGasLimit = 0
+  msgGasLimit = 0,
 }: {
   feeOracleBaseUrl: string;
   fromDomainID: number;
