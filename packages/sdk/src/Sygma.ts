@@ -108,6 +108,11 @@ export class Sygma implements SygmaSDK {
       chain1: this.selectHomeNetwork(homeNetworkChainId)!,
       chain2: this.selectOneForDestination(homeNetworkChainId)!,
     };
+
+    if (this.bridgeSetup.chain1.confirmations) {
+      this.currentBridge.confirmations = this.bridgeSetup.chain1.confirmations;
+    }
+
     const providersAndSigners = computeProvidersAndSignersWeb3(
       this.bridgeSetup,
       web3ProviderInstance,
@@ -186,6 +191,10 @@ export class Sygma implements SygmaSDK {
     const contracts = this.computeContract(chain2, connector);
     this.tokens!['chain2'] = contracts.erc20;
     this.bridges!['chain2'] = contracts.bridge;
+
+    if (this.bridgeSetup!.chain1.confirmations) {
+      this.currentBridge.confirmations = this.bridgeSetup!.chain1.confirmations;
+    }
 
     return this;
   }
