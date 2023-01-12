@@ -67,6 +67,7 @@ export type OracleResource = {
   dataTimestamp: number;
   signatureTimestamp: number;
   expirationTimestamp: number;
+  msgGasLimit: string;
 };
 
 export type FeeDataResult = {
