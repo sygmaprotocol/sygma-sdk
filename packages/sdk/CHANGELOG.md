@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.0.4...sygma-sdk-core-v1.1.0) (2023-01-13)
+
+
+### Features
+
+* Add blocks confirmation amount param to config ([#140](https://github.com/sygmaprotocol/sygma-sdk/issues/140)) ([b3c5062](https://github.com/sygmaprotocol/sygma-sdk/commit/b3c50627f2219b43234abb4f548dbed9a77300a4))
+* Adds msgGasLimit as param when requesting fee from fee oracle service ([#136](https://github.com/sygmaprotocol/sygma-sdk/issues/136)) ([449b5fa](https://github.com/sygmaprotocol/sygma-sdk/commit/449b5fa627158dbe04d04cd298def80a7d626c1f))
+* update utility functions to accomodate permissionless and permissioned handlers ([#132](https://github.com/sygmaprotocol/sygma-sdk/issues/132)) ([e49feac](https://github.com/sygmaprotocol/sygma-sdk/commit/e49feace8a43dc8579339a0567c5124fb93f2ce6))
+
+
+### Bug Fixes
+
+* fix imports ([#135](https://github.com/sygmaprotocol/sygma-sdk/issues/135)) ([19c43e1](https://github.com/sygmaprotocol/sygma-sdk/commit/19c43e16411ef4406e8c9866d2924bfb81d1ef4e))
+
 ## [1.0.4](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.0.3...sygma-sdk-core-v1.0.4) (2022-11-07)
 
 
