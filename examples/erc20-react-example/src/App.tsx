@@ -198,14 +198,15 @@ function App(): JSX.Element {
     if (
       metaIsConnected &&
       sygmaInstance !== undefined &&
-      sygmaInstance.bridgeSetup
+      sygmaInstance.bridgeSetup &&
+      isReady
     ) {
       void handleConnect();
       void getAccountData(sygmaInstance);
       setValue("from", sygmaInstance.bridgeSetup?.chain1.domainId);
       setValue("to", sygmaInstance.bridgeSetup?.chain2.domainId);
     }
-  }, [metaIsConnected]);
+  }, [metaIsConnected, sygmaInstance, isReady]);
 
   const submit = async (values: {
     amount: string;
@@ -265,10 +266,10 @@ function App(): JSX.Element {
     if (!metaIsConnected) {
       return window.ethereum
         .request({ method: "eth_requestAccounts" })
-        .then((r) => {
-          console.log("request to unlock metamask", r);
+        .then((result) => {
+          console.log("request to unlock metamask", result);
 
-          const [addr] = r as string[];
+          const [addr] = result as string[];
           setMetaIsConnected(true);
           if (accountData) {
             accountData.address = addr;
@@ -363,7 +364,7 @@ function App(): JSX.Element {
         <>
           <form
             action=""
-            onSubmit={void handleSubmit(submit)}
+            onSubmit={(...args) => void handleSubmit(submit)(...args)}
             style={{
               display: "flex",
               flexDirection: "column",
