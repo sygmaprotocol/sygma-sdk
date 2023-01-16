@@ -5,6 +5,7 @@ import {
   ERC721MinterBurnerPauser,
   ERC721MinterBurnerPauser__factory as Erc721Factory,
 } from '@buildwithsygma/sygma-contracts';
+import { DepositEvent } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge';
 import { Erc20DetailedFactory } from './Contracts/Erc20DetailedFactory';
 import { Erc20Detailed } from './Contracts/Erc20Detailed';
 
@@ -719,7 +720,9 @@ export class Sygma implements SygmaSDK {
     );
   }
 
-  public async getDepositEventFromReceipt(depositTx: ethers.ContractReceipt): Promise<Event> {
+  public async getDepositEventFromReceipt(
+    depositTx: ethers.ContractReceipt,
+  ): Promise<DepositEvent> {
     const bridgeContract = this.bridges!.chain1!;
     const depositFilter = bridgeContract.filters.Deposit();
     const events = await bridgeContract.queryFilter(depositFilter, depositTx.blockHash);

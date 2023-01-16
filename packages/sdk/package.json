@@ -18,8 +18,7 @@
 		"lint": "eslint '{src,integration}/**/*.ts'",
 		"lint:fix": "yarn run lint --fix",
 		"run:nodes": "docker-compose -f docker-compose.yml up",
-		"clean": "rm -rf ./dist",
-		"runOracle": "ts-node ./src/fee/feeOracleScript.ts"
+		"clean": "rm -rf ./dist"
 	},
 	"keywords": [
 		"sygma",
@@ -38,7 +37,6 @@
 		"eslint-config-prettier": "8.3.0",
 		"eslint-plugin-only-warn": "1.0.3",
 		"eslint-plugin-prettier": "4.0.0",
-		"ethers": "5.6.2",
 		"hardhat": "2.8.2",
 		"jest": "27.5.1",
 		"jest-extended": "1.2.0",
@@ -52,9 +50,8 @@
 	"dependencies": {
 		"@buildwithsygma/sygma-contracts": "1.0.0",
 		"eth-crypto": "2.3.0",
-		"ganache": "^7.1.0",
 		"node-fetch": "2.6.1",
 		"react-hook-form": "^7.30.0",
-		"web3": "^1.7.3"
+		"ethers": "5.6.2"
 	}
 }
