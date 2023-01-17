@@ -80,7 +80,7 @@ export type FeeDataResult = {
 
 export type Bridges = { [chain: string]: Bridge | undefined } | undefined;
 
-export type ChainbridgeContracts = {
+export type SygmaContracts = {
   [chain: string]: { bridge: Bridge; erc20: Erc20Detailed };
 };
 
