@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@buildwithsygma/sygma-sdk-core": "link:../packages/sdk",
+    "@buildwithsygma/sygma-sdk-core": "*",
     "@buildwithsygma/sygma-contracts": "1.0.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.1.1",
@@ -21,9 +21,7 @@
     "react-scripts": "5.0.1",
     "ts-node": "^10.7.0",
     "ethers": "5.6.2",
-    "typescript": "^4.6.3",
-    "web-vitals": "^2.1.4",
-    "web3": "^1.7.3"
+    "typescript": "^4.6.3"
   },
   "scripts": {
     "start": "PORT=3001 BROWSER=none react-app-rewired start",
@@ -59,6 +57,7 @@
     "react-app-rewired": "^2.2.1",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
-    "url": "^0.11.0"
+    "url": "^0.11.0",
+    "@metamask/providers": "^10.2.1"
   }
 }
