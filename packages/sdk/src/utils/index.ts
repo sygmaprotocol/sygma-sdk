@@ -2,15 +2,15 @@ import { ERC721MinterBurnerPauser__factory } from '@buildwithsygma/sygma-contrac
 import { utils, BigNumber, providers } from 'ethers';
 import { Connector } from '../connectors';
 
-import {
-  BridgeData,
-  Bridges,
-  ChainbridgeContracts,
-  SygmaErc20Contracts,
-  SygmaProviders,
-} from '../types';
+import { BridgeData, Bridges, SygmaContracts, SygmaErc20Contracts, SygmaProviders } from '../types';
 
-export const computeBridges = (contracts: ChainbridgeContracts): Bridges =>
+/**
+ * @name computeBridges
+ * @description returns object with contracts sorted by chain
+ * @param contracts - object with contracts
+ * @returns {Bridges}
+ */
+export const computeBridges = (contracts: SygmaContracts): Bridges =>
   Object.keys(contracts).reduce((bridges, chain) => {
     const { bridge } = contracts[chain];
     bridges = {
@@ -21,7 +21,13 @@ export const computeBridges = (contracts: ChainbridgeContracts): Bridges =>
     return bridges;
   }, {});
 
-export const computeERC20Contracts = (contracts: ChainbridgeContracts): SygmaErc20Contracts =>
+/**
+ * @name computeERC20Contracts
+ * @description returns object with ERC20 contracts sorted by chain
+ * @param contracts - object with contracts
+ * @returns {SygmaErc20Contracts}
+ */
+export const computeERC20Contracts = (contracts: SygmaContracts): SygmaErc20Contracts =>
   Object.keys(contracts).reduce((erc20Contracts, chain) => {
     const { erc20 } = contracts[chain];
     erc20Contracts = {
@@ -32,6 +38,13 @@ export const computeERC20Contracts = (contracts: ChainbridgeContracts): SygmaErc
     return erc20Contracts;
   }, {});
 
+/**
+ * @name computeProvidersAndSignersRPC
+ * @description returns object with RPC provider sorted by chain1 and chain2 descriptors
+ * @param bridgeSetup - bridge data defined to use the SDK
+ * @param address - account address
+ * @returns {SygmaProviders}
+ */
 export const computeProvidersAndSignersRPC = (
   bridgeSetup: BridgeData,
   address?: string,
@@ -42,6 +55,13 @@ export const computeProvidersAndSignersRPC = (
   };
 };
 
+/**
+ * @name computeProvidersAndSignersWeb3
+ * @description returns object with Web3 providers sorted by chain1 and chain2 descriptors
+ * @param bridgeSetup - bridge setup to use the SDK
+ * @param web3providerInstance - web3 provider instance
+ * @returns {SygmaProviders}
+ */
 export const computeProvidersAndSignersWeb3 = (
   bridgeSetup: BridgeData,
   web3providerInstance: providers.ExternalProvider,
@@ -52,14 +72,33 @@ export const computeProvidersAndSignersWeb3 = (
   };
 };
 
+/**
+ * @name setConnectorRPC
+ * @description connects to RPC node
+ * @param rpcUrl
+ * @param address
+ * @returns {Connector}
+ */
 export const setConnectorRPC = (rpcUrl: string, address?: string): Connector => {
   return Connector.initRPC(rpcUrl, address);
 };
 
+/**
+ * @name setConnectorWeb3
+ * @description connects to web3 RCP
+ * @param web3ProviderInstance
+ * @returns {Connector}
+ */
 export const setConnectorWeb3 = (web3ProviderInstance: providers.ExternalProvider): Connector => {
   return Connector.initFromWeb3(web3ProviderInstance);
 };
 
+/**
+ * @name processAmountForERC20Transfer
+ * @description prepares the amount of data to tranfer for ERC20 token
+ * @param amount
+ * @returns {string}
+ */
 export const processAmountForERC20Transfer = (amount: string): string => {
   const parsedAmountToERC20Decimals = utils.parseUnits(amount.toString(), 18);
 
@@ -72,6 +111,12 @@ export const processAmountForERC20Transfer = (amount: string): string => {
   return amountTransformedToData;
 };
 
+/**
+ * @name processLenRecipientAddress
+ * @description returns hex data of the recipient address
+ * @param recipientAddress
+ * @returns {string}
+ */
 export const processLenRecipientAddress = (recipientAddress: string): string => {
   const hexilifiedLenOfRecipientAddress = utils.hexlify((recipientAddress.length - 2) / 2);
 
@@ -80,6 +125,12 @@ export const processLenRecipientAddress = (recipientAddress: string): string => 
   return toHexString;
 };
 
+/**
+ * @name listTokensOfOwner
+ * @description list the tokens of the account
+ * @param {Object}
+ * @returns {Promise<[string]>}
+ */
 export async function listTokensOfOwner({
   token: tokenAddress,
   account,
@@ -115,6 +166,13 @@ export async function listTokensOfOwner({
   return [...owned] as [string];
 }
 
+/**
+ * @name addressEqual
+ * @description check if address are the samep
+ * @param a - address
+ * @param b - address
+ * @returns {boolena}
+ */
 function addressEqual(a: string, b: string): boolean {
   return a.toLowerCase() === b.toLowerCase();
 }

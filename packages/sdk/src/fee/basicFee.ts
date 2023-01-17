@@ -3,6 +3,12 @@ import { ethers } from 'ethers';
 import { FeeDataResult } from '../types';
 import { createERCDepositData } from '../utils/helpers';
 
+/**
+ * @name calculateBasicfee
+ * @description calculates and returns the feeData object after query the FeeOracle service
+ * @param {Object} - Object to get the fee data
+ * @returns {Promise<FeeDataResult | Error>}
+ */
 export const calculateBasicfee = async ({
   basicFeeHandlerAddress,
   provider,

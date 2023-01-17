@@ -11,6 +11,15 @@ type OracleResponse = {
   response?: OracleResource;
 };
 
+/**
+ * @name createOracleFeeData
+ * @description creates the fee data to send
+ * @param oracleResponse - OracleResource object
+ * @param amount - amount to send
+ * @param tokenResource - the resource Id of the token
+ * @param oraclePrivateKey - private key of the oracle
+ * @returns {string} - hex of the fee data constructed
+ */
 export const createOracleFeeData = (
   oracleResponse: OracleResource,
   amount: number,
@@ -65,6 +74,12 @@ export const createOracleFeeData = (
   }
 };
 
+/**
+ * @name calculatedFeeData
+ * @description calculates the fee data after query the FeeOracle service
+ * @param {Object} - object provided to calculate the fee data after query oracle service
+ * @returns {Promise<FeeDataResult | undefined>}
+ */
 export const calculateFeeData = async ({
   provider,
   sender,
@@ -131,6 +146,12 @@ export const calculateFeeData = async ({
   return result;
 };
 
+/**
+ * @name requestFeeFromFeeOracle
+ * @description query the FeeOracle service to get the fee
+ * @param {Object}
+ * @returns {Promise<OracleResponse | undefined>}
+ */
 export const requestFeeFromFeeOracle = async ({
   feeOracleBaseUrl,
   fromDomainID,
