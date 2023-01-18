@@ -1,4 +1,4 @@
-import { BigNumber, ethers, providers } from 'ethers';
+import { ethers, providers } from 'ethers';
 import { Provider, Signer } from '../types';
 
 /**

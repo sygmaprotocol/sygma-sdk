@@ -25,8 +25,8 @@ export const addPadding = (covertThis: string | number, padding: number): string
 /**
  * @name createResourceID
  * @description creates a resource id based on the contract address
- * @param contractAddress 
- * @param domainID 
+ * @param contractAddress
+ * @param domainID
  * @returns {string}
  */
 export const createResourceID = (contractAddress: string, domainID: number): string => {
@@ -37,8 +37,8 @@ export const createResourceID = (contractAddress: string, domainID: number): str
  * @name createERCDepositData
  * @description creates the deposit data to use on bridge.deposit method interface
  * @param tokenAmountOrID - number | string | BigNumber of the amount of token or Id fo the token
- * @param lenRecipientAddress 
- * @param recipientAddress 
+ * @param lenRecipientAddress
+ * @param recipientAddress
  * @returns {string}
  */
 export const createERCDepositData = (
@@ -57,7 +57,7 @@ export const createERCDepositData = (
 /**
  * @name createPermissionedGenericDepositData
  * @description creates data for permissioned generic handler
- * @param hexMetaData 
+ * @param hexMetaData
  * @returns {string}
  */
 export const createPermissionedGenericDepositData = (hexMetaData: string): string => {
