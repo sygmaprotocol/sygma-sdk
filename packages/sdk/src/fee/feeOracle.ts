@@ -67,10 +67,10 @@ export const createOracleFeeData = (
     // temprorary signature generated with sign by private key
     const messageHash = EthCrypto.hash.keccak256([{ type: 'bytes', value: oracleMessage }]);
     signature = EthCrypto.sign(oraclePrivateKey, messageHash);
-    return oracleMessage + signature.substr(2) + toHex(amount, 32).substr(2);
+    return oracleMessage + signature.substring(2) + toHex(amount, 32).substring(2);
   } else {
     signature = oracleResponse.signature;
-    return oracleMessage + signature + toHex(0, 32).substr(2);
+    return oracleMessage + signature + toHex(0, 32).substring(2);
   }
 };
 
