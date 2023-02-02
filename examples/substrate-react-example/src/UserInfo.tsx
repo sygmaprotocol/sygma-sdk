@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { useEffect, useState } from "react";
 import { BN, formatBalance } from "@polkadot/util";
 import { useSubstrateState, useSubstrate } from "./substrate-lib";
@@ -40,7 +39,6 @@ function Main(props: any): JSX.Element {
 
   // Set the initial address
   useEffect(() => {
-    // `setCurrentAccount()` is called only when currentAccount is null (uninitialized)
     !currentAccount &&
       initialAddress.length > 0 &&
       setCurrentAccount(keyring.getPair(initialAddress));
