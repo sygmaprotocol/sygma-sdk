@@ -10,8 +10,17 @@ import { SubstrateConfigType } from '../../types';
 
 const registry = new TypeRegistry();
 
-///
-// Connecting to the Substrate node
+/**
+ * Connects to a Substrate node using WebSockets API by creating a new WsProvider instance with the given socket address.
+ * @param {Object} state - An object that contains the state of the API, including the connection status, socket address, and JSON-RPC interface.
+ * @param {Object} state.apiState - The connection status of the API.
+ * @param {string} state.socket - The WebSockets API address.
+ * @param {Object} state.jsonrpc - The JSON-RPC interface of the API.
+ * @param {Object} dispatch - A React Dispatch function that dispatches actions to update the API state.
+ * @param {string} dispatch.type - The type of action to dispatch.
+ * @param {any} dispatch.payload - The payload of the action.
+ * @returns {ApiPromise} - An instance of the ApiPromise class.
+ */
 export const substrateSocketConnect = (
   state: {
     apiState: string;
@@ -24,7 +33,7 @@ export const substrateSocketConnect = (
     type: string;
     payload: any;
   }>,
-): void => {
+): ApiPromise | undefined => {
   const { apiState, socket, jsonrpc } = state;
   // We only want this function to be performed once
   if (apiState) return;
@@ -45,6 +54,7 @@ export const substrateSocketConnect = (
   _api.on('ready', () => dispatch({ type: 'CONNECT_SUCCESS', payload: undefined }));
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   _api.on('error', err => dispatch({ type: 'CONNECT_ERROR', payload: err }));
+  return _api;
 };
 
 export const retrieveChainInfo = async (
@@ -65,42 +75,39 @@ export const retrieveChainInfo = async (
     systemChainType,
   };
 };
+
 ///
 // Loading accounts from dev and polkadot-js extension
-export const loadAccounts = (
+export const loadAccounts = async (
   config: SubstrateConfigType,
   state: { api: ApiPromise },
   dispatch: React.Dispatch<{
     type: string;
     payload: any;
   }>,
-): void => {
+): Promise<void> => {
   const { api } = state;
   dispatch({ type: 'LOAD_KEYRING', payload: undefined });
+  try {
+    await web3Enable(config.APP_NAME);
+    let allAccounts = await web3Accounts();
 
-  const asyncLoadAccounts = async (): Promise<void> => {
-    try {
-      await web3Enable(config.APP_NAME);
-      let allAccounts = await web3Accounts();
+    allAccounts = allAccounts.map(({ address, meta }) => ({
+      address,
+      meta: { ...meta, name: `${meta.name ?? 'no name'} (${meta.source})` },
+    }));
 
-      allAccounts = allAccounts.map(({ address, meta }) => ({
-        address,
-        meta: { ...meta, name: `${meta.name ?? 'no name'} (${meta.source})` },
-      }));
+    // Logics to check if the connecting chain is a dev chain, coming from polkadot-js Apps
+    // ref: https://github.com/polkadot-js/apps/blob/15b8004b2791eced0dde425d5dc7231a5f86c682/packages/react-api/src/Api.tsx?_pjax=div%5Bitemtype%3D%22http%3A%2F%2Fschema.org%2FSoftwareSourceCode%22%5D%20%3E%20main#L101-L110
+    const { systemChain, systemChainType } = await retrieveChainInfo(api);
+    const isDevelopment =
+      systemChainType.isDevelopment || systemChainType.isLocal || isTestChain(systemChain);
 
-      // Logics to check if the connecting chain is a dev chain, coming from polkadot-js Apps
-      // ref: https://github.com/polkadot-js/apps/blob/15b8004b2791eced0dde425d5dc7231a5f86c682/packages/react-api/src/Api.tsx?_pjax=div%5Bitemtype%3D%22http%3A%2F%2Fschema.org%2FSoftwareSourceCode%22%5D%20%3E%20main#L101-L110
-      const { systemChain, systemChainType } = await retrieveChainInfo(api);
-      const isDevelopment =
-        systemChainType.isDevelopment || systemChainType.isLocal || isTestChain(systemChain);
+    Keyring.loadAll({ isDevelopment }, allAccounts);
 
-      Keyring.loadAll({ isDevelopment }, allAccounts);
-
-      dispatch({ type: 'SET_KEYRING', payload: Keyring });
-    } catch (e) {
-      console.error(e);
-      dispatch({ type: 'KEYRING_ERROR', payload: undefined });
-    }
-  };
-  void asyncLoadAccounts();
+    dispatch({ type: 'SET_KEYRING', payload: Keyring });
+  } catch (e) {
+    console.error(e);
+    dispatch({ type: 'KEYRING_ERROR', payload: undefined });
+  }
 };
