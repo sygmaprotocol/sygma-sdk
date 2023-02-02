@@ -2,9 +2,9 @@
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
 		"composite": true,
-		"target": "ES2017",
+		"target": "ES2022",
 		"outDir": "dist",
-		"module": "commonjs",
+		"module": "ES2022",
 		"baseUrl": "./src",
 		"allowJs": true,
 		"declaration": true,
@@ -22,7 +22,12 @@
 		"lib": [
 			"es2021",
 			"dom"
-		]
+		],
+		"types": ["jest", "node", "@types/jest"],
+	},
+	"ts-node": {
+		"esm": true,
+		"experimentalSpecifierResolution": "node"
 	},
 	"include": [
 		"src",
