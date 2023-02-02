@@ -1,19 +1,9 @@
-/* eslint-disable */
 import {
-  useState,
-  useEffect,
   createRef,
   JSXElementConstructor,
   ReactElement,
   ReactFragment,
 } from "react";
-import {
-  web3Accounts,
-  web3Enable,
-  web3FromAddress,
-} from "@polkadot/extension-dapp";
-import { ApiPromise, WsProvider, Keyring } from "@polkadot/api";
-import reactLogo from "./assets/react.svg";
 import "./App.css";
 
 import { SubstrateContextProvider, useSubstrateState } from "./substrate-lib";
