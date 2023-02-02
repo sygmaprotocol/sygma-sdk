@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import React, { useReducer, useContext, useEffect } from "react";
 import PropTypes from "prop-types";
@@ -10,9 +9,9 @@ import { substrateSocketConnect, loadAccounts} from "@buildwithsygma/sygma-sdk-c
 import config from "../config";
 
 const connectedSocket = config.PROVIDER_SOCKET;
-///
-// Initial state for `useReducer`
-
+/**
+ * Initial state for `useReducer`
+ */
 const initialState = {
   // These are the states
   socket: connectedSocket,
@@ -27,9 +26,10 @@ const initialState = {
 
 const registry = new TypeRegistry();
 
-///
-// Reducer function for `useReducer`
-
+/**
+ *
+ * Reducer function for `useReducer`
+ */
 const reducer = (state: any, action: { type: any; payload: any; }) => {
   switch (action.type) {
     case "CONNECT_INIT":
@@ -86,7 +86,7 @@ const SubstrateContextProvider = (props: { [x: string]: any; }) => {
   );
 };
 
-// prop typechecking
+// TODO: replace by proper type
 SubstrateContextProvider.propTypes = {
   socket: PropTypes.string,
 };
