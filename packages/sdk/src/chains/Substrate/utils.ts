@@ -48,12 +48,12 @@ export const substrateSocketConnect = (
   _api.on('connected', () => {
     dispatch({ type: 'CONNECT', payload: _api });
     // `ready` event is not emitted upon reconnection and is checked explicitly here.
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    void _api.isReady.then(_api => dispatch({ type: 'CONNECT_SUCCESS', payload: undefined }));
+    void _api.isReady.then(() => dispatch({ type: 'CONNECT_SUCCESS', payload: undefined }));
   });
   _api.on('ready', () => dispatch({ type: 'CONNECT_SUCCESS', payload: undefined }));
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  _api.on('error', err => dispatch({ type: 'CONNECT_ERROR', payload: err }));
+
+  _api.on('error', (err: Event) => dispatch({ type: 'CONNECT_ERROR', payload: err }));
+
   return _api;
 };
 
