@@ -101,14 +101,8 @@ export const setConnectorWeb3 = (web3ProviderInstance: providers.ExternalProvide
  */
 export const processAmountForERC20Transfer = (amount: string): string => {
   const parsedAmountToERC20Decimals = utils.parseUnits(amount.toString(), 18);
-
-  const toBigNumber = BigNumber.from(parsedAmountToERC20Decimals);
-
-  const toHexString = toBigNumber.toHexString();
-
-  const amountTransformedToData = utils.hexZeroPad(toHexString, 32).substr(2);
-
-  return amountTransformedToData;
+  const hexString = BigNumber.from(parsedAmountToERC20Decimals).toHexString();
+  return utils.hexZeroPad(hexString, 32).substring(2);
 };
 
 /**
@@ -119,10 +113,7 @@ export const processAmountForERC20Transfer = (amount: string): string => {
  */
 export const processLenRecipientAddress = (recipientAddress: string): string => {
   const hexilifiedLenOfRecipientAddress = utils.hexlify((recipientAddress.length - 2) / 2);
-
-  const toHexString = utils.hexZeroPad(hexilifiedLenOfRecipientAddress, 32).substr(2);
-
-  return toHexString;
+  return utils.hexZeroPad(hexilifiedLenOfRecipientAddress, 32).substring(2);
 };
 
 /**

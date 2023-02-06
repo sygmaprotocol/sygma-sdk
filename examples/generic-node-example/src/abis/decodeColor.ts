@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 
-const decodeColor = (color: string) => `#${ethers.utils.hexStripZeros(color).substr(2).toUpperCase()}`
+const decodeColor = (color: string): string =>
+  `#${ethers.utils.hexStripZeros(color).substring(2).toUpperCase()}`;
 
-export { decodeColor }
+export { decodeColor };

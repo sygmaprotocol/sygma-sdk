@@ -64,7 +64,7 @@ function App() {
   const handleClick = async () => {
     const first = state.colorSelected;
     const nodeElement = document.getElementById(nodeId!)
-    const formatedHex = first!.substr(1);
+    const formatedHex = first!.substring(1);
     const depositFunctionSignature = "0x103b854b";
     const colorsResouceId =
       "0x0000000000000000000000000000000000000000000000000000000000000500";
@@ -74,10 +74,10 @@ function App() {
     );
     const depositDataFee = `0x${
       // @ts-ignore-next-line
-      ethers.utils.hexZeroPad(100, 32).substr(2) +
+      ethers.utils.hexZeroPad(100, 32).substring(2) +
       // @ts-ignore-next-line
-      ethers.utils.hexZeroPad(bridgeAdmin.length, 32).substr(2) +
-      state.accountData!.substr(2)
+      ethers.utils.hexZeroPad(bridgeAdmin.length, 32).substring(2) +
+      state.accountData!.substring(2)
     }`;
     console.log(
       "🚀 ~ file: App.tsx ~ line 127 ~ handleClick ~ depositDataFee",
