@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.1](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.1.0...sygma-sdk-core-v1.1.1) (2023-02-06)
+
+
+### Bug Fixes
+
+* Check/update dependencies for packages ([#138](https://github.com/sygmaprotocol/sygma-sdk/issues/138)) ([b4875e8](https://github.com/sygmaprotocol/sygma-sdk/commit/b4875e810fdd9bd841c0c1add9858c00616ffc47))
+* linter issues ([#149](https://github.com/sygmaprotocol/sygma-sdk/issues/149)) ([20c537d](https://github.com/sygmaprotocol/sygma-sdk/commit/20c537d983dbdba270264a7b551f7719b3cd0f1d))
+* Remove linked dependency from examples ([#139](https://github.com/sygmaprotocol/sygma-sdk/issues/139)) ([430f1b5](https://github.com/sygmaprotocol/sygma-sdk/commit/430f1b5645af654a2e750fc045ae54f2a064859c))
+* usage of deprecated `substr` ([#157](https://github.com/sygmaprotocol/sygma-sdk/issues/157)) ([94a67c9](https://github.com/sygmaprotocol/sygma-sdk/commit/94a67c97d4fdfc3bcfd6a7856b4754263d810473))
+
 ## [1.1.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.0.4...sygma-sdk-core-v1.1.0) (2023-01-13)
 
 
