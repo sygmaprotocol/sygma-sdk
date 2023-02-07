@@ -1,6 +1,26 @@
 /* eslint-disable */
+import { TypeRegistry } from '@polkadot/types/create';
 
 import { substrateSocketConnect } from '../utils';
+
+const registry = new TypeRegistry();
+
+jest.mock('@polkadot/extension-dapp',  () => ({
+  web3Enable: jest.fn().mockResolvedValue(true),
+  web3Accounts: jest.fn().mockResolvedValue([
+    {
+      address: '5DhjtK8fwZVc1Q2w4LUKxAAUyH7nzhzXUv89B1a6FdYynWvN',
+      meta: { genesisHash: '', name: 'Caterpillar', source: 'polkadot-js' },
+      type: 'sr25519',
+    },
+    {
+      address: '5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt',
+      meta: { genesisHash: '', name: 'SygmaTest', source: 'polkadot-js' },
+      type: 'sr25519',
+    },
+  ])
+}))
+
 
 const mockApiPromise = {
   on: (arg: any, fn: () => any) => fn(),
@@ -61,4 +81,7 @@ describe('utils', () => {
       expect(dispatch).toHaveBeenLastCalledWith({ type: 'CONNECT_ERROR'});
     });
   });
+
+
+
 });

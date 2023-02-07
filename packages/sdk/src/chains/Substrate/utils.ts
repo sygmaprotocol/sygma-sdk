@@ -1,10 +1,15 @@
 import { DefinitionRpcExt } from '@polkadot/types/types';
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
+import { web3Accounts, web3Enable, web3FromAddress } from '@polkadot/extension-dapp';
 import { keyring as Keyring } from '@polkadot/ui-keyring';
-import { isTestChain } from '@polkadot/util';
+import { isTestChain, BN } from '@polkadot/util';
 import { TypeRegistry } from '@polkadot/types/create';
 import { ChainType } from '@polkadot/types/interfaces';
+import type { Option, u128 } from '@polkadot/types-codec';
+import type { AccountData, AssetBalance } from '@polkadot/types/interfaces';
+
+import type { Codec } from '@polkadot/types-codec/types';
+import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 
 import { SubstrateConfigType } from '../../types';
 
@@ -40,7 +45,7 @@ export const substrateSocketConnect = (
 
   dispatch({ type: 'CONNECT_INIT', payload: undefined });
 
-  console.log(`Connected socket: ${socket}`);
+  // console.log(`Connected socket: ${socket}`);
   const provider = new WsProvider(socket);
   const _api = new ApiPromise({ provider, rpc: jsonrpc });
 
@@ -57,6 +62,12 @@ export const substrateSocketConnect = (
   return _api;
 };
 
+/**
+ * Retrieve the system chain and chain type from the API.
+ *
+ * @param {ApiPromise} api - The API instance.
+ * @returns {Promise<{systemChain: string; systemChainType: ChainType}>} An object with the system chain and chain type.
+ */
 export const retrieveChainInfo = async (
   api: ApiPromise,
 ): Promise<{
@@ -77,7 +88,16 @@ export const retrieveChainInfo = async (
 };
 
 ///
-// Loading accounts from dev and polkadot-js extension
+// Loading accounts from dev acrnd polkadot-js extension
+
+/**
+ * Loads all accounts from web3 and sets them in the Keyring.
+ *
+ * @param {SubstrateConfigType} config - Substrate sygmabridge config.
+ * @param {Object} state - The state object containing the api.
+ * @param {Function} dispatch - The dispatch function to update the store.
+ * @returns {Promise<void>} Promise that resolves when accounts are loaded.
+ */
 export const loadAccounts = async (
   config: SubstrateConfigType,
   state: { api: ApiPromise },
@@ -91,18 +111,18 @@ export const loadAccounts = async (
   try {
     await web3Enable(config.APP_NAME);
     let allAccounts = await web3Accounts();
-
     allAccounts = allAccounts.map(({ address, meta }) => ({
       address,
       meta: { ...meta, name: `${meta.name ?? 'no name'} (${meta.source})` },
     }));
 
-    // Logics to check if the connecting chain is a dev chain, coming from polkadot-js Apps
-    // ref: https://github.com/polkadot-js/apps/blob/15b8004b2791eced0dde425d5dc7231a5f86c682/packages/react-api/src/Api.tsx?_pjax=div%5Bitemtype%3D%22http%3A%2F%2Fschema.org%2FSoftwareSourceCode%22%5D%20%3E%20main#L101-L110
+    /**
+     * Logics to check if the connecting chain is a dev chain, coming from polkadot-js Apps
+     * @link https://github.com/polkadot-js/apps/blob/15b8004b2791eced0dde425d5dc7231a5f86c682/packages/react-api/src/Api.tsx?_pjax=div%5Bitemtype%3D%22http%3A%2F%2Fschema.org%2FSoftwareSourceCode%22%5D%20%3E%20main#L101-L110
+     */
     const { systemChain, systemChainType } = await retrieveChainInfo(api);
     const isDevelopment =
       systemChainType.isDevelopment || systemChainType.isLocal || isTestChain(systemChain);
-
     Keyring.loadAll({ isDevelopment }, allAccounts);
 
     dispatch({ type: 'SET_KEYRING', payload: Keyring });
@@ -110,4 +130,99 @@ export const loadAccounts = async (
     console.error(e);
     dispatch({ type: 'KEYRING_ERROR', payload: undefined });
   }
+};
+
+/**
+ * Retrieves the basic fee for a given domain and asset.
+ *
+ * @param {ApiPromise} api - The Substrate API instance.
+ * @param {number} domainId - The ID of the domain.
+ * @param {Object} xcmMultiAssetId - The XCM MultiAsset ID of the asset.
+ * @returns {Promise<Option<u128>>} A promise that resolves to an Option containing the basic fee as u128, or None if not found.
+ */
+export const getBasicFee = async (
+  api: ApiPromise,
+  domainId: number,
+  xcmMultiAssetId: Object,
+): Promise<Option<u128>> => {
+  const feeRes = (await api.query.sygmaBasicFeeHandler.assetFees([
+    domainId,
+    xcmMultiAssetId,
+  ])) as unknown as Option<u128>;
+  return feeRes;
+};
+
+/**
+ * Retrieves balance value in native tokens of the network
+ *
+ * @param {ApiPromise} api - An ApiPromise instance.
+ * @param {InjectedAccountWithMeta} currentAccount - The current account.
+ * @returns {Promise<AccountData>} A promise that resolves to a AccountData.
+ */
+export const getNativeTokenBalance = async (
+  api: ApiPromise,
+  currentAccount: InjectedAccountWithMeta,
+): Promise<AccountData> => {
+  const balance: unknown = await api.query.system.account(currentAccount.address);
+  return balance as AccountData;
+};
+
+export const getAssetBalance = async (
+  api: ApiPromise,
+  assetId: number,
+  currentAccount: InjectedAccountWithMeta,
+): Promise<AssetBalance> => {
+  const assetRes = await api.query.assets.account(assetId, currentAccount.address);
+  return assetRes as AssetBalance;
+};
+
+export const deposit = async (
+  config: SubstrateConfigType,
+  api: ApiPromise,
+  currentAccount: InjectedAccountWithMeta,
+  {
+    amount,
+    domainId,
+    address,
+  }: {
+    amount: BN;
+    domainId: string;
+    address: string;
+  },
+): Promise<void> => {
+  console.log(amount.toNumber().toString());
+  const xsmMultiAssetId = {
+    concrete: {
+      parents: 1,
+      interior: {
+        x3: [{ parachain: 2004 }, { generalKey: '0x7379676d61' }, { generalKey: '0x75736463' }],
+      },
+    },
+  };
+  const xcmV1MultiassetFungibility = { fungible: amount.toNumber().toString() };
+
+  const destIdMultilocation = {
+    parents: 0,
+    interior: {
+      x2: [{ generalKey: address }, { generalIndex: domainId }],
+    },
+  };
+
+  // (this needs to be called first, before other requests)
+  const _allInjected = await web3Enable(config.APP_NAME);
+  console.log(currentAccount);
+  // finds an injector for an address
+  const injector = await web3FromAddress(currentAccount.address);
+  const unsub = await api.tx.sygmaBridge
+    .deposit({ id: xsmMultiAssetId, fun: xcmV1MultiassetFungibility }, destIdMultilocation)
+    .signAndSend(currentAccount.address, { signer: injector.signer }, result => {
+      console.log(`Current status is ${result.status.toString()}`);
+
+      if (result.status.isInBlock) {
+        console.log(`Transaction included at blockHash ${result.status.asInBlock.toString()}`);
+      } else if (result.status.isFinalized) {
+        console.log(`Transaction finalized at blockHash ${result.status.asFinalized.toString()}`);
+        unsub();
+      }
+    });
 };
