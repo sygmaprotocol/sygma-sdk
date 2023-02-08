@@ -1,5 +1,19 @@
+export type XcmMultiAssetIdType = {
+  concrete: {
+    parents: number;
+    interior: {
+      x3: Array<{ parachain: number } | { generalKey: string }>;
+    };
+  };
+};
+export type SubstrateConfigAssetType = {
+  assetName: string;
+  assetId: number;
+  xsmMultiAssetId: XcmMultiAssetIdType;
+};
 export type SubstrateConfigType = {
-  APP_NAME: string;
+  appName: string;
   CUSTOM_RPC_METHODS: {};
-  PROVIDER_SOCKET: string;
+  provider_socket: string;
+  assets: SubstrateConfigAssetType[];
 };

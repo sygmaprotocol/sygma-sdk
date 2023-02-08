@@ -9,6 +9,8 @@ import "./App.css";
 import { SubstrateContextProvider, useSubstrateState } from "./substrate-lib";
 
 import UserInfo from "./UserInfo";
+import Form from "./Form";
+import TransferStatus from "./TransferStatus"
 
 function Main() {
   const { apiState, apiError, keyringState } = useSubstrateState();
@@ -47,6 +49,9 @@ function Main() {
         </h2>
         READY
         <UserInfo />
+        <Form />
+        <br />
+        <TransferStatus />
       </div>
     </div>
   );

@@ -1,6 +1,10 @@
+// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import { BN, formatBalance } from "@polkadot/util";
 import { useSubstrateState, useSubstrate } from "./substrate-lib";
+// type import for TypeScript
+import { AccountData } from '@polkadot/types/interfaces';
+// import {getBasicFee} from "@buildwithsygma/sygma-sdk-core";
 
 type LocalData = {
   balance: BN;
@@ -14,14 +18,11 @@ type LocalData = {
 const acctAddr = (acct) => (acct ? acct.address : "");
 
 function Main(props: any): JSX.Element {
-  const [accountData, setAccountData] = useState<LocalData | undefined>(
-    undefined
-  );
   const { api } = useSubstrateState();
 
   const {
     setCurrentAccount,
-    state: { keyring, currentAccount },
+    state: { keyring, currentAccount, currentAccountData, selectedAssetBalance, selectedAssetFee },
   } = useSubstrate();
 
   // Get the list of accounts we possess the private key for
@@ -44,56 +45,57 @@ function Main(props: any): JSX.Element {
       setCurrentAccount(keyring.getPair(initialAddress));
   }, [currentAccount, setCurrentAccount, keyring, initialAddress]);
 
-  useEffect(() => {
-    if (currentAccount) {
-      const getMetadata = async () => {
-        try {
-          const assetRes = await api.query.assets.account(
-            2000,
-            currentAccount.address
-          );
-          const xsmMultiAssetId = {
-            concrete: {
-              parents: 1,
-              interior: {
-                x3: [
-                  { parachain: 2004 },
-                  { generalKey: "0x7379676d61" },
-                  { generalKey: "0x75736463" },
-                ],
-              },
-            },
-          };
+  // useEffect(() => {
+  //   if (currentAccount) {
+  //     const getMetadata = async () => {
+  //       try {
+  //         const assetRes = await api.query.assets.account(
+  //           2000,
+  //           currentAccount.address
+  //         );
+  //         console.log("🚀 ~ file: UserInfo.tsx:58 ~ getMetadata ~ assetRes", assetRes)
+  //         const xsmMultiAssetId = {
+  //           concrete: {
+  //             parents: 1,
+  //             interior: {
+  //               x3: [
+  //                 { parachain: 2004 },
+  //                 { generalKey: "0x7379676d61" },
+  //                 { generalKey: "0x0" },
+  //               ],
+  //             },
+  //           },
+  //         };
 
-          const feeRes = await api.query.sygmaBasicFeeHandler.assetFees([
-            1, // Destination DomainID
-            xsmMultiAssetId
-          ]);
+  //         const feeRes = await api.query.sygmaBasicFeeHandler.assetFees([
+  //           1, // Destination DomainID
+  //           xsmMultiAssetId
+  //         ]);
 
-          const chainDecimals = api.registry.chainDecimals[0];
-          const balance = await api.query.system.account(
-            currentAccount.address
-          );
+  //         const chainDecimals = api.registry.chainDecimals[0];
+  //         const balance: AccountData = await api.query.system.account(
+  //           currentAccount.address
+  //         );
 
-          setAccountData({
-            balance: balance.data.free,
-            accountName: currentAccount.meta.name,
-            address: currentAccount.address ?? "",
-            balanceOfTokens: assetRes.value.balance,
-            basicFee: feeRes.value,
-            chainDecimals: chainDecimals,
-          });
-        } catch (e) {
-          console.error(e);
-        }
-      };
-      getMetadata();
-    }
-  }, [api.rpc.state, currentAccount]);
+  //         setAccountData({
+  //           balance: balance.data.free,
+  //           accountName: currentAccount.meta.name,
+  //           address: currentAccount.address ?? "",
+  //           balanceOfTokens: assetRes.value.balance,
+  //           basicFee: feeRes.value,
+  //           chainDecimals: chainDecimals,
+  //         });
+  //       } catch (e) {
+  //         console.error(e);
+  //       }
+  //     };
+  //     getMetadata();
+  //   }
+  // }, [api.rpc.state, currentAccount]);
 
   return (
     <div>
-      {accountData !== undefined && (
+      {currentAccount && api && (
         <div
           style={{
             display: "flex",
@@ -103,22 +105,22 @@ function Main(props: any): JSX.Element {
         >
           <h3>Account data</h3>
           <p>
-            Name: <span>{accountData.accountName}</span>
+            Name: <span>{currentAccount.meta.name}</span>
             <br />
-            Address: <span>{accountData.address}</span>
+            Address: <span>{currentAccount.address}</span>
             <br />
             NATIVE TOKENS:{" "}
             <span>
-              {formatBalance(accountData.balance, {
-                decimals: accountData.chainDecimals,
+              {currentAccountData && formatBalance(currentAccountData.data.free, {
+                decimals: api.registry.chainDecimals[0],
                 withSiFull: true,
               })}
             </span>
             <br />
-            Balance of tokens:{" "}
+            Balance of tokens(assets):{" "}
             <span>
-              {formatBalance(accountData.balanceOfTokens, {
-                decimals: accountData.chainDecimals,
+              {selectedAssetBalance && formatBalance(selectedAssetBalance.unwrapOrDefault(0).balance, {
+                decimals: api.registry.chainDecimals[0],
                 withSi: true,
                 withUnit: "USDC",
               })}
@@ -126,9 +128,10 @@ function Main(props: any): JSX.Element {
             <br />
             Basic fee:{" "}
             <span>
-              {!accountData.basicFee.isEmpty ? formatBalance(accountData.basicFee, {
-                decimals: accountData.chainDecimals,
-                withSi: true
+              {!selectedAssetFee.isEmpty ? formatBalance(selectedAssetFee.unwrap(), {
+                decimals: api.registry.chainDecimals[0],
+                withSi: true,
+                withUnit: "",
               }) : "None"}
             </span>
           </p>

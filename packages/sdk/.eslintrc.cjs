@@ -1,5 +1,5 @@
 module.exports = {
-  extends: "../../.eslintrc.cjs",
+  extends: '../../.eslintrc.cjs',
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
@@ -9,4 +9,5 @@ module.exports = {
     // project: 'tsconfig.json',
     tsconfigRootDir: __dirname,
   },
-}
+  ignorePatterns: ['*.test.ts', '**/__test__/*.ts'],
+};

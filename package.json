@@ -3,6 +3,7 @@
   "description": "Sygma SDK",
   "main": "index.js",
   "private": true,
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/sygmaprotocol/sygma-sdk"

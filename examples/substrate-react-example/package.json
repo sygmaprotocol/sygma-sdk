@@ -6,25 +6,20 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate:defs": "ts-node --skip-project node_modules/.bin/polkadot-types-from-defs --package sample-polkadotjs-typegen/interfaces --input ./src/interfaces --endpoint ws://127.0.0.1:9944",
+    "generate:meta": "ts-node --skip-project node_modules/.bin/polkadot-types-from-chain --package sample-polkadotjs-typegen/interfaces --endpoint ws://127.0.0.1:9944 --output ./src/interfaces",
+    "lint": "tsc  -p ./tsconfig.json --noEmit --pretty"
   },
   "dependencies": {
     "@buildwithsygma/sygma-sdk-core": "*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "@polkadot/api": "^9.9.1",
-    "@polkadot/api-augment": "^9.9.1",
-    "@polkadot/keyring": "^10.1.13",
-    "@polkadot/rpc-provider": "^9.9.1",
-    "@polkadot/util": "^10.1.13",
-    "@polkadot/util-crypto": "^10.1.13",
-    "@polkadot/extension-dapp": "^0.44.8",
-    "@polkadot/ui-keyring": "^2.10.1",
     "bn.js": "^5.2.1",
     "dotenv": "^16.0.3"
   },
   "devDependencies": {
-    "@polkadot/types": "^9.9.1",
     "@polkadot/typegen": "^9.12.1",
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.0.9",

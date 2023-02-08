@@ -14,7 +14,7 @@
     "test": "jest --watchAll --detectOpenHandles --silent",
     "test:unit": "jest --detectOpenHandles",
     "testOracle": "jest --watchAll --testPathPattern=src/fee/__test__/",
-    "test:substrate": "jest --watchAll --testPathPattern=src/chains/Substrate/__test__",
+    "test:substrate": "jest --watchAll --testPathPattern=src/chains/Substrate/__test__/",
     "run:all": "concurrently \"yarn run prepareNodes\" \"yarn run test\"",
     "build": "tsc -p tsconfig.build.json",
     "lint": "eslint 'src/**/*.ts'",

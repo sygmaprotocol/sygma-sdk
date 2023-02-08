@@ -4,12 +4,9 @@ import react from "@vitejs/plugin-react";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  optimizeDeps: {
-    include: ["@buildwithsygma/sygma-sdk-core"],
-  },
   build: {
     commonjsOptions: {
-      include: [/@buildwithsygma\/sygma-sdk-core/, /node_modules/],
+      include: [/node_modules/],
     },
   },
   define: {
