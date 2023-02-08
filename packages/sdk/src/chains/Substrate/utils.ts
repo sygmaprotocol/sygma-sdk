@@ -1,22 +1,22 @@
 import { DefinitionRpcExt } from '@polkadot/types/types';
-import { ApiPromise, WsProvider } from '@polkadot/api';
+import { ApiPromise, WsProvider, SubmittableResult } from '@polkadot/api';
 import { web3Accounts, web3Enable, web3FromAddress } from '@polkadot/extension-dapp';
 import { keyring as Keyring } from '@polkadot/ui-keyring';
 import { isTestChain, BN } from '@polkadot/util';
 import { TypeRegistry } from '@polkadot/types/create';
 import { ChainType } from '@polkadot/types/interfaces';
 import type { Option, u128 } from '@polkadot/types-codec';
-import type { AccountData, AssetBalance } from '@polkadot/types/interfaces';
+import type { AccountData, AssetBalance, DispatchError } from '@polkadot/types/interfaces';
 
-import type { Codec } from '@polkadot/types-codec/types';
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 
-import { SubstrateConfigType } from '../../types';
+import { SubstrateConfigType, XcmMultiAssetIdType } from '../../types';
 
 const registry = new TypeRegistry();
 
 /**
  * Connects to a Substrate node using WebSockets API by creating a new WsProvider instance with the given socket address.
+ *
  * @param {Object} state - An object that contains the state of the API, including the connection status, socket address, and JSON-RPC interface.
  * @param {Object} state.apiState - The connection status of the API.
  * @param {string} state.socket - The WebSockets API address.
@@ -87,9 +87,6 @@ export const retrieveChainInfo = async (
   };
 };
 
-///
-// Loading accounts from dev acrnd polkadot-js extension
-
 /**
  * Loads all accounts from web3 and sets them in the Keyring.
  *
@@ -109,7 +106,7 @@ export const loadAccounts = async (
   const { api } = state;
   dispatch({ type: 'LOAD_KEYRING', payload: undefined });
   try {
-    await web3Enable(config.APP_NAME);
+    await web3Enable(config.appName);
     let allAccounts = await web3Accounts();
     allAccounts = allAccounts.map(({ address, meta }) => ({
       address,
@@ -137,7 +134,7 @@ export const loadAccounts = async (
  *
  * @param {ApiPromise} api - The Substrate API instance.
  * @param {number} domainId - The ID of the domain.
- * @param {Object} xcmMultiAssetId - The XCM MultiAsset ID of the asset.
+ * @param {Object} xcmMultiAssetId - The XCM MultiAsset ID of the asset. {@link {@link https://github.com/sygmaprotocol/sygma-substrate-pallets#multiasset}|More details}
  * @returns {Promise<Option<u128>>} A promise that resolves to an Option containing the basic fee as u128, or None if not found.
  */
 export const getBasicFee = async (
@@ -167,6 +164,14 @@ export const getNativeTokenBalance = async (
   return balance as AccountData;
 };
 
+/**
+ * Retrieves the asset balance of a given account.
+ *
+ * @param {ApiPromise} api - The API instance used to query the chain.
+ * @param {number} assetId - The ID of the asset to query. {@link {@link https://github.com/sygmaprotocol/sygma-substrate-pallets#multiasset}|More details}
+ * @param {InjectedAccountWithMeta} currentAccount - The account from which to retrieve the asset balance.
+ * @returns {Promise<AssetBalance>} A promise that resolves with the retrieved asset balance.
+ */
 export const getAssetBalance = async (
   api: ApiPromise,
   assetId: number,
@@ -176,30 +181,91 @@ export const getAssetBalance = async (
   return assetRes as AssetBalance;
 };
 
+/**
+ * Calculates a big number from an amount and chain decimals retrived from API.
+ *
+ * @param {ApiPromise} api - An API Promise object.
+ * @param {string} amount - The amount to be converted.
+ * @returns {BN} The converted amount as a BN object.
+ */
+export const calculateBigNumber = (api: ApiPromise, amount: string): BN => {
+  console.log('🚀 ~ file: utils.ts:198 ~ calculateBigNumber ~ amount', amount);
+  const bnAmount = new BN(Number(amount));
+  const bnBase = new BN(10);
+  const bnDecimals = new BN(api.registry.chainDecimals[0]);
+  const convertAmount = bnAmount.mul(bnBase.pow(bnDecimals));
+  return convertAmount;
+};
+
+export const handleTxExtrinsicResult = (
+  api: ApiPromise,
+  result: SubmittableResult,
+  dispatch: React.Dispatch<{
+    type: string;
+    payload: any;
+  }>,
+  unsub: () => void,
+): void => {
+  const { events = [], status } = result;
+  console.log(`Current status is ${status.toString()}`);
+
+  if (status.isInBlock || status.isFinalized) {
+    events
+      // find/filter for failed events
+      .filter(({ event }) => api.events.system.ExtrinsicFailed.is(event))
+      // we know that data for system.ExtrinsicFailed is
+      // (DispatchError, DispatchInfo)
+      .forEach(({ event: { data } }) => {
+        const error = data[0] as DispatchError;
+        if (error.isModule) {
+          // for module errors, we have the section indexed, lookup
+          const decoded = api.registry.findMetaError(error.asModule);
+          const { docs, method, section } = decoded;
+
+          console.log(`${section}.${method}: ${docs.join(' ')}`);
+        } else {
+          // Other, CannotLookup, BadOrigin, no extra info
+          console.log(error.toString());
+        }
+        unsub();
+      });
+  }
+
+  if (status.isInBlock) {
+    console.log(`Transaction included at blockHash ${status.asInBlock.toString()}`);
+    dispatch({ type: 'SET_TRANSFER_STATUS', payload: 'In block' });
+
+    dispatch({
+      type: 'SET_TRANSFER_STATUS_BLOCK',
+      payload: status.asInBlock.toString(),
+    });
+  } else if (status.isFinalized) {
+    console.log(`Transaction finalized at blockHash ${status.asFinalized.toString()}`);
+    dispatch({ type: 'SET_TRANSFER_STATUS', payload: 'Finalized' });
+
+    dispatch({
+      type: 'SET_TRANSFER_STATUS_BLOCK',
+      payload: status.asFinalized.toString(),
+    });
+    unsub();
+  }
+};
+
 export const deposit = async (
-  config: SubstrateConfigType,
   api: ApiPromise,
   currentAccount: InjectedAccountWithMeta,
-  {
-    amount,
-    domainId,
-    address,
-  }: {
-    amount: BN;
-    domainId: string;
-    address: string;
-  },
+  xсmMultiAssetId: XcmMultiAssetIdType,
+  amount: string,
+  domainId: string,
+  address: string,
+  dispatch: React.Dispatch<{
+    type: string;
+    payload: any;
+  }>,
 ): Promise<void> => {
-  console.log(amount.toNumber().toString());
-  const xsmMultiAssetId = {
-    concrete: {
-      parents: 1,
-      interior: {
-        x3: [{ parachain: 2004 }, { generalKey: '0x7379676d61' }, { generalKey: '0x75736463' }],
-      },
-    },
-  };
-  const xcmV1MultiassetFungibility = { fungible: amount.toNumber().toString() };
+  const convertedAmount = calculateBigNumber(api, amount);
+
+  const xcmV1MultiassetFungibility = { fungible: convertedAmount.toString() };
 
   const destIdMultilocation = {
     parents: 0,
@@ -207,22 +273,17 @@ export const deposit = async (
       x2: [{ generalKey: address }, { generalIndex: domainId }],
     },
   };
+  const asset = { id: xсmMultiAssetId, fun: xcmV1MultiassetFungibility };
 
-  // (this needs to be called first, before other requests)
-  const _allInjected = await web3Enable(config.APP_NAME);
-  console.log(currentAccount);
   // finds an injector for an address
   const injector = await web3FromAddress(currentAccount.address);
-  const unsub = await api.tx.sygmaBridge
-    .deposit({ id: xsmMultiAssetId, fun: xcmV1MultiassetFungibility }, destIdMultilocation)
-    .signAndSend(currentAccount.address, { signer: injector.signer }, result => {
-      console.log(`Current status is ${result.status.toString()}`);
-
-      if (result.status.isInBlock) {
-        console.log(`Transaction included at blockHash ${result.status.asInBlock.toString()}`);
-      } else if (result.status.isFinalized) {
-        console.log(`Transaction finalized at blockHash ${result.status.asFinalized.toString()}`);
-        unsub();
-      }
-    });
+  try {
+    const unsub = await api.tx.sygmaBridge
+      .deposit(asset, destIdMultilocation)
+      .signAndSend(currentAccount.address, { signer: injector.signer }, result => {
+        handleTxExtrinsicResult(api, result, dispatch, unsub);
+      });
+  } catch (e) {
+    console.log(e);
+  }
 };

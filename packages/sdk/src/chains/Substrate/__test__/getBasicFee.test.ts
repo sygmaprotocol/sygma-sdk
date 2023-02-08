@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { ApiPromise } from '@polkadot/api';
 import { u128, Option, Null} from '@polkadot/types';
 import { TypeRegistry} from '@polkadot/types/create';

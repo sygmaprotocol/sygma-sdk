@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { TypeRegistry } from '@polkadot/types/create';
 import { SubstrateConfigType } from '../../../types';
@@ -46,7 +45,24 @@ describe('utils', () => {
     let dispatch: jest.Mock;
 
     beforeEach(() => {
-      config = { APP_NAME: 'test', PROVIDER_SOCKET: '', CUSTOM_RPC_METHODS: '' };
+      config = { appName: 'test', provider_socket: '', CUSTOM_RPC_METHODS: '', assets: [
+        {
+          assetName: 'USDT',
+          assetId: 1000,
+          xsmMultiAssetId: {
+            concrete: {
+              parents: 1,
+              interior: {
+                x3: [
+                  { parachain: 2005 },
+                  { generalKey: "0x7777" },
+                  { generalKey: "0x88" },
+                ],
+              },
+            },
+          }
+        }
+      ] };
       state = { api: new ApiPromise() };
       jest
         .spyOn(Utils, 'retrieveChainInfo')

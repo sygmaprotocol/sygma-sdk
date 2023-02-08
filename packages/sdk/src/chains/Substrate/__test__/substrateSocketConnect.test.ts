@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { TypeRegistry } from '@polkadot/types/create';
 
 import { substrateSocketConnect } from '../utils';
@@ -81,7 +80,4 @@ describe('utils', () => {
       expect(dispatch).toHaveBeenLastCalledWith({ type: 'CONNECT_ERROR'});
     });
   });
-
-
-
 });

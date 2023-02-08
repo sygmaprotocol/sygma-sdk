@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { ApiPromise } from '@polkadot/api';
 import { TypeRegistry } from '@polkadot/types/create';
 import { ChainType } from '@polkadot/types/interfaces';
