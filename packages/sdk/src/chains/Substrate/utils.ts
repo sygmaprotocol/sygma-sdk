@@ -203,11 +203,11 @@ export const calculateBigNumber = (api: ApiPromise, amount: string): BN => {
  * @param {SubmittableResult} result - The SubmittableResult to log errors from.
  * @param {() => void} unsub - A function to stop listen for events.
  */
-export function throwErrorIfAny(
+export const throwErrorIfAny = (
   api: ApiPromise,
   result: SubmittableResult,
   unsub: () => void,
-): void {
+): void => {
   const { events = [], status } = result;
   if (status.isInBlock || status.isFinalized) {
     events
@@ -230,7 +230,7 @@ export function throwErrorIfAny(
         }
       }); // end of forEach loop
   } // end of if statement
-}
+};
 
 /**
  * Handles the transaction extrinsic result.
@@ -275,6 +275,18 @@ export const handleTxExtrinsicResult = (
   }
 };
 
+/**
+ * Deposit function
+ *
+ * @description Performs a deposit transaction on the Sygna Bridge.
+ * @param {ApiPromise} api - The ApiPromise instance.
+ * @param {InjectedAccountWithMeta} currentAccount - The current account instance.
+ * @param {XcmMultiAssetIdType} xсmMultiAssetId - The XCM multi-asset ID type.
+ * @param {string} amount - The amount to be deposited.
+ * @param {string} domainId - The domain ID of the destination address.
+ * @param {string} address - The destination address of the deposit transaction.
+ * @param {React.Dispatch<{type: string; payload: any;}>} dispatch - A dispatch function for sending payloads to the store.
+ */
 export const deposit = async (
   api: ApiPromise,
   currentAccount: InjectedAccountWithMeta,
