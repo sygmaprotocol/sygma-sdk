@@ -6,10 +6,9 @@ import { keyring as Keyring } from '@polkadot/ui-keyring';
 
 import * as Utils from '../utils';
 
-
 const registry = new TypeRegistry();
 
-jest.mock('@polkadot/extension-dapp',  () => ({
+jest.mock('@polkadot/extension-dapp', () => ({
   web3Enable: jest.fn().mockResolvedValue(true),
   web3Accounts: jest.fn().mockResolvedValue([
     {
@@ -22,9 +21,8 @@ jest.mock('@polkadot/extension-dapp',  () => ({
       meta: { genesisHash: '', name: 'SygmaTest', source: 'polkadot-js' },
       type: 'sr25519',
     },
-  ])
-}))
-
+  ]),
+}));
 
 const mockApiPromise = {
   on: (arg: any, fn: () => any) => fn(),
@@ -45,33 +43,32 @@ describe('utils', () => {
     let dispatch: jest.Mock;
 
     beforeEach(() => {
-      config = { appName: 'test', provider_socket: '', CUSTOM_RPC_METHODS: '', assets: [
-        {
-          assetName: 'USDT',
-          assetId: 1000,
-          xsmMultiAssetId: {
-            concrete: {
-              parents: 1,
-              interior: {
-                x3: [
-                  { parachain: 2005 },
-                  { generalKey: "0x7777" },
-                  { generalKey: "0x88" },
-                ],
+      config = {
+        appName: 'test',
+        provider_socket: '',
+        CUSTOM_RPC_METHODS: '',
+        assets: [
+          {
+            assetName: 'USDT',
+            assetId: 1000,
+            xsmMultiAssetId: {
+              concrete: {
+                parents: 1,
+                interior: {
+                  x3: [{ parachain: 2005 }, { generalKey: '0x7777' }, { generalKey: '0x88' }],
+                },
               },
             },
-          }
-        }
-      ] };
+          },
+        ],
+      };
       state = { api: new ApiPromise() };
-      jest
-        .spyOn(Utils, 'retrieveChainInfo')
-        .mockResolvedValue({
-          systemChain: 'Development',
-          // @ts-ignore-line
-          systemChainType: registry.createType('ChainType', 'Development'),
-        });
-        jest.spyOn(Keyring, 'loadAll').mockImplementation()
+      jest.spyOn(Utils, 'retrieveChainInfo').mockResolvedValue({
+        systemChain: 'Development',
+        // @ts-ignore-line
+        systemChainType: registry.createType('ChainType', 'Development'),
+      });
+      jest.spyOn(Keyring, 'loadAll').mockImplementation();
       dispatch = jest.fn();
     });
 
@@ -104,18 +101,28 @@ describe('utils', () => {
       expect(Keyring.loadAll).toHaveBeenCalled();
 
       expect(Utils.retrieveChainInfo).toHaveBeenCalledWith(state.api);
-
     });
 
     it('should call dispatch with the correct parameters on success', async () => {
-        await Utils.loadAccounts(config, state, dispatch);
+      await Utils.loadAccounts(config, state, dispatch);
 
-        expect(Keyring.loadAll).toHaveBeenCalled();
+      expect(Keyring.loadAll).toHaveBeenCalled();
 
-        expect(dispatch).toHaveBeenNthCalledWith (1 ,{ type:'LOAD_KEYRING', payload : undefined});
+      expect(dispatch).toHaveBeenNthCalledWith(1, { type: 'LOAD_KEYRING', payload: undefined });
 
-        expect(dispatch).toHaveBeenNthCalledWith (2 ,{ type:'SET_KEYRING' , payload : Keyring});
+      expect(dispatch).toHaveBeenNthCalledWith(2, { type: 'SET_KEYRING', payload: Keyring });
     });
 
+    it('should call dispatch with the correct parameters when failed', async () => {
+      // jest.spyOn(Keyring, 'loadAll').mockClear();
+      jest.spyOn(Keyring, 'loadAll').mockImplementation(() => {throw 'No'})
+      await Utils.loadAccounts(config, state, dispatch);
+
+      expect(Keyring.loadAll).toHaveBeenCalled();
+
+      expect(dispatch).toHaveBeenNthCalledWith(1, { type: 'LOAD_KEYRING', payload: undefined });
+
+      expect(dispatch).toHaveBeenNthCalledWith(2, { type: 'KEYRING_ERROR', payload: undefined });
+    });
   });
 });

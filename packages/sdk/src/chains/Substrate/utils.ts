@@ -189,7 +189,6 @@ export const getAssetBalance = async (
  * @returns {BN} The converted amount as a BN object.
  */
 export const calculateBigNumber = (api: ApiPromise, amount: string): BN => {
-  console.log('🚀 ~ file: utils.ts:198 ~ calculateBigNumber ~ amount', amount);
   const bnAmount = new BN(Number(amount));
   const bnBase = new BN(10);
   const bnDecimals = new BN(api.registry.chainDecimals[0]);
@@ -197,6 +196,50 @@ export const calculateBigNumber = (api: ApiPromise, amount: string): BN => {
   return convertAmount;
 };
 
+/**
+ * Throw errors from a SubmittableResult.
+ *
+ * @param {ApiPromise} api - The ApiPromise instance used to find meta errors.
+ * @param {SubmittableResult} result - The SubmittableResult to log errors from.
+ * @param {() => void} unsub - A function to stop listen for events.
+ */
+export function throwErrorIfAny(
+  api: ApiPromise,
+  result: SubmittableResult,
+  unsub: () => void,
+): void {
+  const { events = [], status } = result;
+  if (status.isInBlock || status.isFinalized) {
+    events
+      // find/filter for failed events
+      .filter(({ event }) => api.events.system.ExtrinsicFailed.is(event))
+      // we know that data for system.ExtrinsicFailed is
+      // (DispatchError, DispatchInfo)
+      .forEach(({ event: { data } }) => {
+        const error = data[0] as DispatchError;
+        unsub(); // unsubscribe from subscription
+        if (error.isModule) {
+          // for module errors, we have the section indexed, lookup
+          const decoded = api.registry.findMetaError(error.asModule);
+          const { docs, method, section } = decoded;
+
+          throw new Error(`${section}.${method}: ${docs.join(' ')}`);
+        } else {
+          // Other, CannotLookup, BadOrigin, no extra info
+          throw new Error(error.toString());
+        }
+      }); // end of forEach loop
+  } // end of if statement
+}
+
+/**
+ * Handles the transaction extrinsic result.
+ *
+ * @param {ApiPromise} api - The API promise object.
+ * @param {SubmittableResult} result - The submittable result object.
+ * @param {React.Dispatch<{type: string; payload: any;}>} dispatch - The dispatch function to update the state of the application.
+ * @param {Function} unsub - A function to stop listen for events.
+ */
 export const handleTxExtrinsicResult = (
   api: ApiPromise,
   result: SubmittableResult,
@@ -206,30 +249,11 @@ export const handleTxExtrinsicResult = (
   }>,
   unsub: () => void,
 ): void => {
-  const { events = [], status } = result;
+  const { status } = result;
   console.log(`Current status is ${status.toString()}`);
 
-  if (status.isInBlock || status.isFinalized) {
-    events
-      // find/filter for failed events
-      .filter(({ event }) => api.events.system.ExtrinsicFailed.is(event))
-      // we know that data for system.ExtrinsicFailed is
-      // (DispatchError, DispatchInfo)
-      .forEach(({ event: { data } }) => {
-        const error = data[0] as DispatchError;
-        if (error.isModule) {
-          // for module errors, we have the section indexed, lookup
-          const decoded = api.registry.findMetaError(error.asModule);
-          const { docs, method, section } = decoded;
-
-          console.log(`${section}.${method}: ${docs.join(' ')}`);
-        } else {
-          // Other, CannotLookup, BadOrigin, no extra info
-          console.log(error.toString());
-        }
-        unsub();
-      });
-  }
+  // if error find in events log the error and unsubsribe
+  throwErrorIfAny(api, result, unsub);
 
   if (status.isInBlock) {
     console.log(`Transaction included at blockHash ${status.asInBlock.toString()}`);
@@ -275,15 +299,16 @@ export const deposit = async (
   };
   const asset = { id: xсmMultiAssetId, fun: xcmV1MultiassetFungibility };
 
-  // finds an injector for an address
-  const injector = await web3FromAddress(currentAccount.address);
   try {
+    // finds an injector for an address
+    const injector = await web3FromAddress(currentAccount.address);
+
     const unsub = await api.tx.sygmaBridge
       .deposit(asset, destIdMultilocation)
       .signAndSend(currentAccount.address, { signer: injector.signer }, result => {
         handleTxExtrinsicResult(api, result, dispatch, unsub);
       });
   } catch (e) {
-    console.log(e);
+    console.error('Deposit error', e);
   }
 };
