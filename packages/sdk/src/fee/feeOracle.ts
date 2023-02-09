@@ -167,7 +167,7 @@ export const requestFeeFromFeeOracle = async ({
 }): Promise<OracleResource | undefined> => {
   try {
     const response = await fetch(
-      `${feeOracleBaseUrl}/v1/rate/from/${fromDomainID}/to/${toDomainID}/resourceid/${resourceID}/gasLimit/${msgGasLimit}`,
+      `${feeOracleBaseUrl}/v1/rate/from/${fromDomainID}/to/${toDomainID}/resourceid/${resourceID}?gasLimit=${msgGasLimit}`,
       {
         headers: {
           'Cache-Control': 'no-cache',
