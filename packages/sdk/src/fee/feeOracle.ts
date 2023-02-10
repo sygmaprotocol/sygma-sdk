@@ -70,7 +70,7 @@ export const createOracleFeeData = (
     return oracleMessage + signature.substring(2) + toHex(amount, 32).substring(2);
   } else {
     signature = oracleResponse.signature;
-    return oracleMessage + signature + toHex(0, 32).substring(2);
+    return oracleMessage + signature + toHex(amount, 32).substring(2);
   }
 };
 
