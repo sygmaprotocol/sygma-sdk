@@ -23,7 +23,6 @@ The current SDK has one package that comprises the whole bridging logic for tran
 
 For React example, after you have run and deployed the contracts using [Sygma bridge](https://github.com/sygmaprotocol/sygma-relayer), go to the [examples](https://github.com/sygmaprotocol/sygma-sdk/tree/main/examples) folder and follow the instructions in their README
 
-
 # How to Use
 
 ## Environment
