@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.1.1...sygma-sdk-core-v1.1.2) (2023-02-10)
+
+
+### Bug Fixes
+
+* Fix url to query oracle service ([#159](https://github.com/sygmaprotocol/sygma-sdk/issues/159)) ([ea762a0](https://github.com/sygmaprotocol/sygma-sdk/commit/ea762a0a8df2d5c7a291bc818a386a46df55fec2))
+
 ## [1.1.1](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.1.0...sygma-sdk-core-v1.1.1) (2023-02-06)
 
 
