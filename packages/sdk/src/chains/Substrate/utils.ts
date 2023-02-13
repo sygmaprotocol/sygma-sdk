@@ -281,7 +281,7 @@ export const handleTxExtrinsicResult = (
  * @description Performs a deposit transaction on the Sygna Bridge.
  * @param {ApiPromise} api - The ApiPromise instance.
  * @param {InjectedAccountWithMeta} currentAccount - The current account instance.
- * @param {XcmMultiAssetIdType} xсmMultiAssetId - The XCM multi-asset ID type.
+ * @param {XcmMultiAssetIdType} xcmMultiAssetId - The XCM multi-asset ID type.
  * @param {string} amount - The amount to be deposited.
  * @param {string} domainId - The domain ID of the destination address.
  * @param {string} address - The destination address of the deposit transaction.
@@ -290,7 +290,7 @@ export const handleTxExtrinsicResult = (
 export const deposit = async (
   api: ApiPromise,
   currentAccount: InjectedAccountWithMeta,
-  xсmMultiAssetId: XcmMultiAssetIdType,
+  xcmMultiAssetId: XcmMultiAssetIdType,
   amount: string,
   domainId: string,
   address: string,
@@ -309,7 +309,7 @@ export const deposit = async (
       x2: [{ generalKey: address }, { generalIndex: domainId }],
     },
   };
-  const asset = { id: xсmMultiAssetId, fun: xcmV1MultiassetFungibility };
+  const asset = { id: xcmMultiAssetId, fun: xcmV1MultiassetFungibility };
 
   try {
     // finds an injector for an address

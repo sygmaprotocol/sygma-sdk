@@ -111,14 +111,17 @@ describe('deposit', () => {
   });
 
 
-  it.skip('should call handleTxExtrinsicResult with correct params', async () => {
+  it('should call signAndSend', async () => {
     const dispatchMockFn = jest.fn();
-    const unsub = jest.fn();
+    const signAndSendMockFn = jest.fn();
     api = {
       tx: {
         sygmaBridge: {
           // @ts-ignore-line
-          deposit: jest.fn().mockResolvedValue(),
+          deposit: jest.fn().mockImplementationOnce(() =>{
+            // @ts-ignore-line
+            return ({ signAndSend: signAndSendMockFn })
+        }),
         },
       },
     };
@@ -133,22 +136,34 @@ describe('deposit', () => {
       dispatchMockFn,
     );
 
-    // expect(api.tx.sygmaBridge.deposit).toHaveBeenCalledWith(
-    //   {
-    //     fun: {
-    //       fungible: '110',
-    //     },
-    //     id: {
-    //       id: 1,
-    //     },
-    //   },
-
-    //   {
-    //     parents: 0,
-    //     interior: {
-    //       x2: [{ generalKey: address }, { generalIndex: domainId }],
-    //     },
-    //   },
-    // );
+    expect(signAndSendMockFn).toHaveBeenCalledTimes(1);
   });
+
+  // it('should call handleTxExtrinsicResult', async () => {
+  //   // const api = new ApiPromise();
+  //   const dispatchMockFn = jest.fn();
+  //   const signAndSendMockFn = jest.fn().mockResolvedValueOnce()});
+
+  //   // const currentAccount = { address: 'someAddress' };
+  //   // const xcmMultiAssetId = 'someXcmMultiAssetId';
+  //   const amount = 'someAmount';
+  //   const domainId = 'someDomainId';
+  //   const address = 'someAddress';
+
+  //   // mock the web3FromAddress function to return a signer object
+  //   api = {
+  //     tx: {
+  //       sygmaBridge: {
+  //         // @ts-ignore-line
+  //         deposit: jest.fn().mockImplementationOnce(() =>{
+  //           // @ts-ignore-line
+  //           return ({ signAndSend: signAndSendMockFn })
+  //         }),
+  //       },
+  //     },
+  //   };
+  //   jest.spyOn(Utils, 'handleTxExtrinsicResult').mockImplementation()
+  //   await Utils.deposit(api, currentAccount, xсmMultiAssetId, amount, domainId, address, dispatchMockFn);
+  //   expect(Utils.handleTxExtrinsicResult).toHaveBeenCalledTimes(1);
+  // });
 });
