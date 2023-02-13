@@ -1,7 +1,6 @@
 import { FeeHandlerWithOracle__factory } from '@buildwithsygma/sygma-contracts';
 import { ethers } from 'ethers';
 import fetch from 'node-fetch';
-import EthCrypto from 'eth-crypto';
 
 import { OracleResource, FeeDataResult } from '../types';
 import { toHex, createERCDepositData } from '../utils/helpers';
@@ -65,8 +64,10 @@ export const createOracleFeeData = (
   let signature;
   if (oraclePrivateKey) {
     // temprorary signature generated with sign by private key
-    const messageHash = EthCrypto.hash.keccak256([{ type: 'bytes', value: oracleMessage }]);
-    signature = EthCrypto.sign(oraclePrivateKey, messageHash);
+    const messageHash = ethers.utils.keccak256(oracleMessage);
+    signature = ethers.utils.joinSignature(
+      new ethers.Wallet(oraclePrivateKey)._signingKey().signDigest(messageHash),
+    );
     return oracleMessage + signature.substring(2) + toHex(amount, 32).substring(2);
   } else {
     signature = oracleResponse.signature;
