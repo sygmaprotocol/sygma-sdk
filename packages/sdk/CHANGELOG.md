@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.1.2...sygma-sdk-core-v1.1.3) (2023-02-14)
+
+
+### Bug Fixes
+
+* fix amount in createOracleFeeData ([#162](https://github.com/sygmaprotocol/sygma-sdk/issues/162)) ([a39180d](https://github.com/sygmaprotocol/sygma-sdk/commit/a39180d5e9d5993ee6c15abc6aa8a6e1c1939632))
+
 ## [1.1.2](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.1.1...sygma-sdk-core-v1.1.2) (2023-02-10)
 
 
