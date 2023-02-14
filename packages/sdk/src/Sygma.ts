@@ -620,7 +620,7 @@ export class Sygma implements SygmaSDK {
         fromDomainID,
         toDomainID,
         resourceID,
-        tokenAmount: Number(amount),
+        tokenAmount: amount,
         recipientAddress,
       });
 
@@ -665,7 +665,7 @@ export class Sygma implements SygmaSDK {
       fromDomainID: parseInt(this.bridgeSetup!.chain1.domainId),
       toDomainID: parseInt(this.bridgeSetup!.chain2.domainId),
       resourceID,
-      tokenAmount: Number(amount),
+      tokenAmount: amount,
       feeOracleBaseUrl,
       feeOracleHandlerAddress,
       overridedResourceId, // '0xbA2aE424d960c26247Dd6c32edC70B295c744C43',
