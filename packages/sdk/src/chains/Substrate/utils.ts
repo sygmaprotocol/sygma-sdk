@@ -6,7 +6,12 @@ import { isTestChain, BN } from '@polkadot/util';
 import { TypeRegistry } from '@polkadot/types/create';
 import { ChainType } from '@polkadot/types/interfaces';
 import type { Option, u128 } from '@polkadot/types-codec';
-import type { AccountData, AssetBalance, DispatchError } from '@polkadot/types/interfaces';
+import type {
+  AccountData,
+  AssetBalance,
+  DispatchError,
+  AccountInfoWithTripleRefCount,
+} from '@polkadot/types/interfaces';
 
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 
@@ -160,8 +165,9 @@ export const getNativeTokenBalance = async (
   api: ApiPromise,
   currentAccount: InjectedAccountWithMeta,
 ): Promise<AccountData> => {
-  const balance: unknown = await api.query.system.account(currentAccount.address);
-  return balance as AccountData;
+  const accountInfo: unknown = await api.query.system.account(currentAccount.address);
+  const balanceData = accountInfo as AccountInfoWithTripleRefCount;
+  return balanceData.data;
 };
 
 /**
@@ -252,7 +258,7 @@ export const handleTxExtrinsicResult = (
   const { status } = result;
   console.log(`Current status is ${status.toString()}`);
 
-  // if error find in events log the error and unsubsribe
+  // if error has been found in events log the error and unsubsribe
   throwErrorIfAny(api, result, unsub);
 
   if (status.isInBlock) {
@@ -311,11 +317,13 @@ export const deposit = async (
   };
   const asset = { id: xcmMultiAssetId, fun: xcmV1MultiassetFungibility };
 
+  let unsub: () => void;
+
   try {
     // finds an injector for an address
     const injector = await web3FromAddress(currentAccount.address);
 
-    const unsub = await api.tx.sygmaBridge
+    unsub = await api.tx.sygmaBridge
       .deposit(asset, destIdMultilocation)
       .signAndSend(currentAccount.address, { signer: injector.signer }, result => {
         handleTxExtrinsicResult(api, result, dispatch, unsub);

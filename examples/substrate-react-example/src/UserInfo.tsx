@@ -111,7 +111,7 @@ function Main(props: any): JSX.Element {
             <br />
             NATIVE TOKENS:{" "}
             <span>
-              {currentAccountData && formatBalance(currentAccountData.data.free, {
+              {currentAccountData && formatBalance(currentAccountData.free, {
                 decimals: api.registry.chainDecimals[0],
                 withSiFull: true,
               })}
