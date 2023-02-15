@@ -1,14 +1,14 @@
 {
-    "plugins": [],
-    "packages": {
-      "packages/sdk": {
-        "releaseType": "node",
-        "draft": false,
-        "prerelease": false,
-        "bumpMinorPreMajor": false,
-        "bumpPatchForMinorPreMajor": false,
-        "changelogPath": "CHANGELOG.md",
-        "versioning": "default"
-      }
+  "plugins": [],
+  "packages": {
+    "packages/sdk": {
+      "releaseType": "node",
+      "draft": false,
+      "prerelease": false,
+      "bumpMinorPreMajor": false,
+      "bumpPatchForMinorPreMajor": false,
+      "changelogPath": "CHANGELOG.md",
+      "versioning": "default"
     }
   }
+}
