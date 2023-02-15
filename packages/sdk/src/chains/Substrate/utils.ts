@@ -329,6 +329,7 @@ export const deposit = async (
         handleTxExtrinsicResult(api, result, dispatch, unsub);
       });
   } catch (e) {
-    console.error('Deposit error', e);
+    console.error('Substrate deposit error: ', e);
+    return Promise.reject(e);
   }
 };

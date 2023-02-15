@@ -17,7 +17,7 @@ jest.mock('@polkadot/extension-dapp', () => ({
 describe('deposit', () => {
   let api: ApiPromise;
   let currentAccount: InjectedAccountWithMeta;
-  let xсmMultiAssetId: XcmMultiAssetIdType;
+  let xcmMultiAssetId: XcmMultiAssetIdType;
   let amount: string;
   let domainId: string;
   let address: string;
@@ -27,7 +27,7 @@ describe('deposit', () => {
 
     currentAccount = { address: 'testaddress' } as unknown as InjectedAccountWithMeta;
 
-    xсmMultiAssetId = { id: 1 } as unknown as XcmMultiAssetIdType;
+    xcmMultiAssetId = { id: 1 } as unknown as XcmMultiAssetIdType;
 
     amount = '1000000000000';
 
@@ -39,11 +39,24 @@ describe('deposit', () => {
 
   it('should call calculateBigNumber with correct params', async () => {
     const dispatchMockFn = jest.fn();
+    const signAndSendMockFn = jest.fn();
+
+    api = {
+      tx: {
+        sygmaBridge: {
+          // @ts-ignore-line
+          deposit: jest.fn().mockImplementationOnce(() =>{
+            // @ts-ignore-line
+            return ({ signAndSend: signAndSendMockFn })
+        }),
+        },
+      },
+    };
 
     await Utils.deposit(
       api,
       currentAccount,
-      xсmMultiAssetId,
+      xcmMultiAssetId,
       amount,
       domainId,
       address,
@@ -55,11 +68,24 @@ describe('deposit', () => {
 
   it('should call web3FromAddress with correct params', async () => {
     const dispatchMockFn = jest.fn();
+    const signAndSendMockFn = jest.fn();
+
+    api = {
+      tx: {
+        sygmaBridge: {
+          // @ts-ignore-line
+          deposit: jest.fn().mockImplementationOnce(() =>{
+            // @ts-ignore-line
+            return ({ signAndSend: signAndSendMockFn })
+        }),
+        },
+      },
+    };
 
     await Utils.deposit(
       api,
       currentAccount,
-      xсmMultiAssetId,
+      xcmMultiAssetId,
       amount,
       domainId,
       address,
@@ -71,12 +97,16 @@ describe('deposit', () => {
 
   it('should call sygmaBridge.deposit with correct params', async () => {
     const dispatchMockFn = jest.fn();
+    const signAndSendMockFn = jest.fn();
 
     api = {
       tx: {
         sygmaBridge: {
           // @ts-ignore-line
-          deposit: jest.fn(),
+          deposit: jest.fn().mockImplementationOnce(() =>{
+            // @ts-ignore-line
+            return ({ signAndSend: signAndSendMockFn })
+        }),
         },
       },
     };
@@ -84,7 +114,7 @@ describe('deposit', () => {
     await Utils.deposit(
       api,
       currentAccount,
-      xсmMultiAssetId,
+      xcmMultiAssetId,
       amount,
       domainId,
       address,
@@ -129,7 +159,7 @@ describe('deposit', () => {
     await Utils.deposit(
       api,
       currentAccount,
-      xсmMultiAssetId,
+      xcmMultiAssetId,
       amount,
       domainId,
       address,
@@ -139,31 +169,58 @@ describe('deposit', () => {
     expect(signAndSendMockFn).toHaveBeenCalledTimes(1);
   });
 
-  // it('should call handleTxExtrinsicResult', async () => {
-  //   // const api = new ApiPromise();
-  //   const dispatchMockFn = jest.fn();
-  //   const signAndSendMockFn = jest.fn().mockResolvedValueOnce()});
+  it('should call handleTxExtrinsicResult', async () => {
+    // const api = new ApiPromise();
+    const unsub = jest.fn();
+    const dispatchMockFn = jest.fn();
+    const signAndSendMockFn = jest.fn().mockImplementationOnce((account, options, callback) => {
+      callback('someResult')
+      Promise.resolve( unsub)
+    });
 
-  //   // const currentAccount = { address: 'someAddress' };
-  //   // const xcmMultiAssetId = 'someXcmMultiAssetId';
-  //   const amount = 'someAmount';
-  //   const domainId = 'someDomainId';
-  //   const address = 'someAddress';
+    api = {
+      tx: {
+        sygmaBridge: {
+          // @ts-ignore-line
+          deposit: jest.fn().mockImplementationOnce(() =>{
+            // @ts-ignore-line
+            return ({ signAndSend: signAndSendMockFn })
+          }),
+        },
+      },
+    };
+    jest.spyOn(Utils, 'handleTxExtrinsicResult').mockImplementation()
+    await Utils.deposit(api, currentAccount, xcmMultiAssetId, amount, domainId, address, dispatchMockFn);
+    expect(Utils.handleTxExtrinsicResult).toHaveBeenCalledTimes(1);
+    expect(Utils.handleTxExtrinsicResult).toHaveBeenCalledWith(api, 'someResult', dispatchMockFn, undefined);
+  });
 
-  //   // mock the web3FromAddress function to return a signer object
-  //   api = {
-  //     tx: {
-  //       sygmaBridge: {
-  //         // @ts-ignore-line
-  //         deposit: jest.fn().mockImplementationOnce(() =>{
-  //           // @ts-ignore-line
-  //           return ({ signAndSend: signAndSendMockFn })
-  //         }),
-  //       },
-  //     },
-  //   };
-  //   jest.spyOn(Utils, 'handleTxExtrinsicResult').mockImplementation()
-  //   await Utils.deposit(api, currentAccount, xсmMultiAssetId, amount, domainId, address, dispatchMockFn);
-  //   expect(Utils.handleTxExtrinsicResult).toHaveBeenCalledTimes(1);
-  // });
+  it('should reject in case of error', async () => {
+    // const api = new ApiPromise();
+    const unsub = jest.fn();
+    const dispatchMockFn = jest.fn();
+    const signAndSendMockFn = jest.fn().mockRejectedValue(new Error("Sick error"));
+    api = {
+      tx: {
+        sygmaBridge: {
+          // @ts-ignore-line
+          deposit: jest.fn().mockImplementationOnce(() =>{
+            // @ts-ignore-line
+            return ({ signAndSend: signAndSendMockFn })
+          }),
+        },
+      },
+    };
+    await expect(
+      Utils.deposit(
+        api,
+        currentAccount,
+        xcmMultiAssetId,
+        amount,
+        domainId,
+        address,
+        dispatchMockFn,
+      ),
+    ).rejects.toThrowError("Sick error");
+  });
 });
