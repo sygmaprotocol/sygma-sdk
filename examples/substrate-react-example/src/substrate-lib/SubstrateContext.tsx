@@ -2,9 +2,6 @@
 import React, { useReducer, useContext, useEffect } from "react";
 import PropTypes from "prop-types";
 import jsonrpc from "@polkadot/types/interfaces/jsonrpc";
-import { TypeRegistry } from "@polkadot/types/create";
-import { BN } from "@polkadot/util";
-
 
 import {
   substrateSocketConnect,
@@ -40,8 +37,6 @@ const initialState = {
   transferStatus: null,
   transferStatusBlock: null
 };
-
-const registry = new TypeRegistry();
 
 /**
  *
@@ -94,14 +89,24 @@ const SubstrateContextProvider = (props: { [x: string]: any; }) => {
   });
 
   const [state, dispatch] = useReducer(reducer, initialState);
-  substrateSocketConnect(state, dispatch)
+  substrateSocketConnect(state, {
+    onConnectInit: () => dispatch({ type: "CONNECT_INIT", payload: undefined }),
+    onConnect: (_api) => dispatch({ type: "CONNECT", payload: _api }),
+    onConnectSucccess: () =>
+      dispatch({ type: "CONNECT_SUCCESS", payload: undefined }),
+    onConnectError: (err) => dispatch({ type: "CONNECT_ERROR", payload: err }),
+  });
 
   useEffect(() => {
     const { apiState, keyringState } = state;
     if (apiState === "READY" && !keyringState && !keyringLoadAll) {
       console.log('load')
       keyringLoadAll = true;
-      loadAccounts(config, state, dispatch);
+      loadAccounts(config, state.api, {
+        onLoadKeyring: () => dispatch({ type: 'LOAD_KEYRING', payload: undefined }),
+        onSetKeyring: (_keyring) => dispatch({ type: 'SET_KEYRING', payload: _keyring }),
+        onErrorKeyring: () => dispatch({ type: 'KEYRING_ERROR', payload: undefined })
+      });
       setSelectedAsset(config.assets[0].assetId)
     }
   }, [state, dispatch]);
@@ -149,7 +154,24 @@ const SubstrateContextProvider = (props: { [x: string]: any; }) => {
       amount,
       destinationDomainId,
       address,
-      dispatch
+      {
+        onInBlock: (extrensicStatus) => {
+          // TODO: merge it to one action
+          dispatch({ type: 'SET_TRANSFER_STATUS', payload: 'In block' });
+          dispatch({
+            type: 'SET_TRANSFER_STATUS_BLOCK',
+            payload: extrensicStatus.asInBlock.toString(),
+          });
+        },
+        onFinalized: (extrensicStatus) => {
+          // TODO: merge it to one action
+          dispatch({ type: 'SET_TRANSFER_STATUS', payload: 'Finalized' });
+          dispatch({
+            type: 'SET_TRANSFER_STATUS_BLOCK',
+            payload: extrensicStatus.asFinalized.toString(),
+          });
+        },
+      }
     );
   }
 

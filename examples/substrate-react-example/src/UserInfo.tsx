@@ -2,9 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { BN, formatBalance } from "@polkadot/util";
 import { useSubstrateState, useSubstrate } from "./substrate-lib";
-// type import for TypeScript
-import { AccountData } from '@polkadot/types/interfaces';
-// import {getBasicFee} from "@buildwithsygma/sygma-sdk-core";
 
 type LocalData = {
   balance: BN;
@@ -44,54 +41,6 @@ function Main(props: any): JSX.Element {
       initialAddress.length > 0 &&
       setCurrentAccount(keyring.getPair(initialAddress));
   }, [currentAccount, setCurrentAccount, keyring, initialAddress]);
-
-  // useEffect(() => {
-  //   if (currentAccount) {
-  //     const getMetadata = async () => {
-  //       try {
-  //         const assetRes = await api.query.assets.account(
-  //           2000,
-  //           currentAccount.address
-  //         );
-  //         console.log("🚀 ~ file: UserInfo.tsx:58 ~ getMetadata ~ assetRes", assetRes)
-  //         const xsmMultiAssetId = {
-  //           concrete: {
-  //             parents: 1,
-  //             interior: {
-  //               x3: [
-  //                 { parachain: 2004 },
-  //                 { generalKey: "0x7379676d61" },
-  //                 { generalKey: "0x0" },
-  //               ],
-  //             },
-  //           },
-  //         };
-
-  //         const feeRes = await api.query.sygmaBasicFeeHandler.assetFees([
-  //           1, // Destination DomainID
-  //           xsmMultiAssetId
-  //         ]);
-
-  //         const chainDecimals = api.registry.chainDecimals[0];
-  //         const balance: AccountData = await api.query.system.account(
-  //           currentAccount.address
-  //         );
-
-  //         setAccountData({
-  //           balance: balance.data.free,
-  //           accountName: currentAccount.meta.name,
-  //           address: currentAccount.address ?? "",
-  //           balanceOfTokens: assetRes.value.balance,
-  //           basicFee: feeRes.value,
-  //           chainDecimals: chainDecimals,
-  //         });
-  //       } catch (e) {
-  //         console.error(e);
-  //       }
-  //     };
-  //     getMetadata();
-  //   }
-  // }, [api.rpc.state, currentAccount]);
 
   return (
     <div>
