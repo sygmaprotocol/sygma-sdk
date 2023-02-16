@@ -13,7 +13,6 @@ export type SubstrateConfigAssetType = {
 };
 export type SubstrateConfigType = {
   appName: string;
-  CUSTOM_RPC_METHODS: {};
   provider_socket: string;
   assets: SubstrateConfigAssetType[];
 };

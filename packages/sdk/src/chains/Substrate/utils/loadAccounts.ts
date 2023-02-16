@@ -3,7 +3,7 @@ import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { keyring as Keyring } from '@polkadot/ui-keyring';
 import { isTestChain } from '@polkadot/util';
 
-import { SubstrateConfigType } from '../../../types';
+import { SubstrateConfigType } from '../types';
 
 import { retrieveChainInfo } from '../utils';
 

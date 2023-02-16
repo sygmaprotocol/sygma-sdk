@@ -18,7 +18,7 @@ export type SubstrateSocketConnectionCallbacksType = {
    * Callback for when an error occurs with the connection.
    */
   onConnectError?: (error: Event) => void;
-}
+};
 /**
  * Connects to a Substrate node using WebSockets API by creating a new WsProvider instance with the given socket address.
  *

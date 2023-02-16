@@ -1,6 +1,6 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { TypeRegistry } from '@polkadot/types/create';
-import { SubstrateConfigType } from '../../../types';
+import { SubstrateConfigType } from '../types';
 import { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
 import { keyring as Keyring } from '@polkadot/ui-keyring';
 
@@ -57,7 +57,6 @@ describe('utils', () => {
       config = {
         appName: 'test',
         provider_socket: '',
-        CUSTOM_RPC_METHODS: '',
         assets: [
           {
             assetName: 'USDT',

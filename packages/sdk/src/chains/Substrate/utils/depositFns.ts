@@ -5,7 +5,7 @@ import type { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces'
 
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 
-import { XcmMultiAssetIdType } from '../../../types';
+import { XcmMultiAssetIdType } from '../types';
 
 export type DepositCallbacksType = {
   /**
