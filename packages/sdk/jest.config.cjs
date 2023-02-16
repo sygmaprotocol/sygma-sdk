@@ -10,5 +10,4 @@ module.exports = {
     moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
     // setupFilesAfterEnv: ["./setupTests.ts"]
     testTimeout: 15000,
-    modulePathIgnorePatterns: ["<rootDir>/integration/test/chainbridge.e2e.test.ts"]
 }
