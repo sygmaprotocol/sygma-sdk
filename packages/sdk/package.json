@@ -15,7 +15,9 @@
 		"testOracle": "jest --watchAll --testPathPattern=src/fee/__test__/",
 		"run:all": "concurrently \"yarn run prepareNodes\" \"yarn run test\"",
 		"build": "tsc -p tsconfig.build.json",
-		"lint": "eslint 'src/**/*.ts'",
+		"lint": "yarn run lint:types && yarn run lint:style",
+		"lint:types": "tsc --noEmit --pretty",
+		"lint:style": "eslint 'src/**/*.ts'",
 		"lint:fix": "yarn run lint --fix",
 		"run:nodes": "docker-compose -f docker-compose.yml up",
 		"clean": "rm -rf ./dist"

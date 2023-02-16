@@ -8,7 +8,7 @@ import { Erc20Detailed } from './Erc20Detailed';
 
 export class Erc20DetailedFactory {
   static connect(address: string, signerOrProvider: Signer | Provider): Erc20Detailed {
-    return new Contract(address, _abi, signerOrProvider) as Erc20Detailed;
+    return new Contract(address, _abi, signerOrProvider) as unknown as Erc20Detailed;
   }
 }
 
