@@ -5,8 +5,8 @@ import { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
 import { keyring as Keyring } from '@polkadot/ui-keyring';
 
 import * as Utils from '../utils';
-
-const registry = new TypeRegistry();
+import {retrieveChainInfo} from  '../utils/retrieveChainInfo';
+import {LoadAccountsCallbacksType} from '../utils/loadAccounts';
 
 jest.mock('@polkadot/extension-dapp', () => ({
   web3Enable: jest.fn().mockResolvedValue(true),
@@ -23,6 +23,17 @@ jest.mock('@polkadot/extension-dapp', () => ({
     },
   ]),
 }));
+jest.mock('../utils/retrieveChainInfo', () => {
+  const registry = new TypeRegistry();
+
+  return {
+    retrieveChainInfo: jest.fn().mockResolvedValue({
+      systemChain: 'Development',
+      // @ts-ignore-line
+      systemChainType: registry.createType('ChainType', 'Development'),
+    }),
+  };
+});
 
 const mockApiPromise = {
   on: (arg: any, fn: () => any) => fn(),
@@ -39,8 +50,8 @@ jest.mock('@polkadot/api', () => ({
 describe('utils', () => {
   describe('loadAccounts', () => {
     let config: SubstrateConfigType;
-    let state: { api: ApiPromise };
-    let dispatch: jest.Mock;
+    let api: ApiPromise;
+    let callbacks: LoadAccountsCallbacksType;
 
     beforeEach(() => {
       config = {
@@ -62,24 +73,24 @@ describe('utils', () => {
           },
         ],
       };
-      state = { api: new ApiPromise() };
-      jest.spyOn(Utils, 'retrieveChainInfo').mockResolvedValue({
-        systemChain: 'Development',
-        // @ts-ignore-line
-        systemChainType: registry.createType('ChainType', 'Development'),
-      });
+      api = new ApiPromise();
+
       jest.spyOn(Keyring, 'loadAll').mockImplementation();
-      dispatch = jest.fn();
+      callbacks = {
+        onLoadKeyring: jest.fn(),
+        onSetKeyring: jest.fn(),
+        onErrorKeyring: jest.fn()
+      }
     });
 
     it('should call web3Enable with the correct parameter', async () => {
-      await Utils.loadAccounts(config, state, dispatch);
+      await Utils.loadAccounts(config, api, callbacks);
 
       expect(web3Enable).toHaveBeenCalledWith('test');
     });
 
     it('should call web3Accounts and map the accounts correctly', async () => {
-      await Utils.loadAccounts(config, state, dispatch);
+      await Utils.loadAccounts(config, api, callbacks);
 
       expect(web3Accounts).toHaveBeenCalled();
 
@@ -96,33 +107,33 @@ describe('utils', () => {
     });
 
     it('should call retrieveChainInfo and isTestChain correctly', async () => {
-      await Utils.loadAccounts(config, state, dispatch);
+      await Utils.loadAccounts(config, api, callbacks);
 
       expect(Keyring.loadAll).toHaveBeenCalled();
 
-      expect(Utils.retrieveChainInfo).toHaveBeenCalledWith(state.api);
+      expect(retrieveChainInfo).toHaveBeenCalledWith(api);
     });
 
-    it('should call dispatch with the correct parameters on success', async () => {
-      await Utils.loadAccounts(config, state, dispatch);
+    it('should call callbacks onLoadKeyring and onSetKeyring with the correct parameters on success', async () => {
+      await Utils.loadAccounts(config, api, callbacks);
 
       expect(Keyring.loadAll).toHaveBeenCalled();
 
-      expect(dispatch).toHaveBeenNthCalledWith(1, { type: 'LOAD_KEYRING', payload: undefined });
+      expect(callbacks.onLoadKeyring).toHaveBeenCalled();
 
-      expect(dispatch).toHaveBeenNthCalledWith(2, { type: 'SET_KEYRING', payload: Keyring });
+      expect(callbacks.onSetKeyring).toHaveBeenCalledWith( Keyring );
     });
 
-    it('should call dispatch with the correct parameters when failed', async () => {
+    it('should call callabacks onLoadKeyring and onErrorKeyring with the correct parameters when failed', async () => {
       // jest.spyOn(Keyring, 'loadAll').mockClear();
-      jest.spyOn(Keyring, 'loadAll').mockImplementation(() => {throw 'No'})
-      await Utils.loadAccounts(config, state, dispatch);
+      jest.spyOn(Keyring, 'loadAll').mockImplementation(() => {throw new Error('No')})
+      await Utils.loadAccounts(config, api, callbacks);
 
       expect(Keyring.loadAll).toHaveBeenCalled();
 
-      expect(dispatch).toHaveBeenNthCalledWith(1, { type: 'LOAD_KEYRING', payload: undefined });
+      expect(callbacks.onLoadKeyring).toHaveBeenCalled();
 
-      expect(dispatch).toHaveBeenNthCalledWith(2, { type: 'KEYRING_ERROR', payload: undefined });
+      expect(callbacks.onErrorKeyring).toHaveBeenCalledWith(new Error("No"));
     });
   });
 });

@@ -1,6 +1,7 @@
 import { TypeRegistry } from '@polkadot/types/create';
 
 import { substrateSocketConnect } from '../utils';
+import { SubstrateSocketConnectionCallbacksType } from '../utils/substrateSocketConnect';
 
 const registry = new TypeRegistry();
 
@@ -36,8 +37,8 @@ jest.mock('@polkadot/api', () => ({
 describe('utils', () => {
   describe('substrateSocketConnect', () => {
     let state: { apiState: any; socket: any; jsonrpc: any };
-    let dispatch: jest.Mock<any, any>;
-
+    // let dispatch: jest.Mock<any, any>;
+    let callbacks: SubstrateSocketConnectionCallbacksType;
     beforeEach(() => {
       state = {
         apiState: '',
@@ -45,39 +46,44 @@ describe('utils', () => {
         jsonrpc: {},
       };
 
-      dispatch = jest.fn();
+      callbacks = {
+        onConnectInit: jest.fn(),
+        onConnect: jest.fn(),
+        onConnectSucccess: jest.fn(),
+        onConnectError: jest.fn(),
+      };
     });
 
     it('should return if apiState is set', () => {
       state.apiState = 'connected';
 
-      substrateSocketConnect(state, dispatch);
+      substrateSocketConnect(state, callbacks);
 
-      expect(dispatch).not.toHaveBeenCalled();
+      expect(callbacks.onConnectInit).not.toHaveBeenCalled();
     });
 
-    it('should call dispatch with CONNECT_INIT type', () => {
-      substrateSocketConnect(state, dispatch);
+    it('should call onConnectInit', () => {
+      substrateSocketConnect(state, callbacks);
 
-      expect(dispatch).toHaveBeenCalledWith({ type: 'CONNECT_INIT', payload: undefined });
+      expect(callbacks.onConnectInit).toHaveBeenCalled();
     });
 
-    it('should call dispatch with CONNECT type and API as payload when connected event is emitted', () => {
-      substrateSocketConnect(state, dispatch);
+    it('should call onConnect with API as payload when connected event is emitted', () => {
+      substrateSocketConnect(state, callbacks);
 
-      expect(dispatch).toHaveBeenCalledWith({ type: 'CONNECT', payload: mockApiPromise });
+      expect(callbacks.onConnect).toHaveBeenCalledWith(mockApiPromise);
     });
 
-    it('should call dispatch with CONNECT_SUCCESS type when ready event is emitted', () => {
-      substrateSocketConnect(state, dispatch);
+    it('should call onConnectSucccess when ready event is emitted', () => {
+      substrateSocketConnect(state, callbacks);
 
-      expect(dispatch).toHaveBeenCalledWith({ type: 'CONNECT_SUCCESS', payload: undefined });
+      expect(callbacks.onConnectSucccess).toHaveBeenCalledWith(mockApiPromise);
     });
 
-    it('should call dispatch with CONNECT_ERROR type and error as payload when error event is emitted', async () => {
-      const conect = substrateSocketConnect(state, dispatch);
-      await conect?.isReadyOrError
-      expect(dispatch).toHaveBeenLastCalledWith({ type: 'CONNECT_ERROR'});
+    it('should call onConnectError with error as argument when error event is emitted', async () => {
+      const connect = substrateSocketConnect(state, callbacks);
+      await connect?.isReadyOrError
+      expect(callbacks.onConnectError).toHaveBeenCalled();
     });
   });
 });

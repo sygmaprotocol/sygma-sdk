@@ -3,8 +3,9 @@ import { BN } from '@polkadot/util';
 import { web3FromAddress } from '@polkadot/extension-dapp';
 import { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 import { XcmMultiAssetIdType } from '../../../types';
+import {DepositCallbacksType} from '../utils/depositFns'
 
-import * as Utils from '../utils';
+import * as Utils from '../utils/depositFns';
 
 jest.mock('@polkadot/api');
 jest.mock('@polkadot/extension-inject/types');
@@ -21,6 +22,7 @@ describe('deposit', () => {
   let amount: string;
   let domainId: string;
   let address: string;
+  let callbacksMockFns: DepositCallbacksType;
 
   beforeEach(() => {
     api = new ApiPromise();
@@ -35,10 +37,15 @@ describe('deposit', () => {
 
     address = 'testaddress';
     jest.spyOn(Utils, 'calculateBigNumber').mockReturnValue(new BN(110));
+
+    callbacksMockFns = {
+      onInBlock: jest.fn(),
+      onFinalized: jest.fn(),
+      onError: jest.fn()
+    }
   });
 
   it('should call calculateBigNumber with correct params', async () => {
-    const dispatchMockFn = jest.fn();
     const signAndSendMockFn = jest.fn();
 
     api = {
@@ -60,14 +67,13 @@ describe('deposit', () => {
       amount,
       domainId,
       address,
-      dispatchMockFn,
+      callbacksMockFns,
     );
 
     expect(Utils.calculateBigNumber).toHaveBeenCalledWith(api, amount);
   });
 
   it('should call web3FromAddress with correct params', async () => {
-    const dispatchMockFn = jest.fn();
     const signAndSendMockFn = jest.fn();
 
     api = {
@@ -89,14 +95,13 @@ describe('deposit', () => {
       amount,
       domainId,
       address,
-      dispatchMockFn,
+      callbacksMockFns,
     );
 
     expect(web3FromAddress).toHaveBeenCalledWith(currentAccount.address);
   });
 
   it('should call sygmaBridge.deposit with correct params', async () => {
-    const dispatchMockFn = jest.fn();
     const signAndSendMockFn = jest.fn();
 
     api = {
@@ -118,7 +123,7 @@ describe('deposit', () => {
       amount,
       domainId,
       address,
-      dispatchMockFn,
+      callbacksMockFns,
     );
 
     expect(api.tx.sygmaBridge.deposit).toHaveBeenCalledWith(
@@ -142,7 +147,6 @@ describe('deposit', () => {
 
 
   it('should call signAndSend', async () => {
-    const dispatchMockFn = jest.fn();
     const signAndSendMockFn = jest.fn();
     api = {
       tx: {
@@ -163,16 +167,14 @@ describe('deposit', () => {
       amount,
       domainId,
       address,
-      dispatchMockFn,
+      callbacksMockFns,
     );
 
     expect(signAndSendMockFn).toHaveBeenCalledTimes(1);
   });
 
   it('should call handleTxExtrinsicResult', async () => {
-    // const api = new ApiPromise();
     const unsub = jest.fn();
-    const dispatchMockFn = jest.fn();
     const signAndSendMockFn = jest.fn().mockImplementationOnce((account, options, callback) => {
       callback('someResult')
       Promise.resolve( unsub)
@@ -190,15 +192,13 @@ describe('deposit', () => {
       },
     };
     jest.spyOn(Utils, 'handleTxExtrinsicResult').mockImplementation()
-    await Utils.deposit(api, currentAccount, xcmMultiAssetId, amount, domainId, address, dispatchMockFn);
+    await Utils.deposit(api, currentAccount, xcmMultiAssetId, amount, domainId, address, callbacksMockFns);
     expect(Utils.handleTxExtrinsicResult).toHaveBeenCalledTimes(1);
-    expect(Utils.handleTxExtrinsicResult).toHaveBeenCalledWith(api, 'someResult', dispatchMockFn, undefined);
+    expect(Utils.handleTxExtrinsicResult).toHaveBeenCalledWith(api, 'someResult', undefined, callbacksMockFns);
   });
 
   it('should reject in case of error', async () => {
-    // const api = new ApiPromise();
     const unsub = jest.fn();
-    const dispatchMockFn = jest.fn();
     const signAndSendMockFn = jest.fn().mockRejectedValue(new Error("Sick error"));
     api = {
       tx: {
@@ -211,16 +211,15 @@ describe('deposit', () => {
         },
       },
     };
-    await expect(
-      Utils.deposit(
-        api,
-        currentAccount,
-        xcmMultiAssetId,
-        amount,
-        domainId,
-        address,
-        dispatchMockFn,
-      ),
-    ).rejects.toThrowError("Sick error");
+    await Utils.deposit(
+      api,
+      currentAccount,
+      xcmMultiAssetId,
+      amount,
+      domainId,
+      address,
+      callbacksMockFns,
+    )
+    expect(callbacksMockFns.onError).toBeCalledWith(new Error("Sick error"));
   });
 });

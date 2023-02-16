@@ -1,59 +1,47 @@
 import { ApiPromise, SubmittableResult } from '@polkadot/api';
+import {DepositCallbacksType} from '../utils/depositFns'
 
-import * as Utils from '../utils';
+import * as Utils from '../utils/depositFns';
 
 describe('handleTxExtrinsicResult', () => {
-  it('should dispatch the correct type and payload when status isInBlock', () => {
-    const api = {} as ApiPromise;
-    // @ts-ignore-line
-    const result: SubmittableResult  = { status: { isInBlock: true, asInBlock: '12345' } };
-    const dispatch = jest.fn();
-    const unsub = jest.fn();
-
-    Utils.handleTxExtrinsicResult(api, result, dispatch, unsub);
-
-    expect(dispatch).toHaveBeenCalledWith({ type: 'SET_TRANSFER_STATUS', payload: 'In block' });
-    expect(dispatch).toHaveBeenCalledWith({ type: 'SET_TRANSFER_STATUS_BLOCK', payload: '12345' });
+  let api: ApiPromise
+  let callbacksMockFns: DepositCallbacksType;
+  let unsub: () => void
+  beforeEach(() => {
+    api = {} as ApiPromise
+    unsub = jest.fn()
+    callbacksMockFns = {
+      onInBlock: jest.fn(),
+      onFinalized: jest.fn(),
+      onError: jest.fn()
+    }
   });
 
-  it('should dispatch the correct type and payload when status isFinalized', () => {
-    const api = {} as ApiPromise;
+  it('should call onInBlock when status isInBlock', () => {
+    // @ts-ignore-line
+    const result: SubmittableResult  = { status: { isInBlock: true, asInBlock: '12345' } };
+
+    Utils.handleTxExtrinsicResult(api, result, unsub, callbacksMockFns);
+
+    expect(callbacksMockFns.onInBlock).toHaveBeenCalledWith(result.status);
+  });
+
+  it('should call onFinalized when status isFinalized', () => {
     // @ts-ignore-line
     const result: SubmittableResult = { status: { isFinalized: true, asFinalized: '12345' } };
-    const dispatch = jest.fn();
-    const unsub = jest.fn();
 
-    Utils.handleTxExtrinsicResult(api, result, dispatch, unsub);
+    Utils.handleTxExtrinsicResult(api, result, unsub, callbacksMockFns);
 
-    expect(dispatch).toHaveBeenCalledWith({ type: 'SET_TRANSFER_STATUS', payload: 'Finalized' });
-    expect(dispatch).toHaveBeenCalledWith({ type: 'SET_TRANSFER_STATUS_BLOCK', payload: '12345' });
+    expect(callbacksMockFns.onFinalized).toHaveBeenCalledWith(result.status);
   });
 
   it('should call unsub when status isFinalized', () => {
-    const api = {} as ApiPromise;
     // @ts-ignore-line
     const result: SubmittableResult = { status: { isFinalized: true, asFinalized: '12345' } };
-    const dispatch = jest.fn();
-    const unsub = jest.fn();
 
-    Utils.handleTxExtrinsicResult(api, result, dispatch, unsub);
+    Utils.handleTxExtrinsicResult(api, result, unsub, callbacksMockFns);
 
     expect(unsub).toHaveBeenCalledTimes(1);
-  });
-
-  it('should throw error if any in events log', () => {
-    const api = {} as ApiPromise;
-    // @ts-ignore-line
-    const result: SubmittableResult = { status: { isFinalized: true, asFinalized: '12345' } };
-    const dispatch = jest.fn();
-    const unsub = jest.fn();
-    // mock throwErrorIfAny to throw an error
-    // so that we can test if the function throws an error or not
-    jest.spyOn(Utils, "throwErrorIfAny").mockImplementation();
-
-    Utils.handleTxExtrinsicResult(api, result, dispatch, unsub);
-
-    expect(Utils.throwErrorIfAny).toHaveBeenCalledWith(api, result, unsub)
   });
 
 });
