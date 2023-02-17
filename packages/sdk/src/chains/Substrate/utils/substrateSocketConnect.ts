@@ -28,7 +28,7 @@ export type SubstrateSocketConnectionCallbacksType = {
  */
 export const substrateSocketConnect = (
   state: {
-    apiState: string;
+    apiState: string | null | undefined;
     socket: string;
     jsonrpc: {
       [x: string]: Record<string, DefinitionRpcExt>;

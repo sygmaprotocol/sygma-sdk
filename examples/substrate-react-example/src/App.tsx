@@ -1,5 +1,4 @@
 import {
-  createRef,
   JSXElementConstructor,
   ReactElement,
   ReactFragment,
@@ -8,42 +7,46 @@ import "./App.css";
 
 import { SubstrateContextProvider, useSubstrateState } from "./substrate-lib";
 
-import UserInfo from "./UserInfo";
-import Form from "./Form";
-import TransferStatus from "./TransferStatus"
+import UserInfo from "./components/UserInfo";
+import Form from "./components/Form";
+import TransferStatus from "./components/TransferStatus"
+
+const Loader = (
+  text:
+    | string
+    | number
+    | boolean
+    | ReactElement<any, string | JSXElementConstructor<any>>
+    | ReactFragment
+    | null
+    | undefined
+) => <div>{text}</div>;
+
+const Message = (errObj: { target: { url: any } }) => (
+  <div>{`Connection to websocket '${errObj.target.url}' failed.`}</div>
+);
 
 function Main() {
-  const { apiState, apiError, keyringState } = useSubstrateState();
+  const { apiState, apiError, keyringState, keyring } = useSubstrateState()!;
 
-  const loader = (
-    text:
-      | string
-      | number
-      | boolean
-      | ReactElement<any, string | JSXElementConstructor<any>>
-      | ReactFragment
-      | null
-      | undefined
-  ) => <div>{text}</div>;
-
-  const message = (errObj: { target: { url: any } }) => (
-    <div>{`Connection to websocket '${errObj.target.url}' failed.`}</div>
-  );
-
-  if (apiState === "ERROR") return message(apiError);
-  else if (apiState !== "READY") return loader("Connecting to Substrate");
+  if (apiState === "ERROR") return Message(apiError);
+  if (apiState !== "READY") return Loader("Connecting to Substrate");
 
   if (keyringState !== "READY") {
-    return loader(
+    return Loader(
       "Loading accounts (please review any extension's authorization)"
     );
   }
 
-  const contextRef = createRef();
+  if (keyringState === "ERROR" && !keyring) {
+    return Loader(
+      "Can't get access to etensions accounts. Please authorize in extension"
+    );
+  }
 
   return (
     <div className="App">
-      <div ref={contextRef}>
+      <div>
         <h2 style={{ display: "flex", justifyContent: "center" }}>
           Minimal example Polkadot
         </h2>

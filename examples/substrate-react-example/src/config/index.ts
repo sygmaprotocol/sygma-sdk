@@ -1,27 +1,6 @@
-// TODO: choose proper place to export config and types
-export type XsmMultiAssetIdType = {
-  concrete: {
-    parents: number;
-    interior: {
-      x3: Array<{ parachain: number } | { generalKey: string }>;
-    };
-  };
-}
-export type SubstrateConfigAssetType = {
-  assetName: string;
-  assetId: number;
-  xsmMultiAssetId: XsmMultiAssetIdType;
-}
-export type SubstrateConfigType = {
-  appName: string;
-  CUSTOM_RPC_METHODS: {};
-  provider_socket: string;
-  assets: SubstrateConfigAssetType[]
-};
-
+import {SubstrateConfigType} from "@buildwithsygma/sygma-sdk-core";
 const config: SubstrateConfigType = {
   appName: "sygma-sdk-substrate-react-example",
-  CUSTOM_RPC_METHODS: {},
   provider_socket: "ws://127.0.0.1:9944",
   assets: [
     {

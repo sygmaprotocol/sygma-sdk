@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useEffect, useState } from "react";
 import { BN, formatBalance } from "@polkadot/util";
-import { useSubstrateState, useSubstrate } from "./substrate-lib";
+import { useSubstrateState, useSubstrate } from "../substrate-lib";
 
 type LocalData = {
   balance: BN;
@@ -12,18 +12,18 @@ type LocalData = {
   chainDecimals: number;
 };
 
-const acctAddr = (acct) => (acct ? acct.address : "");
+const acctAddr = (acct: { address: any; }) => (acct ? acct.address : "");
 
 function Main(props: any): JSX.Element {
-  const { api } = useSubstrateState();
+  const { api } = useSubstrateState()!;
 
   const {
     setCurrentAccount,
     state: { keyring, currentAccount, currentAccountData, selectedAssetBalance, selectedAssetFee },
-  } = useSubstrate();
+  } = useSubstrate()!;
 
   // Get the list of accounts we possess the private key for
-  const keyringOptions = keyring.getPairs().map((account) => ({
+  const keyringOptions = keyring.getPairs().map((account: { address: any; meta: { name: string; }; }) => ({
     key: account.address,
     value: account.address,
     text: account.meta.name.toUpperCase(),
@@ -91,6 +91,7 @@ function Main(props: any): JSX.Element {
 }
 
 export default function Metadata(props: any) {
-  const { api } = useSubstrateState();
+  const state = useSubstrateState()
+  const api = state?.api;
   return api.rpc && api.rpc.state ? <Main {...props} /> : null;
 }

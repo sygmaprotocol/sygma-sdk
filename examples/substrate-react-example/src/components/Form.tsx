@@ -1,7 +1,7 @@
 import React, {CSSProperties} from "react";
 import { useForm } from "react-hook-form";
 
-import { useSubstrateState, useSubstrate } from "./substrate-lib";
+import { useSubstrateState, useSubstrate } from "../substrate-lib";
 
 const inputStyles: CSSProperties = {
   display: "flex",

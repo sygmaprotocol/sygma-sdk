@@ -69,8 +69,8 @@ export const throwErrorIfAny = (
           // Other, CannotLookup, BadOrigin, no extra info
           throw new Error(error.toString());
         }
-      }); // end of forEach loop
-  } // end of if statement
+      });
+  }
 };
 
 /**
@@ -96,8 +96,14 @@ export const handleTxExtrinsicResult = (
   if (status.isInBlock) {
     console.log(`Transaction included at blockHash ${status.asInBlock.toString()}`);
     callbacks?.onInBlock?.(status);
+    result.events.forEach(({ event: { data, method, section }, phase }) => {
+      console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
+    });
   } else if (status.isFinalized) {
     console.log(`Transaction finalized at blockHash ${status.asFinalized.toString()}`);
+    result.events.forEach(({ event: { data, method, section }, phase }) => {
+      console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
+    });
     callbacks?.onFinalized?.(status);
     unsub();
   }
@@ -150,6 +156,5 @@ export const deposit = async (
   } catch (e) {
     console.error('Substrate deposit error: ', e);
     callbacks?.onError?.(e);
-    // return Promise.reject(e);
   }
 };

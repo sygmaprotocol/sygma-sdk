@@ -1,8 +1,6 @@
-// @ts-nocheck
-import React, { useReducer, useContext, useEffect } from "react";
-import PropTypes from "prop-types";
-import jsonrpc from "@polkadot/types/interfaces/jsonrpc";
 
+import React, { useReducer, useContext, useEffect } from "react";
+import jsonrpc from "@polkadot/types/interfaces/jsonrpc";
 import {
   substrateSocketConnect,
   loadAccounts,
@@ -12,16 +10,37 @@ import {
   deposit
 } from "@buildwithsygma/sygma-sdk-core";
 
-import config, { SubstrateConfigAssetType } from "../config";
+import config from "../config";
 
 const connectedSocket = config.provider_socket;
+
+type State = {
+  socket: any;
+  jsonrpc: any | null;
+  keyring: any | null;
+  keyringState: any | null;
+  api: any | null;
+  apiError: any | null;
+  apiState: string | null;
+  currentAccount: any | null;
+  currentAccountData: any | null;
+  selectedAsset: any | null;
+  selectedAssetBalance: number | null;
+  selectedAssetFee: number | null;
+  destinationDomainId: number;
+  homeChainId: number;
+  transferStatus: string | null;
+  transferStatusBlock: string | null;
+}
+type ActionType = { type: string ; payload?: any }
+
 /**
  * Initial state for `useReducer`
  */
-const initialState = {
+const initialState: State = {
   // These are the states
   socket: connectedSocket,
-  jsonrpc: { ...jsonrpc, ...config.CUSTOM_RPC_METHODS },
+  jsonrpc: {...jsonrpc},
   keyring: null,
   keyringState: null,
   api: null,
@@ -42,7 +61,7 @@ const initialState = {
  *
  * Reducer function for `useReducer`
  */
-const reducer = (state: any, action: { type: any; payload: any; }) => {
+const reducer = (state: State, action: ActionType): State => {
   switch (action.type) {
     case "CONNECT_INIT":
       return { ...state, apiState: "CONNECT_INIT" };
@@ -77,37 +96,63 @@ const reducer = (state: any, action: { type: any; payload: any; }) => {
   }
 };
 
-const SubstrateContext = React.createContext(undefined);
+export type SubstrateContextType = {
+  state: State;
+  setCurrentAccount: (acct: any) => void;
+  makeDeposit: (
+    amount: string,
+    address: string,
+    destinationDomainId: string
+  ) => void;
+};
+const SubstrateContext = React.createContext<SubstrateContextType| undefined>(undefined);
 
 let keyringLoadAll = false;
 
-const SubstrateContextProvider = (props: { [x: string]: any; }) => {
-  const neededPropNames = ["socket"];
-  neededPropNames.forEach((key) => {
-    initialState[key] =
-      typeof props[key] === "undefined" ? initialState[key] : props[key];
-  });
-
+const SubstrateContextProvider = (props: {
+  children:
+    | string
+    | number
+    | boolean
+    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+    | React.ReactFragment
+    | React.ReactPortal
+    | null
+    | undefined;
+}) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  substrateSocketConnect(state, {
-    onConnectInit: () => dispatch({ type: "CONNECT_INIT", payload: undefined }),
-    onConnect: (_api) => dispatch({ type: "CONNECT", payload: _api }),
-    onConnectSucccess: () =>
-      dispatch({ type: "CONNECT_SUCCESS", payload: undefined }),
-    onConnectError: (err) => dispatch({ type: "CONNECT_ERROR", payload: err }),
-  });
+  substrateSocketConnect(
+    state,
+    {
+      onConnectInit: () =>
+        dispatch({ type: "CONNECT_INIT", payload: undefined }),
+      onConnect: (_api) => dispatch({ type: "CONNECT", payload: _api }),
+      onConnectSucccess: () =>
+        dispatch({ type: "CONNECT_SUCCESS", payload: undefined }),
+      onConnectError: (err) =>
+        dispatch({ type: "CONNECT_ERROR", payload: err }),
+    }
+  );
+
+
 
   useEffect(() => {
     const { apiState, keyringState } = state;
     if (apiState === "READY" && !keyringState && !keyringLoadAll) {
-      console.log('load')
+      console.log("load");
       keyringLoadAll = true;
       loadAccounts(config, state.api, {
-        onLoadKeyring: () => dispatch({ type: 'LOAD_KEYRING', payload: undefined }),
-        onSetKeyring: (_keyring) => dispatch({ type: 'SET_KEYRING', payload: _keyring }),
-        onErrorKeyring: () => dispatch({ type: 'KEYRING_ERROR', payload: undefined })
+        onLoadKeyring: () =>
+          dispatch({ type: "LOAD_KEYRING", payload: undefined }),
+        onSetKeyring: (_keyring) =>
+          dispatch({ type: "SET_KEYRING", payload: _keyring }),
+        onErrorKeyring: () =>{
+          dispatch({ type: "KEYRING_ERROR", payload: undefined })
+          // @ts-ignore-line
+          return
+        }
       });
-      setSelectedAsset(config.assets[0].assetId)
+      setSelectedAsset(config.assets[0].assetId);
     }
   }, [state, dispatch]);
 
@@ -123,30 +168,42 @@ const SubstrateContextProvider = (props: { [x: string]: any; }) => {
 
   useEffect(() => {
     if (state.selectedAsset && state.api && state.currentAccount) {
-      getAssetBalance(state.api, state.selectedAsset.assetId, state.currentAccount).then(assetBalance => {
-        dispatch({type: 'SET_SELECTED_ASSET_BALANCE', payload: assetBalance})
-      })
+      getAssetBalance(
+        state.api,
+        state.selectedAsset.assetId,
+        state.currentAccount
+      ).then((assetBalance) => {
+        dispatch({ type: "SET_SELECTED_ASSET_BALANCE", payload: assetBalance });
+      });
     }
-  }, [state.selectedAsset, state.api, state.currentAccount])
+  }, [state.selectedAsset, state.api, state.currentAccount]);
 
   useEffect(() => {
     if (state.selectedAsset && state.api && state.destinationDomainId) {
-      getBasicFee(state.api, state.destinationDomainId, state.selectedAsset.xsmMultiAssetId).then(feeData => {
-        dispatch({type: 'SET_ASSET_FEE', payload: feeData})
-      })
+      getBasicFee(
+        state.api,
+        state.destinationDomainId,
+        state.selectedAsset.xsmMultiAssetId
+      ).then((feeData) => {
+        dispatch({ type: "SET_ASSET_FEE", payload: feeData });
+      });
     }
-  }, [state.selectedAsset, state.api, state.destinationDomainId])
+  }, [state.selectedAsset, state.api, state.destinationDomainId]);
 
   function setCurrentAccount(acct: any) {
     dispatch({ type: "SET_CURRENT_ACCOUNT", payload: acct });
   }
 
   function setSelectedAsset(assetId: number) {
-    const asset = config.assets.find(el => el.assetId === assetId)
-    dispatch({ type: "SET_SELECTED_ASSET", payload: asset })
+    const asset = config.assets.find((el) => el.assetId === assetId);
+    dispatch({ type: "SET_SELECTED_ASSET", payload: asset });
   }
 
-  function makeDeposit(amount: string, address: string, destinationDomainId: string) {
+  function makeDeposit(
+    amount: string,
+    address: string,
+    destinationDomainId: string
+  ) {
     deposit(
       state.api,
       state.currentAccount,
@@ -157,17 +214,17 @@ const SubstrateContextProvider = (props: { [x: string]: any; }) => {
       {
         onInBlock: (extrensicStatus) => {
           // TODO: merge it to one action
-          dispatch({ type: 'SET_TRANSFER_STATUS', payload: 'In block' });
+          dispatch({ type: "SET_TRANSFER_STATUS", payload: "In block" });
           dispatch({
-            type: 'SET_TRANSFER_STATUS_BLOCK',
+            type: "SET_TRANSFER_STATUS_BLOCK",
             payload: extrensicStatus.asInBlock.toString(),
           });
         },
         onFinalized: (extrensicStatus) => {
           // TODO: merge it to one action
-          dispatch({ type: 'SET_TRANSFER_STATUS', payload: 'Finalized' });
+          dispatch({ type: "SET_TRANSFER_STATUS", payload: "Finalized" });
           dispatch({
-            type: 'SET_TRANSFER_STATUS_BLOCK',
+            type: "SET_TRANSFER_STATUS_BLOCK",
             payload: extrensicStatus.asFinalized.toString(),
           });
         },
@@ -176,18 +233,15 @@ const SubstrateContextProvider = (props: { [x: string]: any; }) => {
   }
 
   return (
-    <SubstrateContext.Provider value={{ state, setCurrentAccount, makeDeposit }}>
+    <SubstrateContext.Provider
+      value={{ state, setCurrentAccount, makeDeposit }}
+    >
       {props.children}
     </SubstrateContext.Provider>
   );
 };
 
-// TODO: replace by proper type
-SubstrateContextProvider.propTypes = {
-  socket: PropTypes.string,
-};
-
 const useSubstrate = () => useContext(SubstrateContext);
-const useSubstrateState = () => useContext(SubstrateContext).state;
+const useSubstrateState = () => useContext(SubstrateContext)?.state;
 
 export { SubstrateContextProvider, useSubstrate, useSubstrateState };

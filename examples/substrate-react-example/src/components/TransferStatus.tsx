@@ -1,12 +1,12 @@
 import React from "react";
-import { useSubstrateState, useSubstrate } from "./substrate-lib";
+import { useSubstrateState } from "../substrate-lib";
 
 
-function Main(props: any) {
+function TransferStatus() {
   const {transferStatus, transferStatusBlock} = useSubstrateState()
   return(<div>
     {transferStatus && <div>Transfer status: {transferStatus}</div>}
     {transferStatusBlock && <div>Block: {transferStatusBlock}</div>}
   </div>)
 }
-export default Main
+export default TransferStatus

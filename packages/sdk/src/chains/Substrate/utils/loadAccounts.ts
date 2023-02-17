@@ -37,7 +37,12 @@ export const loadAccounts = async (
 ): Promise<void> => {
   callbacks?.onLoadKeyring?.();
   try {
-    await web3Enable(config.appName);
+    // For some reason web3Enable promise is not rejecting, only console.error
+    const auth = await web3Enable(config.appName);
+    if (!auth || (auth as []).length === 0) {
+      throw new Error('unauthorized');
+    }
+
     let allAccounts = await web3Accounts();
     allAccounts = allAccounts.map(({ address, meta }) => ({
       address,
@@ -52,10 +57,10 @@ export const loadAccounts = async (
     const isDevelopment =
       systemChainType.isDevelopment || systemChainType.isLocal || isTestChain(systemChain);
     Keyring.loadAll({ isDevelopment }, allAccounts);
-
     callbacks?.onSetKeyring?.(Keyring);
   } catch (e) {
     console.error(e);
     callbacks?.onErrorKeyring?.(e);
+    return Promise.reject(e);
   }
 };
