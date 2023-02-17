@@ -7,6 +7,16 @@ import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 
 import { XcmMultiAssetIdType } from '../types';
 
+export type DepositEventDataType = {
+  depositData: string;
+  depositNonce: string;
+  destDomainId: string;
+  handlerResponse: string;
+  resourceId: string;
+  sender: string;
+  transferType: string;
+};
+
 export type DepositCallbacksType = {
   /**
    * Callback for when the transaction is included in a block.
@@ -20,6 +30,10 @@ export type DepositCallbacksType = {
    * Callback for when an error occurs.
    */
   onError?: (error: unknown) => void;
+  /**
+   * Callback for sygmaBridge.Deposit event on finalize stage
+   */
+  onDepositEvent?: (data: DepositEventDataType) => void;
 };
 
 /**
@@ -96,14 +110,17 @@ export const handleTxExtrinsicResult = (
   if (status.isInBlock) {
     console.log(`Transaction included at blockHash ${status.asInBlock.toString()}`);
     callbacks?.onInBlock?.(status);
-    result.events.forEach(({ event: { data, method, section }, phase }) => {
-      console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
-    });
   } else if (status.isFinalized) {
     console.log(`Transaction finalized at blockHash ${status.asFinalized.toString()}`);
-    result.events.forEach(({ event: { data, method, section }, phase }) => {
-      console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
+
+    result.events.forEach(({ event: { data, method, section } }) => {
+      // Search for Deposit event
+      if (section === 'sygmaBridge' && method === 'Deposit') {
+        console.log(`${section}.${method}.event data:`, data.toHuman());
+        callbacks?.onDepositEvent?.(data.toHuman() as DepositEventDataType);
+      }
     });
+
     callbacks?.onFinalized?.(status);
     unsub();
   }

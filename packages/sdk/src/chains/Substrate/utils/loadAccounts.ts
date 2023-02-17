@@ -61,6 +61,5 @@ export const loadAccounts = async (
   } catch (e) {
     console.error(e);
     callbacks?.onErrorKeyring?.(e);
-    return Promise.reject(e);
   }
 };

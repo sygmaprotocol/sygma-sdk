@@ -11,3 +11,4 @@ export {
   handleTxExtrinsicResult,
   calculateBigNumber,
 } from './depositFns';
+export { listenForEvent } from './listenForEvent';

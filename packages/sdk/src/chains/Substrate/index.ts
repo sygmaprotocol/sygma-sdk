@@ -15,4 +15,5 @@ export {
   throwErrorIfAny,
   handleTxExtrinsicResult,
   calculateBigNumber,
+  listenForEvent,
 } from './utils';

@@ -7,39 +7,37 @@ import { getAssetBalance } from '../utils';
 
 const registry = new TypeRegistry();
 
-describe('utils', () => {
-  describe('getAssetBalance', () => {
-    let api: ApiPromise;
-    let currentAccount: InjectedAccountWithMeta;
+describe('getAssetBalance', () => {
+  let api: ApiPromise;
+  let currentAccount: InjectedAccountWithMeta;
 
-    beforeEach(async () => {
-      const assetBalance: AssetBalance = registry.createType('AssetBalance', {
-        balance: 123,
-      });
-      api = {
-        query: {
-          assets: {
-            // @ts-ignore-line
-            account: jest.fn().mockResolvedValue(assetBalance),
-          },
-        },
-      };
-      currentAccount = {
-        address: '0x123',
-        meta: {
-          source: '',
-        },
-      };
+  beforeEach(async () => {
+    const assetBalance: AssetBalance = registry.createType('AssetBalance', {
+      balance: 123,
     });
+    api = {
+      query: {
+        assets: {
+          // @ts-ignore-line
+          account: jest.fn().mockResolvedValue(assetBalance),
+        },
+      },
+    };
+    currentAccount = {
+      address: '0x123',
+      meta: {
+        source: '',
+      },
+    };
+  });
 
-    it('should return the asset balance for the given account', async () => {
-      const assetId = 1;
+  it('should return the asset balance for the given account', async () => {
+    const assetId = 1;
 
-      const expectedAssetBalance = await api.query.assets.account(assetId, currentAccount.address);
+    const expectedAssetBalance = await api.query.assets.account(assetId, currentAccount.address);
 
-      const actualAssetBalance = await getAssetBalance(api, assetId, currentAccount);
+    const actualAssetBalance = await getAssetBalance(api, assetId, currentAccount);
 
-      expect(actualAssetBalance).toEqual(expectedAssetBalance);
-    });
+    expect(actualAssetBalance).toEqual(expectedAssetBalance);
   });
 });
