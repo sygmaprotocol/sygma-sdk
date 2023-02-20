@@ -12,11 +12,10 @@ describe('getBasicFee', () => {
     const api: ApiPromise = {
       query: {
         sygmaBasicFeeHandler: {
-          // @ts-ignore-line
           assetFees: jest.fn().mockResolvedValue(result),
         },
       },
-    };
+    } as unknown as ApiPromise;
 
     const domainId = 1;
     const xsmMultiAssetId = {};
@@ -34,11 +33,10 @@ describe('getBasicFee', () => {
     const api: ApiPromise = {
       query: {
         sygmaBasicFeeHandler: {
-          // @ts-ignore-line
           assetFees: jest.fn().mockResolvedValue(result),
         },
       },
-    };
+    } as unknown as ApiPromise;
     const domainId = 2; // some non-existent domain id;
     const xsmMultiAssetId = {};
 

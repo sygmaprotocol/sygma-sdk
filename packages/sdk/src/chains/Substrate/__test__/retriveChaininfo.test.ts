@@ -13,13 +13,11 @@ describe('retrieveChainInfo', () => {
     api = {
       rpc: {
         system: {
-          // @ts-ignore-line
           chain: jest.fn().mockResolvedValue('local'),
-          // @ts-ignore-line
           chainType: jest.fn().mockResolvedValue(registry.createType('ChainType', 'Development') as unknown as ChainType),
         },
       },
-    };
+    } as unknown as ApiPromise;
   });
 
   it('retrieves the system chain and chain type', async () => {
@@ -34,8 +32,7 @@ describe('retrieveChainInfo', () => {
   });
 
   it('handles chainType being undefined', async () => {
-    // @ts-ignore-line
-    api.rpc.system.chainType = undefined;
+    (api.rpc.system.chainType as any) = undefined;
 
     const result = await retrieveChainInfo(api);
 

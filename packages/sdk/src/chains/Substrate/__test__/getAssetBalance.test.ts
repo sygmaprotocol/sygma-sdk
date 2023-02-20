@@ -18,11 +18,10 @@ describe('getAssetBalance', () => {
     api = {
       query: {
         assets: {
-          // @ts-ignore-line
           account: jest.fn().mockResolvedValue(assetBalance),
         },
       },
-    };
+    } as unknown as ApiPromise;
     currentAccount = {
       address: '0x123',
       meta: {

@@ -21,8 +21,7 @@ describe('handleTxExtrinsicResult', () => {
   });
 
   it('should call onInBlock when status isInBlock', () => {
-    // @ts-ignore-line
-    const result: SubmittableResult = { status: { isInBlock: true, asInBlock: '12345' } };
+    const result: SubmittableResult = { status: { isInBlock: true, asInBlock: '12345' } } as unknown as SubmittableResult;
 
     Utils.handleTxExtrinsicResult(api, result, unsub, callbacksMockFns);
 
@@ -30,8 +29,7 @@ describe('handleTxExtrinsicResult', () => {
   });
 
   it('should call onFinalized when status isFinalized', () => {
-    // @ts-ignore-line
-    const result: SubmittableResult = { status: { isFinalized: true, asFinalized: '12345' }, events: [] };
+    const result: SubmittableResult = { status: { isFinalized: true, asFinalized: '12345' }, events: [] } as unknown as SubmittableResult;
 
     Utils.handleTxExtrinsicResult(api, result, unsub, callbacksMockFns);
 
@@ -39,8 +37,7 @@ describe('handleTxExtrinsicResult', () => {
   });
 
   it('should call unsub when status isFinalized', () => {
-    // @ts-ignore-line
-    const result: SubmittableResult = { status: { isFinalized: true, asFinalized: '12345' }, events: [] };
+    const result: SubmittableResult = { status: { isFinalized: true, asFinalized: '12345' }, events: [] } as unknown as SubmittableResult;
 
     Utils.handleTxExtrinsicResult(api, result, unsub, callbacksMockFns);
 
@@ -52,20 +49,17 @@ describe('handleTxExtrinsicResult', () => {
       events: {
         system: {
           ExtrinsicFailed: {
-            // @ts-ignore-line
             is: jest.fn().mockReturnValue(false)
           }
         }
       }
-    }
+    } as unknown as ApiPromise
 
     const result: SubmittableResult = {
-      // @ts-ignore-line
       status: { isFinalized: true, asFinalized: '12345' },
       events: [
         {
           event: {
-            // @ts-ignore-line
             data: {
               toHuman: () => ({
                 depositData: '0x00',
@@ -82,7 +76,7 @@ describe('handleTxExtrinsicResult', () => {
           },
         },
       ],
-    };
+    } as unknown as SubmittableResult;
     Utils.handleTxExtrinsicResult(api, result, unsub, callbacksMockFns);
     expect(callbacksMockFns.onDepositEvent).toHaveBeenCalledWith({
       depositData: '0x00',

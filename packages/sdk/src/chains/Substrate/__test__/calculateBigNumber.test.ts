@@ -7,11 +7,10 @@ describe('calculateBigNumber', () => {
 
   beforeEach(() => {
     api = {
-      // @ts-ignore-line
       registry: {
         chainDecimals: [18],
       },
-    };
+    } as unknown as ApiPromise;
   });
 
   it('should return a BN instance', () => {

@@ -17,14 +17,13 @@ describe('getNativeTokenBalance', () => {
         },
       },
     );
-    const api: ApiPromise = {
+    const api = {
       query: {
         system: {
-          // @ts-ignore-line
           account: jest.fn().mockResolvedValue(accountData),
         },
       },
-    };
+    } as unknown as ApiPromise;
     const currentAccount: InjectedAccountWithMeta = {
       address: 'xyz',
       meta: {

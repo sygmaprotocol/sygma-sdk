@@ -29,7 +29,6 @@ jest.mock('../utils/retrieveChainInfo', () => {
   return {
     retrieveChainInfo: jest.fn().mockResolvedValue({
       systemChain: 'Development',
-      // @ts-ignore-line
       systemChainType: registry.createType('ChainType', 'Development'),
     }),
   };
@@ -136,8 +135,7 @@ describe('loadAccounts', () => {
   });
 
   it('should call callabacks onLoadKeyring if web3Enable returns []', async () => {
-    // @ts-ignore-line
-    web3Enable.mockResolvedValue([]);
+    (web3Enable as jest.Mock<any, any, any>).mockResolvedValue([]);
     await Utils.loadAccounts(config, api, callbacks);
 
     expect(Keyring.loadAll).toHaveBeenCalled();

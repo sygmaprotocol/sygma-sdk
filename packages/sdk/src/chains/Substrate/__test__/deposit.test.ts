@@ -51,14 +51,12 @@ describe('deposit', () => {
     api = {
       tx: {
         sygmaBridge: {
-          // @ts-ignore-line
           deposit: jest.fn().mockImplementationOnce(() =>{
-            // @ts-ignore-line
             return ({ signAndSend: signAndSendMockFn })
         }),
         },
       },
-    };
+    } as unknown as ApiPromise;
 
     await Utils.deposit(
       api,
@@ -79,14 +77,12 @@ describe('deposit', () => {
     api = {
       tx: {
         sygmaBridge: {
-          // @ts-ignore-line
           deposit: jest.fn().mockImplementationOnce(() =>{
-            // @ts-ignore-line
             return ({ signAndSend: signAndSendMockFn })
         }),
         },
       },
-    };
+    } as unknown as ApiPromise;
 
     await Utils.deposit(
       api,
@@ -107,14 +103,12 @@ describe('deposit', () => {
     api = {
       tx: {
         sygmaBridge: {
-          // @ts-ignore-line
           deposit: jest.fn().mockImplementationOnce(() =>{
-            // @ts-ignore-line
             return ({ signAndSend: signAndSendMockFn })
         }),
         },
       },
-    };
+    } as unknown as ApiPromise;
 
     await Utils.deposit(
       api,
@@ -151,14 +145,12 @@ describe('deposit', () => {
     api = {
       tx: {
         sygmaBridge: {
-          // @ts-ignore-line
           deposit: jest.fn().mockImplementationOnce(() =>{
-            // @ts-ignore-line
             return ({ signAndSend: signAndSendMockFn })
         }),
         },
       },
-    };
+    } as unknown as ApiPromise;
 
     await Utils.deposit(
       api,
@@ -183,14 +175,12 @@ describe('deposit', () => {
     api = {
       tx: {
         sygmaBridge: {
-          // @ts-ignore-line
           deposit: jest.fn().mockImplementationOnce(() =>{
-            // @ts-ignore-line
             return ({ signAndSend: signAndSendMockFn })
           }),
         },
       },
-    };
+    } as unknown as ApiPromise;
     jest.spyOn(Utils, 'handleTxExtrinsicResult').mockImplementation()
     await Utils.deposit(api, currentAccount, xcmMultiAssetId, amount, domainId, address, callbacksMockFns);
     expect(Utils.handleTxExtrinsicResult).toHaveBeenCalledTimes(1);
@@ -203,14 +193,12 @@ describe('deposit', () => {
     api = {
       tx: {
         sygmaBridge: {
-          // @ts-ignore-line
           deposit: jest.fn().mockImplementationOnce(() =>{
-            // @ts-ignore-line
             return ({ signAndSend: signAndSendMockFn })
           }),
         },
       },
-    };
+    } as unknown as ApiPromise;
     await Utils.deposit(
       api,
       currentAccount,

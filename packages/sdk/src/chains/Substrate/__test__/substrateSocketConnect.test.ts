@@ -36,7 +36,6 @@ jest.mock('@polkadot/api', () => ({
 
 describe('substrateSocketConnect', () => {
   let state: { apiState: any; socket: any; jsonrpc: any };
-  // let dispatch: jest.Mock<any, any>;
   let callbacks: SubstrateSocketConnectionCallbacksType;
   beforeEach(() => {
     state = {
