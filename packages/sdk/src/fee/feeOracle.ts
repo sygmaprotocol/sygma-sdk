@@ -97,7 +97,7 @@ export const calculateFeeData = async ({
       resourceID,
     });
   } catch (e) {
-    void Promise.reject(e);
+    return Promise.reject(e);
   }
   const feeData = createOracleFeeData(oracleResponse as OracleResource, tokenAmount);
   const FeeHandlerWithOracleInstance = FeeHandlerWithOracle__factory.connect(
