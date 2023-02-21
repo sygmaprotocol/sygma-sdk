@@ -27,7 +27,7 @@ describe('CalculateBasicFee', () => {
       fromDomainID: '1',
       toDomainID: '2',
       resourceID: '0x0000000000000000000000000000000000000000000000000000000000000000',
-      tokenAmount: 100,
+      tokenAmount: "0.001",
       recipientAddress: '0xF4314cb9046bECe6AA54bb9533155434d0c76909',
     });
 
@@ -54,7 +54,7 @@ describe('CalculateBasicFee', () => {
         fromDomainID: '1',
         toDomainID: '2',
         resourceID: '0x0000000000000000000000000000000000000000000000000000000000000000',
-        tokenAmount: 100,
+        tokenAmount: "100",
         recipientAddress: '0xF4314cb9046bECe6AA54bb9533155434d0c76909',
       });
     } catch (e) {

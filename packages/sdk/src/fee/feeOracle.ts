@@ -1,5 +1,5 @@
 import { FeeHandlerWithOracle__factory } from '@buildwithsygma/sygma-contracts';
-import { ethers } from 'ethers';
+import { ethers, utils } from 'ethers';
 import fetch from 'node-fetch';
 
 import { OracleResource, FeeDataResult } from '../types';
@@ -21,7 +21,7 @@ type OracleResponse = {
  */
 export const createOracleFeeData = (
   oracleResponse: OracleResource,
-  amount: number,
+  amount: string,
   tokenResource: string,
   oraclePrivateKey?: string,
 ): string => {
@@ -71,7 +71,7 @@ export const createOracleFeeData = (
     return oracleMessage + signature.substring(2) + toHex(amount, 32).substring(2);
   } else {
     signature = oracleResponse.signature;
-    return oracleMessage + signature + toHex(0, 32).substring(2);
+    return oracleMessage + signature + toHex(amount, 32).substring(2);
   }
 };
 
@@ -100,13 +100,13 @@ export const calculateFeeData = async ({
   fromDomainID: number;
   toDomainID: number;
   resourceID: string;
-  tokenAmount: number;
+  tokenAmount: string;
   feeOracleBaseUrl: string;
   feeOracleHandlerAddress: string;
   overridedResourceId?: string;
   oraclePrivateKey?: string;
 }): Promise<FeeDataResult | undefined> => {
-  const depositData = createERCDepositData(tokenAmount, 20, recipientAddress);
+  const depositData = createERCDepositData(utils.parseUnits(tokenAmount, 18), 20, recipientAddress);
   let oracleResponse;
   try {
     oracleResponse = await requestFeeFromFeeOracle({
@@ -186,6 +186,6 @@ export const requestFeeFromFeeOracle = async ({
       return data.response;
     }
   } catch (e) {
-    return Promise.reject(new Error('Invalid fee oracle response'));
+    return Promise.reject(e);
   }
 };

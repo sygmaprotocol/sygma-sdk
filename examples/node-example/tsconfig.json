@@ -1,15 +1,12 @@
 {
   // This is an alias to @tsconfig/node12: https://github.com/tsconfig/bases
   "extends": "ts-node/node12/tsconfig.json",
-
   // Most ts-node options can be specified here using their programmatic names.
   "ts-node": {
     // It is faster to skip typechecking.
     // Remove if you want ts-node to do typechecking.
     "transpileOnly": true,
-
     "files": true,
-
     "compilerOptions": {
       // compilerOptions specified here will override those declared below,
       // but *only* in ts-node.  Useful if you want ts-node and tsc to use
@@ -17,22 +14,22 @@
     }
   },
   "compilerOptions": {
-		"target": "ES2017",
-		"outDir": "dist",
-		"module": "commonjs",
-		"allowJs": true,
-		"composite": true,
+    "target": "ES2017",
+    "outDir": "dist",
+    "module": "commonjs",
+    "allowJs": true,
+    "composite": true,
     "declaration": true,
     "sourceMap": true,
     "declarationMap": true,
-		"resolveJsonModule": true,
+    "resolveJsonModule": true,
     "skipLibCheck": true,
-		"moduleResolution": "node",
-		"strict": true,
-		"jsx": "react-jsx",
-		"esModuleInterop": true,
-		"downlevelIteration": true,
+    "moduleResolution": "node",
+    "strict": true,
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
-		"forceConsistentCasingInFileNames": true
-	},
+    "forceConsistentCasingInFileNames": true
+  }
 }

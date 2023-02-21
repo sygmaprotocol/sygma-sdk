@@ -1,5 +1,5 @@
 import { BasicFeeHandler__factory as BasicFeeHandler } from '@buildwithsygma/sygma-contracts';
-import { ethers } from 'ethers';
+import { ethers, utils } from 'ethers';
 import { FeeDataResult } from '../types';
 import { createERCDepositData } from '../utils/helpers';
 
@@ -25,10 +25,11 @@ export const calculateBasicfee = async ({
   fromDomainID: string;
   toDomainID: string;
   resourceID: string;
-  tokenAmount: number;
+  tokenAmount: string;
   recipientAddress: string;
 }): Promise<FeeDataResult | Error> => {
-  const depositData = createERCDepositData(tokenAmount, 20, recipientAddress);
+  const convertedAmount = utils.parseUnits(tokenAmount, 18);
+  const depositData = createERCDepositData(convertedAmount, 20, recipientAddress);
   // WHY 0X00 AND NOT 0X0?
   const feeData = '0x00';
   const BasicFeeHandlerInstance = BasicFeeHandler.connect(basicFeeHandlerAddress, provider);
