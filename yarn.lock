@@ -1106,11 +1106,6 @@
   dependencies:
     "@truffle/hdwallet-provider" "^2.0.14"
 
-"@chainsafe/chainbridge-contracts@2.1.4":
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/@chainsafe/chainbridge-contracts/-/chainbridge-contracts-2.1.4.tgz#17a07a0e7ea28cb58229fea5081bba788ed00830"
-  integrity sha512-9Xi2W0tV3YzXFtVfcpEifouwo5gO9YCsQf36jigz2Bt2HqOFiUNJRTTfCvLbIIiPBtHLqlLjlf3Mq2ZeiEDO8g==
-
 "@chainsafe/eslint-config@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@chainsafe/eslint-config/-/eslint-config-1.1.0.tgz#78aa36b435e583ee8f0ab3752cd3aca54494d575"

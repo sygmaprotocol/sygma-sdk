@@ -31,7 +31,6 @@
 	"author": "Sygmaprotocol Product Team",
 	"license": "LGPL-3.0-or-later",
 	"devDependencies": {
-		"@chainsafe/chainbridge-contracts": "2.1.4",
 		"@types/jest": "27.4.1",
 		"@types/node-fetch": "2.x",
 		"concurrently": "7.0.0",

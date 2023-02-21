@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { Bridge__factory } from '@chainsafe/chainbridge-contracts'
+import { Bridge__factory } from '@buildwithsygma/sygma-contracts'
 import { Erc20DetailedFactory } from '../../src/Contracts/Erc20DetailedFactory'
 import { BridgeData, ChainbridgeContracts, Signer } from '../../src/types'
 import { computeBridgeEvents, computeProposalVoteEvents, computeProvidersAndSigners } from '../../src/utils'

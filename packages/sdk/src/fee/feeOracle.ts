@@ -16,15 +16,10 @@ type OracleResponse = {
  * @param oracleResponse - OracleResource object
  * @param amount - amount to send
  * @param tokenResource - the resource Id of the token
- * @param oraclePrivateKey - private key of the oracle
  * @returns {string} - hex of the fee data constructed
  */
-export const createOracleFeeData = (
-  oracleResponse: OracleResource,
-  amount: string,
-  tokenResource: string,
-  oraclePrivateKey?: string,
-): string => {
+
+export const createOracleFeeData = (oracleResponse: OracleResource, amount: string): string => {
   /*
         feeData structure:
             ber*10^18:    uint256
@@ -61,18 +56,8 @@ export const createOracleFeeData = (
     ],
   );
 
-  let signature;
-  if (oraclePrivateKey) {
-    // temprorary signature generated with sign by private key
-    const messageHash = ethers.utils.keccak256(oracleMessage);
-    signature = ethers.utils.joinSignature(
-      new ethers.Wallet(oraclePrivateKey)._signingKey().signDigest(messageHash),
-    );
-    return oracleMessage + signature.substring(2) + toHex(amount, 32).substring(2);
-  } else {
-    signature = oracleResponse.signature;
-    return oracleMessage + signature + toHex(amount, 32).substring(2);
-  }
+  const signature = oracleResponse.signature;
+  return oracleMessage + signature + toHex(amount, 32).substring(2);
 };
 
 /**
@@ -91,8 +76,6 @@ export const calculateFeeData = async ({
   tokenAmount,
   feeOracleBaseUrl,
   feeOracleHandlerAddress,
-  overridedResourceId,
-  oraclePrivateKey,
 }: {
   provider: ethers.providers.Provider;
   sender: string;
@@ -103,8 +86,6 @@ export const calculateFeeData = async ({
   tokenAmount: string;
   feeOracleBaseUrl: string;
   feeOracleHandlerAddress: string;
-  overridedResourceId?: string;
-  oraclePrivateKey?: string;
 }): Promise<FeeDataResult | undefined> => {
   const depositData = createERCDepositData(utils.parseUnits(tokenAmount, 18), 20, recipientAddress);
   let oracleResponse;
@@ -113,18 +94,12 @@ export const calculateFeeData = async ({
       feeOracleBaseUrl,
       fromDomainID,
       toDomainID,
-      resourceID: overridedResourceId ? overridedResourceId : resourceID, // dirty hack for localsetup
+      resourceID,
     });
   } catch (e) {
-    //@ts-ignore-line
-    return e;
+    void Promise.reject(e);
   }
-  const feeData = createOracleFeeData(
-    oracleResponse as OracleResource,
-    tokenAmount,
-    resourceID,
-    oraclePrivateKey,
-  );
+  const feeData = createOracleFeeData(oracleResponse as OracleResource, tokenAmount);
   const FeeHandlerWithOracleInstance = FeeHandlerWithOracle__factory.connect(
     feeOracleHandlerAddress,
     provider,
