@@ -555,19 +555,14 @@ export class Sygma implements SygmaSDK {
    * @name fetchFeeData
    * @description it fetches the fee data according to bridge setup
    * @param {object} params
-   * @param {string} params.amount
+   * @param {string} params.amount - the amount of token to transfer
    * @param {string} params.recipientAddress - receiver of the deposit
-   * @param {string} params.overridedResourceId - matches local token in local setup with address of the token from where the price data is being fetched.
-   * Only used when doing bridge with fee oracle service
-   * @param {string} params.oraclePrivateKey
    */
   public async fetchFeeData(params: {
     amount: string;
     recipientAddress: string;
-    overridedResourceId?: string;
-    oraclePrivateKey?: string;
   }): Promise<FeeDataResult | Error | undefined> {
-    const { amount, overridedResourceId, oraclePrivateKey, recipientAddress } = params;
+    const { amount, recipientAddress } = params;
     const {
       feeSettings: { type },
     } = this.getSelectedToken();
@@ -581,8 +576,6 @@ export class Sygma implements SygmaSDK {
       return await this.fetchFeeOracleData({
         amount,
         recipientAddress,
-        overridedResourceId,
-        oraclePrivateKey,
       });
     } else {
       return await this.fetchBasicFeeData({
@@ -640,14 +633,12 @@ export class Sygma implements SygmaSDK {
   private async fetchFeeOracleData(params: {
     amount: string;
     recipientAddress: string;
-    overridedResourceId?: string;
-    oraclePrivateKey?: string;
   }): Promise<FeeDataResult | undefined> {
     if (!this.feeOracleSetup && !this.getSelectedToken().feeSettings.address) {
       console.log('No feeOracle config');
       return;
     }
-    const { amount, recipientAddress, overridedResourceId, oraclePrivateKey } = params;
+    const { amount, recipientAddress } = params;
     const provider = this.providers!.chain1!;
     const {
       resourceId: resourceID,
@@ -668,12 +659,8 @@ export class Sygma implements SygmaSDK {
       tokenAmount: amount,
       feeOracleBaseUrl,
       feeOracleHandlerAddress,
-      overridedResourceId, // '0xbA2aE424d960c26247Dd6c32edC70B295c744C43',
-      oraclePrivateKey, //'0x6937d1d0b52f2fa7f4e071c7e64934ad988a8f21c6bf4f323fc19af4c77e3c5e'
     });
 
-    // feeOracleBaseUrl: 'http://localhost:8091',
-    // FeeHandlerWithOracleAddress: '0xa9ddD97e1762920679f3C20ec779D79a81903c0B',
     return feeData;
   }
 
