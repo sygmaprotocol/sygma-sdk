@@ -1,5 +1,5 @@
 import { ApiPromise, SubmittableResult } from '@polkadot/api';
-import { BN } from '@polkadot/util';
+import { BN, numberToHex } from '@polkadot/util';
 import { web3FromAddress } from '@polkadot/extension-dapp';
 import type { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
 
@@ -154,7 +154,7 @@ export const deposit = async (
   const destIdMultilocation = {
     parents: 0,
     interior: {
-      x2: [{ generalKey: address }, { generalIndex: domainId }],
+      x2: [{ generalKey: address }, { generalKey: numberToHex(Number(domainId)) }],
     },
   };
   const asset = { id: xcmMultiAssetId, fun: xcmV1MultiassetFungibility };

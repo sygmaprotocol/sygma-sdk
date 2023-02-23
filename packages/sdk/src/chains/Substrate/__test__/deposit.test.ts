@@ -133,7 +133,7 @@ describe('deposit', () => {
       {
         parents: 0,
         interior: {
-          x2: [{ generalKey: address }, { generalIndex: domainId }],
+          x2: [{ generalKey: address }, { generalKey: '0x01' }],
         },
       },
     );
