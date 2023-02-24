@@ -5,8 +5,7 @@ on:
       - main
   pull_request:
     types: [opened, synchronize, reopened]
-    branches:
-      - '**'
+
 jobs:
   check:
     runs-on: ubuntu-latest
