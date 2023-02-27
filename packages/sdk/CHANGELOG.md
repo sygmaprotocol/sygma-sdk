@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.4](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.1.3...sygma-sdk-core-v1.1.4) (2023-02-22)
+
+
+### Bug Fixes
+
+* remove unneccessary dependencies ([#163](https://github.com/sygmaprotocol/sygma-sdk/issues/163)) ([dec73cd](https://github.com/sygmaprotocol/sygma-sdk/commit/dec73cd0a7380812b59d23327edd333a3030bb8d))
+
 ## [1.1.3](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.1.2...sygma-sdk-core-v1.1.3) (2023-02-14)
 
 
