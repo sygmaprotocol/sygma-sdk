@@ -22,21 +22,15 @@ const Loader = (
     | undefined
 ) => <div>{text}</div>;
 
-const Message = (errObj: { target: { url: any } }) => (
+const Message = (errObj: { target: { url: string } }) => (
   <div>{`Connection to websocket '${errObj.target.url}' failed.`}</div>
 );
 
 function Main() {
   const { apiState, apiError, keyringState, keyring } = useSubstrateState()!;
 
-  if (apiState === "ERROR") return Message(apiError);
+  if (apiState === "ERROR") return Message(apiError as { target: { url: string } });
   if (apiState !== "READY") return Loader("Connecting to Substrate");
-
-  if (keyringState !== "READY") {
-    return Loader(
-      "Loading accounts (please review any extension's authorization)"
-    );
-  }
 
   if (keyringState === "ERROR" && !keyring) {
     return Loader(
@@ -44,13 +38,18 @@ function Main() {
     );
   }
 
+  if (keyringState !== "READY") {
+    return Loader(
+      "Loading accounts (please review any extension's authorization)"
+    );
+  }
+
   return (
     <div className="App">
       <div>
-        <h2 style={{ display: "flex", justifyContent: "center" }}>
+        <h2 className="mainTitle">
           Minimal example Polkadot
         </h2>
-        READY
         <UserInfo />
         <Form />
         <br />

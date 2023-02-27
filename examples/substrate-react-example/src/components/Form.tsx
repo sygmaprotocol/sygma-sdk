@@ -1,52 +1,19 @@
-import React, {CSSProperties} from "react";
+import React, {useState} from "react";
 import { useForm } from "react-hook-form";
 
 import { useSubstrateState, useSubstrate } from "../substrate-lib";
+import { substrateConfig, evmSetupList } from "../config";
 
-const inputStyles: CSSProperties = {
-  display: "flex",
-  alignSelf: "center",
-  width: "50%",
-  padding: "10px",
-  border: "1px solid grey",
-  textAlign: "start",
-  fontSize: "15px",
-  borderRadius: "5px",
-  marginBottom: "5px",
-  boxSizing: "border-box",
-};
-
-const labelStyles: CSSProperties = {
-  display: "flex",
-  alignSelf: "center",
-  width: "50%",
-  padding: "5px 10px",
-  textAlign: "start",
-  fontSize: "15px",
-  borderRadius: "5px",
-  marginBottom: "5px",
-  boxSizing: "border-box",
-};
-
-const buttonStyle: CSSProperties = {
-  display: "flex",
-  alignSelf: "center",
-  width: "23%",
-  padding: "10px",
-  marginTop: "15px",
-  justifyContent: "center",
-};
-
-function Main(props: any): JSX.Element {
-  const {
-    makeDeposit
-  } = useSubstrate();
+function Main(): JSX.Element {
+  const [isLoading, setIsLoading] = useState(false);
+  const { currentAccount, destinationDomainId } = useSubstrateState();
+  const { makeDeposit } = useSubstrate();
   const { register, handleSubmit, watch, setValue } = useForm({
     defaultValues: {
       amount: "11",
       address: "0x5C1F5961696BaD2e73f73417f07EF55C62a2dC5b",
-      from: "2",
-      to: "1",
+      from: "3",
+      to: "2",
     },
   });
 
@@ -56,47 +23,56 @@ function Main(props: any): JSX.Element {
     from: string;
     to: string;
   }): Promise<void> => {
-    console.log(values)
+    console.log('form data', values);
     if (values.amount && values.address) {
-      makeDeposit(values.amount, values.address, values.to)
+      setIsLoading(true)
+      makeDeposit(values.amount, values.address, values.to).finally(() => {
+        setIsLoading(false)
+      });
     }
+  };
+
+  if (!currentAccount) {
+    return <div>Please create accounts</div>;
   }
 
-  return(
+  return (
     <form
       action=""
       onSubmit={(...args) => void handleSubmit(submit)(...args)}
-      style={{
-        display: "flex",
-        flexDirection: "column",
-      }}
     >
-      <label htmlFor="amount" style={{ ...labelStyles }}>
+      <fieldset disabled={isLoading} className="formFieldset">
+      <label htmlFor="amount" className="label">
         Amount
       </label>
       <input
         type="text"
         placeholder="amount"
         {...register("amount")}
-        style={{ ...inputStyles }}
+        className="input"
       />
-      <label htmlFor="address" style={{ ...labelStyles }}>
+      <label htmlFor="address" className="label">
         Recepient address
       </label>
       <input
         type="text"
         placeholder="address"
         {...register("address")}
-        style={{ ...inputStyles }}
+        className="input"
       />
-      <label htmlFor="from" style={{ ...labelStyles }}>
-        Home chain
+      <label htmlFor="from" className="label">
+        Home Substrate network domain ID: {substrateConfig.domainId}
       </label>
-      <input type="text" {...register("from")} style={{ ...inputStyles }} />
-      <label htmlFor="to" style={{ ...labelStyles }}>
-        Destination chain
+      <label htmlFor="to" className="label">
+        Destination EVM network:
       </label>
-      <input type="text"  {...register("to")} style={{ ...inputStyles }} />
+      <select {...register("to")} className="input">
+        {evmSetupList.map((bridgeItem) => (
+          <option key={bridgeItem.domainId} value={bridgeItem.domainId}>
+            {bridgeItem.name}
+          </option>
+        ))}
+      </select>
       <div
         style={{
           display: "flex",
@@ -106,18 +82,12 @@ function Main(props: any): JSX.Element {
       >
         <button
           type="submit"
-          style={{
-            ...buttonStyle,
-            background: "white",
-            color: "green",
-            border: "1px solid green",
-            fontWeight: "800",
-            borderRadius: "5px",
-          }}
+          className="button"
         >
           Transfer
         </button>
       </div>
+      </fieldset>
     </form>
   );
 }

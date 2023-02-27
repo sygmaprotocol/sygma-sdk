@@ -1,50 +1,42 @@
-// @ts-nocheck
 import React, { useEffect, useState } from "react";
-import { BN, formatBalance } from "@polkadot/util";
+import { formatBalance } from "@polkadot/util";
 import { useSubstrateState, useSubstrate } from "../substrate-lib";
+import { substrateConfig } from "../config";
 
-type LocalData = {
-  balance: BN;
-  accountName: string;
-  address: string;
-  balanceOfTokens: BN;
-  basicFee: BN;
-  chainDecimals: number;
-};
-
-const acctAddr = (acct: { address: any; }) => (acct ? acct.address : "");
-
-function Main(props: any): JSX.Element {
+function Main(): JSX.Element {
   const { api } = useSubstrateState()!;
 
   const {
     setCurrentAccount,
-    state: { keyring, currentAccount, currentAccountData, selectedAssetBalance, selectedAssetFee },
+    state: {
+      keyring,
+      currentAccount,
+      currentAccountData,
+      selectedAssetBalance,
+      selectedAssetFee,
+    },
   } = useSubstrate()!;
 
-  // Get the list of accounts we possess the private key for
-  const keyringOptions = keyring.getPairs().map((account: { address: any; meta: { name: string; }; }) => ({
+  const keyringOptions = keyring?.getPairs().map((account) => ({
     key: account.address,
     value: account.address,
-    text: account.meta.name.toUpperCase(),
+    text: (account.meta.name as String).toUpperCase(),
     icon: "user",
   }));
-
   const initialAddress =
-    keyringOptions.length > 0
-      ? keyringOptions[keyringOptions.length - 1].value
+    keyringOptions!.length > 0
+      ? keyringOptions![keyringOptions!.length - 1].value
       : "";
-
   // Set the initial address
   useEffect(() => {
     !currentAccount &&
       initialAddress.length > 0 &&
-      setCurrentAccount(keyring.getPair(initialAddress));
-  }, [currentAccount, setCurrentAccount, keyring, initialAddress]);
+      setCurrentAccount(keyring?.getPair(initialAddress));
+  }, [currentAccount, setCurrentAccount, keyring]);
 
   return (
     <div>
-      {currentAccount && api && (
+      {currentAccount ? (
         <div
           style={{
             display: "flex",
@@ -54,44 +46,67 @@ function Main(props: any): JSX.Element {
         >
           <h3>Account data</h3>
           <p>
-            Name: <span>{currentAccount.meta.name}</span>
+            {"Account name: "}
+            {keyring && keyringOptions && (
+              <select
+                defaultValue={currentAccount.address}
+                onChange={(event) =>
+                  setCurrentAccount(keyring?.getPair(event.target.value))
+                }
+              >
+                {keyringOptions.map((account) => (
+                  <option key={account.key} value={account.value}>
+                    {account.text}
+                  </option>
+                ))}
+              </select>
+            )}
             <br />
-            Address: <span>{currentAccount.address}</span>
+            Account address: <span>{currentAccount.address}</span>
             <br />
-            NATIVE TOKENS:{" "}
+            NATIVE TOKENS(gas):{" "}
             <span>
-              {currentAccountData && formatBalance(currentAccountData.free, {
-                decimals: api.registry.chainDecimals[0],
-                withSiFull: true,
-              })}
+              {currentAccountData &&
+                formatBalance(currentAccountData.free, {
+                  decimals: api?.registry.chainDecimals[0],
+                  withSiFull: true,
+                  withZero: false,
+                })}
             </span>
             <br />
-            Balance of tokens(assets):{" "}
-            <span>
-              {selectedAssetBalance && formatBalance(selectedAssetBalance.unwrapOrDefault(0).balance, {
-                decimals: api.registry.chainDecimals[0],
-                withSi: true,
-                withUnit: "USDC",
-              })}
-            </span>
+            Balance of custom tokens(assets):{" "}
+            <strong>
+              {selectedAssetBalance &&
+                formatBalance(selectedAssetBalance.balance, {
+                  decimals: api?.registry.chainDecimals[0],
+                  withSi: true,
+                  withUnit: substrateConfig.assets[0].assetName,
+                  withZero: false,
+                })}
+            </strong>
             <br />
             Basic fee:{" "}
-            <span>
-              {!selectedAssetFee.isEmpty ? formatBalance(selectedAssetFee.unwrap(), {
-                decimals: api.registry.chainDecimals[0],
-                withSi: true,
-                withUnit: "",
-              }) : "None"}
-            </span>
+            <strong>
+              {!selectedAssetFee?.isEmpty
+                ? formatBalance(selectedAssetFee?.unwrap(), {
+                    decimals: api?.registry.chainDecimals[0],
+                    withSi: true,
+                    withUnit: substrateConfig.assets[0].assetName,
+                    withZero: false,
+                  })
+                : "None"}
+            </strong>
           </p>
         </div>
+      ) : (
+        "No accounts found"
       )}
     </div>
   );
 }
 
 export default function Metadata(props: any) {
-  const state = useSubstrateState()
+  const state = useSubstrateState();
   const api = state?.api;
-  return api.rpc && api.rpc.state ? <Main {...props} /> : null;
+  return api?.rpc && api.rpc.state ? <Main {...props} /> : null;
 }
