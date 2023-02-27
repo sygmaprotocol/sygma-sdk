@@ -1,5 +1,36 @@
 # Changelog
 
+## [1.1.4](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.1.3...sygma-sdk-core-v1.1.4) (2023-02-22)
+
+
+### Bug Fixes
+
+* remove unneccessary dependencies ([#163](https://github.com/sygmaprotocol/sygma-sdk/issues/163)) ([dec73cd](https://github.com/sygmaprotocol/sygma-sdk/commit/dec73cd0a7380812b59d23327edd333a3030bb8d))
+
+## [1.1.3](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.1.2...sygma-sdk-core-v1.1.3) (2023-02-14)
+
+
+### Bug Fixes
+
+* fix amount in createOracleFeeData ([#162](https://github.com/sygmaprotocol/sygma-sdk/issues/162)) ([a39180d](https://github.com/sygmaprotocol/sygma-sdk/commit/a39180d5e9d5993ee6c15abc6aa8a6e1c1939632))
+
+## [1.1.2](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.1.1...sygma-sdk-core-v1.1.2) (2023-02-10)
+
+
+### Bug Fixes
+
+* Fix url to query oracle service ([#159](https://github.com/sygmaprotocol/sygma-sdk/issues/159)) ([ea762a0](https://github.com/sygmaprotocol/sygma-sdk/commit/ea762a0a8df2d5c7a291bc818a386a46df55fec2))
+
+## [1.1.1](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.1.0...sygma-sdk-core-v1.1.1) (2023-02-06)
+
+
+### Bug Fixes
+
+* Check/update dependencies for packages ([#138](https://github.com/sygmaprotocol/sygma-sdk/issues/138)) ([b4875e8](https://github.com/sygmaprotocol/sygma-sdk/commit/b4875e810fdd9bd841c0c1add9858c00616ffc47))
+* linter issues ([#149](https://github.com/sygmaprotocol/sygma-sdk/issues/149)) ([20c537d](https://github.com/sygmaprotocol/sygma-sdk/commit/20c537d983dbdba270264a7b551f7719b3cd0f1d))
+* Remove linked dependency from examples ([#139](https://github.com/sygmaprotocol/sygma-sdk/issues/139)) ([430f1b5](https://github.com/sygmaprotocol/sygma-sdk/commit/430f1b5645af654a2e750fc045ae54f2a064859c))
+* usage of deprecated `substr` ([#157](https://github.com/sygmaprotocol/sygma-sdk/issues/157)) ([94a67c9](https://github.com/sygmaprotocol/sygma-sdk/commit/94a67c97d4fdfc3bcfd6a7856b4754263d810473))
+
 ## [1.1.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.0.4...sygma-sdk-core-v1.1.0) (2023-01-13)
 
 

@@ -39,7 +39,7 @@ const depositGeneric = async () => {
       colors.push(colorDecoded)
     }
 
-    const colorsFormated = colors.map(color => color.substr(1))
+    const colorsFormated = colors.map(color => color.substring(1))
     const depositFunctionSignature = '0x103b854b'
     const colorsResourceId = '0x0000000000000000000000000000000000000000000000000000000000000500'
 
@@ -86,7 +86,7 @@ const depositGeneric = async () => {
   const listener = async (color: string, ...rest: any) => {
     const colorDecoded = decodeColor(color)
     console.log(`${Chalk.keyword('green')('Color decoded on destination chain')}: ${Chalk.hex(colorDecoded).bold(colorDecoded)}`)
-    const lastColor = depositDataArray.findIndex(colorData => colorData.color === colorDecoded.substr(1))
+    const lastColor = depositDataArray.findIndex(colorData => colorData.color === colorDecoded.substring(1))
 
     if (lastColor === depositDataArray.length - 1) {
       setTimeout(() => {

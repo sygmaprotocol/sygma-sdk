@@ -8,7 +8,8 @@ import { utils, BigNumber } from 'ethers';
  * @returns {string}
  */
 export const toHex = (covertThis: string | number | BigNumber, padding: number): string => {
-  return utils.hexZeroPad(utils.hexlify(BigNumber.from(covertThis)), padding);
+  const amount = covertThis instanceof BigNumber ? covertThis : BigNumber.from(covertThis);
+  return utils.hexZeroPad(utils.hexlify(amount), padding);
 };
 
 /**

@@ -30,7 +30,7 @@
 		"experimentalSpecifierResolution": "node"
 	},
 	"include": [
-		"src",
+		"src"
 		// "integration"
-	],
+	]
 }
