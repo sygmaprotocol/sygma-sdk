@@ -3,7 +3,7 @@ import { TypeRegistry } from '@polkadot/types/create';
 import { ChainType } from '@polkadot/types/interfaces';
 
 const registry = new TypeRegistry();
-
+const LiveChainType = registry.createType('ChainType', 'Live') as unknown as ChainType;
 /**
  * Retrieve the system chain and chain type from the API.
  *
@@ -18,9 +18,7 @@ export const retrieveChainInfo = async (
 }> => {
   const [systemChain, systemChainType] = await Promise.all([
     api.rpc.system.chain(),
-    api.rpc.system.chainType
-      ? api.rpc.system.chainType()
-      : Promise.resolve(registry.createType('ChainType', 'Live') as unknown as ChainType),
+    api.rpc.system.chainType ? api.rpc.system.chainType() : Promise.resolve(LiveChainType),
   ]);
 
   return {
