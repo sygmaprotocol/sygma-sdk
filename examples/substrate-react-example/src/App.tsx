@@ -16,7 +16,7 @@ const Loader = (
     | string
     | number
     | boolean
-    | ReactElement<any, string | JSXElementConstructor<any>>
+    | ReactElement<unknown, string | JSXElementConstructor<unknown>>
     | ReactFragment
     | null
     | undefined
