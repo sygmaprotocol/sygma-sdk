@@ -53,6 +53,7 @@ describe('loadAccounts', () => {
 
   beforeEach(() => {
     config = {
+      domainId: "4",
       appName: 'test',
       provider_socket: '',
       assets: [
@@ -142,6 +143,6 @@ describe('loadAccounts', () => {
 
     expect(callbacks.onLoadKeyring).toHaveBeenCalled();
 
-    expect(callbacks.onErrorKeyring).toHaveBeenCalledWith(new Error('unauthorized'));
+    expect(callbacks.onErrorKeyring).toHaveBeenCalledWith(new Error("Can't get any injected sources. Is the wallet authorized?"));
   });
 });

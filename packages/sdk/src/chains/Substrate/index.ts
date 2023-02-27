@@ -1,19 +1,8 @@
-export {
+export type {
   XcmMultiAssetIdType,
   SubstrateConfigAssetType,
   SubstrateConfigType,
 } from '../Substrate/types';
 
-export {
-  substrateSocketConnect,
-  getAssetBalance,
-  getBasicFee,
-  getNativeTokenBalance,
-  loadAccounts,
-  retrieveChainInfo,
-  deposit,
-  throwErrorIfAny,
-  handleTxExtrinsicResult,
-  calculateBigNumber,
-  listenForEvent,
-} from './utils';
+export * as Substrate from './utils';
+export * from './utils';

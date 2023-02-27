@@ -1,5 +1,6 @@
 import { ApiPromise } from '@polkadot/api';
 import { TypeRegistry } from '@polkadot/types/create';
+import { Option } from '@polkadot/types';
 import type { AssetBalance } from '@polkadot/types/interfaces';
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 
@@ -15,10 +16,13 @@ describe('getAssetBalance', () => {
     const assetBalance: AssetBalance = registry.createType('AssetBalance', {
       balance: 123,
     });
+    const optionAssetBalance = {
+      unwrapOrDefault: () => (assetBalance)
+    } as unknown as Option<AssetBalance>
     api = {
       query: {
         assets: {
-          account: jest.fn().mockResolvedValue(assetBalance),
+          account: jest.fn().mockResolvedValue(optionAssetBalance),
         },
       },
     } as unknown as ApiPromise;
@@ -33,10 +37,8 @@ describe('getAssetBalance', () => {
   it('should return the asset balance for the given account', async () => {
     const assetId = 1;
 
-    const expectedAssetBalance = await api.query.assets.account(assetId, currentAccount.address);
-
     const actualAssetBalance = await getAssetBalance(api, assetId, currentAccount);
 
-    expect(actualAssetBalance).toEqual(expectedAssetBalance);
+    expect(actualAssetBalance.balance.toString()).toBe("123");
   });
 });

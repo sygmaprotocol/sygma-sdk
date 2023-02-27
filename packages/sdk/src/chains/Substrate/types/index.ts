@@ -12,6 +12,7 @@ export type SubstrateConfigAssetType = {
   xsmMultiAssetId: XcmMultiAssetIdType;
 };
 export type SubstrateConfigType = {
+  domainId: string;
   appName: string;
   provider_socket: string;
   assets: SubstrateConfigAssetType[];

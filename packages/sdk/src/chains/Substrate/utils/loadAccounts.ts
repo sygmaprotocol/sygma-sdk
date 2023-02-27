@@ -40,7 +40,7 @@ export const loadAccounts = async (
     // For some reason web3Enable promise is not rejecting, only console.error
     const auth = await web3Enable(config.appName);
     if (!auth || (auth as []).length === 0) {
-      throw new Error('unauthorized');
+      throw new Error("Can't get any injected sources. Is the wallet authorized?");
     }
 
     let allAccounts = await web3Accounts();

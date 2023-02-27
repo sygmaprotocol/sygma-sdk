@@ -1,5 +1,5 @@
 import { ApiPromise } from '@polkadot/api';
-import type { Option, u128 } from '@polkadot/types-codec';
+import type { Option, u128 } from '@polkadot/types';
 
 /**
  * Retrieves the basic fee for a given domain and asset.

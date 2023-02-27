@@ -1,5 +1,6 @@
 import { ApiPromise } from '@polkadot/api';
 import type { AssetBalance } from '@polkadot/types/interfaces';
+import { Option } from '@polkadot/types';
 
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 
@@ -16,6 +17,9 @@ export const getAssetBalance = async (
   assetId: number,
   currentAccount: InjectedAccountWithMeta,
 ): Promise<AssetBalance> => {
-  const assetRes = await api.query.assets.account(assetId, currentAccount.address);
-  return assetRes as AssetBalance;
+  const assetRes = (await api.query.assets.account(
+    assetId,
+    currentAccount.address,
+  )) as Option<AssetBalance>;
+  return assetRes.unwrapOrDefault();
 };
