@@ -1,3 +1,3 @@
-export { Sygma } from './Sygma'
-export * from './types'
-export * from './utils'
+export { Sygma } from './Sygma';
+export * from './types';
+export * from './utils';

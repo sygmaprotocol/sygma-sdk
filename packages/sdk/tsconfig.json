@@ -1,24 +1,31 @@
 {
+	"extends": "../../tsconfig.json",
 	"compilerOptions": {
+		"composite": true,
 		"target": "ES2017",
 		"outDir": "dist",
 		"module": "commonjs",
 		"baseUrl": "./src",
 		"allowJs": true,
-		"composite": true,
-    "declaration": true,
-    "sourceMap": true,
-    "declarationMap": true,
+		"declaration": true,
+		"sourceMap": true,
+		"declarationMap": true,
 		"resolveJsonModule": true,
-    "skipLibCheck": true,
+		"skipLibCheck": true,
 		"moduleResolution": "node",
 		"strict": true,
 		"jsx": "react-jsx",
 		"esModuleInterop": true,
 		"downlevelIteration": true,
-    "allowSyntheticDefaultImports": true,
+		"allowSyntheticDefaultImports": true,
 		"forceConsistentCasingInFileNames": true,
-		"lib": ["es2021", "dom"]
+		"lib": [
+			"es2021",
+			"dom"
+		]
 	},
-	"include": ["src", "src/fee/__test__/feeOracle.test.ts"],
+	"include": [
+		"src"
+		// "integration"
+	]
 }

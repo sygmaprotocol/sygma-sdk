@@ -3,6 +3,7 @@
 # Sygma SDK Node Example
 
 **DISCLAIMER** as of today the code containing the `local-setup-example` is the one that is fully functioning
+**TODO** update this
 
 This folder contains two implementations of the usage of the `Sygma SDK` for the `Node.JS` environment.
 

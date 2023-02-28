@@ -1,0 +1,124 @@
+.App {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.title-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title-info > p {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.off-color { 
+  color: red
+}
+
+.on-color {
+  color: green
+}
+
+.main-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+}
+
+.box {
+  border: 2px solid grey;
+  border-radius: 10px;
+  box-shadow: 10px 10px 3px;
+  margin: 15px;
+  width: 100%;
+  padding: 10px;
+}
+
+.start-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+.start-button > button {
+  padding: 20px;
+  border: 1px solid white;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+}
+
+.start-button > .disabled {
+  background-color: grey;
+}
+
+.start-button > .disabled:active {
+  background-color: #282c34;
+}
+
+.start-button > .enabled {
+  background-color: coral;
+}
+
+.start-button > button:active {
+  background-color: #ad4018;
+}
+
+.start-button > button.connect-button {
+  background: dodgerblue;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+
+.start-button > button.connect-button:active {
+  background-color: #24588b;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

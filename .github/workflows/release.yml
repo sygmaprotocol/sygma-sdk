@@ -20,12 +20,18 @@ jobs:
           monorepo-tags: true
           default-branch: main
           changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false},{"type":"revert","hidden":true}]'
-      
+
+      - run: echo "A release was created."
+        if: ${{ steps.release.outputs.releases_created }}
+
+      - run: echo "Releases ${{ steps.release.outputs.releases_created }}"
+        if: ${{ steps.release.releases_created }}
+
       - uses: actions/checkout@v3
         # these if statements ensure that a publication only occurs when
         # a new release is created:
-        if: ${{ steps.release.outputs.release_created }}
-        
+        if: ${{ steps.release.outputs.releases_created }}
+
       - uses: actions/setup-node@v3
         with:
           cache: 'yarn'
@@ -34,16 +40,16 @@ jobs:
           scope: '@buildwithsygma'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        if: ${{ steps.release.outputs.release_created }}
-      
+        if: ${{ steps.release.outputs.releases_created }}
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile --non-interactive --ignore-optional
-        if: ${{ steps.release.outputs.release_created }}
-      
-      - run: yarn sdk:build
-        if: ${{ steps.release.outputs.release_created }}
+        if: ${{ steps.release.outputs.releases_created }}
 
-      - run: yarn workspace @buildwithsygma/sygma-sdk-core npm publish --access public
+      - run: yarn sdk:build
+        if: ${{ steps.release.outputs.releases_created }}
+
+      - run: npm publish --workspace=@buildwithsygma/sygma-sdk-core publish --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: ${{ steps.release.outputs.release_created }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        if: ${{ steps.release.outputs.releases_created }}

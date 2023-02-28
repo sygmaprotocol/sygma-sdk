@@ -23,7 +23,6 @@ The current SDK has one package that comprises the whole bridging logic for tran
 
 For React example, after you have run and deployed the contracts using [Sygma bridge](https://github.com/sygmaprotocol/sygma-relayer), go to the [examples](https://github.com/sygmaprotocol/sygma-sdk/tree/main/examples) folder and follow the instructions in their README
 
-
 # How to Use
 
 ## Environment
@@ -36,69 +35,10 @@ make example
 ```
 <details>
   <summary>show example of the log from local setup</summary>
-You should see something like this:
+You should see something like this after the local setup has all the dependencies running
 
 ```bash
 Attaching to evm1-1, evm2-1, example_relayer1, example_relayer2, example_relayer3, fee-oracle
-example_relayer3  | {"level":"info","peerID":"QmYAYuLUPNwYEBYJaKHcE7NKjUhiUV8txx2xDXHvcYa1xK","time":"2022-10-07T15:57:41Z","message":"new libp2p host created with address: /ip4/172.21.0.4/tcp/9002"}
-example_relayer3  | {"level":"debug","Module":"communication","Peer":"QmYAYuLUPNwYEBYJaKHcE7NKjUhiUV8txx2xDXHvcYa1xK","MsgType":"UnknownMsg","SessionID":"health-session","time":"2022-10-07T15:57:41Z","message":"broadcasting message"}
-example_relayer3  | panic: dial tcp 172.21.0.2:8545: connect: connection refused
-example_relayer3  |
-example_relayer3  | goroutine 1 [running]:
-example_relayer3  | github.com/ChainSafe/sygma-relayer/example/app.Run()
-example_relayer3  | 	/src/example/app/app.go:112 +0x1f45
-example_relayer3  | github.com/ChainSafe/sygma-relayer/example/cmd.glob..func1(0x231a0a0?, {0x1337a60?, 0x3?, 0x3?})
-example_relayer3  | 	/src/example/cmd/cmd.go:24 +0x17
-example_relayer3  | github.com/spf13/cobra.(*Command).execute(0x231a0a0, {0xc0000c5860, 0x3, 0x3})
-example_relayer3  | 	/go/pkg/mod/github.com/spf13/cobra@v1.2.1/command.go:856 +0x67c
-example_relayer3  | github.com/spf13/cobra.(*Command).ExecuteC(0x25f26c0)
-example_relayer3  | 	/go/pkg/mod/github.com/spf13/cobra@v1.2.1/command.go:974 +0x3b4
-example_relayer3  | github.com/spf13/cobra.(*Command).Execute(...)
-example_relayer3  | 	/go/pkg/mod/github.com/spf13/cobra@v1.2.1/command.go:902
-example_relayer3  | github.com/ChainSafe/sygma-relayer/example/cmd.Execute()
-example_relayer3  | 	/src/example/cmd/cmd.go:38 +0x52
-example_relayer3  | main.main()
-example_relayer3  | 	/src/example/main.go:11 +0x17
-example_relayer2  | {"level":"info","peerID":"QmeTuMtdpPB7zKDgmobEwSvxodrf5aFVSmBXX3SQJVjJaT","time":"2022-10-07T15:57:41Z","message":"new libp2p host created with address: /ip4/172.21.0.5/tcp/9001"}
-example_relayer2  | {"level":"debug","Module":"communication","Peer":"QmeTuMtdpPB7zKDgmobEwSvxodrf5aFVSmBXX3SQJVjJaT","MsgType":"UnknownMsg","SessionID":"health-session","time":"2022-10-07T15:57:41Z","message":"broadcasting message"}
-example_relayer2  | panic: dial tcp 172.21.0.2:8545: connect: connection refused
-example_relayer2  |
-example_relayer2  | goroutine 1 [running]:
-example_relayer2  | github.com/ChainSafe/sygma-relayer/example/app.Run()
-example_relayer2  | 	/src/example/app/app.go:112 +0x1f45
-example_relayer2  | github.com/ChainSafe/sygma-relayer/example/cmd.glob..func1(0x231a0a0?, {0x1337a60?, 0x3?, 0x3?})
-example_relayer2  | 	/src/example/cmd/cmd.go:24 +0x17
-example_relayer2  | github.com/spf13/cobra.(*Command).execute(0x231a0a0, {0xc0005dadb0, 0x3, 0x3})
-example_relayer2  | 	/go/pkg/mod/github.com/spf13/cobra@v1.2.1/command.go:856 +0x67c
-example_relayer2  | github.com/spf13/cobra.(*Command).ExecuteC(0x25f26c0)
-example_relayer2  | 	/go/pkg/mod/github.com/spf13/cobra@v1.2.1/command.go:974 +0x3b4
-example_relayer2  | github.com/spf13/cobra.(*Command).Execute(...)
-example_relayer2  | 	/go/pkg/mod/github.com/spf13/cobra@v1.2.1/command.go:902
-example_relayer2  | github.com/ChainSafe/sygma-relayer/example/cmd.Execute()
-example_relayer2  | 	/src/example/cmd/cmd.go:38 +0x52
-example_relayer2  | main.main()
-example_relayer2  | 	/src/example/main.go:11 +0x17
-example_relayer1  | {"level":"info","peerID":"QmcvEg7jGvuxdsUFRUiE4VdrL2P1Yeju5L83BsJvvXz7zX","time":"2022-10-07T15:57:41Z","message":"new libp2p host created with address: /ip4/172.21.0.7/tcp/9000"}
-example_relayer1  | {"level":"debug","Module":"communication","Peer":"QmcvEg7jGvuxdsUFRUiE4VdrL2P1Yeju5L83BsJvvXz7zX","MsgType":"UnknownMsg","SessionID":"health-session","time":"2022-10-07T15:57:41Z","message":"broadcasting message"}
-example_relayer1  | panic: dial tcp 172.21.0.2:8545: connect: connection refused
-example_relayer1  |
-example_relayer1  | goroutine 1 [running]:
-example_relayer1  | github.com/ChainSafe/sygma-relayer/example/app.Run()
-example_relayer1  | 	/src/example/app/app.go:112 +0x1f45
-example_relayer1  | github.com/ChainSafe/sygma-relayer/example/cmd.glob..func1(0x231a0a0?, {0x1337a60?, 0x3?, 0x3?})
-example_relayer1  | 	/src/example/cmd/cmd.go:24 +0x17
-example_relayer1  | github.com/spf13/cobra.(*Command).execute(0x231a0a0, {0xc0004db740, 0x3, 0x3})
-example_relayer1  | 	/go/pkg/mod/github.com/spf13/cobra@v1.2.1/command.go:856 +0x67c
-example_relayer1  | github.com/spf13/cobra.(*Command).ExecuteC(0x25f26c0)
-example_relayer1  | 	/go/pkg/mod/github.com/spf13/cobra@v1.2.1/command.go:974 +0x3b4
-example_relayer1  | github.com/spf13/cobra.(*Command).Execute(...)
-example_relayer1  | 	/go/pkg/mod/github.com/spf13/cobra@v1.2.1/command.go:902
-example_relayer1  | github.com/ChainSafe/sygma-relayer/example/cmd.Execute()
-example_relayer1  | 	/src/example/cmd/cmd.go:38 +0x52
-example_relayer1  | main.main()
-example_relayer1  | 	/src/example/main.go:11 +0x17
-example_relayer3 exited with code 2
-example_relayer2 exited with code 2
 evm1-1            | Ganache CLI v6.12.2 (ganache-core: 2.13.2)
 evm1-1            | (node:1) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
 evm1-1            | (Use `node --trace-deprecation ...` to show where the warning was created)
@@ -218,14 +158,35 @@ fee-oracle        | [GIN-debug] Listening and serving HTTP on :8091
 </details>
 With this addresses you can use our SDK with the `basic fee` setup.
 
-After that, you can watch the logs and see your funds being transferred from one of the networks to the other.
+
+After that, you can watch the logs and see your funds or NFT being transferred from one network to another
+
+## Contract addresses for this setup
+
+This is the list of the current contract addresses deployed in our local setup
+
+| Contract | Address |
+| -------- | ------- |
+| Bridge   | 0x6CdE2Cd82a4F8B74693Ff5e194c19CA08c2d1c68 |
+| ERC20Handler | 0x1ED1d77911944622FCcDDEad8A731fd77E94173e |
+| ERC721Handler | 0x481f97f9C82a971B3844a422936a4d3c4082bF84 |
+| GenericHandler | 0x783BB8123b8532CC85C8D2deF2f47C55D1e46b46 |
+| FeeRouter | 0x9275AC64D6556BE290dd878e5aAA3a5bae08ae0C |
+| BasicFeeHandler | 0x78E5b9cEC9aEA29071f070C8cC561F692B3511A6 |
+| ColorsExampleContract | 0xE54Dc792c226AEF99D6086527b98b36a4ADDe56a |
+| ERC20Token | 0x1CcB4231f2ff299E1E049De76F0a1D2B415C563A |
+| ERC721Token | 0x8dA96a8C2b2d3e5ae7e668d0C94393aa8D5D3B94 |
+
+
+If you want to use the bridge admin and import this account to your metamask, use the private key: `cc2c32b154490f09f70c1c8d4b997238448d649e0777495863db231c4ced3616`. Address of the bridge admin is: `0x5C1F5961696BaD2e73f73417f07EF55C62a2dC5b `
 
 ## Checking the Examples folder
 
-There is a folder with examples ready to be used for the SDK. Currently we have two working with our current local setup. If you decide that is not for you, here is a little guide to get you started with our SDK.
-## How to Use From NodeJS
+There is a folder with examples ready to be used for the SDK. Currently we have two working (ERC20 transfer and NFT Transfer) with our current local setup. If you decide that is not for you, here is a little guide to get you started with our SDK.
 
-Assuming you are going to use the local setup provider by [Sygma](https://github.com/ChainSafe/sygma), the setup that you need to pass to the `Sygma` class is going to have the following structure:
+### How to Use From NodeJS
+
+Assuming you are going to use the local setup provider by [Sygma](https://github.com/sygmaprotocol/sygma-relayer), the setup that you need to pass to the `Sygma` class is going to have the following structure:
 
 ```ts
 import { Sygma } from "@buildwithsygma/sygma-sdk-core";
@@ -286,13 +247,29 @@ const bridgeSetupList: SygmaBridgeSetupList = [
 ];
 ```
 
-We are going to use the SDK with `NodeJS` so, we are going to use one of the testing accounts from the local setup:
+We are going to use the SDK with `NodeJS` so, we are going to use the bridge admin to make the transfer. For this instantiate a wallet"
 
 ```ts
- const testAcc = "0xF4314cb9046bECe6AA54bb9533155434d0c76909";
+import { ethers } from 'ethers'
+import { NonceManager } from "@ethersproject/experimental";
+
+// connect to one of the nodes
+const provider = new ethers.providers.JsonRpcProvider('http://localhost:8545');
+
+// instantiate the waller with the following mnemonic
+const wallet = ethers.Wallet.fromMnemonic(
+  "black toward wish jar twin produce remember fluid always confirm bacon slush",
+  "m/44'/60'/0'/0/0",
+);
+
+// connect the wallet to the provider
+const walletConnected = wallet.connect(provider);
+
+// use the NonceManager to avoid issues with the nonce
+const managedSigner = new NonceManager(walletConnected);
 ```
 
-Then we create a `setup` object to pass to the `Sygma` class:
+Then we create a `setup` object to pass to the `Sygma` class. This setup uses the `bridgeSetup` defined above with the contract addresses.
 
 ```ts
 const setup = { bridgeSetup }
@@ -303,7 +280,7 @@ const chainbridge = new Sygma(setup)
 Now we are ready to initialize connection:
 
 ```ts
-const bridgeEvents = sygma.initializeConnectionRPC(testAcc)
+const bridgeEvents = sygma.initializeConnectionRPC(wallet.address)
 ```
 
 With this we can get the basic Fee rate to use in our first deposit:
@@ -311,7 +288,7 @@ With this we can get the basic Fee rate to use in our first deposit:
 ```ts
 const basicFeeRate = await sygma.fetchFeeData({
   amount: "1",
-  recipientAddress: "0xF4314cb9046bECe6AA54bb9533155434d0c76909"
+  recipientAddress: wallet.address
 })
 ```
 
@@ -322,16 +299,21 @@ const approvalTxReceipt = await (await sygma.approve({
   amountForApproval: "1",
 })).wait(1)
 
-const deposit = await sygma.deposit({
+const depositTx = await sygma.deposit({
   amount: "1",
-  recipientAddress: "0xF4314cb9046bECe6AA54bb9533155434d0c76909"
+  recipientAddress: wallet.address
   feeData: basicFee
 })
 
-const txReceipt = await deposit.wait(1)
+const depositEVent = await sygma.getDepositEventFromReceipt(depositTx)
+
+const { depositNonce } = depositEvent.args
+
+console.log("Result of transfer", depositTx)
+console.log("Nonce of tranfer" , depositNonce)
 ```
 
-## How to Use in Browser
+### How to Use in Browser
 
 For usage in the browser with our local setup, provide the same bridge config that you use for the NodeJS context:
 
@@ -558,11 +540,7 @@ sygmaInstance.removeDestinationProposalExecutionEventListener()
 ````
 
 
-With this you can use our SDK and create the render logic to show your tokens and your networks of the bridge. For a more in-depth review, check out the `react-example`.
-
-## Using Sygma SDK on your project
-
-`TODO`
+With this you can use our SDK and create the render logic to show your tokens and your networks of the bridge. For a more in-depth review, check out our `erc20`,  `erc721` and `generic handler` examples.
 
 
 ## Support
@@ -572,3 +550,5 @@ With this you can use our SDK and create the render logic to show your tokens an
 
 ## License
 GNU Lesser General Public License v3.0
+
+

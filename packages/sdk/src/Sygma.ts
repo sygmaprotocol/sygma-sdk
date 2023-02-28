@@ -1,11 +1,11 @@
-
-import { BigNumber, ethers, utils, Event, BigNumberish } from 'ethers';
+import { BigNumber, ethers, utils, Event, providers } from 'ethers';
 import {
   Bridge,
   Bridge__factory as BridgeFactory,
   ERC721MinterBurnerPauser,
   ERC721MinterBurnerPauser__factory as Erc721Factory,
 } from '@buildwithsygma/sygma-contracts';
+import { DepositEvent } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge';
 import { Erc20DetailedFactory } from './Contracts/Erc20DetailedFactory';
 import { Erc20Detailed } from './Contracts/Erc20Detailed';
 
@@ -13,17 +13,15 @@ import {
   SygmaSDK,
   Setup,
   BridgeData,
-  ChainbridgeContracts,
+  SygmaContracts,
   Provider,
   Bridges,
   Signer,
   SygmaErc20Contracts as SygmaErcContracts,
   BridgeEventCallback,
-  Events,
   Directions,
   ConnectorSigner,
   ConnectorProvider,
-  ConnectionEvents,
   FeeOracleData,
   FeeDataResult,
   SygmaBridgeSetupList,
@@ -37,18 +35,23 @@ import {
   computeProvidersAndSignersRPC,
   setConnectorWeb3,
   setConnectorRPC,
-  listTokensOfOwner
+  listTokensOfOwner,
 } from './utils';
 import { EvmBridge } from './chains';
 import { calculateBasicfee, calculateFeeData } from './fee';
 import Connector from './connectors/Connectors';
+import {
+  createPermissionedGenericDepositData,
+  createPermissionlessGenericDepositData,
+  toHex,
+} from './utils/helpers';
 
 /**
+ * @name Sygma
  * @description Sygma is the main class that allows you to have bridging capabilities
  * with simple usage
  *
  */
-
 export class Sygma implements SygmaSDK {
   public bridgeSetupList: SygmaBridgeSetupList | undefined;
   private ethersProvider: Provider = undefined;
@@ -61,6 +64,12 @@ export class Sygma implements SygmaSDK {
   private feeOracleSetup?: FeeOracleData;
   public selectedToken: number = 0;
 
+  /**
+   * @name constructor
+   * @param {Object} - bridge setup list in the form of array if you are connecting form browser or bridge setup object if you are using
+   * the sdk with Node.js.
+   * FeeOracle setup definition
+   */
   public constructor({ bridgeSetupList, bridgeSetup, feeOracleSetup }: Setup) {
     this.bridgeSetupList = bridgeSetupList ?? undefined;
     this.bridgeSetup = bridgeSetup;
@@ -68,19 +77,24 @@ export class Sygma implements SygmaSDK {
     this.feeOracleSetup = feeOracleSetup;
   }
 
-  public async initializeConnectionRPC(address: string) {
-    // this.bridgeSetupList = Object.values(this.bridgeSetup);
+  /**
+   * @name initializeConnectionRPC
+   * @description initializes RPC connection
+   * @param address
+   * @returns {Sygma}
+   */
+  public initializeConnectionRPC(address: string): Sygma {
     const providersAndSigners = computeProvidersAndSignersRPC(this.bridgeSetup!, address);
     this.providers = {
-      chain1: providersAndSigners!['chain1' as keyof BridgeData]
+      chain1: providersAndSigners['chain1' as keyof BridgeData]
         .provider as ethers.providers.JsonRpcProvider,
-      chain2: providersAndSigners!['chain2' as keyof BridgeData]
+      chain2: providersAndSigners['chain2' as keyof BridgeData]
         .provider as ethers.providers.JsonRpcProvider,
     };
 
     this.signers = {
-      chain1: providersAndSigners!['chain1' as keyof BridgeData].signer,
-      chain2: providersAndSigners!['chain2' as keyof BridgeData].signer,
+      chain1: providersAndSigners['chain1' as keyof BridgeData].signer,
+      chain2: providersAndSigners['chain2' as keyof BridgeData].signer,
     };
 
     const contracts = this.computeContracts();
@@ -94,35 +108,61 @@ export class Sygma implements SygmaSDK {
     return this;
   }
 
-  public selectHomeNetwork(homeNetworkChainId: number) {
+  /**
+   * @name selectHomeNetwork
+   * @description returns homechain object
+   * @param homeNetworkChainId
+   * @returns {SygmaBridgeSetup | undefined}
+   */
+  public selectHomeNetwork(homeNetworkChainId: number): SygmaBridgeSetup | undefined {
     return this.bridgeSetupList?.find(el => el.networkId === homeNetworkChainId);
   }
 
-  public selectOneForDestination(homeNetworkChainId: number) {
+  /**
+   * @name selectOneForDestination
+   * @description returns the destinaton chain object
+   * @param homeNetworkChainId
+   * @returns {SygmaBridgeSetup | undefined}
+   */
+  public selectOneForDestination(homeNetworkChainId: number): SygmaBridgeSetup | undefined {
     return this.bridgeSetupList?.filter(el => el.networkId !== homeNetworkChainId)[0];
   }
 
-  public async initializeConnectionFromWeb3Provider(web3ProviderInstance: any) {
+  /**
+   * @name initializeConnectionFromWeb3Provider
+   * @description initializes the connection from web3 provider
+   * @param web3ProviderInstance
+   * @returns {Sygma}
+   */
+  public initializeConnectionFromWeb3Provider(
+    web3ProviderInstance: providers.ExternalProvider,
+  ): Sygma {
+    // @ts-ignore-line
     const homeNetworkChainId = BigNumber.from(web3ProviderInstance.chainId).toNumber();
     this.bridgeSetup = {
       chain1: this.selectHomeNetwork(homeNetworkChainId)!,
       chain2: this.selectOneForDestination(homeNetworkChainId)!,
     };
+
+    if (this.bridgeSetup.chain1.confirmations) {
+      this.currentBridge.confirmations = this.bridgeSetup.chain1.confirmations;
+    }
+
     const providersAndSigners = computeProvidersAndSignersWeb3(
       this.bridgeSetup,
       web3ProviderInstance,
     );
 
     this.providers = {
-      chain1: providersAndSigners!['chain1' as keyof BridgeData]
+      chain1: providersAndSigners['chain1' as keyof BridgeData]
         .provider as ethers.providers.Web3Provider,
-      chain2: providersAndSigners!['chain2' as keyof BridgeData]
+      chain2: providersAndSigners['chain2' as keyof BridgeData]
         .provider as ethers.providers.JsonRpcProvider,
     };
 
     this.signers = {
-      chain1: providersAndSigners!['chain1' as keyof BridgeData].signer,
-      chain2: providersAndSigners!['chain2' as keyof BridgeData].signer,
+      chain1: providersAndSigners['chain1' as keyof BridgeData].signer,
+      chain2: providersAndSigners['chain2' as keyof BridgeData].signer,
     };
 
     const contracts = this.computeContracts();
@@ -136,7 +176,17 @@ export class Sygma implements SygmaSDK {
     return this;
   }
 
-  public async setHomeWeb3Provider(web3ProviderInstance: any, domainId?: string) {
+  /**
+   * @name setHomeWeb3Provider
+   * @description set the web3 provider for homechain
+   * @param web3ProviderInstance
+   * @param domainId
+   * @returns {Promise<Sygma>}
+   */
+  public async setHomeWeb3Provider(
+    web3ProviderInstance: providers.ExternalProvider,
+    domainId?: string,
+  ): Promise<Sygma> {
     const connector = setConnectorWeb3(web3ProviderInstance);
     const network = await connector.provider?.getNetwork();
     let chain1: SygmaBridgeSetup | undefined;
@@ -148,6 +198,7 @@ export class Sygma implements SygmaSDK {
     }
 
     if (!chain1) {
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       throw `Cannot find network with chainId: ${network} in config`;
     }
 
@@ -162,7 +213,13 @@ export class Sygma implements SygmaSDK {
     return this;
   }
 
-  public async setDestination(domainId: string) {
+  /**
+   * @name setDestination
+   * @description set destination chain over the sygma instance
+   * @param domainId
+   * @returns {Sygma}
+   */
+  public setDestination(domainId: string): Sygma {
     let chain2: SygmaBridgeSetup | undefined;
     if (domainId) {
       chain2 = this.bridgeSetupList!.find(el => el.domainId === domainId);
@@ -171,6 +228,8 @@ export class Sygma implements SygmaSDK {
     if (!chain2) {
       throw `Cannot find network with domainID: ${domainId} in config`;
     }
+
+    this.bridgeSetup!.chain2 = chain2;
 
     const connector = setConnectorRPC(chain2.rpcUrl);
 
@@ -181,19 +240,28 @@ export class Sygma implements SygmaSDK {
     this.tokens!['chain2'] = contracts.erc20;
     this.bridges!['chain2'] = contracts.bridge;
 
+    if (this.bridgeSetup!.chain1.confirmations) {
+      this.currentBridge.confirmations = this.bridgeSetup!.chain1.confirmations;
+    }
+
     return this;
   }
 
-  private computeContracts(): ChainbridgeContracts {
-    return Object.keys(this.bridgeSetup!).reduce((contracts: any, chain) => {
+  /**
+   * @name computeERC20Contracts
+   * @description computes the sygma contracts
+   * @returns {SygmaContracts}
+   */
+  private computeContracts(): SygmaContracts {
+    return Object.keys(this.bridgeSetup!).reduce((contracts, chain) => {
       const { bridgeAddress } = this.bridgeSetup![chain as keyof BridgeData];
-      const token = this.bridgeSetup![chain as keyof BridgeData].tokens![this.selectedToken];
+      const token = this.bridgeSetup![chain as keyof BridgeData].tokens[this.selectedToken];
 
       const signer =
         this.signers![chain as keyof BridgeData] ?? this.providers![chain as keyof BridgeData];
 
-      const bridge = this.connectToBridge(bridgeAddress, signer!);
-      const tokenConnected = this.connectToken(token, signer!);
+      const bridge = this.connectToBridge(bridgeAddress, signer);
+      const tokenConnected = this.connectToken(token, signer);
       contracts = {
         ...contracts,
         [chain]: { bridge, erc20: tokenConnected },
@@ -202,46 +270,82 @@ export class Sygma implements SygmaSDK {
     }, {});
   }
 
-  public computeContract(config: SygmaBridgeSetup, connector: Connector) {
+  /**
+   * @name computeContract
+   * @description returns bridge and ERC20 contracts
+   * @param config - Sygma bridge config
+   * @param connector - connector object
+   * @returns {Object} - object with bridge and ERC20 contracts
+   */
+  public computeContract(
+    config: SygmaBridgeSetup,
+    connector: Connector,
+  ): {
+    bridge: Bridge;
+    erc20: Erc20Detailed | ERC721MinterBurnerPauser;
+  } {
     const { bridgeAddress } = config;
-    const token = config.tokens![this.selectedToken];
+    const token = config.tokens[this.selectedToken];
 
     const signer = connector.signer ?? connector.provider;
 
-    const bridge = this.connectToBridge(bridgeAddress, signer!);
-    const erc20 = this.connectToken(token, signer!);
+    const bridge = this.connectToBridge(bridgeAddress, signer);
+    const erc20 = this.connectToken(token, signer);
 
     return { bridge, erc20 };
   }
 
+  /**
+   * @name connectToBridge
+   * @description establish connetion with bridge contract interfacep
+   * @param bridgeAddress
+   * @param signer
+   * @returns {Bridge}
+   */
   private connectToBridge(bridgeAddress: string, signer: Signer | Provider): Bridge {
     return BridgeFactory.connect(bridgeAddress, signer!);
   }
 
+  /**
+   * @name connectToken
+   * @description connects to token
+   * @param token
+   * @param signer
+   * @returns {Erc20Detailed | ERC721MinterBurnerPauser}
+   */
   private connectToken(
     token: TokenConfig,
     signer: ethers.providers.JsonRpcSigner | Provider,
-  ) {
+  ): Erc20Detailed | ERC721MinterBurnerPauser {
     const connectors = {
       erc20: () => Erc20DetailedFactory.connect(token.address, signer!),
-      erc721: () => Erc721Factory.connect(token.address, signer!)
-    }
+      erc721: () => Erc721Factory.connect(token.address, signer!),
+    };
     return connectors[token.type]();
   }
 
+  /**
+   * @name createDepositEventListener
+   * @description creates the deposit events and returns the callback to use
+   * @param chain
+   * @param userAddress
+   * @returns {BridgeEventCallback}
+   */
   public createDepositEventListener(chain: Directions, userAddress: string): BridgeEventCallback {
     const bridge = this.bridges![chain]!;
     const depositFilter = bridge.filters.Deposit(null, null, null, userAddress, null, null);
 
-    const depositEventListner = (callbackFn: (
-      destinationDomainId: number,
-      resourceId: string,
-      depositNonce: BigNumber,
-      user: string,
-      data: string,
-      handleResponse: string,
-      tx: Event,
-    ) => void) =>
+    const depositEventListner = (
+      callbackFn: (
+        destinationDomainId: number,
+        resourceId: string,
+        depositNonce: BigNumber,
+        user: string,
+        data: string,
+        handleResponse: string,
+        tx: Event,
+      ) => void,
+    ): Bridge =>
       bridge.once(
         depositFilter,
         (destinationDomainId, resourceId, depositNonce, user, data, handleResponse, tx) => {
@@ -252,12 +356,24 @@ export class Sygma implements SygmaSDK {
     return depositEventListner;
   }
 
-  public async removeDepositEventListener(chain: Directions, signer: Signer) {
+  /**
+   * @name removeDepositEventListener
+   * @description remove the deposit event
+   * @param chain
+   * @returns {Bridge}
+   */
+  public removeDepositEventListener(chain: Directions): Bridge {
     const bridge = this.bridges![chain]!;
     const depositFilter = bridge.filters.Deposit(null, null, null, null, null, null);
     return bridge.removeAllListeners(depositFilter);
   }
 
+  /**
+   * @name createHomeChainDepositEventListener
+   * @description creates the homechain deposit event listener
+   * @param callback
+   * @returns {Promise<Bridge>}
+   */
   public async createHomeChainDepositEventListener(
     callback: (
       destinationDomainId: number,
@@ -268,33 +384,47 @@ export class Sygma implements SygmaSDK {
       handleResponse: string,
       tx: Event,
     ) => void,
-  ) {
+  ): Promise<Bridge> {
     const signer = this.signers!['chain1'];
     const userAddress = await signer?.getAddress();
     return this.createDepositEventListener('chain1', userAddress!)(callback);
   }
 
-  public removeHomeChainDepositEventListener() {
-    const signer = this.signers!['chain1'];
-    return this.removeDepositEventListener('chain1', signer);
+  /**
+   * @name removeHomeChainDepositEventListener
+   * @description removes the homechain deposit event listener
+   * @returns {Bridge}
+   */
+  public removeHomeChainDepositEventListener(): Bridge {
+    return this.removeDepositEventListener('chain1');
   }
 
-  public createProposalExecutionEventListener(chain: Directions, homeDepositNonce: number) {
+  /**
+   * @name createProposalExecutionEventListener
+   * @description creates the event for proposal execution and returns the callback to use
+   * @param chain
+   * @param homeDepositNonce
+   * @returns {BridgeEventCallback}
+   */
+  public createProposalExecutionEventListener(
+    chain: Directions,
+    homeDepositNonce: number,
+  ): BridgeEventCallback {
     const destination = this.bridgeSetup![chain];
     const bridge = this.bridges![chain]!;
     const proposalFilter = bridge.filters.ProposalExecution(null, null, null);
 
-    const proposalExecutionEventListener = (callbackFn: (
-      originDomainId: number,
-      depositNonce: BigNumber,
-      dataHash: string,
-      tx: Event,
-    ) => void) =>
+    const proposalExecutionEventListener = (
+      callbackFn: (
+        originDomainId: number,
+        depositNonce: BigNumber,
+        dataHash: string,
+        tx: Event,
+      ) => void,
+    ): Bridge =>
       bridge.on(proposalFilter, (originDomainId, depositNonce, dataHash, tx) => {
-        console.log(originDomainId, destination.domainId, depositNonce, homeDepositNonce)
-        if (
-          depositNonce.toNumber() === homeDepositNonce
-        ) {
+        console.log(originDomainId, destination.domainId, depositNonce, homeDepositNonce);
+        if (depositNonce.toNumber() === homeDepositNonce) {
           callbackFn(originDomainId, depositNonce, dataHash, tx);
         }
       });
@@ -302,31 +432,59 @@ export class Sygma implements SygmaSDK {
     return proposalExecutionEventListener;
   }
 
-  public proposalExecutionEventListenerCount(chain: Directions) {
+  /**
+   * @name proposalExecutionEventListenerCount
+   * @description computes the amount of listeners
+   * @param chain
+   * @returns {number}
+   */
+  public proposalExecutionEventListenerCount(chain: Directions): number {
     const bridge = this.bridges![chain]!;
     const proposalFilter = bridge.filters.ProposalExecution(null, null, null);
     const count = bridge.listenerCount(proposalFilter);
     return count;
   }
 
-  public removeProposalExecutionEventListener(chain: Directions) {
+  /**
+   * @name removeProposalExecutionEventListener
+   * @description removes the proposal execution listener
+   * @param chain
+   * @returns {Bridge}
+   */
+  public removeProposalExecutionEventListener(chain: Directions): Bridge {
     const bridge = this.bridges![chain]!;
     const proposalFilter = bridge.filters.ProposalExecution(null, null, null);
     return bridge.removeAllListeners(proposalFilter);
   }
 
-  public destinationProposalExecutionEventListener(homeDepositNonce: number, callback: (
-    originDomainId: number,
-    depositNonce: BigNumber,
-    dataHash: string,
-    tx: Event,
-  ) => void) {
+  /**
+   * @name destinationProposalExecutionEventListener
+   * @description returns the proposal execution listener
+   * @param homeDepositNonce
+   * @param callback
+   * @returns {Bridge}
+   */
+  public destinationProposalExecutionEventListener(
+    homeDepositNonce: number,
+    callback: (
+      originDomainId: number,
+      depositNonce: BigNumber,
+      dataHash: string,
+      tx: Event,
+    ) => void,
+  ): Bridge {
     return this.createProposalExecutionEventListener('chain2', homeDepositNonce)(callback);
   }
 
-  public removeDestinationProposalExecutionEventListener() {
+  /**
+   * @name removeDestinationProposalExecutionEventListener
+   * @description removes the destination proposal execution listener
+   * @returns {Bridge}
+   */
+  public removeDestinationProposalExecutionEventListener(): Bridge {
     return this.removeProposalExecutionEventListener('chain2');
   }
+
   /**
    * @name deposit
    * @description make deposit between two networks
@@ -343,13 +501,13 @@ export class Sygma implements SygmaSDK {
     amount: string;
     recipientAddress: string;
     feeData: FeeDataResult;
-  }) {
+  }): Promise<ethers.ContractReceipt | undefined> {
     const erc20ToUse = this.tokens!.chain1!;
     const provider = this.providers!.chain1;
     const bridgeToUse = this.bridges!.chain1!;
     const { erc20HandlerAddress, erc721HandlerAddress } = this.bridgeSetup!.chain1;
     const { domainId } = this.bridgeSetup!.chain2;
-    const token = this.getSelectedToken()
+    const token = this.getSelectedToken();
     const resourceId = this.getSelectedToken().resourceId;
 
     return await this.currentBridge.transfer({
@@ -359,7 +517,7 @@ export class Sygma implements SygmaSDK {
       tokenInstance: erc20ToUse,
       bridge: bridgeToUse,
       provider,
-      handlerAddress: token.type === "erc721" ? erc721HandlerAddress : erc20HandlerAddress,
+      handlerAddress: token.type === 'erc721' ? erc721HandlerAddress : erc20HandlerAddress,
       domainId,
       resourceId,
       feeData,
@@ -367,22 +525,44 @@ export class Sygma implements SygmaSDK {
   }
 
   /**
+   * @name depositGeneric
+   * @description call generic handler to achieve general message passing
+   * @param {string} resourceId
+   * @param {string} depositData
+   * @param {string} fee
+   * @returns {Promise<ethers.ContractReceipt | undefined>}
+   */
+  public async depositGeneric(
+    resourceId: string,
+    depositData: string,
+    fee: FeeDataResult,
+  ): Promise<ethers.ContractReceipt | undefined> {
+    const { domainId } = this.bridgeSetup!.chain2;
+    const provider = this.providers!.chain1;
+    const bridgeToUse = this.bridges!.chain1!;
+
+    return await this.currentBridge.depositGeneric({
+      domainId,
+      resourceId,
+      depositData,
+      fee,
+      bridge: bridgeToUse,
+      provider,
+    });
+  }
+
+  /**
    * @name fetchFeeData
    * @description it fetches the fee data according to bridge setup
    * @param {object} params
-   * @param {string} params.amount
+   * @param {string} params.amount - the amount of token to transfer
    * @param {string} params.recipientAddress - receiver of the deposit
-   * @param {string} params.overridedResourceId - matches local token in local setup with address of the token from where the price data is being fetched.
-   * Only used when doing bridge with fee oracle service
-   * @param {string} params.oraclePrivateKey
    */
   public async fetchFeeData(params: {
     amount: string;
     recipientAddress: string;
-    overridedResourceId?: string;
-    oraclePrivateKey?: string;
-  }) {
-    const { amount, overridedResourceId, oraclePrivateKey, recipientAddress } = params;
+  }): Promise<FeeDataResult | Error | undefined> {
+    const { amount, recipientAddress } = params;
     const {
       feeSettings: { type },
     } = this.getSelectedToken();
@@ -396,8 +576,6 @@ export class Sygma implements SygmaSDK {
       return await this.fetchFeeOracleData({
         amount,
         recipientAddress,
-        overridedResourceId,
-        oraclePrivateKey,
       });
     } else {
       return await this.fetchBasicFeeData({
@@ -407,7 +585,16 @@ export class Sygma implements SygmaSDK {
     }
   }
 
-  public async fetchBasicFeeData(params: { amount: string; recipientAddress: string }) {
+  /**
+   * @name fetchBasicFeeData
+   * @description fetch the basic fee data from FeeOracle service
+   * @param {object} - amount and recipient address to fetch basic fee data
+   * @returns {Promise<FeeDataResult | Error>}
+   */
+  public async fetchBasicFeeData(params: {
+    amount: string;
+    recipientAddress: string;
+  }): Promise<FeeDataResult | Error> {
     const { amount, recipientAddress } = params;
     const { domainId: fromDomainID } = this.bridgeSetup!.chain1;
     const {
@@ -426,7 +613,7 @@ export class Sygma implements SygmaSDK {
         fromDomainID,
         toDomainID,
         resourceID,
-        tokenAmount: Number(amount),
+        tokenAmount: amount,
         recipientAddress,
       });
 
@@ -437,17 +624,21 @@ export class Sygma implements SygmaSDK {
     }
   }
 
+  /**
+   * @name fetchFeeOracleData
+   * @description fetch the fee oracle data from FeeOracle service
+   * @param {object}
+   * @returns {Promise<FeeDataResult | undefined>}
+   */
   private async fetchFeeOracleData(params: {
     amount: string;
     recipientAddress: string;
-    overridedResourceId?: string;
-    oraclePrivateKey?: string;
-  }) {
+  }): Promise<FeeDataResult | undefined> {
     if (!this.feeOracleSetup && !this.getSelectedToken().feeSettings.address) {
       console.log('No feeOracle config');
       return;
     }
-    const { amount, recipientAddress, overridedResourceId, oraclePrivateKey } = params;
+    const { amount, recipientAddress } = params;
     const provider = this.providers!.chain1!;
     const {
       resourceId: resourceID,
@@ -465,31 +656,36 @@ export class Sygma implements SygmaSDK {
       fromDomainID: parseInt(this.bridgeSetup!.chain1.domainId),
       toDomainID: parseInt(this.bridgeSetup!.chain2.domainId),
       resourceID,
-      tokenAmount: Number(amount),
+      tokenAmount: amount,
       feeOracleBaseUrl,
       feeOracleHandlerAddress,
-      overridedResourceId, // '0xbA2aE424d960c26247Dd6c32edC70B295c744C43',
-      oraclePrivateKey, //'0x6937d1d0b52f2fa7f4e071c7e64934ad988a8f21c6bf4f323fc19af4c77e3c5e'
     });
 
-    // feeOracleBaseUrl: 'http://localhost:8091',
-    // FeeHandlerWithOracleAddress: '0xa9ddD97e1762920679f3C20ec779D79a81903c0B',
     return feeData;
   }
 
-  public async waitForTransactionReceipt(txHash: string) {
+  /**
+   * @name waitForTransactionReceipt
+   * @description waits one block for tx receipt
+   * @param txHash
+   * @returns {Promise<ethers.providers.TransactionReceipt | undefined>}
+   */
+  public async waitForTransactionReceipt(
+    txHash: string,
+  ): Promise<ethers.providers.TransactionReceipt | undefined> {
     const receipt = await this.ethersProvider?.waitForTransaction(txHash, 1);
     return receipt;
   }
+
   /**
    * @name hasTokenSupplies
    * @description check if current token has supplies on destination chain
    * @param {number} amount
-   * @returns {Promise} boolean value
+   * @returns {Promise<boolean>} boolean value
    */
   public async hasTokenSupplies(amount: number): Promise<boolean> {
     const { erc20HandlerAddress, decimals } = this.bridgeSetup!.chain2;
-    const destinationTokenAddress = this.bridgeSetup!.chain2.tokens![this.selectedToken].address;
+    const destinationTokenAddress = this.bridgeSetup!.chain2.tokens[this.selectedToken].address;
 
     const provider = this.providers!.chain2;
 
@@ -504,12 +700,13 @@ export class Sygma implements SygmaSDK {
 
     return hasTokenSupplies;
   }
+
   /**
    * @name checkCurrentAllowance
    * @description check the current allowance of the provided address
    * @param {string} recipientAddress
    */
-  public async checkCurrentAllowance(recipientAddress: string) {
+  public async checkCurrentAllowance(recipientAddress: string): Promise<number> {
     const erc20ToUse = this.tokens!.chain1!;
     const { erc20HandlerAddress } = this.bridgeSetup!.chain1;
 
@@ -520,7 +717,13 @@ export class Sygma implements SygmaSDK {
     );
   }
 
-  public async getAppoved(tokenId: string) {
+  /**
+   * @name getApproved
+   * @description returns true if there is an approval over the specified token id
+   * @param tokenId
+   * @returns {Promise<boolean>}
+   */
+  public async getAppoved(tokenId: string): Promise<boolean> {
     const tokenInstance = this.tokens!.chain1!;
     const { erc721HandlerAddress } = this.bridgeSetup!.chain1;
 
@@ -531,14 +734,29 @@ export class Sygma implements SygmaSDK {
     );
   }
 
-  public async isEIP1559MaxFeePerGas(from: Directions) {
+  /**
+   * @name isEIP1559MaxFeePerGas
+   * @description check if node is EIP1559
+   * @param from
+   * @returns {Promise<boolean | BigNumber>}
+   */
+  public async isEIP1559MaxFeePerGas(from: Directions): Promise<boolean | BigNumber> {
     const provider = this.providers![from];
 
     return await this.currentBridge.isEIP1559MaxFeePerGas(provider);
   }
 
-  public async getTokenInfo(chain: Directions) {
-    const erc20Address = this.bridgeSetup![chain].tokens![this.selectedToken].address;
+  /**
+   * @name getTokenInfo
+   * @description gets token info from one chain
+   * @param chain
+   * @returns {Promise<object>}
+   */
+  public async getTokenInfo(chain: Directions): Promise<{
+    balanceOfTokens: BigNumber;
+    tokenName: string;
+  }> {
+    const erc20Address = this.bridgeSetup![chain].tokens[this.selectedToken].address;
     const provider = this.providers![chain];
     const address = await this.getSignerAddress(chain);
     if (this.getSelectedToken().type === 'erc20') {
@@ -546,59 +764,103 @@ export class Sygma implements SygmaSDK {
     } else {
       return await this.currentBridge.getErc721TokenInfo(erc20Address, address!, provider);
     }
-
   }
 
-  public setSelectedToken(address: string) {
+  /**
+   * @name setSelectedToken
+   * @description sets the selectedToken in the Sygma instancep
+   * @param address
+   * @returns {void}
+   */
+  public setSelectedToken(address: string): void {
     const token = this.bridgeSetup!.chain1.tokens.find(el => el.address === address);
-    const tokenIdx = this.bridgeSetup!.chain1.tokens.indexOf(token!)
+    const tokenIdx = this.bridgeSetup!.chain1.tokens.indexOf(token!);
     const erc20Connected = this.connectToken(token!, this.signers?.chain1);
     this.tokens!.chain1 = erc20Connected;
 
     this.selectedToken = tokenIdx;
   }
 
-  public getSelectedTokenAddress() {
+  /**
+   * @name getSelectedTokenAddress
+   * @returns {string}
+   */
+  public getSelectedTokenAddress(): string {
     return this.bridgeSetup!.chain1.tokens[this.selectedToken].address;
   }
 
-  public getSelectedToken() {
+  /**
+   * @name getSelectedToken
+   * @returns {TokenConfig}
+   */
+  public getSelectedToken(): TokenConfig {
     return this.bridgeSetup!.chain1.tokens[this.selectedToken];
   }
 
+  /**
+   * @name getTokenBalance
+   * @description returns ERC20 token balance
+   * @param erc20Contract
+   * @param address
+   * @returns {Promise<BigNumber>}
+   */
   public async getTokenBalance(erc20Contract: Erc20Detailed, address: string): Promise<BigNumber> {
     return await this.currentBridge.getERC20Balance(erc20Contract, address);
   }
 
-  public async getSignerBalance(chain: string) {
-    return await (this.signers![chain as keyof BridgeData] as Signer)?.getBalance();
+  /**
+   * @name getSignerBalance
+   * @description gets the signer balance
+   * @param chain
+   * @returns {Promise<BigNumber | undefined>}
+   */
+  public async getSignerBalance(chain: string): Promise<BigNumber | undefined> {
+    return await this.signers![chain as keyof BridgeData]?.getBalance();
   }
 
-  public async getSignerAddress(chain: string) {
-    return await (this.signers![chain as keyof BridgeData] as Signer)?.getAddress();
+  /**
+   * @name getSignerAddress
+   * @param chain
+   * @returns {Promise<string | undefined>}
+   */
+  public async getSignerAddress(chain: string): Promise<string | undefined> {
+    return await this.signers![chain as keyof BridgeData]?.getAddress();
   }
 
-  public async getSignerGasPrice(chain: string) {
-    return await (this.signers![chain as keyof BridgeData] as Signer)?.getGasPrice();
+  /**
+   * @name getSignerGasPrice
+   * @param chain
+   * @returns {Promise<BigNumber | undefined>}
+   */
+  public async getSignerGasPrice(chain: string): Promise<BigNumber | undefined> {
+    return await this.signers![chain as keyof BridgeData]?.getGasPrice();
   }
+
   /**
    * @name approve
    * @description approve amount of tokens to spent on home chain
    * @param {object} argument
    * @param {string} params.amounForApproval
    */
-  public async approve({ amountOrIdForApproval  }: { amountOrIdForApproval: string }) {
+  public async approve({
+    amountOrIdForApproval,
+  }: {
+    amountOrIdForApproval: string;
+  }): Promise<ethers.ContractReceipt | undefined> {
     const selectedToken = this.getSelectedToken();
 
-    // const amountForApprovalBN = selectedToken.type === 'erc20' ? BigNumber.from(amountOrIdForApproval) : BigNumber.from(amountOrIdForApproval);
-    const amountForApprovalBN = selectedToken.type === 'erc20' ? utils.parseUnits(amountOrIdForApproval, 18) : BigNumber.from(amountOrIdForApproval);
+    const amountForApprovalBN =
+      selectedToken.type === 'erc20'
+        ? utils.parseUnits(amountOrIdForApproval, 18)
+        : BigNumber.from(amountOrIdForApproval);
 
     const gasPrice = await this.isEIP1559MaxFeePerGas('chain1');
 
     const erc20ToUse = this.tokens!.chain1!;
     const { erc20HandlerAddress, erc721HandlerAddress } = this.bridgeSetup!.chain1;
 
-    const handlerAddress = selectedToken.type === 'erc20' ? erc20HandlerAddress : erc721HandlerAddress
+    const handlerAddress =
+      selectedToken.type === 'erc20' ? erc20HandlerAddress : erc721HandlerAddress;
 
     return await this.currentBridge.approve(
       amountForApprovalBN,
@@ -608,7 +870,12 @@ export class Sygma implements SygmaSDK {
     );
   }
 
-  public async checkCurrentAllowanceForFeeHandler(recipientAddress: string) {
+  /**
+   * @name checkCurrentAllowanceForFeeHandler
+   * @param recipientAddress
+   * @returns {Promise<number>}
+   */
+  public async checkCurrentAllowanceForFeeHandler(recipientAddress: string): Promise<number> {
     const erc20ToUse = this.tokens!.chain1!;
     const {
       feeSettings: { address: erc20HandlerAddress },
@@ -621,7 +888,17 @@ export class Sygma implements SygmaSDK {
     );
   }
 
-  public async approveFeeHandler({ amounForApproval }: { amounForApproval: string }) {
+  /**
+   * @name approveFeeHandler
+   * @description approves to the fee handler
+   * @param {object}
+   * @returns {Promise<ethers.ContractReceipt | undefined>}
+   */
+  public async approveFeeHandler({
+    amounForApproval,
+  }: {
+    amounForApproval: string;
+  }): Promise<ethers.ContractReceipt | undefined> {
     const amountForApprovalBN = utils.parseUnits(amounForApproval, 18);
     const gasPrice = await this.isEIP1559MaxFeePerGas('chain1');
 
@@ -638,17 +915,102 @@ export class Sygma implements SygmaSDK {
     );
   }
 
-  public async getDepositEventFromReceipt(depositTx: ethers.ContractReceipt) {
-    const bridgeContract = this.bridges!.chain1!
-    const depositFilter = bridgeContract.filters.Deposit()
+  /**
+   * @name getDepositEventFromReceipt
+   * @param depositTx
+   * @returns {Promise<DepositEvent>}
+   */
+  public async getDepositEventFromReceipt(
+    depositTx: ethers.ContractReceipt,
+  ): Promise<DepositEvent> {
+    const bridgeContract = this.bridges!.chain1!;
+    const depositFilter = bridgeContract.filters.Deposit();
     const events = await bridgeContract.queryFilter(depositFilter, depositTx.blockHash);
-    const event = events[0]
-    return event
+    const event = events[0];
+    return event;
   }
 
-  public async listErc721TokenIdsOfOwner(account: string) {
-    const { address: token } = this.getSelectedToken()
-    const signer = this.signers?.chain1
-    return await listTokensOfOwner({token, account, signer})
+  /**
+   * @name listErc721TokenIdsOfOwner
+   * @description list the tokens from the owner
+   * @param account
+   * @returns {Promise<[string]>}
+   */
+  public async listErc721TokenIdsOfOwner(account: string): Promise<[string]> {
+    const { address: token } = this.getSelectedToken();
+    const signer = this.signers?.chain1!;
+    return await listTokensOfOwner({ token, account, signer });
+  }
+
+  /**
+   * @name formatPermissionlessGenericDepositData
+   * @description formats the data for the permissionaless handler
+   * @param executeFunctionSignature
+   * @param executeContractAddress
+   * @param maxFee
+   * @param depositor
+   * @param executionData
+   * @param depositorCheck
+   * @returns {string}
+   */
+  public formatPermissionlessGenericDepositData(
+    executeFunctionSignature: string,
+    executeContractAddress: string,
+    maxFee: string,
+    depositor: string,
+    executionData: string,
+    depositorCheck: boolean = true,
+  ): string {
+    const depositData = createPermissionlessGenericDepositData(
+      executeFunctionSignature,
+      executeContractAddress,
+      maxFee,
+      depositor,
+      executionData,
+      depositorCheck,
+    );
+
+    return depositData;
+  }
+
+  /**
+   * @name formatPermissionedGenericDepositData
+   * @description formats the data for the permissioned generic data
+   * @param hexMetaData
+   * @returns {string}
+   */
+  public formatPermissionedGenericDepositData(hexMetaData: string): string {
+    const depositData = createPermissionedGenericDepositData(hexMetaData);
+
+    return depositData;
+  }
+
+  /**
+   * @name toHex
+   * @description returns formatted hex data
+   * @param toConvert
+   * @param padding
+   * @returns {string}
+   */
+  public toHex(toConvert: string, padding: number): string {
+    return toHex(toConvert, padding);
+  }
+
+  /**
+   * @name getSigner
+   * @param chain
+   * @returns {Signer}
+   */
+  public getSigner(chain: string): Signer {
+    return this.signers![chain as keyof BridgeData];
+  }
+
+  /**
+   * @name getDestinationChainProvider
+   * @description returns the RPC provider for destination chain
+   * @returns {ethers.providers.JsonRpcProvider}
+   */
+  public getDestinationChainProvider(): ethers.providers.JsonRpcProvider {
+    return this.providers!.chain2 as ethers.providers.JsonRpcProvider;
   }
 }

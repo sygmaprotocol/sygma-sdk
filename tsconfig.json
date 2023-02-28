@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"@buildwithsygma/*": [
+				"packages/*"
+			]
+		},
+		"allowJs": true
+	},
+	"references": [
+		{
+			"path": "packages/sdk"
+		},
+	],
+	"exclude": [
+		"node_modules",
+		"dist",
+		"*.d.ts"
+	]
+}

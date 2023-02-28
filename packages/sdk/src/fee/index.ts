@@ -1,2 +1,2 @@
-export { calculateFeeData } from './feeOracle'
-export { calculateBasicfee } from './basicFee'
+export { calculateFeeData } from './feeOracle';
+export { calculateBasicfee } from './basicFee';
