@@ -1,24 +1,29 @@
 import { BigNumber, ethers } from 'ethers';
-import fetch, { Response } from 'node-fetch';
+import fetch from 'node-fetch';
 import { requestFeeFromFeeOracle, createOracleFeeData, calculateFeeData } from '../feeOracle';
 
 jest.mock('node-fetch');
+const { Response } = jest.requireActual<typeof import('node-fetch')>('node-fetch');
 
-jest.mock('@buildwithsygma/sygma-contracts', () => ({
-  ...jest.requireActual('@buildwithsygma/sygma-contracts'),
-  FeeHandlerWithOracle__factory: {
-    connect: () => {
-      return {
-        calculateFee: jest.fn(() =>
-          Promise.resolve({
-            fee: BigNumber.from('10'),
-            tokenAddress: '0x141F8690A87A7E57C2E270ee77Be94935970c035',
-          }),
-        ),
-      };
-    },
-  },
-}));
+jest.mock(
+  '@buildwithsygma/sygma-contracts',
+  () =>
+    ({
+      ...jest.requireActual('@buildwithsygma/sygma-contracts'),
+      FeeHandlerWithOracle__factory: {
+        connect: () => {
+          return {
+            calculateFee: jest.fn(() =>
+              Promise.resolve({
+                fee: BigNumber.from('10'),
+                tokenAddress: '0x141F8690A87A7E57C2E270ee77Be94935970c035',
+              }),
+            ),
+          };
+        },
+      },
+    } as unknown),
+);
 
 const oracleResponse = {
   response: {
@@ -51,7 +56,7 @@ describe('feeOracle', () => {
         toDomainID: 2,
         resourceID: '0x0000000000000000000000000000000000000000000000000000000000000300',
       });
-      expect(Object.keys(resp!)).toEqual(expectedKeys);
+      expect(Object.keys(resp as Object)).toEqual(expectedKeys);
     });
 
     it('return undefined if server error', async () => {
@@ -62,17 +67,14 @@ describe('feeOracle', () => {
           statusText: 'Internal Error',
         }),
       );
-      try {
-        await requestFeeFromFeeOracle({
+      await expect(
+        requestFeeFromFeeOracle({
           feeOracleBaseUrl: 'http://localhost:8091',
           fromDomainID: 1,
           toDomainID: 2,
           resourceID: '0x0000000000000000000000000000000000000000000000000000000000000001',
-        });
-      } catch (e) {
-        // @ts-ignore
-        expect(e.message).toMatch('Internal Error');
-      }
+        }),
+      ).rejects.toThrowError('Internal Error');
     });
 
     it('return error message from fee oracle server', async () => {
@@ -99,14 +101,6 @@ describe('feeOracle', () => {
       const feeData = createOracleFeeData(oracleResponse.response, '10');
       expect(feeData).toBe(
         '0x000000000000000000000000000000000000000000000000000194b9a2ecd000000000000000000000000000000000000000000000000000dd55bf4eab04000000000000000000000000000000000000000000000000000000000000773594000000000000000000000000000000000000000000000000000000000069b26b140000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000ffdd02c9aaf691e70dcbb69f9e6ec558c3e078c1ec75a5beec0ec46d452c505d3a616a5d6dc738da57ce1ffb6c16fb7f51cfbea6017fa029cd95005a8eaefef31b000000000000000000000000000000000000000000000000000000000000000a',
-      );
-    });
-  });
-  describe('createOracleFeeData', () => {
-    it('builds feeData', () => {
-      const feeData = createOracleFeeData(oracleResponse.response, '10');
-      expect(feeData).toBe(
-        '0x000000000000000000000000000000000000000000000000000194b9a2ecd000000000000000000000000000000000000000000000000000dd55bf4eab04000000000000000000000000000000000000000000000000000000000000773594000000000000000000000000000000000000000000000000000000000069b26b140000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000f7d44d4684d34972ca45bb3a1c19ecff830e652d6c7c3885ace35db60f74e1bb338a28389d033e479734c0afc0b894255c51af33eb7666c195255709efef93d11c000000000000000000000000000000000000000000000000000000000000000a',
       );
     });
   });

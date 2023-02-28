@@ -3,18 +3,22 @@ import { BasicFeeHandler__factory } from '@buildwithsygma/sygma-contracts';
 import { FeeDataResult } from '../../types';
 import { calculateBasicfee } from '../basicFee';
 
-jest.mock('@buildwithsygma/sygma-contracts', () => ({
-  ...jest.requireActual('@buildwithsygma/sygma-contracts'),
-  BasicFeeHandler__factory: {
-    connect: () => {
-      console.log('connect');
-      return {
-        calculateFee: () => Promise.resolve([BigNumber.from('0x174876e800'), '0x0']),
-        _fee: () => Promise.resolve(BigNumber.from('0x174876e800')),
-      };
-    },
-  },
-}));
+jest.mock(
+  '@buildwithsygma/sygma-contracts',
+  () =>
+    ({
+      ...jest.requireActual('@buildwithsygma/sygma-contracts'),
+      BasicFeeHandler__factory: {
+        connect: () => {
+          console.log('connect');
+          return {
+            calculateFee: () => Promise.resolve([BigNumber.from('0x174876e800'), '0x0']),
+            _fee: () => Promise.resolve(BigNumber.from('0x174876e800')),
+          };
+        },
+      },
+    } as unknown),
+);
 
 describe('CalculateBasicFee', () => {
   it('Should return the basic fee in hex form', async () => {
