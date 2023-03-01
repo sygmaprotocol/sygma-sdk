@@ -25,7 +25,7 @@ jobs:
           cache: 'pnpm' # cache node modules
           node-version: ${{ matrix.node }}
       - run: corepack enable
-      - run: pnpm
+      - run: pnpm install
       - run: pnpm run sdk:lint # lint code
       - run: pnpm run sdk:build # compile typescript into javascript
       # - run: pnpm run test:unit # run unit tests
