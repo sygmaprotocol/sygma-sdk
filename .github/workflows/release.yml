@@ -32,10 +32,14 @@ jobs:
         # a new release is created:
         if: ${{ steps.release.outputs.releases_created }}
 
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7
+
       - uses: actions/setup-node@v3
         with:
-          cache: 'yarn'
-          node-version: 16
+          cache: 'pnpm'
+          node-version: 18
           registry-url: 'https://registry.npmjs.org'
           scope: '@buildwithsygma'
         env:
@@ -43,13 +47,13 @@ jobs:
         if: ${{ steps.release.outputs.releases_created }}
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile --non-interactive --ignore-optional
+        run: pnpm install
         if: ${{ steps.release.outputs.releases_created }}
 
       - run: yarn sdk:build
         if: ${{ steps.release.outputs.releases_created }}
 
-      - run: npm publish --workspace=@buildwithsygma/sygma-sdk-core publish --access public
+      - run: pnpm publish --filter @buildwithsygma/sygma-sdk-core --access public --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         if: ${{ steps.release.outputs.releases_created }}

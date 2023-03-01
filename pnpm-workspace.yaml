@@ -1,0 +1,7 @@
+packages:
+  # include packages in subfolders (e.g. apps/ and packages/)
+  - "packages/**"
+  - 'examples/**'
+  # if required, exclude some directories
+  - '!**/webpack-dev-server'
+  - '!**/react-scripts'

@@ -17,13 +17,16 @@ jobs:
       fail-fast: true
     steps:
       - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7
       - uses: actions/setup-node@v3
         with:
-          cache: 'yarn' # cache node modules
+          cache: 'pnpm' # cache node modules
           node-version: ${{ matrix.node }}
       - run: corepack enable
-      - run: yarn
-      - run: yarn run sdk:lint # lint code
-      - run: yarn run sdk:build # compile typescript into javascript
-      # - run: yarn run test:unit # run unit tests
-      # - run: yarn run test:integrations # run integration tests tests
+      - run: pnpm
+      - run: pnpm run sdk:lint # lint code
+      - run: pnpm run sdk:build # compile typescript into javascript
+      # - run: pnpm run test:unit # run unit tests
+      # - run: pnpm run test:integrations # run integration tests tests

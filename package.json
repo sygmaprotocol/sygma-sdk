@@ -8,43 +8,38 @@
     "type": "git",
     "url": "https://github.com/sygmaprotocol/sygma-sdk"
   },
+  "engines": {
+    "node": ">=16",
+    "pnpm": ">=3"
+  },
+  "packageManager": "^pnpm@7.27.0",
   "scripts": {
-    "sdk:build": "yarn workspace @buildwithsygma/sygma-sdk-core build:all",
-    "sdk:cleanDist": "yarn workspace @buildwithsygma/sygma-sdk-core clean",
-    "sdk:test": "yarn workspace @buildwithsygma/sygma-sdk-core test",
-    "sdk:lint": "yarn workspace @buildwithsygma/sygma-sdk-core lint",
-    "sdk:lint:fix": "yarn workspace @buildwithsygma/sygma-sdk-core lint:fix",
-    "sdk:test:unit": "yarn workspace @buildwithsygma/sygma-sdk-core test:unit",
-    "start:react-example": "yarn workspace @buildwithsygma/sygma-sdk-react-example start",
-    "sdk:run-local-example": "yarn workspace @buildwithsygma/sygma-sdk-node-example run:local-ex",
-    "sdk:run-ganache-example": "yarn workspace @buildwithsygma/sygma-sdk-node-example run:ganache-ex"
+    "sdk:build": "pnpm --filter @buildwithsygma/sygma-sdk-core build:all",
+    "sdk:cleanDist": "pnpm --filter @buildwithsygma/sygma-sdk-core clean",
+    "sdk:test": "pnpm --filter @buildwithsygma/sygma-sdk-core test",
+    "sdk:lint": "pnpm --filter @buildwithsygma/sygma-sdk-core lint",
+    "sdk:lint:fix": "pnpm --filter @buildwithsygma/sygma-sdk-core lint:fix",
+    "sdk:test:unit": "pnpm --filter @buildwithsygma/sygma-sdk-core test:unit",
+    "start:react-example": "pnpm --filter @buildwithsygma/sygma-sdk-react-example start",
+    "sdk:run-local-example": "pnpm --filter @buildwithsygma/sygma-sdk-node-example run:local-ex",
+    "sdk:run-ganache-example": "pnpm --filter @buildwithsygma/sygma-sdk-node-example run:ganache-ex"
   },
   "keywords": [],
   "author": "Sygmaprotocol Product Team",
   "license": "LGPL-3.0-or-later",
-  "workspaces": {
-    "packages": [
-      "packages/*",
-      "examples/*"
-    ],
-    "nohoist": [
-      "**/webpack-dev-server",
-      "**/react-scripts"
-    ]
-  },
   "dependencies": {
-    "@changesets/cli": "^2.14.1",
+    "@changesets/cli": "^2.26.0",
     "ethers": "5.4.5"
   },
   "devDependencies": {
     "@chainsafe/eslint-config": "^1.1.0",
     "@rushstack/eslint-patch": "^1.2.0",
-    "@types/node": "^17.0.23",
-    "eslint": "8",
+    "@types/node": "^17.0.45",
+    "eslint": "^8.35.0",
     "jest": "^27.5.1",
-    "ts-jest": "^27.1.4",
-    "ts-node": "^10.7.0",
-    "typescript": "^4.6.3"
+    "ts-jest": "^27.1.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
   },
   "resolutions": {
     "@polkadot/api": "^9.13.6",
@@ -74,8 +69,29 @@
     "@polkadot/x-randomvalues": "^10.3.1",
     "@polkadot/x-textdecoder": "^10.3.1",
     "@polkadot/x-textencoder": "^10.3.1",
-    "@polkadot/x-ws": "^10.3.1",
+    "@polkadot/x--filters": "^10.3.1",
     "babel-core": "^7.0.0-bridge.0",
     "typescript": "^4.9.5"
+  },
+  "pnpm": {
+    "overrides": {
+      "node-fetch@<2.6.1": ">=2.6.1",
+      "cookiejar@<2.1.4": ">=2.1.4",
+      "async@>=2.0.0 <2.6.4": ">=2.6.4",
+      "yargs-parser@<=5.0.0": ">=5.0.1",
+      "decode-uri-component@<0.2.1": ">=0.2.1",
+      "loader-utils@>=3.0.0 <3.2.1": ">=3.2.1",
+      "loader-utils@>=2.0.0 <2.0.4": ">=2.0.4",
+      "got@<11.8.5": ">=11.8.5",
+      "lodash@<4.17.21": ">=4.17.21",
+      "underscore@>=1.3.2 <1.12.1": ">=1.12.1",
+      "flat@<5.0.1": ">=5.0.1",
+      "node-fetch@<2.6.7": ">=2.6.7",
+      "nth-check@<2.0.1": ">=2.0.1",
+      "http-cache-semantics@<4.1.1": ">=4.1.1",
+      "json5@<1.0.2": ">=1.0.2",
+      "minimatch@<3.0.5": ">=3.0.5",
+      "loader-utils@>=2.0.0 <2.0.3": ">=2.0.3"
+    }
   }
 }
