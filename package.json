@@ -9,7 +9,7 @@
     "url": "https://github.com/sygmaprotocol/sygma-sdk"
   },
   "scripts": {
-    "sdk:build": "yarn workspace @buildwithsygma/sygma-sdk-core build",
+    "sdk:build": "yarn workspace @buildwithsygma/sygma-sdk-core build:all",
     "sdk:cleanDist": "yarn workspace @buildwithsygma/sygma-sdk-core clean",
     "sdk:test": "yarn workspace @buildwithsygma/sygma-sdk-core test",
     "sdk:lint": "yarn workspace @buildwithsygma/sygma-sdk-core lint",
