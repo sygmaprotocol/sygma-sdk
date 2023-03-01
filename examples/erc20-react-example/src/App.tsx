@@ -4,11 +4,11 @@ import { BigNumber, utils, constants, Event, providers } from "ethers";
 import { useForm } from "react-hook-form";
 import {
   Sygma,
-  SygmaBridgeSetupList,
+  EvmBridgeSetupList,
   BridgeEvents,
 } from "@buildwithsygma/sygma-sdk-core";
 
-const bridgeSetupList: SygmaBridgeSetupList = [
+const bridgeSetupList: EvmBridgeSetupList = [
   {
     domainId: "1",
     networkId: 1337,
