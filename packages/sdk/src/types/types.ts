@@ -8,7 +8,7 @@ export interface SygmaSDK {}
 export type Directions = 'chain1' | 'chain2';
 
 export type Setup = {
-  bridgeSetupList: SygmaBridgeSetupList;
+  bridgeSetupList: EvmBridgeSetupList;
   bridgeSetup?: BridgeData;
   feeOracleSetup?: FeeOracleData;
 };
@@ -31,7 +31,7 @@ export type TokenConfig = {
 
 export type FeeType = 'basic' | 'feeOracle' | 'none';
 
-export type SygmaBridgeSetup = {
+export type EvmBridgeSetup = {
   name: string;
   networkId: number;
   bridgeAddress: string;
@@ -45,11 +45,12 @@ export type SygmaBridgeSetup = {
   confirmations?: number;
 };
 
-export type SygmaBridgeSetupList = SygmaBridgeSetup[];
+export type EvmBridgeSetupList = EvmBridgeSetup[];
+// export type SygmaEvmSubstrateBridgeSetupList = (SubstrateConfigType | SygmaBridgeSetup)[];
 
 export type BridgeData = {
-  chain1: SygmaBridgeSetup;
-  chain2: SygmaBridgeSetup;
+  chain1: EvmBridgeSetup;
+  chain2: EvmBridgeSetup;
 };
 
 export type FeeOracleData = {
