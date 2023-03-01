@@ -1,4 +1,4 @@
-import { SygmaBridgeSetupList } from "@buildwithsygma/sygma-sdk-core";
+import { EvmBridgeSetupList } from "@buildwithsygma/sygma-sdk-core";
 
 const bridgeAddress = "0x6CdE2Cd82a4F8B74693Ff5e194c19CA08c2d1c68";
 const genericAddress = "0x783BB8123b8532CC85C8D2deF2f47C55D1e46b46";
@@ -8,7 +8,7 @@ const colorsAddress = "0xE54Dc792c226AEF99D6086527b98b36a4ADDe56a";
 const erc20HandlerAddress = "0x1ED1d77911944622FCcDDEad8A731fd77E94173e";
 const erc721HandlerAddress = "0x481f97f9C82a971B3844a422936a4d3c4082bF84";
 
-const bridgeSetupList: SygmaBridgeSetupList = [
+const bridgeSetupList: EvmBridgeSetupList = [
   {
     domainId: "1",
     networkId: 1337,

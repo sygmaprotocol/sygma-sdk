@@ -1,0 +1,59 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+.App {
+  min-width: 712px;
+}
+
+.mainTitle {
+  display: "flex";
+  justify-content: "center"
+}
+
+.formFieldset {
+  display: flex;
+  flex-direction: column;
+  border: none;
+}
+
+.input {
+  display: flex;
+  align-self: center;
+  width: 56%;
+  padding: 10px;
+  border: 1px solid grey;
+  text-align: start;
+  font-size: 15px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  box-sizing: border-box;
+}
+
+.label {
+  display: flex;
+  align-self: center;
+  width: 56%;
+  padding: 5px 10px;
+  text-align: start;
+  font-size: 15px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  box-sizing: border-box;
+}
+
+.button {
+  display: flex;
+  align-self: center;
+  width: 33%;
+  padding: 10px;
+  margin-top: 15px;
+  justify-content: center;
+  background: white;
+  color: green;
+  border: 1px solid green;
+  font-weight: 800;
+  border-radius: 5px;
+}
