@@ -1,4 +1,4 @@
-name: 'ci / test'
+name: 'Linter check'
 
 on:
   push:
