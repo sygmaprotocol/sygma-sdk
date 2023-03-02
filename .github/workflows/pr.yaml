@@ -16,3 +16,4 @@ jobs:
             feat
             chore
             revert
+          requireScope: false
