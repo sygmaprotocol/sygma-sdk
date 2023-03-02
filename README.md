@@ -158,7 +158,8 @@ fee-oracle        | [GIN-debug] Listening and serving HTTP on :8091
 </details>
 With this addresses you can use our SDK with the `basic fee` setup.
 
-After that, you can watch the logs an see your funds or NFT being transfer from one network to another
+
+After that, you can watch the logs and see your funds or NFT being transferred from one network to another
 
 ## Contract addresses for this setup
 
@@ -178,7 +179,6 @@ This is the list of the current contract addresses deployed in our local setup
 
 
 If you want to use the bridge admin and import this account to your metamask, use the private key: `cc2c32b154490f09f70c1c8d4b997238448d649e0777495863db231c4ced3616`. Address of the bridge admin is: `0x5C1F5961696BaD2e73f73417f07EF55C62a2dC5b `
-
 
 ## Checking the Examples folder
 
@@ -530,7 +530,7 @@ sygmaInstance.destinationProposalExecutionEventListener((
 });
 ````
 
-To remove remove execution events listener:
+To remove execution events listener:
 
 ````ts
 // initialization of Sygma class
@@ -540,7 +540,7 @@ sygmaInstance.removeDestinationProposalExecutionEventListener()
 ````
 
 
-With this you can use our SDK and create the render logic to show your tokens and your networks of the bridge. For a more in depth review, check out our `erc20`,  `erc721` and `generic handler` examples.
+With this you can use our SDK and create the render logic to show your tokens and your networks of the bridge. For a more in-depth review, check out our `erc20`,  `erc721` and `generic handler` examples.
 
 
 ## Support
