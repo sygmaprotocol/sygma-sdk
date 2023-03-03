@@ -1,11 +1,11 @@
-import { ApiPromise, WsProvider } from '@polkadot/api';
+import { ApiPromise } from '@polkadot/api';
 import { TypeRegistry } from '@polkadot/types/create';
-import { SubstrateConfigType } from '../types';
 import { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
 import { keyring as Keyring } from '@polkadot/ui-keyring';
+import { SubstrateConfigType } from '../types';
 
 import * as Utils from '../utils';
-import { retrieveChainInfo } from '../utils/retrieveChainInfo';
+import { retrieveChainInfo } from '../utils';
 import { LoadAccountsCallbacksType } from '../utils/loadAccounts';
 
 jest.mock('@polkadot/extension-dapp', () => ({
@@ -35,7 +35,7 @@ jest.mock('../utils/retrieveChainInfo', () => {
 });
 
 const mockApiPromise = {
-  on: (arg: any, fn: () => any) => fn(),
+  on: (arg: any, fn: () => void) => fn(),
   isReady: new Promise<void>(resolve => {
     setTimeout(() => {
       resolve();
@@ -53,7 +53,7 @@ describe('loadAccounts', () => {
 
   beforeEach(() => {
     config = {
-      domainId: "4",
+      domainId: '4',
       appName: 'test',
       provider_socket: '',
       assets: [
@@ -92,7 +92,7 @@ describe('loadAccounts', () => {
 
     expect(web3Accounts).toHaveBeenCalled();
 
-    expect(Keyring.loadAll).toHaveBeenCalledWith({ isDevelopment: true }, [
+    expect(Keyring.loadAll.bind(this)).toHaveBeenCalledWith({ isDevelopment: true }, [
       {
         address: '5DhjtK8fwZVc1Q2w4LUKxAAUyH7nzhzXUv89B1a6FdYynWvN',
         meta: { genesisHash: '', name: 'Caterpillar (polkadot-js)', source: 'polkadot-js' },
@@ -107,7 +107,7 @@ describe('loadAccounts', () => {
   it('should call retrieveChainInfo and isTestChain correctly', async () => {
     await Utils.loadAccounts(config, api, callbacks);
 
-    expect(Keyring.loadAll).toHaveBeenCalled();
+    expect(Keyring.loadAll.bind(this)).toHaveBeenCalled();
 
     expect(retrieveChainInfo).toHaveBeenCalledWith(api);
   });
@@ -115,7 +115,7 @@ describe('loadAccounts', () => {
   it('should call callbacks onLoadKeyring and onSetKeyring with the correct parameters on success', async () => {
     await Utils.loadAccounts(config, api, callbacks);
 
-    expect(Keyring.loadAll).toHaveBeenCalled();
+    expect(Keyring.loadAll.bind(this)).toHaveBeenCalled();
 
     expect(callbacks.onLoadKeyring).toHaveBeenCalled();
 
@@ -128,7 +128,7 @@ describe('loadAccounts', () => {
     });
     await Utils.loadAccounts(config, api, callbacks);
 
-    expect(Keyring.loadAll).toHaveBeenCalled();
+    expect(Keyring.loadAll.bind(this)).toHaveBeenCalled();
 
     expect(callbacks.onLoadKeyring).toHaveBeenCalled();
 
@@ -139,10 +139,12 @@ describe('loadAccounts', () => {
     (web3Enable as jest.Mock<any, any, any>).mockResolvedValue([]);
     await Utils.loadAccounts(config, api, callbacks);
 
-    expect(Keyring.loadAll).toHaveBeenCalled();
+    expect(Keyring.loadAll.bind(this)).toHaveBeenCalled();
 
     expect(callbacks.onLoadKeyring).toHaveBeenCalled();
 
-    expect(callbacks.onErrorKeyring).toHaveBeenCalledWith(new Error("Can't get any injected sources. Is the wallet authorized?"));
+    expect(callbacks.onErrorKeyring).toHaveBeenCalledWith(
+      new Error("Can't get any injected sources. Is the wallet authorized?"),
+    );
   });
 });

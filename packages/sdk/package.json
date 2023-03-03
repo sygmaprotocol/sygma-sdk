@@ -40,6 +40,7 @@
 		"@ethersproject/bytes": "^5.7.0",
 		"@ethersproject/contracts": "^5.7.0",
 		"@ethersproject/providers": "^5.7.2",
+		"@polkadot/extension-inject": "^0.44.9",
 		"@polkadot/types": "^9.9.1",
 		"@types/jest": "^29.4.0",
 		"@types/node-fetch": "2.x",

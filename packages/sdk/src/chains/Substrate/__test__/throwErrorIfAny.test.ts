@@ -1,7 +1,6 @@
-
 import { ApiPromise, SubmittableResult } from '@polkadot/api';
 
-import {throwErrorIfAny} from '../utils';
+import { throwErrorIfAny } from '../utils';
 
 describe('throwErrorIfAny', () => {
   let api: ApiPromise;
@@ -13,23 +12,26 @@ describe('throwErrorIfAny', () => {
       events: {
         system: {
           ExtrinsicFailed: {
-            is: jest.fn().mockReturnValue(true)
-          }
-        }
+            is: jest.fn().mockReturnValue(true),
+          },
+        },
       },
       registry: {
         findMetaError: jest.fn().mockReturnValue({
           docs: ['can', 'not', 'do'],
           method: 'skrew',
-          section: 'bridge'
-        })
-      }
+          section: 'bridge',
+        }),
+      },
     } as unknown as ApiPromise;
-    result = { events: [{
-      data: [
-        {isModule: true}
-      ]
-    }], status: {} } as unknown as SubmittableResult;
+    result = {
+      events: [
+        {
+          data: [{ isModule: true }],
+        },
+      ],
+      status: {},
+    } as unknown as SubmittableResult;
     unsub = jest.fn();
   });
 
@@ -54,20 +56,20 @@ describe('throwErrorIfAny', () => {
     (result.events[0] as any) = { event: { type: 'system.ExtrinsicFailed', data: eventData } };
 
     expect(() => throwErrorIfAny(api, result, unsub)).toThrow('bridge.skrew: can not do'); // call the function and check that it throws an error
-    expect(api.registry.findMetaError).toBeCalledWith('test')
+    expect(api.registry.findMetaError.bind(this)).toBeCalledWith('test');
 
     expect(unsub).toHaveBeenCalledTimes(1); // check that the unsubscribe function has been called
   });
 
   it('should call the unsubscribe function when an other error is thrown', () => {
     (result.status.isInBlock as any) = true;
-    const eventData = [{ isModule: false, toString: () => "OTHER" }]; // mock data for DispatchError event type
+    const eventData = [{ isModule: false, toString: () => 'OTHER' }]; // mock data for DispatchError event type
 
     // mock system ExtrinsicFailed event type and data for the event object in the events array of the SubmittableResult object passed to the function
     (result.events[0] as any) = { event: { type: 'system.ExtrinsicFailed', data: eventData } };
 
-    expect(() => throwErrorIfAny(api, result, unsub)).toThrow("OTHER"); // call the function and check that it throws an error
-    expect(api.registry.findMetaError).not.toHaveBeenCalled()
+    expect(() => throwErrorIfAny(api, result, unsub)).toThrow('OTHER'); // call the function and check that it throws an error
+    expect(api.registry.findMetaError.bind(this)).not.toHaveBeenCalled();
 
     expect(unsub).toHaveBeenCalledTimes(1); // check that the unsubscribe function has been called
   });

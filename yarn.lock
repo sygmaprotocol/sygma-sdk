@@ -1895,6 +1895,7 @@ __metadata:
     "@polkadot/api": ^9.9.1
     "@polkadot/api-augment": ^9.9.1
     "@polkadot/extension-dapp": ^0.44.8
+    "@polkadot/extension-inject": ^0.44.9
     "@polkadot/keyring": ^10.1.13
     "@polkadot/rpc-provider": ^9.9.1
     "@polkadot/types": ^9.9.1
@@ -5219,6 +5220,22 @@ __metadata:
   peerDependencies:
     "@polkadot/api": "*"
   checksum: 049d44e783937cdae5adb85940325d144f8c2b602d7581c9ca2465d2041d7b773a4a88aeab15431447fe8fa53637883c0b2abe44c8032ee691f9a3735ec03747
+  languageName: node
+  linkType: hard
+
+"@polkadot/extension-inject@npm:^0.44.9":
+  version: 0.44.9
+  resolution: "@polkadot/extension-inject@npm:0.44.9"
+  dependencies:
+    "@babel/runtime": ^7.20.13
+    "@polkadot/rpc-provider": ^9.14.2
+    "@polkadot/types": ^9.14.2
+    "@polkadot/util": ^10.4.2
+    "@polkadot/util-crypto": ^10.4.2
+    "@polkadot/x-global": ^10.4.2
+  peerDependencies:
+    "@polkadot/api": "*"
+  checksum: f43aae90439165bbc39c1f5a938022942871211e35cf3cc5718fe41bc0684d77a2c916963a9649b12ca763fa4b9f617eae4d5231fbfe201157c459c38ff71dd9
   languageName: node
   linkType: hard
 

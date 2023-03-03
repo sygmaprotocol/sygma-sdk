@@ -1,15 +1,11 @@
-import { BigNumber, ethers, BaseContract, Contract } from 'ethers';
-import type{
-  Bridge,
-  Bridge__factory,
-  IBridge,
-} from '@buildwithsygma/sygma-contracts';
+import { BigNumber, ethers } from 'ethers';
+import type { Bridge } from '@buildwithsygma/sygma-contracts';
 
 import {
   createProposalExecutionEventListener,
   proposalExecutionEventListenerCount,
   removeProposalExecutionEventListener,
-  connectToBridge
+  connectToBridge,
 } from '../utils';
 
 describe('createProposalExecutionEventListener', () => {
@@ -24,7 +20,7 @@ describe('createProposalExecutionEventListener', () => {
 
     createProposalExecutionEventListener(homeDepositNonce, bridge, callbackFn);
 
-    expect(bridge.filters.ProposalExecution).toHaveBeenCalledWith(null, null, null);
+    expect(bridge.filters.ProposalExecution.bind(this)).toHaveBeenCalledWith(null, null, null);
 
     // Call the event handler with some dummy data to ensure that the callback is called correctly
     const originDomainId = 3;
@@ -32,6 +28,7 @@ describe('createProposalExecutionEventListener', () => {
     const dataHash = '0x12345';
     const tx = {};
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
     (bridge.on as jest.Mock).mock.calls[0][1](originDomainId, depositNonce, dataHash, tx);
 
     expect(callbackFn).toHaveBeenCalledWith(originDomainId, depositNonce, dataHash, tx);
@@ -54,6 +51,7 @@ describe('createProposalExecutionEventListener', () => {
     const dataHash = '0x12345';
     const tx = {};
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
     (bridge.on as jest.Mock).mock.calls[0][1](originDomainId, depositNonce, dataHash, tx);
 
     expect(callbackFn).not.toHaveBeenCalled(); // callback should not have been called because nonces do not match
@@ -70,8 +68,8 @@ describe('proposalExecutionEventListenerCount', () => {
     } as unknown as Bridge;
 
     expect(proposalExecutionEventListenerCount(bridge)).toBe(5);
-    expect(bridge.filters.ProposalExecution).toHaveBeenCalledWith(null, null, null);
-    expect(bridge.listenerCount).toHaveBeenCalledWith('proposalFilter');
+    expect(bridge.filters.ProposalExecution.bind(this)).toHaveBeenCalledWith(null, null, null);
+    expect(bridge.listenerCount.bind(this)).toHaveBeenCalledWith('proposalFilter');
   });
 });
 
@@ -86,8 +84,8 @@ describe('removeProposalExecutionEventListener', () => {
 
     removeProposalExecutionEventListener(bridge);
 
-    expect(bridge.filters.ProposalExecution).toHaveBeenCalledWith(null, null, null);
-    expect(bridge.removeAllListeners).toHaveBeenCalledWith('proposalFilter');
+    expect(bridge.filters.ProposalExecution.bind(this)).toHaveBeenCalledWith(null, null, null);
+    expect(bridge.removeAllListeners.bind(this)).toHaveBeenCalledWith('proposalFilter');
   });
 });
 
@@ -98,8 +96,10 @@ describe('connectToBridge', () => {
 
     const bridge = connectToBridge(bridgeAddress, signerOrProvider);
 
-    expect(bridge).toEqual(expect.objectContaining({
-      address: "0x1234567890123456789012345678901234567890",
-    }));
+    expect(bridge).toEqual(
+      expect.objectContaining({
+        address: '0x1234567890123456789012345678901234567890',
+      }),
+    );
   });
 });

@@ -1,9 +1,5 @@
-import { TypeRegistry } from '@polkadot/types/create';
-
 import { substrateSocketConnect } from '../utils';
 import { SubstrateSocketConnectionCallbacksType } from '../utils/substrateSocketConnect';
-
-const registry = new TypeRegistry();
 
 jest.mock('@polkadot/extension-dapp', () => ({
   web3Enable: jest.fn().mockResolvedValue(true),
@@ -22,7 +18,7 @@ jest.mock('@polkadot/extension-dapp', () => ({
 }));
 
 const mockApiPromise = {
-  on: (arg: any, fn: () => any) => fn(),
+  on: (arg: any, fn: () => void) => fn(),
   isReady: new Promise<void>(resolve => {
     setTimeout(() => {
       resolve();
