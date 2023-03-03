@@ -16,7 +16,7 @@ jobs:
         with:
           command: manifest
           release-type: node
-          token: ${{secrets.GITHUB_TOKEN}}
+          token: ${{secrets.RELEASE_TOKEN}}
           monorepo-tags: true
           default-branch: main
           changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false},{"type":"revert","hidden":true}]'
