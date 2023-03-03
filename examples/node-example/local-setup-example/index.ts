@@ -1,5 +1,5 @@
 import { BigNumber, Event } from "ethers";
-import { Sygma, SygmaBridgeSetupList } from "@buildwithsygma/sygma-sdk-core";
+import { Sygma, EvmBridgeSetupList } from "@buildwithsygma/sygma-sdk-core";
 
 const depositEventLogs = (
   destinationDomainId: number,
@@ -30,7 +30,7 @@ const proposalExecutionEventsLogs = (
 
 void (async () => {
   // CHAIN 1 ADRESSES
-  const bridgeSetupList: SygmaBridgeSetupList = [
+  const bridgeSetupList: EvmBridgeSetupList = [
     {
       domainId: "1",
       networkId: 1337,

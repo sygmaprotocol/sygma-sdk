@@ -1,12 +1,12 @@
-name: 'ci / test'
+name: 'Linter check'
+
 on:
   push:
     branches:
       - main
   pull_request:
     types: [opened, synchronize, reopened]
-    branches:
-      - '**'
+
 jobs:
   check:
     runs-on: ubuntu-latest

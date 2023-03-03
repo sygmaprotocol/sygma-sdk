@@ -24,8 +24,8 @@ import {
   ConnectorProvider,
   FeeOracleData,
   FeeDataResult,
-  SygmaBridgeSetupList,
-  SygmaBridgeSetup,
+  EvmBridgeSetupList,
+  EvmBridgeSetup,
   TokenConfig,
 } from './types';
 import {
@@ -53,7 +53,7 @@ import {
  *
  */
 export class Sygma implements SygmaSDK {
-  public bridgeSetupList: SygmaBridgeSetupList | undefined;
+  public bridgeSetupList: EvmBridgeSetupList | undefined;
   private ethersProvider: Provider = undefined;
   public bridgeSetup: BridgeData | undefined;
   public bridges: Bridges = { chain1: undefined, chain2: undefined };
@@ -112,9 +112,9 @@ export class Sygma implements SygmaSDK {
    * @name selectHomeNetwork
    * @description returns homechain object
    * @param homeNetworkChainId
-   * @returns {SygmaBridgeSetup | undefined}
+   * @returns {EvmBridgeSetup | undefined}
    */
-  public selectHomeNetwork(homeNetworkChainId: number): SygmaBridgeSetup | undefined {
+  public selectHomeNetwork(homeNetworkChainId: number): EvmBridgeSetup | undefined {
     return this.bridgeSetupList?.find(el => el.networkId === homeNetworkChainId);
   }
 
@@ -122,9 +122,9 @@ export class Sygma implements SygmaSDK {
    * @name selectOneForDestination
    * @description returns the destinaton chain object
    * @param homeNetworkChainId
-   * @returns {SygmaBridgeSetup | undefined}
+   * @returns {EvmBridgeSetup | undefined}
    */
-  public selectOneForDestination(homeNetworkChainId: number): SygmaBridgeSetup | undefined {
+  public selectOneForDestination(homeNetworkChainId: number): EvmBridgeSetup | undefined {
     return this.bridgeSetupList?.filter(el => el.networkId !== homeNetworkChainId)[0];
   }
 
@@ -189,7 +189,7 @@ export class Sygma implements SygmaSDK {
   ): Promise<Sygma> {
     const connector = setConnectorWeb3(web3ProviderInstance);
     const network = await connector.provider?.getNetwork();
-    let chain1: SygmaBridgeSetup | undefined;
+    let chain1: EvmBridgeSetup | undefined;
     // DomainId is used only for Local Setup
     if (domainId) {
       chain1 = this.bridgeSetupList!.find(el => el.domainId === domainId);
@@ -220,7 +220,7 @@ export class Sygma implements SygmaSDK {
    * @returns {Sygma}
    */
   public setDestination(domainId: string): Sygma {
-    let chain2: SygmaBridgeSetup | undefined;
+    let chain2: EvmBridgeSetup | undefined;
     if (domainId) {
       chain2 = this.bridgeSetupList!.find(el => el.domainId === domainId);
     }
@@ -278,7 +278,7 @@ export class Sygma implements SygmaSDK {
    * @returns {Object} - object with bridge and ERC20 contracts
    */
   public computeContract(
-    config: SygmaBridgeSetup,
+    config: EvmBridgeSetup,
     connector: Connector,
   ): {
     bridge: Bridge;

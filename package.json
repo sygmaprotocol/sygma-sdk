@@ -3,6 +3,7 @@
   "description": "Sygma SDK",
   "main": "index.js",
   "private": true,
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/sygmaprotocol/sygma-sdk"
@@ -44,5 +45,37 @@
     "ts-jest": "^27.1.4",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.3"
+  },
+  "resolutions": {
+    "@polkadot/api": "^9.13.6",
+    "@polkadot/api-augment": "^9.13.6",
+    "@polkadot/api-base": "^9.13.6",
+    "@polkadot/api-contract": "^9.13.6",
+    "@polkadot/api-derive": "^9.13.6",
+    "@polkadot/hw-ledger": "^10.3.1",
+    "@polkadot/keyring": "^10.3.1",
+    "@polkadot/networks": "^10.3.1",
+    "@polkadot/phishing": "^0.19.1",
+    "@polkadot/rpc-augment": "^9.13.6",
+    "@polkadot/rpc-core": "^9.13.6",
+    "@polkadot/rpc-provider": "^9.13.6",
+    "@polkadot/types": "^9.13.6",
+    "@polkadot/types-augment": "^9.13.6",
+    "@polkadot/types-codec": "^9.13.6",
+    "@polkadot/types-create": "^9.13.6",
+    "@polkadot/types-known": "^9.13.6",
+    "@polkadot/types-support": "^9.13.6",
+    "@polkadot/util": "^10.3.1",
+    "@polkadot/util-crypto": "^10.3.1",
+    "@polkadot/wasm-crypto": "^6.4.1",
+    "@polkadot/x-bigint": "^10.3.1",
+    "@polkadot/x-fetch": "^10.3.1",
+    "@polkadot/x-global": "^10.3.1",
+    "@polkadot/x-randomvalues": "^10.3.1",
+    "@polkadot/x-textdecoder": "^10.3.1",
+    "@polkadot/x-textencoder": "^10.3.1",
+    "@polkadot/x-ws": "^10.3.1",
+    "babel-core": "^7.0.0-bridge.0",
+    "typescript": "^4.9.5"
   }
 }
