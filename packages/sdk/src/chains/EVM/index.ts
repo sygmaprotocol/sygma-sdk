@@ -1,1 +1,2 @@
-export { default } from './EvmBridge';
+export { default as EvmBridge } from './EvmBridge';
+export * as EVM from './utils';

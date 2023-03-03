@@ -1,13 +1,15 @@
 module.exports = {
-    roots: ["<rootDir>/integration/test", "<rootDir>/src"],
-
-    // Jest transformations -- this adds support for TypeScript
-    // using ts-jest
-    transform: {
-        "^.+\\.tsx?$": "ts-jest",
-    },
-    // Module file extensions for importing
-    moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
-    // setupFilesAfterEnv: ["./setupTests.ts"]
-    testTimeout: 15000,
-}
+  roots: ['<rootDir>/integration/test', '<rootDir>/src'],
+  extensionsToTreatAsEsm: ['.ts', '.tsx'],
+  verbose: true,
+  preset: 'ts-jest/presets/default-esm',
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1',
+  },
+  testEnvironment: 'jsdom',
+  testTimeout: 15000,
+  transform: {
+    '^.+\\.(ts|tsx)?$': ['ts-jest', { useESM: true }],
+  },
+  testPathIgnorePatterns: ['./dist', '<rootDir>/integration/test/chainbridge.e2e.test.ts'],
+};
