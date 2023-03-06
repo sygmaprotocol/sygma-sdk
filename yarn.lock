@@ -1833,7 +1833,7 @@ __metadata:
   resolution: "@buildwithsygma/generic-colors@workspace:examples/generic-colors"
   dependencies:
     "@buildwithsygma/sygma-contracts": 1.1.1
-    "@buildwithsygma/sygma-sdk-core": "*"
+    "@buildwithsygma/sygma-sdk-core": "workspace:*"
     "@ethersproject/experimental": ^5.7.0
     "@testing-library/jest-dom": ^5.14.1
     "@testing-library/react": ^13.0.0
@@ -1883,7 +1883,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@buildwithsygma/sygma-sdk-core@*, @buildwithsygma/sygma-sdk-core@workspace:packages/sdk":
+"@buildwithsygma/sygma-sdk-core@*, @buildwithsygma/sygma-sdk-core@workspace:*, @buildwithsygma/sygma-sdk-core@workspace:packages/sdk":
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-core@workspace:packages/sdk"
   dependencies:
@@ -1922,7 +1922,7 @@ __metadata:
   resolution: "@buildwithsygma/sygma-sdk-erc20-react-example@workspace:examples/erc20-react-example"
   dependencies:
     "@buildwithsygma/sygma-contracts": 1.0.0
-    "@buildwithsygma/sygma-sdk-core": "*"
+    "@buildwithsygma/sygma-sdk-core": "workspace:*"
     "@metamask/providers": ^10.2.1
     "@testing-library/jest-dom": ^5.16.4
     "@testing-library/react": ^13.1.1
@@ -1959,7 +1959,7 @@ __metadata:
   resolution: "@buildwithsygma/sygma-sdk-erc721-react-example@workspace:examples/erc721-react-example"
   dependencies:
     "@buildwithsygma/sygma-contracts": 1.0.0
-    "@buildwithsygma/sygma-sdk-core": "*"
+    "@buildwithsygma/sygma-sdk-core": "workspace:*"
     "@metamask/providers": ^10.2.1
     "@testing-library/jest-dom": ^5.16.4
     "@testing-library/react": ^13.1.1
@@ -2011,7 +2011,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-node-generic-colors@workspace:examples/generic-node-example"
   dependencies:
-    "@buildwithsygma/sygma-sdk-core": "*"
+    "@buildwithsygma/sygma-sdk-core": "workspace:*"
     "@ethersproject/experimental": ^5.7.0
     chalk: 4.1.2
     ethers: 5.7.2
@@ -2024,7 +2024,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-substrate-react-example@workspace:examples/substrate-react-example"
   dependencies:
-    "@buildwithsygma/sygma-sdk-core": "*"
+    "@buildwithsygma/sygma-sdk-core": "workspace:*"
     "@polkadot/api": ^9.9.1
     "@polkadot/types": ^9.9.1
     "@polkadot/ui-keyring": ^2.10.1
