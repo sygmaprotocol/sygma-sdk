@@ -6,8 +6,14 @@ describe('throwErrorIfAny', () => {
   let api: ApiPromise;
   let result: SubmittableResult;
   let unsub: () => void;
+  let findMetaErrorMock: jest.Mock;
 
   beforeEach(() => {
+    findMetaErrorMock = jest.fn().mockReturnValue({
+      docs: ['can', 'not', 'do'],
+      method: 'skrew',
+      section: 'bridge',
+    });
     api = {
       events: {
         system: {
@@ -17,11 +23,7 @@ describe('throwErrorIfAny', () => {
         },
       },
       registry: {
-        findMetaError: jest.fn().mockReturnValue({
-          docs: ['can', 'not', 'do'],
-          method: 'skrew',
-          section: 'bridge',
-        }),
+        findMetaError: findMetaErrorMock,
       },
     } as unknown as ApiPromise;
     result = {
@@ -56,7 +58,7 @@ describe('throwErrorIfAny', () => {
     (result.events[0] as any) = { event: { type: 'system.ExtrinsicFailed', data: eventData } };
 
     expect(() => throwErrorIfAny(api, result, unsub)).toThrow('bridge.skrew: can not do'); // call the function and check that it throws an error
-    expect(api.registry.findMetaError as jest.Mock).toBeCalledWith('test');
+    expect(findMetaErrorMock).toBeCalledWith('test');
 
     expect(unsub).toHaveBeenCalledTimes(1); // check that the unsubscribe function has been called
   });
@@ -69,7 +71,7 @@ describe('throwErrorIfAny', () => {
     (result.events[0] as any) = { event: { type: 'system.ExtrinsicFailed', data: eventData } };
 
     expect(() => throwErrorIfAny(api, result, unsub)).toThrow('OTHER'); // call the function and check that it throws an error
-    expect(api.registry.findMetaError as jest.Mock).not.toHaveBeenCalled();
+    expect(findMetaErrorMock).not.toHaveBeenCalled();
 
     expect(unsub).toHaveBeenCalledTimes(1); // check that the unsubscribe function has been called
   });
