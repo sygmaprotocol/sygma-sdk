@@ -50,6 +50,10 @@ describe('loadAccounts', () => {
   let config: SubstrateConfigType;
   let api: ApiPromise;
   let callbacks: LoadAccountsCallbacksType;
+  let keyringMockLoadAll: jest.SpyInstance<
+    ReturnType<Required<typeof Keyring>['loadAll']>,
+    jest.ArgsType<Required<typeof Keyring>['loadAll']>
+  >;
 
   beforeEach(() => {
     config = {
@@ -73,7 +77,7 @@ describe('loadAccounts', () => {
     };
     api = new ApiPromise();
 
-    jest.spyOn(Keyring, 'loadAll').mockImplementation();
+    keyringMockLoadAll = jest.spyOn(Keyring, 'loadAll').mockImplementation();
     callbacks = {
       onLoadKeyring: jest.fn(),
       onSetKeyring: jest.fn(),
@@ -92,7 +96,7 @@ describe('loadAccounts', () => {
 
     expect(web3Accounts).toHaveBeenCalled();
 
-    expect(Keyring.loadAll.bind(this)).toHaveBeenCalledWith({ isDevelopment: true }, [
+    expect(keyringMockLoadAll).toHaveBeenCalledWith({ isDevelopment: true }, [
       {
         address: '5DhjtK8fwZVc1Q2w4LUKxAAUyH7nzhzXUv89B1a6FdYynWvN',
         meta: { genesisHash: '', name: 'Caterpillar (polkadot-js)', source: 'polkadot-js' },
@@ -107,7 +111,7 @@ describe('loadAccounts', () => {
   it('should call retrieveChainInfo and isTestChain correctly', async () => {
     await Utils.loadAccounts(config, api, callbacks);
 
-    expect(Keyring.loadAll.bind(this)).toHaveBeenCalled();
+    expect(keyringMockLoadAll).toHaveBeenCalled();
 
     expect(retrieveChainInfo).toHaveBeenCalledWith(api);
   });
@@ -115,7 +119,7 @@ describe('loadAccounts', () => {
   it('should call callbacks onLoadKeyring and onSetKeyring with the correct parameters on success', async () => {
     await Utils.loadAccounts(config, api, callbacks);
 
-    expect(Keyring.loadAll.bind(this)).toHaveBeenCalled();
+    expect(keyringMockLoadAll).toHaveBeenCalled();
 
     expect(callbacks.onLoadKeyring).toHaveBeenCalled();
 
@@ -128,7 +132,7 @@ describe('loadAccounts', () => {
     });
     await Utils.loadAccounts(config, api, callbacks);
 
-    expect(Keyring.loadAll.bind(this)).toHaveBeenCalled();
+    expect(keyringMockLoadAll).toHaveBeenCalled();
 
     expect(callbacks.onLoadKeyring).toHaveBeenCalled();
 
@@ -139,7 +143,7 @@ describe('loadAccounts', () => {
     (web3Enable as jest.Mock<any, any, any>).mockResolvedValue([]);
     await Utils.loadAccounts(config, api, callbacks);
 
-    expect(Keyring.loadAll.bind(this)).toHaveBeenCalled();
+    expect(keyringMockLoadAll).toHaveBeenCalled();
 
     expect(callbacks.onLoadKeyring).toHaveBeenCalled();
 

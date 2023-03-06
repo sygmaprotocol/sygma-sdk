@@ -56,7 +56,7 @@ describe('throwErrorIfAny', () => {
     (result.events[0] as any) = { event: { type: 'system.ExtrinsicFailed', data: eventData } };
 
     expect(() => throwErrorIfAny(api, result, unsub)).toThrow('bridge.skrew: can not do'); // call the function and check that it throws an error
-    expect(api.registry.findMetaError.bind(this)).toBeCalledWith('test');
+    expect(api.registry.findMetaError as jest.Mock).toBeCalledWith('test');
 
     expect(unsub).toHaveBeenCalledTimes(1); // check that the unsubscribe function has been called
   });
@@ -69,7 +69,7 @@ describe('throwErrorIfAny', () => {
     (result.events[0] as any) = { event: { type: 'system.ExtrinsicFailed', data: eventData } };
 
     expect(() => throwErrorIfAny(api, result, unsub)).toThrow('OTHER'); // call the function and check that it throws an error
-    expect(api.registry.findMetaError.bind(this)).not.toHaveBeenCalled();
+    expect(api.registry.findMetaError as jest.Mock).not.toHaveBeenCalled();
 
     expect(unsub).toHaveBeenCalledTimes(1); // check that the unsubscribe function has been called
   });

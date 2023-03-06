@@ -11,8 +11,9 @@ import {
 describe('createProposalExecutionEventListener', () => {
   it('should create a ProposalExecution event listener', () => {
     const homeDepositNonce = 1;
+    const ProposalExecution = jest.fn();
     const bridge = {
-      filters: { ProposalExecution: jest.fn() },
+      filters: { ProposalExecution },
       on: jest.fn(),
     } as unknown as Bridge;
 
@@ -20,7 +21,7 @@ describe('createProposalExecutionEventListener', () => {
 
     createProposalExecutionEventListener(homeDepositNonce, bridge, callbackFn);
 
-    expect(bridge.filters.ProposalExecution.bind(this)).toHaveBeenCalledWith(null, null, null);
+    expect(ProposalExecution).toHaveBeenCalledWith(null, null, null);
 
     // Call the event handler with some dummy data to ensure that the callback is called correctly
     const originDomainId = 3;
@@ -60,32 +61,32 @@ describe('createProposalExecutionEventListener', () => {
 
 describe('proposalExecutionEventListenerCount', () => {
   it('should return the number of listeners for the ProposalExecution event', () => {
+    const ProposalExecution = jest.fn(() => 'proposalFilter');
+    const listenerCount = jest.fn(() => 5);
     const bridge = {
-      filters: {
-        ProposalExecution: jest.fn(() => 'proposalFilter'),
-      },
-      listenerCount: jest.fn(() => 5),
+      filters: { ProposalExecution },
+      listenerCount,
     } as unknown as Bridge;
 
     expect(proposalExecutionEventListenerCount(bridge)).toBe(5);
-    expect(bridge.filters.ProposalExecution.bind(this)).toHaveBeenCalledWith(null, null, null);
-    expect(bridge.listenerCount.bind(this)).toHaveBeenCalledWith('proposalFilter');
+    expect(ProposalExecution).toHaveBeenCalledWith(null, null, null);
+    expect(listenerCount).toHaveBeenCalledWith('proposalFilter');
   });
 });
 
 describe('removeProposalExecutionEventListener', () => {
   it('should remove all listeners for a given proposal filter', () => {
+    const ProposalExecution = jest.fn().mockReturnValue('proposalFilter');
+    const removeAllListeners = jest.fn();
     const bridge = {
-      filters: {
-        ProposalExecution: jest.fn().mockReturnValue('proposalFilter'),
-      },
-      removeAllListeners: jest.fn(),
+      filters: { ProposalExecution },
+      removeAllListeners,
     } as unknown as Bridge;
 
     removeProposalExecutionEventListener(bridge);
 
-    expect(bridge.filters.ProposalExecution.bind(this)).toHaveBeenCalledWith(null, null, null);
-    expect(bridge.removeAllListeners.bind(this)).toHaveBeenCalledWith('proposalFilter');
+    expect(ProposalExecution).toHaveBeenCalledWith(null, null, null);
+    expect(removeAllListeners).toHaveBeenCalledWith('proposalFilter');
   });
 });
 
