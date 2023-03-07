@@ -6,9 +6,10 @@ dist/
 keysN1/
 keysN2/
 config/
+src/
 
 # Ignore configs
-setupTests.ts 
+setupTests.ts
 .eslintrc.cjs
 .prettierrc.json
 docker-compose.yml
