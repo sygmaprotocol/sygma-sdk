@@ -1,6 +1,6 @@
 import { DynamicERC20FeeHandlerEVM__factory } from '@buildwithsygma/sygma-contracts';
 import { ethers } from 'ethers';
-import fetch from 'node-fetch';
+import fetch from 'cross-fetch';
 
 import { OracleResource, FeeDataResult } from '../types';
 import { toHex, constructDepositDataEvmSubstrate } from '../utils/helpers';

@@ -1,29 +1,23 @@
 import { BigNumber, ethers } from 'ethers';
-import fetch from 'node-fetch';
+import fetch from 'cross-fetch';
 import { requestFeeFromFeeOracle, createOracleFeeData, calculateFeeData } from '../feeOracle';
 
-jest.mock('node-fetch');
-const { Response } = jest.requireActual<typeof import('node-fetch')>('node-fetch');
+jest.mock('cross-fetch');
+const { Response } = jest.requireActual('cross-fetch');
 
-jest.mock(
-  '@buildwithsygma/sygma-contracts',
-  () =>
-    ({
-      ...jest.requireActual('@buildwithsygma/sygma-contracts'),
-      DynamicERC20FeeHandlerEVM__factory: {
-        connect: () => {
-          return {
-            calculateFee: jest.fn(() =>
-              Promise.resolve({
-                fee: BigNumber.from('10'),
-                tokenAddress: '0x141F8690A87A7E57C2E270ee77Be94935970c035',
-              }),
-            ),
-          };
-        },
-      },
-    } as unknown),
-);
+jest.mock('@buildwithsygma/sygma-contracts', () => ({
+  ...jest.requireActual('@buildwithsygma/sygma-contracts'),
+  DynamicERC20FeeHandlerEVM__factory: {
+    connect: (args: any) => {
+      return {
+        calculateFee: jest.fn(async () => ({
+          fee: BigNumber.from('10'),
+          tokenAddress: '0x141F8690A87A7E57C2E270ee77Be94935970c035',
+        })),
+      };
+    },
+  },
+}));
 
 const oracleResponse = {
   response: {
