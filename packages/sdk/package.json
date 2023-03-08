@@ -4,7 +4,7 @@
 	"description": "Core primitives for bridging and message passing",
 	"main": "dist/src/index.js",
 	"types": "dist/src/index.d.ts",
-  "type": "module",
+  "type": "commonjs",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/sygmaprotocol/sygma-sdk"
