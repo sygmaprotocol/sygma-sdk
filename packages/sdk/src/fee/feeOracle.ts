@@ -1,9 +1,9 @@
-import { FeeHandlerWithOracle__factory } from '@buildwithsygma/sygma-contracts';
-import { ethers, utils } from 'ethers';
-import fetch from 'node-fetch';
+import { DynamicERC20FeeHandlerEVM__factory } from '@buildwithsygma/sygma-contracts';
+import { ethers } from 'ethers';
+import fetch from 'cross-fetch';
 
 import { OracleResource, FeeDataResult } from '../types';
-import { toHex, createERCDepositData } from '../utils/helpers';
+import { toHex, constructDepositDataEvmSubstrate } from '../utils/helpers';
 
 type OracleResponse = {
   error?: string;
@@ -87,7 +87,8 @@ export const calculateFeeData = async ({
   feeOracleBaseUrl: string;
   feeOracleHandlerAddress: string;
 }): Promise<FeeDataResult | undefined> => {
-  const depositData = createERCDepositData(utils.parseUnits(tokenAmount, 18), 20, recipientAddress);
+  const depositData = constructDepositDataEvmSubstrate(tokenAmount, recipientAddress);
+
   let oracleResponse;
   try {
     oracleResponse = await requestFeeFromFeeOracle({
