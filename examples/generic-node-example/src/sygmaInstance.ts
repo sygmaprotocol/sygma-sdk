@@ -1,14 +1,12 @@
-import { Setup, Sygma } from '@buildwithsygma/sygma-sdk-core'
-import {
-  bridgeSetup,
-} from './bridgeSetup'
+import { Setup, Sygma } from "@buildwithsygma/sygma-sdk-core";
+import { bridgeSetup } from "./bridgeSetup";
 
-const setupSygma = async (signerAddress: string): Promise<Sygma> => {
-  const setup: Setup = { bridgeSetupList: [], bridgeSetup }
-  const sygma = new Sygma(setup)
-  
-  const sygmaConnected = await sygma.initializeConnectionRPC(signerAddress)
-  return sygmaConnected
-}
+const setupSygma = (signerAddress: string): Sygma => {
+  const setup: Setup = { bridgeSetupList: [], bridgeSetup };
+  const sygma = new Sygma(setup);
 
-export { setupSygma }
+  const sygmaConnected = sygma.initializeConnectionRPC(signerAddress);
+  return sygmaConnected;
+};
+
+export { setupSygma };
