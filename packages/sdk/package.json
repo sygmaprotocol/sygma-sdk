@@ -53,7 +53,7 @@
 		"dist/**/*"
 	],
 	"dependencies": {
-		"@buildwithsygma/sygma-contracts": "1.0.0",
+		"@buildwithsygma/sygma-contracts": "2.1.2",
 		"eth-crypto": "2.3.0",
 		"node-fetch": "2.6.1",
 		"react-hook-form": "^7.30.0",

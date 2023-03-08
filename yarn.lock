@@ -1266,6 +1266,14 @@
   dependencies:
     "@truffle/hdwallet-provider" "^2.0.14"
 
+"@buildwithsygma/sygma-contracts@2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@buildwithsygma/sygma-contracts/-/sygma-contracts-2.1.2.tgz#ee482e879e41c9f6112b448fcb368ad96ed3920a"
+  integrity sha512-xtLQrruabFSwant/HnwJw6387zhr5UAC7wCmb/U+Ge1b5s3aUx1s2iZ6zsqWVgauZ+WrHvCMDfdHMyyVElYrhg==
+  dependencies:
+    "@openzeppelin/contracts" "^4.5.0"
+    "@truffle/hdwallet-provider" "^2.0.14"
+
 "@chainsafe/eslint-config@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@chainsafe/eslint-config/-/eslint-config-1.1.0.tgz#78aa36b435e583ee8f0ab3752cd3aca54494d575"
@@ -3815,6 +3823,11 @@
   dependencies:
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
+
+"@openzeppelin/contracts@^4.5.0":
+  version "4.8.2"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.8.2.tgz#d815ade0027b50beb9bcca67143c6bcc3e3923d6"
+  integrity sha512-kEUOgPQszC0fSYWpbh2kT94ltOJwj1qfT2DWo+zVttmGmf97JZ99LspePNaeeaLhCImaHVeBbjaQFZQn7+Zc5g==
 
 "@pmmmwh/react-refresh-webpack-plugin@^0.5.3":
   version "0.5.7"

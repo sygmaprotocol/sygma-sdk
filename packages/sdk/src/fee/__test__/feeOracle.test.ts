@@ -9,7 +9,7 @@ const { Response } = jest.requireActual('node-fetch');
 
 jest.mock('@buildwithsygma/sygma-contracts', () => ({
   ...jest.requireActual('@buildwithsygma/sygma-contracts'),
-  FeeHandlerWithOracle__factory: {
+  DynamicERC20FeeHandlerEVM__factory: {
     connect: (args: any) => {
       return {
         calculateFee: jest.fn(async () => ({
