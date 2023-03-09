@@ -1,15 +1,15 @@
-import React, { useReducer, useState } from "react";
-import { ethers } from "ethers";
-import { FeeDataResult, Sygma } from "@buildwithsygma/sygma-sdk-core";
+import { useReducer, useState, useRef } from "react";
+import { ContractInterface, ethers } from "ethers";
+import { FeeDataResult } from "@buildwithsygma/sygma-sdk-core";
 import "./App.css";
 import { reducer, State } from "./reducers";
 import ColorsAbi from "./abis/colors-abi.json";
-import { colorsAddress, bridgeAdmin } from "./bridgeSetup";
+import { bridgeAdmin } from "./bridgeSetup";
 import { Connection, handleConnect } from "./hooks/connection";
 import { AccountData } from "./hooks/accountData";
 import { GetColors } from "./hooks/getColors";
-import { useRef } from "react";
 import { ColorsDestinationChainListener } from "./hooks/colorsDestinationChainListener";
+import ColorsAddress from "./colors.json";
 
 const initState: State = {
   colorsNode1: [],
@@ -32,12 +32,18 @@ const initState: State = {
 function App() {
   const checkboxRefColor1 = useRef(null);
   const checkboxRefColor2 = useRef(null);
-  const [nodeId, setNodeId] = useState<string | undefined>(undefined)
+  const [nodeId, setNodeId] = useState<string | undefined>(undefined);
   const [state, dispatch] = useReducer(reducer, initState);
 
-  const colorContractNode1 = new ethers.Contract(colorsAddress, ColorsAbi.abi);
+  const colorContractNode1 = new ethers.Contract(
+    ColorsAddress.colorsAddressNode1 as string,
+    ColorsAbi.abi as ContractInterface
+  );
 
-  const colorContractNode2 = new ethers.Contract(colorsAddress, ColorsAbi.abi);
+  const colorContractNode2 = new ethers.Contract(
+    ColorsAddress.colorsAddressNode2 as string,
+    ColorsAbi.abi as ContractInterface
+  );
 
   /**
    * Initialization of hooks for data and connection
@@ -59,70 +65,72 @@ function App() {
    */
   ColorsDestinationChainListener(state, dispatch);
 
-  const handleConnectInit = () => handleConnect(state, dispatch);
+  const handleConnectInit = (): void => handleConnect(state, dispatch);
 
-  const handleClick = async () => {
+  const handleClick = async (): Promise<void> => {
     const first = state.colorSelected;
-    const nodeElement = document.getElementById(nodeId!)
-    const formatedHex = first!.substring(1);
+    const nodeElement = document.getElementById(nodeId!);
+    const formatedHex = first?.substring(1);
     const depositFunctionSignature = "0x103b854b";
     const colorsResouceId =
       "0x0000000000000000000000000000000000000000000000000000000000000500";
     console.log(
       "🚀 ~ file: App.tsx ~ line 148 ~ handleClick ~ first",
-      formatedHex,
+      formatedHex
     );
     const depositDataFee = `0x${
       // @ts-ignore-next-line
       ethers.utils.hexZeroPad(100, 32).substring(2) +
       // @ts-ignore-next-line
       ethers.utils.hexZeroPad(bridgeAdmin.length, 32).substring(2) +
-      state.accountData!.substring(2)
+      state?.accountData?.substring(2)
     }`;
     console.log(
       "🚀 ~ file: App.tsx ~ line 127 ~ handleClick ~ depositDataFee",
-      depositDataFee,
+      depositDataFee
     );
 
-    const basicFeeData = await (state.sygmaInstance as Sygma).fetchBasicFeeData(
-      {
-        amount: "1000000",
-        recipientAddress: state.accountData!,
-      },
-    );
+    const { accountData = "" } = state;
+
+    const basicFeeData = await state.sygmaInstance?.fetchBasicFeeData({
+      amount: "1000000",
+      recipientAddress: accountData,
+    });
     console.log(
       "🚀 ~ file: App.tsx ~ line 169 ~ handleClick ~ basicFeeData",
-      basicFeeData,
+      basicFeeData
     );
 
-    const hexColor = state?.sygmaInstance!.toHex(`0x${formatedHex}`, 32);
+    const hexColor: string =
+      state.sygmaInstance?.toHex(`0x${formatedHex}`, 32) || "";
 
-    const depositData = state?.sygmaInstance!.createGenericDepositDataV1(
-      depositFunctionSignature,
-      colorsAddress,
-      "2000000",
-      state.accountData!,
-      hexColor,
-      false,
-    );
+    const depositData: string =
+      state.sygmaInstance?.formatPermissionlessGenericDepositData(
+        depositFunctionSignature,
+        ColorsAddress.colorsAddressNode1 as string,
+        "2000000",
+        accountData,
+        hexColor,
+        false
+      ) || "";
     console.log(
       "🚀 ~ file: App.tsx ~ line 172 ~ handleClick ~ depositData",
-      depositData,
+      depositData
     );
 
     dispatch({
-      type: "resetColorSelected"
+      type: "resetColorSelected",
     });
 
     try {
-      const depositTx = await state?.sygmaInstance!.depositGeneric(
+      const depositTx = await state.sygmaInstance?.depositGeneric(
         colorsResouceId,
         depositData,
-        basicFeeData as FeeDataResult,
+        basicFeeData as FeeDataResult
       );
       console.log(
         "🚀 ~ file: App.tsx ~ line 160 ~ handleClick ~ depositTx",
-        depositTx,
+        depositTx
       );
 
       dispatch({
@@ -130,7 +138,7 @@ function App() {
         payload: "init",
       });
 
-      (nodeElement! as HTMLInputElement).checked = false
+      (nodeElement as HTMLInputElement).checked = false;
 
       dispatch({
         type: "loading",
@@ -141,19 +149,21 @@ function App() {
     }
   };
 
-  const handleColorSelected =(colorId: string) => ({ target: { value, checked } }: any) => {
-    setNodeId(colorId)
-    if (checked) {
-      dispatch({
-        type: "selectColor",
-        payload: value,
-      });
-    } else {
-      dispatch({
-        type: "resetColorSelected",
-      });
-    }
-  };
+  const handleColorSelected =
+    (colorId: string) =>
+    ({ target: { value, checked } }: any) => {
+      setNodeId(colorId);
+      if (checked) {
+        dispatch({
+          type: "selectColor",
+          payload: value,
+        });
+      } else {
+        dispatch({
+          type: "resetColorSelected",
+        });
+      }
+    };
 
   console.log(state);
 

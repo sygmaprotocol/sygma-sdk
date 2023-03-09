@@ -25,7 +25,6 @@ function GetColors(state: State, dispatch: React.Dispatch<Actions>, colorContrac
   }
 
   const getColorDestinationChain = async (signerNode2: Signer) => {
-    
     const colorLength = await colorContractNode2.connect(signerNode2!).getColorsArrayLenght()
     if(colorLength.toNumber() !== 0){
       const iterable = Array.from(Array(colorLength.toNumber()).keys()).map(i => i)

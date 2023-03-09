@@ -3,15 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@buildwithsygma/sygma-contracts": "1.1.1",
-    "@buildwithsygma/sygma-sdk-core": "*",
+    "@buildwithsygma/sygma-contracts": "2.2.1",
+    "@buildwithsygma/sygma-sdk-core": "^1.1.4",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.7.13",
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
+    "@types/react": "^18.0.6",
+    "@types/react-dom": "^18.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
@@ -23,11 +23,12 @@
     "react-hook-form": "^7.30.0"
   },
   "scripts": {
-    "start": "PORT=3006 BROWSER=none react-app-rewired start",
+    "start": "DISABLE_ESLINT_PLUGIN=true PORT=3006 BROWSER=none react-app-rewired start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "setupColors": "ts-node ./src/scripts/setColors.ts"
+    "setupColors": "ts-node ./src/scripts/setColors.ts",
+    "deployColors": "ts-node ./src/scripts/deployColors.ts"
   },
   "eslintConfig": {
     "extends": [

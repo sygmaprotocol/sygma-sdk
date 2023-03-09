@@ -1,14 +1,15 @@
-import { EvmBridgeSetupList } from "@buildwithsygma/sygma-sdk-core";
+import { SygmaBridgeSetupList } from "@buildwithsygma/sygma-sdk-core";
 
 const bridgeAddress = "0x6CdE2Cd82a4F8B74693Ff5e194c19CA08c2d1c68";
-const genericAddress = "0x783BB8123b8532CC85C8D2deF2f47C55D1e46b46";
-const feeRouterAddress = "0x9275AC64D6556BE290dd878e5aAA3a5bae08ae0C";
-const basicFeeAddress = "0x78E5b9cEC9aEA29071f070C8cC561F692B3511A6";
-const colorsAddress = "0xE54Dc792c226AEF99D6086527b98b36a4ADDe56a";
-const erc20HandlerAddress = "0x1ED1d77911944622FCcDDEad8A731fd77E94173e";
-const erc721HandlerAddress = "0x481f97f9C82a971B3844a422936a4d3c4082bF84";
+const permissionlessGenericHandler =
+  "0xE837D42dd3c685839a418886f418769BDD23546b";
+const feeRouterAddress = "0x1CcB4231f2ff299E1E049De76F0a1D2B415C563A";
+const basicFeeAddress = "0x8dA96a8C2b2d3e5ae7e668d0C94393aa8D5D3B94";
+const erc20HandlerAddress = "0x02091EefF969b33A5CE8A729DaE325879bf76f90";
+const erc721HandlerAddress = "0xC2D334e2f27A9dB2Ed8C4561De86C1A00EBf6760";
+const ERC20Token = "0x37356a2B2EbF65e5Ea18BD93DeA6869769099739";
 
-const bridgeSetupList: EvmBridgeSetupList = [
+const bridgeSetupList: SygmaBridgeSetupList = [
   {
     domainId: "1",
     networkId: 1337,
@@ -21,7 +22,7 @@ const bridgeSetupList: EvmBridgeSetupList = [
     tokens: [
       {
         type: "erc20",
-        address: "0x1CcB4231f2ff299E1E049De76F0a1D2B415C563A",
+        address: ERC20Token,
         name: "ERC20LRTST",
         symbol: "ETHIcon",
         imageUri: "ETHIcon",
@@ -30,7 +31,7 @@ const bridgeSetupList: EvmBridgeSetupList = [
           "0x0000000000000000000000000000000000000000000000000000000000000300",
         feeSettings: {
           type: "basic",
-          address: "0x78E5b9cEC9aEA29071f070C8cC561F692B3511A6",
+          address: basicFeeAddress,
         },
       },
     ],
@@ -47,7 +48,7 @@ const bridgeSetupList: EvmBridgeSetupList = [
     tokens: [
       {
         type: "erc20",
-        address: "0x1CcB4231f2ff299E1E049De76F0a1D2B415C563A",
+        address: ERC20Token,
         name: "ERC20LRTST",
         symbol: "ETHIcon",
         imageUri: "ETHIcon",
@@ -56,16 +57,25 @@ const bridgeSetupList: EvmBridgeSetupList = [
           "0x0000000000000000000000000000000000000000000000000000000000000300",
         feeSettings: {
           type: "basic",
-          address: "0x78E5b9cEC9aEA29071f070C8cC561F692B3511A6",
+          address: basicFeeAddress,
         },
       },
     ],
   },
-];
+]
 
 const node1RpcUrl = "http://localhost:8545";
 const node2RpcUrl = "http://localhost:8547";
 
 const bridgeAdmin = "0x5C1F5961696BaD2e73f73417f07EF55C62a2dC5b";
 
-export { bridgeAddress, feeRouterAddress, genericAddress, colorsAddress, basicFeeAddress, bridgeSetupList, node1RpcUrl, node2RpcUrl, bridgeAdmin }
+export {
+  bridgeAddress,
+  feeRouterAddress,
+  permissionlessGenericHandler,
+  basicFeeAddress,
+  bridgeSetupList,
+  node1RpcUrl,
+  node2RpcUrl,
+  bridgeAdmin,
+};

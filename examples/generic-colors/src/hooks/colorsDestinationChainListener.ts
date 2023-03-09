@@ -1,16 +1,14 @@
 import { useEffect } from 'react'
 import { Actions, State } from "../reducers";
-import {
-  colorsAddress
-} from '../bridgeSetup'
 import ColorsAbi from '../abis/colors-abi.json'
 import { ethers } from 'ethers';
+import ColorsAddress from "../colors.json";
 
 const ColorsDestinationChainListener = (state: State, dispatch: React.Dispatch<Actions>) => {
   useEffect(() => {
     if (state.metamaskConnected && state.accountData && state.sygmaInstance && state.accountDataFromSygma) {
       const colorsContractDestinationChain = new ethers.Contract(
-        colorsAddress,
+        ColorsAddress.colorsAddressNode1,
         ColorsAbi.abi
       )
       const providerDestinationChain = state.sygmaInstance?.getDestinationChainProvider()
