@@ -1,22 +1,24 @@
-/* eslint-disable */
-
 import { BigNumber, ethers } from 'ethers';
-import { FeeDataResult } from '../../types';
 import { BasicFeeHandler__factory } from '@buildwithsygma/sygma-contracts';
+import { FeeDataResult } from '../../types';
 import { calculateBasicfee } from '../basicFee';
 
-jest.mock('@buildwithsygma/sygma-contracts', () => ({
-  ...jest.requireActual('@buildwithsygma/sygma-contracts'),
-  BasicFeeHandler__factory: {
-    connect: () => {
-      console.log('connect');
-      return {
-        calculateFee: async () => [BigNumber.from('0x174876e800'), '0x0'],
-        _fee: async () => BigNumber.from('0x174876e800'),
-      };
-    },
-  },
-}));
+jest.mock(
+  '@buildwithsygma/sygma-contracts',
+  () =>
+    ({
+      ...jest.requireActual('@buildwithsygma/sygma-contracts'),
+      BasicFeeHandler__factory: {
+        connect: () => {
+          console.log('connect');
+          return {
+            calculateFee: () => Promise.resolve([BigNumber.from('0x174876e800'), '0x0']),
+            _fee: () => Promise.resolve(BigNumber.from('0x174876e800')),
+          };
+        },
+      },
+    } as unknown),
+);
 
 describe('CalculateBasicFee', () => {
   it('Should return the basic fee in hex form', async () => {
@@ -27,7 +29,7 @@ describe('CalculateBasicFee', () => {
       fromDomainID: '1',
       toDomainID: '2',
       resourceID: '0x0000000000000000000000000000000000000000000000000000000000000000',
-      tokenAmount: "0.001",
+      tokenAmount: '0.001',
       recipientAddress: '0xF4314cb9046bECe6AA54bb9533155434d0c76909',
     });
 
@@ -37,12 +39,11 @@ describe('CalculateBasicFee', () => {
   });
 
   it('Should return and error', async () => {
-    (BasicFeeHandler__factory.connect as unknown) = async () => {
-      return {
-        calculateFee: async () => Promise.reject(new Error('Fee Error')),
-        _fee: async () => BigNumber.from('0x174876e800'),
-      };
-    };
+    (BasicFeeHandler__factory.connect as unknown) = () =>
+      Promise.resolve({
+        calculateFee: () => Promise.reject(new Error('Fee Error')),
+        _fee: () => Promise.resolve(BigNumber.from('0x174876e800')),
+      });
 
     jest.spyOn(console, 'error');
 
@@ -54,7 +55,7 @@ describe('CalculateBasicFee', () => {
         fromDomainID: '1',
         toDomainID: '2',
         resourceID: '0x0000000000000000000000000000000000000000000000000000000000000000',
-        tokenAmount: "100",
+        tokenAmount: '100',
         recipientAddress: '0xF4314cb9046bECe6AA54bb9533155434d0c76909',
       });
     } catch (e) {

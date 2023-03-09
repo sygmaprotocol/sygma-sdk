@@ -198,8 +198,7 @@ export class Sygma implements SygmaSDK {
     }
 
     if (!chain1) {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      throw `Cannot find network with chainId: ${network} in config`;
+      throw `Cannot find network with chainId: ${network ? network.name : 'unknown'} in config`;
     }
 
     this.bridgeSetup!.chain1 = chain1;

@@ -1,9 +1,3 @@
-/* eslint-disable */
-
-/**
- * @jest-environment jsdom
- */
-
 import { Connector } from "../../src/connectors"
 import { ethers } from 'ethers'
 
