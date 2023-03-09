@@ -1,7 +1,5 @@
-
-
-import { constructMainDepositData, constructDepositDataEvmSubstrate } from '../helpers';
 import { BigNumber, utils } from 'ethers';
+import { constructMainDepositData, constructDepositDataEvmSubstrate } from '../helpers';
 
 describe('constructMainDepositData', () => {
   it('should return the correct data', () => {
@@ -13,8 +11,10 @@ describe('constructMainDepositData', () => {
     resultArray[64] = 1;
     resultArray[65] = 2;
     resultArray[66] = 3;
-    expect(constructMainDepositData(tokenStats, destRecipient)).toEqual(Uint8Array.from(resultArray));
-  })
+    expect(constructMainDepositData(tokenStats, destRecipient)).toEqual(
+      Uint8Array.from(resultArray),
+    );
+  });
 });
 
 describe('constructDepositDataEvmSubstrate', () => {
