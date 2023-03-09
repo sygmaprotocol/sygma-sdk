@@ -1,4 +1,4 @@
-import { SygmaBridgeSetupList } from "@buildwithsygma/sygma-sdk-core";
+import { EvmBridgeSetupList } from "@buildwithsygma/sygma-sdk-core";
 
 const bridgeAddress = "0x6CdE2Cd82a4F8B74693Ff5e194c19CA08c2d1c68";
 const permissionlessGenericHandler =
@@ -9,7 +9,7 @@ const erc20HandlerAddress = "0x02091EefF969b33A5CE8A729DaE325879bf76f90";
 const erc721HandlerAddress = "0xC2D334e2f27A9dB2Ed8C4561De86C1A00EBf6760";
 const ERC20Token = "0x37356a2B2EbF65e5Ea18BD93DeA6869769099739";
 
-const bridgeSetupList: SygmaBridgeSetupList = [
+const bridgeSetupList: EvmBridgeSetupList = [
   {
     domainId: "1",
     networkId: 1337,

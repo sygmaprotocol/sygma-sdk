@@ -6,7 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "ethers": "5.7.2",
-    "@buildwithsygma/sygma-sdk-core": "^1.1.4",
+    "@buildwithsygma/sygma-sdk-core": "*",
     "@ethersproject/experimental": "^5.7.0",
     "chalk": "4.1.2",
     "dotenv": "16.0.3"

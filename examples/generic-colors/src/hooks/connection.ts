@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { Actions, State } from "../reducers";
 import { bridgeSetupList } from '../bridgeSetup'
 import { Sygma } from '@buildwithsygma/sygma-sdk-core';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 
 const handleConnect = (state: State, dispatch: React.Dispatch<Actions>) => {
   // IF META IS NOT SIGNIN, TRIGGER POP OF THE WINDOW FOR THE EXTENSION

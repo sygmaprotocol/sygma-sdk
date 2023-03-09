@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@buildwithsygma/sygma-contracts": "2.2.1",
-    "@buildwithsygma/sygma-sdk-core": "^1.1.4",
+    "@buildwithsygma/sygma-sdk-core": "*",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
