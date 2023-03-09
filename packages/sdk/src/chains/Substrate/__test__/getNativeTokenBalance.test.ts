@@ -1,11 +1,11 @@
 import { ApiPromise } from '@polkadot/api';
-import type { AccountData, AccountInfoWithTripleRefCount } from '@polkadot/types/interfaces';
+import type { AccountInfoWithTripleRefCount } from '@polkadot/types/interfaces';
 import { TypeRegistry } from '@polkadot/types/create';
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 
-const registry = new TypeRegistry();
-
 import { getNativeTokenBalance } from '../utils';
+
+const registry = new TypeRegistry();
 
 describe('getNativeTokenBalance', () => {
   it('should return account balance', async () => {

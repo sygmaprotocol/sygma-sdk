@@ -12,6 +12,7 @@
     "@types/react": "^18.0.6",
     "@types/react-dom": "^18.0.2",
     "ethereum-waffle": "^3.4.4",
+    "ethers": "5.6.2",
     "ganache": "^7.1.0",
     "ganache-cli": "^6.12.2",
     "react": "^18.0.0",
@@ -19,8 +20,7 @@
     "react-hook-form": "^7.30.0",
     "react-scripts": "5.0.1",
     "ts-node": "^10.7.0",
-    "typescript": "^4.6.3",
-    "ethers": "5.6.2"
+    "typescript": "^4.6.3"
   },
   "scripts": {
     "start": "PORT=3001 BROWSER=none react-app-rewired start",
@@ -47,6 +47,8 @@
     ]
   },
   "devDependencies": {
+    "@buildwithsygma/sygma-contracts": "1.0.0",
+    "@metamask/providers": "^10.2.1",
     "assert": "^2.0.0",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.0",
@@ -56,9 +58,7 @@
     "react-app-rewired": "^2.2.1",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
-    "url": "^0.11.0",
     "ts-node": "^10.7.0",
-    "@buildwithsygma/sygma-contracts": "1.0.0",
-    "@metamask/providers": "^10.2.1"
+    "url": "^0.11.0"
   }
 }

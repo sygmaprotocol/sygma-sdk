@@ -11,5 +11,5 @@ module.exports = {
   transform: {
     '^.+\\.(ts|tsx)?$': ['ts-jest', { useESM: true }],
   },
-  testPathIgnorePatterns: ['./dist', '<rootDir>/integration/test/chainbridge.e2e.test.ts'],
+  testPathIgnorePatterns: ['./dist', '<rootDir>/integration/'],
 };

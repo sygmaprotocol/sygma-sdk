@@ -14,7 +14,11 @@ describe('retrieveChainInfo', () => {
       rpc: {
         system: {
           chain: jest.fn().mockResolvedValue('local'),
-          chainType: jest.fn().mockResolvedValue(registry.createType('ChainType', 'Development') as unknown as ChainType),
+          chainType: jest
+            .fn()
+            .mockResolvedValue(
+              registry.createType('ChainType', 'Development') as unknown as ChainType,
+            ),
         },
       },
     } as unknown as ApiPromise;

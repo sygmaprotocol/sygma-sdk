@@ -1,10 +1,10 @@
 import { ApiPromise } from '@polkadot/api';
-import { u128, Option, Null } from '@polkadot/types';
+import { u128, Option } from '@polkadot/types';
 import { TypeRegistry } from '@polkadot/types/create';
 
-const registry = new TypeRegistry();
-
 import { getBasicFee } from '../utils';
+
+const registry = new TypeRegistry();
 
 describe('getBasicFee', () => {
   it('should return the basic fee', async () => {
