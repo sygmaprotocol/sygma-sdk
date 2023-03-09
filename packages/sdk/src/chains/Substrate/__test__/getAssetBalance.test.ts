@@ -12,13 +12,13 @@ describe('getAssetBalance', () => {
   let api: ApiPromise;
   let currentAccount: InjectedAccountWithMeta;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     const assetBalance: AssetBalance = registry.createType('AssetBalance', {
       balance: 123,
     });
     const optionAssetBalance = {
-      unwrapOrDefault: () => (assetBalance)
-    } as unknown as Option<AssetBalance>
+      unwrapOrDefault: () => assetBalance,
+    } as unknown as Option<AssetBalance>;
     api = {
       query: {
         assets: {
@@ -39,6 +39,6 @@ describe('getAssetBalance', () => {
 
     const actualAssetBalance = await getAssetBalance(api, assetId, currentAccount);
 
-    expect(actualAssetBalance.balance.toString()).toBe("123");
+    expect(actualAssetBalance.balance.toString()).toBe('123');
   });
 });
