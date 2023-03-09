@@ -1888,9 +1888,14 @@ __metadata:
   resolution: "@buildwithsygma/sygma-sdk-core@workspace:packages/sdk"
   dependencies:
     "@buildwithsygma/sygma-contracts": 1.0.0
+    "@ethersproject/abi": 5.7.0
+    "@ethersproject/bytes": 5.7.0
+    "@ethersproject/contracts": 5.7.0
+    "@ethersproject/providers": 5.7.2
     "@polkadot/api": ^9.9.1
     "@polkadot/api-augment": ^9.9.1
     "@polkadot/extension-dapp": ^0.44.8
+    "@polkadot/extension-inject": 0.45.1
     "@polkadot/keyring": ^10.1.13
     "@polkadot/rpc-provider": ^9.9.1
     "@polkadot/types": ^9.9.1
@@ -5199,6 +5204,22 @@ __metadata:
     "@polkadot/util": "*"
     "@polkadot/util-crypto": "*"
   checksum: bcb246d778885a0ddd79eac68cd0cd90887f593b811d1f0ccd036590580b3fd1ac192c08edfc472ad9fda8f44b09680cc452447fe01f02e82ef66325fd43bcce
+  languageName: node
+  linkType: hard
+
+"@polkadot/extension-inject@npm:0.45.1":
+  version: 0.45.1
+  resolution: "@polkadot/extension-inject@npm:0.45.1"
+  dependencies:
+    "@polkadot/rpc-provider": ^10.0.1
+    "@polkadot/types": ^10.0.1
+    "@polkadot/util": ^11.0.1
+    "@polkadot/util-crypto": ^11.0.1
+    "@polkadot/x-global": ^11.0.1
+    tslib: ^2.5.0
+  peerDependencies:
+    "@polkadot/api": "*"
+  checksum: a656e70f8ee2900eae089082472102bdb85a88a3cbcef16dd0b2b13444b2cb50aec24794ad6b72d093cd17cf1d621536fcb8c2d90e9609313dc0246c3f541abd
   languageName: node
   linkType: hard
 
@@ -25308,6 +25329,13 @@ __metadata:
   version: 2.4.1
   resolution: "tslib@npm:2.4.1"
   checksum: 9ac0e4fd1033861f0b4f0d848dc3009ebcc3aa4757a06e8602a2d8a7aed252810e3540e54e70709f06c0f95311faa8584f769bcbede48aff785eb7e4d399b9ec
+  languageName: node
+  linkType: hard
+
+"tslib@npm:^2.5.0":
+  version: 2.5.0
+  resolution: "tslib@npm:2.5.0"
+  checksum: e32fc99cc730dd514e53c44e668d76016e738f0bcc726aad5dbd2d335cf19b87a95a9b1e4f0a9993e370f1d702b5e471cdd4acabcac428a3099d496b9af2021e
   languageName: node
   linkType: hard
 

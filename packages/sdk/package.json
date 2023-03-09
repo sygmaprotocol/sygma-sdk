@@ -36,6 +36,11 @@
 	"author": "Sygmaprotocol Product Team",
 	"license": "LGPL-3.0-or-later",
 	"devDependencies": {
+		"@ethersproject/abi": "5.7.0",
+		"@ethersproject/bytes": "5.7.0",
+		"@ethersproject/contracts": "5.7.0",
+		"@ethersproject/providers": "5.7.2",
+		"@polkadot/extension-inject": "0.45.1",
 		"@polkadot/types": "^9.9.1",
 		"@types/jest": "^29.4.0",
 		"@types/node-fetch": "2.x",
