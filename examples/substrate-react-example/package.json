@@ -10,7 +10,7 @@
     "lint": "tsc  -p ./tsconfig.json --noEmit --pretty"
   },
   "dependencies": {
-    "@buildwithsygma/sygma-sdk-core": "*",
+    "@buildwithsygma/sygma-sdk-core": "workspace:*",
     "@polkadot/util": "^10.1.13",
     "bn.js": "^5.2.1",
     "dotenv": "^16.0.3",

@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@buildwithsygma/sygma-contracts": "1.1.1",
-    "@buildwithsygma/sygma-sdk-core": "*",
+    "@buildwithsygma/sygma-sdk-core": "workspace:*",
     "@ethersproject/experimental": "^5.7.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
