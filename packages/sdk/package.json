@@ -4,7 +4,7 @@
 	"description": "Core primitives for bridging and message passing",
 	"main": "dist/src/index.js",
 	"types": "dist/src/index.d.ts",
-  "type": "module",
+  "type": "commonjs",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/sygmaprotocol/sygma-sdk"
@@ -17,7 +17,7 @@
     "test:substrate": "jest --watchAll --testPathPattern=src/chains/Substrate/__test__/",
     "test:evm": "jest --watchAll --testPathPattern=src/chains/EVM/__test__/",
     "run:all": "concurrently \"yarn run prepareNodes\" \"yarn run test\"",
-		"build": "tsc -p tsconfig.build.json",
+		"build": "tsc -p tsconfig.json",
 		"lint": "eslint 'src/**/*.ts'",
 		"lint:fix": "yarn run lint --fix",
 		"run:nodes": "docker-compose -f docker-compose.yml up",
@@ -53,7 +53,7 @@
 		"dist/**/*"
 	],
 	"dependencies": {
-		"@buildwithsygma/sygma-contracts": "1.0.0",
+		"@buildwithsygma/sygma-contracts": "2.1.2",
 		"eth-crypto": "2.3.0",
 		"node-fetch": "2.6.1",
 		"react-hook-form": "^7.30.0",

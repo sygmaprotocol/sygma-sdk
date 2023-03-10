@@ -1259,21 +1259,21 @@
   resolved "https://registry.yarnpkg.com/@buildwithsygma/sygma-contracts/-/sygma-contracts-1.0.0.tgz#8cf3430726bdb324e7259c65f4568ed361165a21"
   integrity sha512-RlEMW6g36a1jyk0En1zCaPr+imB2S2o6b+hlNF6tp63BnJnoAMfrtQgvCG/vNuGyWWBNOjL1P+oebURECzTWHw==
 
-"@buildwithsygma/sygma-contracts@1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@buildwithsygma/sygma-contracts/-/sygma-contracts-1.1.1.tgz#0bca95344d549316a7a94f495ff390b1dfbae8af"
-  integrity sha512-sJ+QRJ49F9TSpzD4lNSbNgEny6/eT/aiHLU9zksIDpTGZ4Exf8H095rrVzXQP1H6zEzIWt7loYDI4DXmKHluFA==
+"@buildwithsygma/sygma-contracts@2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@buildwithsygma/sygma-contracts/-/sygma-contracts-2.1.2.tgz#ee482e879e41c9f6112b448fcb368ad96ed3920a"
+  integrity sha512-xtLQrruabFSwant/HnwJw6387zhr5UAC7wCmb/U+Ge1b5s3aUx1s2iZ6zsqWVgauZ+WrHvCMDfdHMyyVElYrhg==
   dependencies:
+    "@openzeppelin/contracts" "^4.5.0"
     "@truffle/hdwallet-provider" "^2.0.14"
 
-"@buildwithsygma/sygma-sdk-core@^1.1.4":
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/@buildwithsygma/sygma-sdk-core/-/sygma-sdk-core-1.1.4.tgz#aa5c0ca1dac56ba2ad3fc612ee0897bb53dc6362"
-  integrity sha512-8yMnwnT4b78/5UY9+dmnpqpL4WQLDxffr5Y9x00DNbZPl4MNF+aGtQple+UV4ivQ9r34uYArPzkUvI9XlYTwdw==
+"@buildwithsygma/sygma-contracts@2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@buildwithsygma/sygma-contracts/-/sygma-contracts-2.2.1.tgz#5e4b41ecda05845a9360311c2ee5c736666fa089"
+  integrity sha512-jwPq/kuAL1h0aP3Vf6CGBuFR/gKDtaTew4YplekmHn3EYxwDVEzU/qQyIOVfzHv/KZS4+awgYJGOLrwxoMc3hw==
   dependencies:
-    "@buildwithsygma/sygma-contracts" "1.0.0"
-    ethers "5.6.2"
-    node-fetch "2.6.1"
+    "@openzeppelin/contracts" "^4.5.0"
+    "@truffle/hdwallet-provider" "^2.0.14"
 
 "@chainsafe/eslint-config@^1.1.0":
   version "1.1.0"
@@ -3825,6 +3825,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@openzeppelin/contracts@^4.5.0":
+  version "4.8.2"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.8.2.tgz#d815ade0027b50beb9bcca67143c6bcc3e3923d6"
+  integrity sha512-kEUOgPQszC0fSYWpbh2kT94ltOJwj1qfT2DWo+zVttmGmf97JZ99LspePNaeeaLhCImaHVeBbjaQFZQn7+Zc5g==
+
 "@pmmmwh/react-refresh-webpack-plugin@^0.5.3":
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/@pmmmwh/react-refresh-webpack-plugin/-/react-refresh-webpack-plugin-0.5.7.tgz#58f8217ba70069cc6a73f5d7e05e85b458c150e2"
@@ -5213,15 +5218,6 @@
   version "18.0.19"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.19.tgz#269a5f35b9a73c69dfb0c7189017013ab02acbaa"
   integrity sha512-BDc3Q+4Q3zsn7k9xZrKfjWyJsSlEDMs38gD1qp2eDazLCdcPqAT+vq1ND+Z8AGel/UiwzNUk8ptpywgNQcJ1MQ==
-  dependencies:
-    "@types/prop-types" "*"
-    "@types/scheduler" "*"
-    csstype "^3.0.2"
-
-"@types/react@^18.0.0":
-  version "18.0.21"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.21.tgz#b8209e9626bb00a34c76f55482697edd2b43cc67"
-  integrity sha512-7QUCOxvFgnD5Jk8ZKlUAhVcRj7GuJRjnjjiY/IUBWKgOlnvDvTMLD4RTF7NPyVmbRhNrbomZiOepg7M/2Kj1mA==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"

@@ -1,4 +1,4 @@
-import { FeeHandlerWithOracle__factory } from '@buildwithsygma/sygma-contracts';
+import { DynamicERC20FeeHandlerEVM__factory } from '@buildwithsygma/sygma-contracts';
 import { ethers, utils } from 'ethers';
 import fetch from 'node-fetch';
 
@@ -100,7 +100,7 @@ export const calculateFeeData = async ({
     return Promise.reject(e);
   }
   const feeData = createOracleFeeData(oracleResponse as OracleResource, tokenAmount);
-  const FeeHandlerWithOracleInstance = FeeHandlerWithOracle__factory.connect(
+  const FeeHandlerWithOracleInstance = DynamicERC20FeeHandlerEVM__factory.connect(
     feeOracleHandlerAddress,
     provider,
   );
