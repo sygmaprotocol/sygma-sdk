@@ -10,7 +10,7 @@ jest.mock(
   () =>
     ({
       ...jest.requireActual('@buildwithsygma/sygma-contracts'),
-      FeeHandlerWithOracle__factory: {
+      DynamicERC20FeeHandlerEVM__factory: {
         connect: () => {
           return {
             calculateFee: jest.fn(() =>

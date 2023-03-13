@@ -1883,11 +1883,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@buildwithsygma/sygma-contracts@npm:2.1.2":
+  version: 2.1.2
+  resolution: "@buildwithsygma/sygma-contracts@npm:2.1.2"
+  dependencies:
+    "@openzeppelin/contracts": ^4.5.0
+    "@truffle/hdwallet-provider": ^2.0.14
+  peerDependencies:
+    ethers: ">= 5.0.0"
+  checksum: 21c7aee82e6972e00e0cf48676c57b6b813fa3c6a39737333ca4c1e628cab51d1b0de7f9a68d626cd812af2aab0d957ab892f91932414b55d4c005f59bdab8b7
+  languageName: node
+  linkType: hard
+
 "@buildwithsygma/sygma-sdk-core@*, @buildwithsygma/sygma-sdk-core@workspace:*, @buildwithsygma/sygma-sdk-core@workspace:packages/sdk":
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-core@workspace:packages/sdk"
   dependencies:
-    "@buildwithsygma/sygma-contracts": 1.0.0
+    "@buildwithsygma/sygma-contracts": 2.1.2
     "@ethersproject/abi": 5.7.0
     "@ethersproject/bytes": 5.7.0
     "@ethersproject/contracts": 5.7.0
@@ -1905,6 +1917,7 @@ __metadata:
     "@types/jest": ^29.4.0
     "@types/node-fetch": 2.x
     concurrently: 7.0.0
+    eslint: 8
     eslint-config-prettier: 8.3.0
     eslint-plugin-only-warn: 1.0.3
     eslint-plugin-prettier: 4.0.0
@@ -1915,7 +1928,6 @@ __metadata:
     jest-environment-jsdom: ^29.4.1
     jest-extended: 1.2.0
     node-fetch: 2.6.1
-    react-hook-form: ^7.30.0
     ts-jest: ^29.0.5
     ts-node: 10.7.0
     typescript: 4.6.3
@@ -5078,6 +5090,13 @@ __metadata:
     mkdirp: ^1.0.4
     rimraf: ^3.0.2
   checksum: 11b2151e6d1de6f6eb23128de5aa8a429fd9097d839a5190cb77aa47a6b627022c42d50fa7c47a00f1c9f8f0c1560092b09b061855d293fa0741a2a94cfb174d
+  languageName: node
+  linkType: hard
+
+"@openzeppelin/contracts@npm:^4.5.0":
+  version: 4.8.2
+  resolution: "@openzeppelin/contracts@npm:4.8.2"
+  checksum: 43a55fa0c563bc567f3d605d7bfd9a316054a5a75e5dd22a520fd3685e58a4b0095682824b91ae94e1d902264f5b1b4621d0f3eef009a6d7a2e27b2984c602a9
   languageName: node
   linkType: hard
 

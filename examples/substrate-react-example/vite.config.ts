@@ -11,9 +11,12 @@ export default defineConfig({
       protocolImports: true,
     }),
   ],
+  optimizeDeps: {
+    include: ['@buildwithsygma/sygma-sdk-core'],
+  },
   build: {
     commonjsOptions: {
-      include: [/node_modules/],
+      include: [/\@buildwithsygma\/sygma-sdk-core/],
     },
   },
 });
