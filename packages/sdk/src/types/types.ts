@@ -33,6 +33,7 @@ export type FeeType = 'basic' | 'feeOracle' | 'none';
 
 export type EvmBridgeSetup = {
   name: string;
+  type: 'Ethereum';
   networkId: number;
   bridgeAddress: string;
   erc20HandlerAddress: string;
@@ -46,7 +47,6 @@ export type EvmBridgeSetup = {
 };
 
 export type EvmBridgeSetupList = EvmBridgeSetup[];
-// export type SygmaEvmSubstrateBridgeSetupList = (SubstrateConfigType | SygmaBridgeSetup)[];
 
 export type BridgeData = {
   chain1: EvmBridgeSetup;
