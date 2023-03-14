@@ -8,6 +8,10 @@
     "type": "git",
     "url": "https://github.com/sygmaprotocol/sygma-sdk"
   },
+  "packageManager": "yarn@3.4.1",
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "scripts": {
     "sdk:build": "yarn workspace @buildwithsygma/sygma-sdk-core build",
     "sdk:cleanDist": "yarn workspace @buildwithsygma/sygma-sdk-core clean",
@@ -26,10 +30,6 @@
     "packages": [
       "packages/*",
       "examples/*"
-    ],
-    "nohoist": [
-      "**/webpack-dev-server",
-      "**/react-scripts"
     ]
   },
   "dependencies": {
