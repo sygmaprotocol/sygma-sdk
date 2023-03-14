@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.1.4...sygma-sdk-core-v1.2.0) (2023-03-14)
+
+
+### Features
+
+* substrate support to SDK ([#154](https://github.com/sygmaprotocol/sygma-sdk/issues/154)) ([856c231](https://github.com/sygmaprotocol/sygma-sdk/commit/856c2315fda53176c562215c0a9c9ede5f593a57))
+* Update deposit method to support substrate addresses ([#189](https://github.com/sygmaprotocol/sygma-sdk/issues/189)) ([a569165](https://github.com/sygmaprotocol/sygma-sdk/commit/a5691651440f482c0b027b40827f92e86dc1b333))
+
 ## [1.1.4](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.1.3...sygma-sdk-core-v1.1.4) (2023-02-22)
 
 
