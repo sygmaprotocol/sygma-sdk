@@ -1,6 +1,4 @@
-/* eslint-disable */
-
-import { BigNumber, ethers } from "ethers"
+import { ethers } from "ethers"
 import { Connector } from "../../src/connectors"
 
 describe('Connectors', () => {
@@ -19,18 +17,6 @@ describe('Connectors', () => {
     expect(provider).toBeInstanceOf(ethers.providers.JsonRpcProvider)
     expect(signer).toBeInstanceOf(ethers.providers.JsonRpcSigner)
   })
-
-  // it('Should get data from the signer', async () => {
-  //   const connector = Connector.initRPC(url, address)
-
-  //   const signerAddress = await connector.getSignerAddress()
-  //   const signerBalance = await connector.getSignerBalance()
-  //   const signerGasPrice = await connector.getSignerGasPrice()
-
-  //   expect(signerAddress).toMatch(address)
-  //   expect(signerBalance._isBigNumber).toBe(true)
-  //   expect(signerGasPrice._isBigNumber).toBe(true)
-  // })
 
   it("Should set signer if no address is provider on getInstance call", () => {
     const connector = Connector.initRPC(url)

@@ -1,9 +1,9 @@
 declare global {
   interface Window {
-    ethereum: any
+    ethereum: any;
   }
 }
 
 jest.setTimeout(20000);
 
-export {}
+export {};

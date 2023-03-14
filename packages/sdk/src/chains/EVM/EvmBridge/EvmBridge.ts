@@ -9,7 +9,7 @@ import { Directions, Provider, FeeDataResult } from '../../../types';
 import { Erc20Detailed } from '../../../Contracts/Erc20Detailed';
 import { Erc20DetailedFactory } from '../../../Contracts/Erc20DetailedFactory';
 
-import { createERCDepositData } from '../../../utils/helpers';
+import { createERCDepositData, constructDepositDataEvmSubstrate } from '../../../utils/helpers';
 
 /**
  * @name EvmBridge
@@ -60,10 +60,13 @@ export default class EvmBridge {
     resourceId: string;
     feeData: FeeDataResult;
   }): Promise<ContractReceipt | undefined> {
-    const depositData =
-      tokenType === 'erc20'
-        ? createERCDepositData(utils.parseUnits(amount, 18), 20, recipientAddress)
-        : createERCDepositData(amount, 20, recipientAddress);
+    let depositData: string;
+    if (tokenType === 'erc20') {
+      const erc20TokenDecimals = await (tokenInstance as Erc20Detailed).decimals();
+      depositData = constructDepositDataEvmSubstrate(amount, recipientAddress, erc20TokenDecimals);
+    } else {
+      depositData = createERCDepositData(amount, 20, recipientAddress);
+    }
 
     const gasPrice = await this.isEIP1559MaxFeePerGas(provider);
 
@@ -83,10 +86,11 @@ export default class EvmBridge {
         ),
       );
     } else {
+      const senderAddress = await bridge.signer.getAddress();
       console.log(
         'allowance before deposit',
         await this.checkCurrentAllowance(
-          recipientAddress,
+          senderAddress,
           tokenInstance as Erc20Detailed,
           handlerAddress,
         ),
@@ -217,17 +221,17 @@ export default class EvmBridge {
   /**
    * @name checkCurrentAllowance
    * @description check the current allowance of recipient address from handler address
-   * @param recipientAddress - string
+   * @param senderAddress - string
    * @param erc20Instance - ERC20 token instance
    * @param erc20HandlerAddress - ERC20 handler address
    * @returns {Promise<number>}
    */
   public async checkCurrentAllowance(
-    recipientAddress: string,
+    senderAddress: string,
     erc20Instance: Erc20Detailed,
     erc20HandlerAddress: string,
   ): Promise<number> {
-    const currentAllowance = await erc20Instance.allowance(recipientAddress, erc20HandlerAddress);
+    const currentAllowance = await erc20Instance.allowance(senderAddress, erc20HandlerAddress);
 
     return Number(utils.formatUnits(currentAllowance, 18));
   }

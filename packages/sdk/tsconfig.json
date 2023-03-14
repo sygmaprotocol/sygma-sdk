@@ -4,7 +4,7 @@
 		"composite": true,
 		"target": "ES2022",
 		"outDir": "dist",
-		"module": "commonjs",
+		"module": "CommonJS",
 		"baseUrl": "./src",
 		"allowJs": true,
 		"declaration": true,

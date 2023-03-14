@@ -198,8 +198,7 @@ export class Sygma implements SygmaSDK {
     }
 
     if (!chain1) {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      throw `Cannot find network with chainId: ${network} in config`;
+      throw `Cannot find network with chainId: ${network ? network.name : 'unknown'} in config`;
     }
 
     this.bridgeSetup!.chain1 = chain1;
@@ -228,20 +227,23 @@ export class Sygma implements SygmaSDK {
     if (!chain2) {
       throw `Cannot find network with domainID: ${domainId} in config`;
     }
-
     this.bridgeSetup!.chain2 = chain2;
 
-    const connector = setConnectorRPC(chain2.rpcUrl);
+    // workaround too make work substrate as destination,
+    // TODO: delete after #174
+    if (chain2.type === 'Ethereum') {
+      const connector = setConnectorRPC(chain2.rpcUrl);
 
-    this.providers!.chain2 = connector.provider;
-    this.signers!.chain2 = connector.signer;
+      this.providers!.chain2 = connector.provider;
+      this.signers!.chain2 = connector.signer;
 
-    const contracts = this.computeContract(chain2, connector);
-    this.tokens!['chain2'] = contracts.erc20;
-    this.bridges!['chain2'] = contracts.bridge;
+      const contracts = this.computeContract(chain2, connector);
+      this.tokens!['chain2'] = contracts.erc20;
+      this.bridges!['chain2'] = contracts.bridge;
 
-    if (this.bridgeSetup!.chain1.confirmations) {
-      this.currentBridge.confirmations = this.bridgeSetup!.chain1.confirmations;
+      if (this.bridgeSetup!.chain1.confirmations) {
+        this.currentBridge.confirmations = this.bridgeSetup!.chain1.confirmations;
+      }
     }
 
     return this;

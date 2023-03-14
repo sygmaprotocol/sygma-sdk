@@ -1,11 +1,6 @@
-/* eslint-disable */
-
-/**
- * @jest-environment jsdom
- */
 import { ethers } from 'ethers'
 import { BridgeData } from '../../src/types'
-import { computeProvidersAndSigners } from '../../src/utils'
+import { computeProvidersAndSignersRPC } from '../../src/utils'
 
  declare global {
    interface Window {
@@ -36,7 +31,7 @@ jest.mock('ethers', () => ({
 
    it("Should compute Web3Provider and Signer if no address is passed and window.ethereum object is defined", () => {
      global.window.ethereum = {}
-     const providersAndSigners = computeProvidersAndSigners(bridgeSetup as BridgeData)
+     const providersAndSigners = computeProvidersAndSignersRPC(bridgeSetup as unknown as BridgeData)
      const expectedSubkeys = ["provider", "signer"]
      expect("chain1" in providersAndSigners!).toBe(true)
      expect("chain2" in providersAndSigners!).toBe(true)

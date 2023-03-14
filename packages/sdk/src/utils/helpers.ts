@@ -1,4 +1,5 @@
 import { utils, BigNumber } from 'ethers';
+import { decodeAddress } from '@polkadot/util-crypto';
 
 /**
  * @name toHex
@@ -53,6 +54,56 @@ export const createERCDepositData = (
     toHex(lenRecipientAddress, 32).substr(2) + // len(recipientAddress)          (32 bytes)
     recipientAddress.substr(2)
   ); // recipientAddress               (?? bytes)
+};
+
+/**
+ * @name constructMainDepositData
+ * @description Constructs the main deposit data for a given token and recipient.
+ * @param {BigNumber} tokenStats - The amount of ERC20 tokens or the token ID of ERC721 tokens.
+ * @param {Uint8Array} destRecipient - The recipient address in bytes array
+ * @returns {Uint8Array} The main deposit data in bytes array
+ */
+export const constructMainDepositData = (
+  tokenStats: BigNumber,
+  destRecipient: Uint8Array,
+): Uint8Array => {
+  const data: Uint8Array = utils.concat([
+    utils.hexZeroPad(tokenStats.toHexString(), 32), // Amount (ERC20) or Token Id (ERC721)
+    utils.hexZeroPad(BigNumber.from(destRecipient.length).toHexString(), 32), // length of recipient
+    destRecipient, // Recipient
+  ]);
+  return data;
+};
+
+/**
+ * Constructs the deposit data for an EVM-Substrate bridge transaction.
+ *
+ * @example
+ * // EVM address
+ * constructDepositDataEvmSubstrate('1', '0x1234567890123456789012345678901234567890', 18);
+ *
+ * @example
+ * // Substrate address
+ * constructDepositDataEvmSubstrate('2', '5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt', 12);
+ *
+ * @param {string} tokenAmount - The amount of tokens to be transferred.
+ * @param {string} recipientAddress - The address of the recipient.
+ * @param {number} [decimals=18] - The number of decimals of the token.
+ * @returns {string} The deposit data as hex string
+ */
+export const constructDepositDataEvmSubstrate = (
+  tokenAmount: string,
+  recipientAddress: string,
+  decimals: number = 18,
+): string => {
+  const convertedAmount = utils.parseUnits(tokenAmount, decimals);
+  // convert to bytes array
+  const recipientAddressInBytes = utils.isAddress(recipientAddress)
+    ? utils.arrayify(recipientAddress)
+    : decodeAddress(recipientAddress);
+  const depositDataBytes = constructMainDepositData(convertedAmount, recipientAddressInBytes);
+  const depositData = utils.hexlify(depositDataBytes);
+  return depositData;
 };
 
 /**

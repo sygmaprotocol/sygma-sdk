@@ -5,11 +5,10 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "ethers": "5.7.2",
-    "@buildwithsygma/sygma-sdk-core": "*",
+    "@buildwithsygma/sygma-sdk-core": "workspace:*",
     "@ethersproject/experimental": "^5.7.0",
     "chalk": "4.1.2",
-    "dotenv": "16.0.3"
+    "ethers": "5.7.2"
   },
   "devDependencies": {
     "ts-node": "10.9.1",

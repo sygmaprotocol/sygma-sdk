@@ -1,6 +1,4 @@
 import { ApiPromise, SubmittableResult } from '@polkadot/api';
-import type { Event } from '@polkadot/types/interfaces';
-
 import { DepositCallbacksType } from '../utils/depositFns';
 
 import * as Utils from '../utils/depositFns';
@@ -21,7 +19,9 @@ describe('handleTxExtrinsicResult', () => {
   });
 
   it('should call onInBlock when status isInBlock', () => {
-    const result: SubmittableResult = { status: { isInBlock: true, asInBlock: '12345' } } as unknown as SubmittableResult;
+    const result: SubmittableResult = {
+      status: { isInBlock: true, asInBlock: '12345' },
+    } as unknown as SubmittableResult;
 
     Utils.handleTxExtrinsicResult(api, result, unsub, callbacksMockFns);
 
@@ -29,7 +29,10 @@ describe('handleTxExtrinsicResult', () => {
   });
 
   it('should call onFinalized when status isFinalized', () => {
-    const result: SubmittableResult = { status: { isFinalized: true, asFinalized: '12345' }, events: [] } as unknown as SubmittableResult;
+    const result: SubmittableResult = {
+      status: { isFinalized: true, asFinalized: '12345' },
+      events: [],
+    } as unknown as SubmittableResult;
 
     Utils.handleTxExtrinsicResult(api, result, unsub, callbacksMockFns);
 
@@ -37,7 +40,10 @@ describe('handleTxExtrinsicResult', () => {
   });
 
   it('should call unsub when status isFinalized', () => {
-    const result: SubmittableResult = { status: { isFinalized: true, asFinalized: '12345' }, events: [] } as unknown as SubmittableResult;
+    const result: SubmittableResult = {
+      status: { isFinalized: true, asFinalized: '12345' },
+      events: [],
+    } as unknown as SubmittableResult;
 
     Utils.handleTxExtrinsicResult(api, result, unsub, callbacksMockFns);
 
@@ -49,11 +55,11 @@ describe('handleTxExtrinsicResult', () => {
       events: {
         system: {
           ExtrinsicFailed: {
-            is: jest.fn().mockReturnValue(false)
-          }
-        }
-      }
-    } as unknown as ApiPromise
+            is: jest.fn().mockReturnValue(false),
+          },
+        },
+      },
+    } as unknown as ApiPromise;
 
     const result: SubmittableResult = {
       status: { isFinalized: true, asFinalized: '12345' },
