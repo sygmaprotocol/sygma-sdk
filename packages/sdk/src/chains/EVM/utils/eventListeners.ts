@@ -1,5 +1,5 @@
-import { BigNumber, ethers, Event } from 'ethers';
-import { Bridge, Bridge__factory as BridgeFactory } from '@buildwithsygma/sygma-contracts';
+import { BigNumber, Event, ethers } from 'ethers';
+import { Bridge, Bridge__factory } from '@buildwithsygma/sygma-contracts';
 
 /**
  * @typedef {Object} Bridge
@@ -75,7 +75,7 @@ export const connectToBridge = (
   bridgeAddress: string,
   signerOrProvider: ethers.providers.Provider | ethers.Signer,
 ): Bridge => {
-  return BridgeFactory.connect(bridgeAddress, signerOrProvider);
+  return Bridge__factory.connect(bridgeAddress, signerOrProvider);
 };
 
 /**

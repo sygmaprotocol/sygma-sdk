@@ -6,7 +6,7 @@ import {
   proposalExecutionEventListenerCount,
   removeProposalExecutionEventListener,
   connectToBridge,
-} from '../utils';
+} from '../utils/eventListeners';
 
 describe('createProposalExecutionEventListener', () => {
   it('should create a ProposalExecution event listener', () => {
