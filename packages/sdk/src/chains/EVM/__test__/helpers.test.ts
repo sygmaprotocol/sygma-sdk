@@ -11,6 +11,7 @@ describe('constructMainDepositData', () => {
     resultArray[64] = 1;
     resultArray[65] = 2;
     resultArray[66] = 3;
+
     expect(constructMainDepositData(tokenStats, destRecipient)).toEqual(
       Uint8Array.from(resultArray),
     );
