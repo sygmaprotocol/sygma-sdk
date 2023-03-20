@@ -4,7 +4,7 @@ import {
   ERC721MinterBurnerPauser,
   ERC721MinterBurnerPauser__factory as Erc721Factory,
 } from '@buildwithsygma/sygma-contracts';
-import { utils, BigNumber, ContractReceipt } from 'ethers';
+import { utils, BigNumber, ContractReceipt, ethers } from 'ethers';
 import { Directions, Provider, FeeDataResult } from '../../../types';
 import { Erc20Detailed } from '../../../Contracts/Erc20Detailed';
 import { Erc20DetailedFactory } from '../../../Contracts/Erc20DetailedFactory';
@@ -61,6 +61,7 @@ export default class EvmBridge {
     feeData: FeeDataResult;
   }): Promise<ContractReceipt | undefined> {
     let depositData: string;
+    
     if (tokenType === 'erc20') {
       const erc20TokenDecimals = await (tokenInstance as Erc20Detailed).decimals();
       depositData = constructDepositDataEvmSubstrate(amount, recipientAddress, erc20TokenDecimals);
@@ -68,13 +69,15 @@ export default class EvmBridge {
       depositData = createERCDepositData(amount, 20, recipientAddress);
     }
 
-    const gasPrice = await this.isEIP1559MaxFeePerGas(provider);
+    const [gasPrice, maxPriorityFeePerGas] = await this.isEIP1559MaxFeePerGas(provider) as Array<BigNumber>
+    console.log("🚀 ~ file: EvmBridge.ts:73 ~ EvmBridge ~ gasPrice:", gasPrice)
 
     let gasPriceStringify;
 
     if (typeof gasPrice !== 'boolean') {
       gasPriceStringify = gasPrice.toString();
     }
+    console.log("🚀 ~ file: EvmBridge.ts:78 ~ EvmBridge ~ gasPriceStringify:", ethers.utils.formatUnits(BigNumber.from(gasPriceStringify), 'gwei'))
 
     if (tokenType === 'erc721') {
       console.log(
@@ -100,6 +103,7 @@ export default class EvmBridge {
     try {
       const tx = await bridge.deposit(domainId, resourceId, depositData, feeData.feeData, {
         gasPrice: gasPriceStringify,
+        // gasLimit: BigNumber.from("63000").mul(10),
         value: feeData.type === 'basic' ? feeData.fee : undefined,
       });
       const depositAction = await tx.wait(this.confirmations);
@@ -260,11 +264,18 @@ export default class EvmBridge {
    * @param provider - JsonRpcProvider | Web3Provider
    * @returns {Promise<BigNumber | boolean>}
    */
-  public async isEIP1559MaxFeePerGas(provider: Provider): Promise<BigNumber | boolean> {
+  public async isEIP1559MaxFeePerGas(provider: Provider): Promise<Array<BigNumber> | boolean> {
     try {
       const feeData = await provider!.getFeeData();
-      const { gasPrice } = feeData;
-      return gasPrice as BigNumber;
+      console.log("formated", ethers.utils.formatUnits(feeData.gasPrice!, 'gwei'))
+      console.log("formated 2", ethers.utils.formatUnits(feeData.maxFeePerGas!, 'gwei'))
+      console.log('formated 3', ethers.utils.formatUnits(feeData.maxPriorityFeePerGas!, 'gwei'))
+      console.log("formated 4", ethers.utils.formatUnits(feeData.lastBaseFeePerGas!, 'gwei'))
+      console.log("formated 5", ethers.utils.formatUnits(await provider?.getGasPrice()!, 'gwei'))
+      const { gasPrice, maxPriorityFeePerGas } = feeData;
+      const gasLimit = 21000 * (gasPrice?.toNumber()! + maxPriorityFeePerGas?.toNumber()!)
+      console.log("🚀 ~ file: EvmBridge.ts:277 ~ EvmBridge ~ isEIP1559MaxFeePerGas ~ gasLimit:", gasLimit)
+      return [gasPrice as BigNumber, maxPriorityFeePerGas as BigNumber];
     } catch (error) {
       console.log('error getting EIP 1559', error);
       return false;
