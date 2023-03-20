@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.2.0...sygma-sdk-core-v1.2.1) (2023-03-20)
+
+
+### Bug Fixes
+
+* Multibuild to esm and commonjs ([#183](https://github.com/sygmaprotocol/sygma-sdk/issues/183)) ([bee7188](https://github.com/sygmaprotocol/sygma-sdk/commit/bee71882f5c62606465f2c95b0b199b4850ee2ce))
+
 ## [1.2.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.2.0...sygma-sdk-core-v1.2.0) (2023-03-15)
 
 
