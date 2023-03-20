@@ -10,6 +10,7 @@ import {
 const bridgeSetupList: EvmBridgeSetupList = [
   {
     domainId: "1",
+    type: "Ethereum",
     networkId: 1337,
     name: "Local EVM 1",
     decimals: 18,
@@ -36,6 +37,7 @@ const bridgeSetupList: EvmBridgeSetupList = [
   },
   {
     domainId: "2",
+    type: "Ethereum",
     networkId: 1338,
     name: "Local EVM 2",
     decimals: 18,
