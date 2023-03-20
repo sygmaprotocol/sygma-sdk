@@ -3,21 +3,27 @@ import fetch from 'cross-fetch';
 import { requestFeeFromFeeOracle, createOracleFeeData, calculateFeeData } from '../feeOracle';
 
 jest.mock('cross-fetch');
-const { Response } = jest.requireActual('cross-fetch');
+const { Response } = jest.requireActual<typeof import('cross-fetch')>('cross-fetch');
 
-jest.mock('@buildwithsygma/sygma-contracts', () => ({
-  ...jest.requireActual('@buildwithsygma/sygma-contracts'),
-  DynamicERC20FeeHandlerEVM__factory: {
-    connect: (args: any) => {
-      return {
-        calculateFee: jest.fn(async () => ({
-          fee: BigNumber.from('10'),
-          tokenAddress: '0x141F8690A87A7E57C2E270ee77Be94935970c035',
-        })),
-      };
-    },
-  },
-}));
+jest.mock(
+  '@buildwithsygma/sygma-contracts',
+  () =>
+    ({
+      ...jest.requireActual('@buildwithsygma/sygma-contracts'),
+      DynamicERC20FeeHandlerEVM__factory: {
+        connect: () => {
+          return {
+            calculateFee: jest.fn(() =>
+              Promise.resolve({
+                fee: BigNumber.from('10'),
+                tokenAddress: '0x141F8690A87A7E57C2E270ee77Be94935970c035',
+              }),
+            ),
+          };
+        },
+      },
+    } as unknown),
+);
 
 const oracleResponse = {
   response: {
@@ -40,7 +46,7 @@ describe('feeOracle', () => {
   describe('requestFeeFromFeeOracle', () => {
     it('gets oracle data by http GET', async () => {
       (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
-        new Response(JSON.stringify(oracleResponse), { url: 'url', status: 200, statusText: 'OK' }),
+        new Response(JSON.stringify(oracleResponse), { status: 200, statusText: 'OK' }),
       );
       const expectedKeys = Object.keys(oracleResponse.response);
 
@@ -56,7 +62,6 @@ describe('feeOracle', () => {
     it('return undefined if server error', async () => {
       (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
         new Response(JSON.stringify(oracleResponse), {
-          url: 'url',
           status: 500,
           statusText: 'Internal Error',
         }),
@@ -74,7 +79,6 @@ describe('feeOracle', () => {
     it('return error message from fee oracle server', async () => {
       (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
         new Response(JSON.stringify({ error: 'sick' }), {
-          url: 'url',
           status: 200,
           statusText: 'OK',
         }),
@@ -102,7 +106,7 @@ describe('feeOracle', () => {
   describe('calculateFeeData', () => {
     it('get the fee data with no oracle private key', async () => {
       (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
-        new Response(JSON.stringify(oracleResponse), { url: 'url', status: 200, statusText: 'OK' }),
+        new Response(JSON.stringify(oracleResponse), { status: 200, statusText: 'OK' }),
       );
 
       const provider = new ethers.providers.JsonRpcProvider();
