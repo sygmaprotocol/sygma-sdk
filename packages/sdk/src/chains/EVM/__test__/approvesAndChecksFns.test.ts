@@ -85,7 +85,6 @@ describe('approve', () => {
   const confirmations = 3;
   const overrides: ethers.PayableOverrides = {};
 
-
   it('should return a contract receipt when called with valid parameters', async () => {
     const tokenInstance = {
       approve: jest.fn().mockResolvedValueOnce({

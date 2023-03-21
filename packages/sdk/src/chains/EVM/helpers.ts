@@ -1,12 +1,6 @@
 import { utils, BigNumber, providers } from 'ethers';
 import { decodeAddress } from '@polkadot/util-crypto';
-import {
-  Bridge,
-  ERC20,
-  ERC20Handler__factory,
-  ERC721MinterBurnerPauser,
-  ERC721MinterBurnerPauser__factory,
-} from '@buildwithsygma/sygma-contracts';
+import { ERC20 } from '@buildwithsygma/sygma-contracts';
 
 /**
  * @name toHex
