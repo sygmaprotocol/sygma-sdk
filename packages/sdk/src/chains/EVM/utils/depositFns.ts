@@ -26,6 +26,22 @@ import { getApproved, checkCurrentAllowanceOfErc20 } from './approvesAndChecksFn
 /**
  * Perform an erc20 transfer
  *
+ * @example
+ * const params = {
+ *   amountOrId: '100',
+ *   recipientAddress: '0x1234567890123456789012345678901234567890',
+ *   tokenInstance: new ERC20(), // ERC20 instance
+ *   bridgeInstance: new Bridge(), // Bridge instance from the sygma-contracts
+ *   handlerAddress: '0x0987654321098765432109876543210987654321',
+ *   domainId: '1',
+ *   resourceId: '0x000000000000000001',
+ *   feeData: { ... }, // fee data
+ *   confirmations: 6,
+ *   provider: new ethers.providers.Web3Provider(window.ethereum),
+ *   overrides: { gasLimit: 1000000 } // optional
+ * }
+ * const receipt = await erc20Transfer(params)
+ *
  * @param {Erc20TransferParamsType} params - The parameters for the erc20 transfer function.
  * @returns {Promise<ContractReceipt>} - The transaction receipt.
  */
@@ -73,6 +89,21 @@ export const erc20Transfer = async ({
 /**
  * Perform an erc721 transfer
  *
+ * @example
+ * const params = {
+ *   domainId: '9',
+ *   resourceId: '0x00001',
+ *   amountOrId: '123123123', // tokenID from the ERC721
+ *   recipientAddress: '0x123ABCD',
+ *   handlerAddress: '0xabc123',
+ *   tokenInstance: new ERC721MinterBurnerPauser(), // from the sygma-contacts
+ *   bridgeInstance: new Bridge(),  // from the sygma-contacts
+ *   feeData: { .. }, // fee data
+ *   confirmations: 10,
+ *   provider: new ethers.providers.Web3Provider(window.ethereum),
+ * };
+ * const receipt = await erc721Transfer(params);
+ *
  * @param {Erc721TransferParamsType} params - The parameters for ERC721 token transfer.
  * @returns {Promise<ContractReceipt>} A promise that resolves to the contract receipt.
  */
@@ -113,6 +144,20 @@ export const erc721Transfer = async ({
 
 /**
  * Executes a deposit operation using the specified parameters and returns a contract receipt.
+ *
+ * @example
+ * const domainId = '1';
+ * const resourceId = '0x1234567890123456789012345678901234567890';
+ * const depositData = '0xabcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789';
+ * const feeData = { type: 'basic', fee: ethers.BigNumber.from('1000000000000000'), feeData: {} }; // fee data is madatory
+ * const bridgeInstance = new Bridge() // Bridge instance from sygma-contracts package;
+ * const confirmations = 3;
+ * const provider = new ethers.providers.JsonRpcProvider();
+ * const overrides = { gasLimit: 200000 };
+ *
+ * executeDeposit(domainId, resourceId, depositData, feeData, bridgeInstance, confirmations, provider, overrides)
+ *   .then((receipt) => console.log('Deposit executed:', receipt))
+ *   .catch((error) => console.error('Error on deposit execution:', error));
  *
  * @param {string} domainId - The unique identifier for destination network.
  * @param {string} resourceId - The resource ID associated with the token.
@@ -188,19 +233,29 @@ export const getDepositEventFromReceipt = async (
 };
 
 /**
- * Processes a token transfer to the bridge, handling both ERC20 and ERC721 tokens.
+ * Processes a token transfer to the bridge on top level of abstracttion, handling both ERC20 and ERC721 tokens.
+ *
+ * @example
+ * // this short example could miss some params, please look at types for correct info
+ * const depositParams = { resourceId: '0x123', amountOrId: "100", recepientAddress: "0x0123", feeData: "// fee data ///" };
+ * const bridgeConfig = { tokens: [{ resourceId: '0x123', address: '0x456', type: 'erc20' }], bridgeAddress: '0x789', domainId: 1 };
+ * const provider = new ethers.providers.Web3Provider(window.ethereum);
+ * // any ovveride settting for etherjs tranasaction
+ * const overrides = { gasLimit: 100000 };
+ * const receipt = await processTokenTranfer({ depositParams, bridgeConfig, provider, overrides });
+ * // use the getDepositEventFromReceipt method to get the depositNonce
  *
  * @param {ProcessTokenTranferParamsType} params - The parameters for processing the token transfer.
  * @returns {Promise<ethers.ContractReceipt>} - A promise that resolves to the transaction receipt once the transfer is complete.
  */
 export const processTokenTranfer = async ({
-  depositTransferInfo,
-  bridgeConfig: networkConfig,
+  depositParams,
+  bridgeConfig,
   provider,
   overrides,
 }: ProcessTokenTranferParamsType): Promise<ethers.ContractReceipt> => {
-  const { tokens, bridgeAddress, domainId, confirmations: defaultConfirmations } = networkConfig;
-  const { resourceId } = depositTransferInfo;
+  const { tokens, bridgeAddress, domainId, confirmations: defaultConfirmations } = bridgeConfig;
+  const { resourceId } = depositParams;
 
   const selectedToken = tokens.find(token => token.resourceId === resourceId);
 
@@ -212,7 +267,7 @@ export const processTokenTranfer = async ({
   const confirmations = defaultConfirmations ?? 10;
 
   const commonTransferParams = {
-    ...depositTransferInfo,
+    ...depositParams,
     domainId,
     confirmations,
     bridgeInstance,
@@ -227,14 +282,14 @@ export const processTokenTranfer = async ({
     );
     return erc721Transfer({
       ...commonTransferParams,
-      handlerAddress: networkConfig.erc721HandlerAddress,
+      handlerAddress: bridgeConfig.erc721HandlerAddress,
       tokenInstance,
     });
   } else {
     const tokenInstance = ERC20__factory.connect(selectedToken.address, provider);
     return erc20Transfer({
       ...commonTransferParams,
-      handlerAddress: networkConfig.erc20HandlerAddress,
+      handlerAddress: bridgeConfig.erc20HandlerAddress,
       tokenInstance,
     });
   }

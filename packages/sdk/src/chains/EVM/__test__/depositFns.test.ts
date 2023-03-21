@@ -231,7 +231,7 @@ describe('deposit functions', () => {
     it('should throw an error when selectedToken is undefined', async () => {
       await expect(
         EVM.processTokenTranfer({
-          depositTransferInfo: { resourceId: '123' },
+          depositParams: { resourceId: '123' },
           bridgeConfig: {
             tokens: [{ resourceId: '456', type: 'erc20', address: '0x123' }],
             bridgeAddress: '0x123',
@@ -248,7 +248,7 @@ describe('deposit functions', () => {
         .spyOn(EVM, 'erc721Transfer')
         .mockResolvedValue({ blockHash: '0x01' } as unknown as ContractReceipt);
       const receipt = await EVM.processTokenTranfer({
-        depositTransferInfo: { resourceId: '456' },
+        depositParams: { resourceId: '456' },
         bridgeConfig: {
           tokens: [{ resourceId: '456', type: 'erc721', address: '0x123' }],
           bridgeAddress: '0x123',
@@ -267,7 +267,7 @@ describe('deposit functions', () => {
         .spyOn(EVM, 'erc20Transfer')
         .mockResolvedValue({ blockHash: '0x01' } as unknown as ContractReceipt);
       const receipt = await EVM.processTokenTranfer({
-        depositTransferInfo: { resourceId: '456' },
+        depositParams: { resourceId: '456' },
         bridgeConfig: {
           tokens: [{ resourceId: '456', type: 'erc20', address: '0x123' }],
           bridgeAddress: '0x123',

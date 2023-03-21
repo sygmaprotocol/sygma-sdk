@@ -67,7 +67,7 @@ export type ProcessTokenTranferDepositParamsType = {
 
 export type ProcessTokenTranferParamsType = {
   /** The information needed for processing the token transfer deposit. */
-  depositTransferInfo: ProcessTokenTranferDepositParamsType;
+  depositParams: ProcessTokenTranferDepositParamsType;
   /** The bridge configuration parameters for processing the token transfer. */
   bridgeConfig: ProcessTokenTranferBridgeConfigParamsType;
   /** The provider used to interact with the blockchain network. */
