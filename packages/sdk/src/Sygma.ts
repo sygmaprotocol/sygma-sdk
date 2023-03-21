@@ -26,7 +26,6 @@ import {
   FeeDataResult,
   EvmBridgeSetupList,
   EvmBridgeSetup,
-  TokenConfig,
 } from './types';
 import {
   computeBridges,
@@ -37,7 +36,7 @@ import {
   setConnectorRPC,
   listTokensOfOwner,
 } from './utils';
-import { EvmBridge } from './chains';
+import { EvmBridge, TokenConfig } from './chains';
 import { calculateBasicfee, calculateFeeData } from './fee';
 import Connector from './connectors/Connectors';
 import {
