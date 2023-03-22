@@ -25,5 +25,5 @@ jobs:
       - run: yarn
       - run: yarn run sdk:lint # lint code
       - run: yarn run sdk:build # compile typescript into javascript
-      # - run: yarn run test:unit # run unit tests
+      - run: yarn run sdk:test:unit --silent # run unit tests
       # - run: yarn run test:integrations # run integration tests tests

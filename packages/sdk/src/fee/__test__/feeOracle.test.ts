@@ -1,9 +1,9 @@
 import { BigNumber, ethers } from 'ethers';
-import fetch from 'node-fetch';
+import fetch from 'cross-fetch';
 import { requestFeeFromFeeOracle, createOracleFeeData, calculateFeeData } from '../feeOracle';
 
-jest.mock('node-fetch');
-const { Response } = jest.requireActual<typeof import('node-fetch')>('node-fetch');
+jest.mock('cross-fetch');
+const { Response } = jest.requireActual<typeof import('cross-fetch')>('cross-fetch');
 
 jest.mock(
   '@buildwithsygma/sygma-contracts',
@@ -46,7 +46,7 @@ describe('feeOracle', () => {
   describe('requestFeeFromFeeOracle', () => {
     it('gets oracle data by http GET', async () => {
       (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
-        new Response(JSON.stringify(oracleResponse), { url: 'url', status: 200, statusText: 'OK' }),
+        new Response(JSON.stringify(oracleResponse), { status: 200, statusText: 'OK' }),
       );
       const expectedKeys = Object.keys(oracleResponse.response);
 
@@ -62,7 +62,6 @@ describe('feeOracle', () => {
     it('return undefined if server error', async () => {
       (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
         new Response(JSON.stringify(oracleResponse), {
-          url: 'url',
           status: 500,
           statusText: 'Internal Error',
         }),
@@ -80,7 +79,6 @@ describe('feeOracle', () => {
     it('return error message from fee oracle server', async () => {
       (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
         new Response(JSON.stringify({ error: 'sick' }), {
-          url: 'url',
           status: 200,
           statusText: 'OK',
         }),
@@ -108,7 +106,7 @@ describe('feeOracle', () => {
   describe('calculateFeeData', () => {
     it('get the fee data with no oracle private key', async () => {
       (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
-        new Response(JSON.stringify(oracleResponse), { url: 'url', status: 200, statusText: 'OK' }),
+        new Response(JSON.stringify(oracleResponse), { status: 200, statusText: 'OK' }),
       );
 
       const provider = new ethers.providers.JsonRpcProvider();

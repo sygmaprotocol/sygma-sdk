@@ -11,6 +11,10 @@
 # production
 /build
 /dist
+/dist-cjs
+/dist-esm
+/types
+
 
 # misc
 .DS_Store
