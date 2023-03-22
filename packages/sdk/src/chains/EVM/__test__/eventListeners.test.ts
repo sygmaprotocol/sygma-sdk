@@ -6,6 +6,8 @@ import {
   proposalExecutionEventListenerCount,
   removeProposalExecutionEventListener,
   connectToBridge,
+  createDepositEventListener,
+  removeDepositEventListener,
 } from '../utils/eventListeners';
 
 describe('createProposalExecutionEventListener', () => {
@@ -101,6 +103,39 @@ describe('connectToBridge', () => {
       expect.objectContaining({
         address: '0x1234567890123456789012345678901234567890',
       }),
+    );
+  });
+});
+
+describe('createDepositEventListener', () => {
+  it('should call the callback function with the correct arguments', () => {
+    const bridge = {
+      filters: { Deposit: jest.fn() },
+      once: jest.fn().mockImplementation((filter, callback) =>
+        void callback(
+          1,
+          'mockedResourceId',
+          BigNumber.from(1),
+          'mockedUser',
+          'mockedData',
+          'mockedHandleResponse',
+          'mockedTx',
+        ),
+      ),
+    } as unknown as Bridge;
+    const userAddress = '0x1234';
+    const callbackFn = jest.fn();
+
+    createDepositEventListener(bridge, userAddress, callbackFn);
+
+    expect(callbackFn).toHaveBeenCalledWith(
+      1,
+      'mockedResourceId',
+      BigNumber.from(1),
+      'mockedUser',
+      'mockedData',
+      'mockedHandleResponse',
+      'mockedTx',
     );
   });
 });
