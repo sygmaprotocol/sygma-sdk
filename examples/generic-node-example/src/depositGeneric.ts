@@ -7,7 +7,8 @@ import { abi as ColorsABI } from "./abis/colors-abi.json";
 import { decodeColor } from "./abis/decodeColor";
 import { setupSygma } from "./sygmaInstance";
 import { bridgeAdmin } from "./bridgeSetup";
-import { Colors } from "./types/Colors";
+import { Colors, setColorEventEvent } from "./types/Colors";
+import { Colors__factory } from "./types/Colors__factory";
 
 void dotenv.config();
 
@@ -39,11 +40,12 @@ const depositGeneric = async (): Promise<void> => {
     signerDestinationChain
   );
 
-  const filters = connectedColorsNode2.filters["setColorEvent(bytes32)"];
+  const filters = connectedColorsNode2.filters.setColorEvent(null);
 
   let counter = 0;
 
-  const listener = (color: string): void => {
+  const listener = (color: string, tx: setColorEventEvent): void => {
+    console.log("🚀 ~ file: depositGeneric.ts:52 ~ listener ~ tx:", tx);
     const colorDecoded = decodeColor(color);
     counter += 1;
     console.log(
