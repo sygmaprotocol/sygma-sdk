@@ -3,8 +3,9 @@ import { decodeAddress } from '@polkadot/util-crypto';
 import { ERC20 } from '@buildwithsygma/sygma-contracts';
 
 /**
- * @name toHex
- * @description return hex data padded to the number defined as padding
+ * Return hex data padded to the number defined as padding
+ * based on ethers.utils.hexZeroPad
+ *
  * @param covertThis - data to convert
  * @param padding - number to padd the data
  * @returns {string}
@@ -15,8 +16,9 @@ export const toHex = (covertThis: string | number | BigNumber, padding: number):
 };
 
 /**
- * @name addPadding
- * @description pads the data
+ * Pads the data
+ * based on ethers.utils.hexZeroPad
+ *
  * @param covertThis - data to convert
  * @param padding - padding
  * @returns {string}
@@ -26,19 +28,22 @@ export const addPadding = (covertThis: string | number, padding: number): string
 };
 
 /**
- * @name createResourceID
- * @description creates a resource id based on the contract address
+ * Creates a resource id based on the contract address
+ *
  * @param contractAddress
  * @param domainID
  * @returns {string}
  */
-export const createResourceID = (contractAddress: string, domainID: number): string => {
-  return toHex(contractAddress + toHex(domainID, 1).substr(2), 32);
+export const createResourceID = (contractAddress: string, domainID: string | number): string => {
+  if (!isUint8(domainID)) {
+    throw new Error('domainId should be uint8 comaptible');
+  }
+  return toHex(contractAddress + toHex(domainID, 1).substring(2), 32);
 };
 
 /**
- * @name createERCDepositData
- * @description creates the deposit data to use on bridge.deposit method interface
+ * Creates the deposit data to use on bridge.deposit method interface
+ *
  * @param tokenAmountOrID - number | string | BigNumber of the amount of token or Id fo the token
  * @param lenRecipientAddress
  * @param recipientAddress
@@ -58,8 +63,8 @@ export const createERCDepositData = (
 };
 
 /**
- * @name constructMainDepositData
- * @description Constructs the main deposit data for a given token and recipient.
+ * Constructs the main deposit data for a given token and recipient.
+ *
  * @param {BigNumber} tokenStats - The amount of ERC20 tokens or the token ID of ERC721 tokens.
  * @param {Uint8Array} destRecipient - The recipient address in bytes array
  * @returns {Uint8Array} The main deposit data in bytes array
@@ -108,8 +113,8 @@ export const constructDepositDataEvmSubstrate = (
 };
 
 /**
- * @name createPermissionedGenericDepositData
- * @description creates data for permissioned generic handler
+ * Creates data for permissioned generic handler
+ *
  * @param hexMetaData
  * @returns {string}
  */
@@ -122,8 +127,8 @@ export const createPermissionedGenericDepositData = (hexMetaData: string): strin
 };
 
 /**
- * @name createPermissionlessGenericDepositData
- * @description creates the data for permissionless generic handler
+ * Creates the data for permissionless generic handler
+ *
  * @param executeFunctionSignature - execution function signature
  * @param executeContractAddress - execution contract address
  * @param maxFee - max fee defined
@@ -169,6 +174,11 @@ export async function getTokenDecimals(tokenInstance: ERC20): Promise<number> {
 export function isERC20(tokenInstance: ERC20): tokenInstance is ERC20 {
   return 'decimals' in tokenInstance;
 }
+
+export const isUint8 = (value: unknown): boolean => {
+  const bn = BigNumber.from(value);
+  return bn.gte(0) && bn.lte(255);
+};
 
 /**
  * Check the fee data of the provider and returns the gas price if the node is not EIP1559

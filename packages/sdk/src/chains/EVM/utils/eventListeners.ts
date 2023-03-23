@@ -12,6 +12,24 @@ import { Bridge, Bridge__factory } from '@buildwithsygma/sygma-contracts';
  */
 /**
  * Creates a ProposalExecution event listener for a given Bridge instance.
+ * Proposal execution event usually emits after funds are transferred from the bridge contract on the destination chain.
+ *
+ * @example
+ * const depositNonce = 42 // get your depositNonce from deposit event
+ * const bridgeInstance = Bridge__factory.connect(...) // your bridge contract instance from sygma-contracts
+ * createProposalExecutionEventListener(
+ *  depositNonce,
+ *  bridgeInstance,
+ *  (originDomainId, depositNonce, dataHash, tx) => {
+ *    console.log(
+ *      "execution events callback",
+ *      originDomainId,
+ *      depositNonce,
+ *      dataHash,
+ *      tx
+ *    );
+ *  }
+ *);
  *
  * @param {number} homeDepositNonce - The deposit nonce of the home chain.
  * @param {Bridge} bridge - The Bridge Contract instance to listen to.

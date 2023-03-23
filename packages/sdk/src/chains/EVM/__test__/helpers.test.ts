@@ -1,5 +1,13 @@
 import { BigNumber, utils } from 'ethers';
-import { constructMainDepositData, constructDepositDataEvmSubstrate } from '../helpers';
+import {
+  constructMainDepositData,
+  constructDepositDataEvmSubstrate,
+  toHex,
+  addPadding,
+  createResourceID,
+  createERCDepositData,
+} from '../helpers';
+import * as helpers from '../helpers';
 
 describe('constructMainDepositData', () => {
   it('should return the correct data', () => {
@@ -42,5 +50,102 @@ describe('constructDepositDataEvmSubstrate', () => {
     expect(utils.arrayify).toHaveBeenCalledWith(recipientAddress);
     expect(utils.hexlify).toHaveBeenCalledWith(expectedBytesArr);
     expect(depositData).toEqual(expectedDepositData);
+  });
+});
+
+describe('toHex', () => {
+  test('should convert string to hex', () => {
+    const result = toHex('1234', 6);
+    expect(result).toBe('0x0000000004d2');
+  });
+
+  test('should convert number to hex', () => {
+    const result = toHex(5678, 8);
+    expect(result).toBe('0x000000000000162e');
+  });
+
+  test('should convert BigNumber to hex', () => {
+    const num = BigNumber.from('900000000000000000000000');
+    const result = toHex(num, 32);
+    expect(result).toBe('0x00000000000000000000000000000000000000000000be951906eba2aa800000');
+  });
+});
+
+describe('addPadding', () => {
+  it('should pads a string with zeros', () => {
+    const input = 'abc';
+    const padding = 10;
+    const expectedOutput = '0x00000000000000000abc';
+    const actualOutput = addPadding(input, padding);
+    expect(actualOutput).toEqual(expectedOutput);
+  });
+
+  it('should pads a number with zeros', () => {
+    const input = 123;
+    const padding = 4;
+    const expectedOutput = '0x00000123';
+    const actualOutput = addPadding(input, padding);
+    expect(actualOutput).toEqual(expectedOutput);
+  });
+
+  it('should passes the correct arguments to hexZeroPad', () => {
+    jest.spyOn(utils, 'hexZeroPad');
+    const input = 42;
+    const padding = 4;
+    addPadding(input, padding);
+    expect(utils.hexZeroPad).toHaveBeenCalledWith('0x42', padding);
+  });
+});
+
+describe('createResourceID', () => {
+  it('should return correct Resource ID when contractAddress and domainID are provided', () => {
+    const contractAddress = '0x42Da3Ba8c586F6fe9eF6ed1d09423eB73E4fe25b';
+    const domainID = 1;
+    const resourceID = createResourceID(contractAddress, domainID);
+    expect(resourceID).toEqual(
+      '0x000000000000000000000042Da3Ba8c586F6fe9eF6ed1d09423eB73E4fe25b01',
+    );
+  });
+
+  it('should throw error because of value greater then uin8', () => {
+    const contractAddress = '0x42Da3Ba8c586F6fe9eF6ed1d09423eB73E4fe25b';
+    const domainID = 1000000;
+    expect(() => {
+      createResourceID(contractAddress, domainID);
+    }).toThrowError('domainId should be uint8 comaptible');
+  });
+
+  it('should throw error because of value lesser then uin8', () => {
+    const contractAddress = '0x42Da3Ba8c586F6fe9eF6ed1d09423eB73E4fe25b';
+    const domainID = '-1';
+    expect(() => {
+      createResourceID(contractAddress, domainID);
+    }).toThrowError('domainId should be uint8 comaptible');
+  });
+
+  it('should return correct Resource ID when contractAddress is an empty string', () => {
+    const contractAddress = '';
+    const domainID = '100';
+    const resourceID = createResourceID(contractAddress, domainID);
+    expect(resourceID).toEqual(
+      '0x0000000000000000000000000000000000000000000000000000000000000040',
+    );
+  });
+});
+
+describe('createERCDepositData', () => {
+  it('should create the correct deposit data for the given input', () => {
+    const tokenAmountOrID = BigNumber.from('12345');
+    const lenRecipientAddress = 20;
+    const recipientAddress = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
+
+    const toHexMock = jest.spyOn(helpers, 'toHex').mockImplementation(() => {
+      return '0x0123';
+    });
+
+    const result = createERCDepositData(tokenAmountOrID, lenRecipientAddress, recipientAddress);
+    expect(result).toBe('0x01230123742d35Cc6634C0532925a3b844Bc454e4438f44e');
+
+    toHexMock.mockRestore();
   });
 });

@@ -139,3 +139,20 @@ describe('createDepositEventListener', () => {
     );
   });
 });
+
+
+describe('removeDepositEventListener', () => {
+  it('should remove all listeners for a given proposal filter', () => {
+    const Deposit = jest.fn().mockReturnValue('deposit');
+    const removeAllListeners = jest.fn();
+    const bridge = {
+      filters: { Deposit },
+      removeAllListeners,
+    } as unknown as Bridge;
+
+    removeDepositEventListener(bridge);
+
+    expect(Deposit).toHaveBeenCalledWith(null, null, null, null, null, null);
+    expect(removeAllListeners).toHaveBeenCalledWith('deposit');
+  });
+});
