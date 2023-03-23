@@ -99,7 +99,7 @@ describe('deposit functions', () => {
       bridgeInstance.deposit = jest.fn().mockRejectedValueOnce(new Error('Deposit failed'));
 
       // Mock console.log to prevent logging in tests
-      const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
+      const consoleLogSpy = jest.spyOn(console, 'error').mockImplementation();
 
       await expect(
         EVM.executeDeposit(
