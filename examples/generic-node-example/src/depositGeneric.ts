@@ -1,12 +1,13 @@
 import { BigNumber, ContractInterface, ethers } from "ethers";
 import Chalk from "chalk";
 import dotenv from "dotenv";
-import { FeeDataResult } from "@buildwithsygma/sygma-sdk-core";
+import { FeeDataResult, Sygma } from "@buildwithsygma/sygma-sdk-core";
 import ColorsAddress from "./colors.json";
 import { abi as ColorsABI } from "./abis/colors-abi.json";
 import { decodeColor } from "./abis/decodeColor";
 import { setupSygma } from "./sygmaInstance";
 import { bridgeAdmin } from "./bridgeSetup";
+import { Colors } from "./types/Colors";
 
 void dotenv.config();
 
@@ -24,23 +25,25 @@ const depositGeneric = async (): Promise<void> => {
   const colorContractNode1 = new ethers.Contract(
     ColorsAddress.colorsAddressNode1,
     ColorsABI as ContractInterface
-  );
+  ) as Colors;
 
   const colorContractNode2 = new ethers.Contract(
     ColorsAddress.colorsAddressNode2,
     ColorsABI as ContractInterface
-  );
+  ) as Colors;
 
   // Here we prepare to listen on destination chain
   const signerDestinationChain = providerNode2.getSigner(account);
 
-  const filters = colorContractNode2
-    .connect(signerDestinationChain)
-    .filters.setColorEvent();
+  const connectedColorsNode2 = colorContractNode2.connect(
+    signerDestinationChain
+  );
+
+  const filters = connectedColorsNode2.filters["setColorEvent(bytes32)"];
 
   let counter = 0;
 
-  const listener = (color: string, ...rest: any): void => {
+  const listener = (color: string): void => {
     const colorDecoded = decodeColor(color);
     counter += 1;
     console.log(
@@ -56,11 +59,13 @@ const depositGeneric = async (): Promise<void> => {
     }
   };
 
-  colorContractNode2.connect(signerDestinationChain).on(filters, listener);
+  const connectedColors = colorContractNode2.connect(signerDestinationChain);
 
-  const colorArrayLength = (await colorContractNode1
+  connectedColors.on(filters, listener);
+
+  const colorArrayLength = await colorContractNode1
     .connect(signer)
-    .getColorsArrayLenght()) as BigNumber;
+    .getColorsArrayLenght();
 
   let depositDataArray: Array<{ color: string; depositData: string }>;
 
@@ -72,9 +77,7 @@ const depositGeneric = async (): Promise<void> => {
     const colors = [];
 
     for await (const k of iterable) {
-      const color = (await colorContractNode1
-        .connect(signer)
-        .colorsArray(k)) as string;
+      const color = await colorContractNode1.connect(signer).colorsArray(k);
 
       const colorDecoded = decodeColor(color);
       console.log(
@@ -90,9 +93,9 @@ const depositGeneric = async (): Promise<void> => {
     const permissionlessGenericHandlerResourceID =
       "0x0000000000000000000000000000000000000000000000000000000000000500";
 
-    const sygmaConnected = setupSygma(account);
+    const sygmaConnected = setupSygma(account) as unknown;
 
-    const basicFeeData = await sygmaConnected.fetchBasicFeeData({
+    const basicFeeData = await (sygmaConnected as Sygma).fetchBasicFeeData({
       amount: "1000000",
       recipientAddress: bridgeAdmin,
     });
