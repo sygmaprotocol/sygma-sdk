@@ -198,7 +198,7 @@ export const executeDeposit = async (
     const depositAction = await tx.wait(confirmations);
     return depositAction;
   } catch (error) {
-    console.log('Error on executeDeposit', error);
+    console.error('Error on executeDeposit', error);
     return Promise.reject(error);
   }
 };

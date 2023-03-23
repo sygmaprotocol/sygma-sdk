@@ -24,7 +24,7 @@ export const getApproved = async (
     const isApproved = approvedAddress === handlerAddress;
     return isApproved;
   } catch (error) {
-    console.log('Error on checkCurrentAllowanceOfErc20', error);
+    console.error('Error on checkCurrentAllowanceOfErc20', error);
     return Promise.reject(error);
   }
 };
@@ -52,7 +52,7 @@ export const checkCurrentAllowanceOfErc20 = async (
 
     return Number(utils.formatUnits(currentAllowance, 18));
   } catch (error) {
-    console.log('Error on checkCurrentAllowanceOfErc20', error);
+    console.error('Error on checkCurrentAllowanceOfErc20', error);
     return Promise.reject(error);
   }
 };
@@ -80,7 +80,7 @@ export const approve = async (
     const approvalAction = await tx.wait(confirmations);
     return approvalAction;
   } catch (error) {
-    console.log('Error on approve', error);
+    console.error('Error on approve', error);
     return Promise.reject(error);
   }
 };
