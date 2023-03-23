@@ -71,11 +71,11 @@ describe('deposit functions', () => {
   describe('executeDeposit', () => {
     it('should successfully execute deposit', async () => {
       // Mock the required functions
-      bridgeInstance = {
+      const bridgeInstance = {
         deposit: jest.fn().mockResolvedValueOnce({
           wait: jest.fn().mockResolvedValueOnce({} as ContractReceipt),
         }),
-      } as unknown as Bridge;
+      };
 
       // Call the function and test the result
       const result = await EVM.executeDeposit(
@@ -83,14 +83,13 @@ describe('deposit functions', () => {
         resourceId,
         depositData,
         feeData,
-        bridgeInstance,
+        bridgeInstance as unknown as Bridge,
         confirmations,
         provider,
         overrides,
       );
 
       expect(result).toBeDefined();
-      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(bridgeInstance.deposit).toHaveBeenCalledTimes(1);
     });
 

@@ -67,7 +67,6 @@ describe('checkCurrentAllowanceOfErc20', () => {
   });
 
   it('should throw an error on failure', async () => {
-    // set up mock for a failed allowance query
     const mockError = new Error('Could not retrieve allowance');
     erc20Instance = {
       allowance: jest.fn().mockRejectedValue(mockError),
@@ -108,6 +107,6 @@ describe('approve', () => {
     } as unknown as ERC20;
     await expect(
       approve(amountOrIdForApproval, tokenInstance, handlerAddress, confirmations, overrides),
-    ).rejects.toThrow();
+    ).rejects.toThrowError('NO');
   });
 });
