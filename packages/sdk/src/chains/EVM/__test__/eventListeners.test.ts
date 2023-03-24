@@ -178,9 +178,4 @@ describe('getProviderByRpcUrl', () => {
     const provider = getProviderByRpcUrl(rpcURL);
     expect(provider).toBeInstanceOf(ethers.providers.JsonRpcProvider);
   });
-
-  // it('should return a provider with the correct RPC URL', () => {
-  //   const provider = getProviderByRpcUrl(rpcURL);
-  //   expect(provider.connection.url).toBe(rpcURL);
-  // });
 });
