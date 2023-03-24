@@ -97,6 +97,17 @@ export const connectToBridge = (
 };
 
 /**
+ * Creates a new JsonRpcProvider instance based on the given RPC URL
+ *
+ * @param {string} rpcURL - The RPC URL to use for the provider
+ * @returns {ethers.providers.JsonRpcProvider} A new JsonRpcProvider instance
+ */
+export const getProviderByRpcUrl = (rpcURL: string): ethers.providers.JsonRpcProvider => {
+  const provider = new ethers.providers.JsonRpcProvider(rpcURL);
+  return provider;
+};
+
+/**
  * Creates an event listener for deposit events on the specified Bridge contract.
  *
  * @example

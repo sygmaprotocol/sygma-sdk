@@ -8,6 +8,7 @@ import {
   connectToBridge,
   createDepositEventListener,
   removeDepositEventListener,
+  getProviderByRpcUrl,
 } from '../utils/eventListeners';
 
 describe('createProposalExecutionEventListener', () => {
@@ -168,4 +169,18 @@ describe('removeDepositEventListener', () => {
     expect(Deposit).toHaveBeenCalledWith(null, null, null, null, null, null);
     expect(removeAllListeners).toHaveBeenCalledWith('deposit');
   });
+});
+
+describe('getProviderByRpcUrl', () => {
+  const rpcURL = 'https://rpc.example.com'; // Replace with your desired RPC URL
+
+  it('should return a new instance of JsonRpcProvider', () => {
+    const provider = getProviderByRpcUrl(rpcURL);
+    expect(provider).toBeInstanceOf(ethers.providers.JsonRpcProvider);
+  });
+
+  // it('should return a provider with the correct RPC URL', () => {
+  //   const provider = getProviderByRpcUrl(rpcURL);
+  //   expect(provider.connection.url).toBe(rpcURL);
+  // });
 });
