@@ -11,14 +11,12 @@ type OracleResponse = {
 };
 
 /**
- * @name createOracleFeeData
- * @description creates the fee data to send
- * @param oracleResponse - OracleResource object
- * @param amount - amount to send
- * @param tokenResource - the resource Id of the token
- * @returns {string} - hex of the fee data constructed
+ * Creates feeData structure with the following parameters.
+ *
+ * @param {object} oracleResponse - Response received from the Oracle resource.
+ * @param {string} amount - Amount in string format.
+ * @returns {string} - Returns the oracleMessage, signature and amount.
  */
-
 export const createOracleFeeData = (oracleResponse: OracleResource, amount: string): string => {
   /*
         feeData structure:
@@ -124,10 +122,15 @@ export const calculateFeeData = async ({
 };
 
 /**
- * @name requestFeeFromFeeOracle
- * @description query the FeeOracle service to get the fee
- * @param {Object}
- * @returns {Promise<OracleResponse | undefined>}
+ * Fetches oracle resource data from the FeeOracle service.
+
+ * @param {Object} options - The options for the request.
+ * @param {string} options.feeOracleBaseUrl - The base URL for the FeeOracle service.
+ * @param {number} options.fromDomainID - The domain ID of the sending domain.
+ * @param {number} options.toDomainID - The domain ID of the receiving domain.
+ * @param {string} options.resourceID - The ID of the requested resource.
+ * @param {number} [options.msgGasLimit=0] - The gas limit for the message (optional, defaults to 0).
+ * @return {Promise<OracleResource>} - A Promise that resolves to the OracleResource data, or undefined if it is not available.
  */
 export const requestFeeFromFeeOracle = async ({
   feeOracleBaseUrl,
@@ -141,7 +144,7 @@ export const requestFeeFromFeeOracle = async ({
   toDomainID: number;
   resourceID: string;
   msgGasLimit?: number;
-}): Promise<OracleResource | undefined> => {
+}): Promise<OracleResource> => {
   try {
     const response = await fetch(
       `${feeOracleBaseUrl}/v1/rate/from/${fromDomainID}/to/${toDomainID}/resourceid/${resourceID}?gasLimit=${msgGasLimit}`,
@@ -158,10 +161,14 @@ export const requestFeeFromFeeOracle = async ({
     if (data.error) {
       throw new Error(data.error);
     }
-    if (data.response) {
-      return data.response;
+
+    if (!data.response) {
+      throw new Error('Empty response data from fee oracle service');
     }
+
+    return data.response;
   } catch (e) {
+    console.error('Request to FeeOracle service failed');
     return Promise.reject(e);
   }
 };

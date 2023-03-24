@@ -4,10 +4,23 @@ import { FeeDataResult } from '../../../types';
 import { constructDepositDataEvmSubstrate } from '../../../utils/helpers';
 
 /**
- * @name calculateBasicfee
- * @description calculates and returns the feeData object after query the FeeOracle service
+ * Calculates and returns the feeData object after query the FeeOracle service
+ *
+ * @example
+ * const basicFeeData = await calculateBasicfee({
+ *   basicFeeHandlerAddress: '0x1234...',
+ *   provider: new ethers.providers.JsonRpcProvider('https://mainnet.infura.io/v3/YOUR-PROJECT-ID'),
+ *   sender: '0x5678...',
+ *   fromDomainID: '1',
+ *   toDomainID: '2',
+ *   resourceID: '0x00000...0001',
+ *   tokenAmount: '100',
+ *   recipientAddress: '0xdef0...',
+ * });
+ * console.log(basicFeeData);
+ *
  * @param {Object} - Object to get the fee data
- * @returns {Promise<FeeDataResult | Error>}
+ * @returns {Promise<FeeDataResult>}
  */
 export const calculateBasicfee = async ({
   basicFeeHandlerAddress,
@@ -27,7 +40,7 @@ export const calculateBasicfee = async ({
   resourceID: string;
   tokenAmount: string;
   recipientAddress: string;
-}): Promise<FeeDataResult | Error> => {
+}): Promise<FeeDataResult> => {
   const depositData = constructDepositDataEvmSubstrate(tokenAmount, recipientAddress);
   // WHY 0X00 AND NOT 0X0?
   const feeData = '0x00';
@@ -53,7 +66,7 @@ export const calculateBasicfee = async ({
       type: 'basic',
     };
   } catch (error) {
-    console.error(error);
-    return Promise.reject(new Error('Invalidad basic fee response'));
+    console.error('Invalidad basic fee response');
+    return Promise.reject(error);
   }
 };
