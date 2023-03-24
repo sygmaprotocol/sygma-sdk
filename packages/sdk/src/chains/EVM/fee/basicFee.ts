@@ -1,7 +1,7 @@
 import { BasicFeeHandler__factory as BasicFeeHandler } from '@buildwithsygma/sygma-contracts';
 import { ethers } from 'ethers';
-import { FeeDataResult } from '../types';
-import { constructDepositDataEvmSubstrate } from '../utils/helpers';
+import { FeeDataResult } from '../../../types';
+import { constructDepositDataEvmSubstrate } from '../../../utils/helpers';
 
 /**
  * @name calculateBasicfee

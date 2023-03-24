@@ -2,8 +2,8 @@ import { DynamicERC20FeeHandlerEVM__factory } from '@buildwithsygma/sygma-contra
 import { ethers } from 'ethers';
 import fetch from 'cross-fetch';
 
-import { OracleResource, FeeDataResult } from '../types';
-import { toHex, constructDepositDataEvmSubstrate } from '../utils/helpers';
+import { OracleResource, FeeDataResult } from '../../../types';
+import { toHex, constructDepositDataEvmSubstrate } from '../../../utils/helpers';
 
 type OracleResponse = {
   error?: string;
