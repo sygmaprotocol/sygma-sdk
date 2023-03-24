@@ -98,7 +98,7 @@ export const calculateFeeData = async ({
   } catch (e) {
     return Promise.reject(e);
   }
-  const feeData = createOracleFeeData(oracleResponse as OracleResource, tokenAmount);
+  const feeData = createOracleFeeData(oracleResponse, tokenAmount);
   const FeeHandlerWithOracleInstance = DynamicERC20FeeHandlerEVM__factory.connect(
     feeOracleHandlerAddress,
     provider,
