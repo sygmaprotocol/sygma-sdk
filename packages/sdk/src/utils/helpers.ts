@@ -1,5 +1,7 @@
 import { utils, BigNumber } from 'ethers';
-import { decodeAddress } from '@polkadot/util-crypto';
+import { TypeRegistry } from '@polkadot/types/create';
+
+const registry = new TypeRegistry();
 
 /**
  * @name toHex
@@ -94,16 +96,30 @@ export const constructMainDepositData = (
 export const constructDepositDataEvmSubstrate = (
   tokenAmount: string,
   recipientAddress: string,
-  decimals: number = 18,
+  decimals = 18,
 ): string => {
   const convertedAmount = utils.parseUnits(tokenAmount, decimals);
-  // convert to bytes array
-  const recipientAddressInBytes = utils.isAddress(recipientAddress)
-    ? utils.arrayify(recipientAddress)
-    : decodeAddress(recipientAddress);
+  const recipientAddressInBytes = getRecipientAddressInBytes(recipientAddress);
   const depositDataBytes = constructMainDepositData(convertedAmount, recipientAddressInBytes);
   const depositData = utils.hexlify(depositDataBytes);
+
   return depositData;
+};
+
+/**
+ * Converts a recipient address to a Uint8Array of bytes.
+ *
+ * @param recipientAddress - The recipient address, either as a string (EVM address) or a JSON object (Substrate multilocation).
+ * @returns The recipient address as a Uint8Array of bytes
+ */
+const getRecipientAddressInBytes = (recipientAddress: string): Uint8Array => {
+  if (utils.isAddress(recipientAddress)) {
+    // EVM address
+    return utils.arrayify(recipientAddress);
+  }
+
+  // Substrate multilocation
+  return registry.createType('MultiLocation', JSON.parse(recipientAddress)).toU8a();
 };
 
 /**
