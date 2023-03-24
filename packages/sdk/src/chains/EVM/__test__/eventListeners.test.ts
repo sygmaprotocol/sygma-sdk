@@ -111,17 +111,31 @@ describe('createDepositEventListener', () => {
   it('should call the callback function with the correct arguments', () => {
     const bridge = {
       filters: { Deposit: jest.fn() },
-      once: jest.fn().mockImplementation((filter, callback) =>
-        void callback(
-          1,
-          'mockedResourceId',
-          BigNumber.from(1),
-          'mockedUser',
-          'mockedData',
-          'mockedHandleResponse',
-          'mockedTx',
+      once: jest
+        .fn()
+        .mockImplementation(
+          (
+            filter,
+            callback: (
+              destinationDomainId: number,
+              resourceId: string,
+              depositNonce: BigNumber,
+              user: string,
+              data: string,
+              handleResponse: string,
+              tx: string,
+            ) => void,
+          ) =>
+            void callback(
+              1,
+              'mockedResourceId',
+              BigNumber.from(1),
+              'mockedUser',
+              'mockedData',
+              'mockedHandleResponse',
+              'mockedTx',
+            ),
         ),
-      ),
     } as unknown as Bridge;
     const userAddress = '0x1234';
     const callbackFn = jest.fn();
@@ -139,7 +153,6 @@ describe('createDepositEventListener', () => {
     );
   });
 });
-
 
 describe('removeDepositEventListener', () => {
   it('should remove all listeners for a given proposal filter', () => {
