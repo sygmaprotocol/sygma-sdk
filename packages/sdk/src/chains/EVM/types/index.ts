@@ -54,7 +54,7 @@ export type ProcessTokenTranferBridgeConfigParamsType = {
 /**
  *  The information needed for processing the token transfer deposit.
  */
-export type ProcessTokenTranferDepositParamsType = {
+export type TokenDeposit  = {
   /** The amount of tokens to transfer or tokenId for ERC721 token, depending on the use case. */
   amountOrId: string;
   /** The unique identifier for the resource being transferred. */
