@@ -59,12 +59,37 @@ export const createOracleFeeData = (oracleResponse: OracleResource, amount: stri
 };
 
 /**
- * @name calculatedFeeData
- * @description calculates the fee data after query the FeeOracle service
- * @param {Object} - object provided to calculate the fee data after query oracle service
- * @returns {Promise<FeeDataResult | undefined>}
+ * Calculates the dynamic fee for a transaction using the provided parameters and the Fee Oracle.
+ *
+ * @example
+ * // Example usage:
+ * const provider = new ethers.providers.JsonRpcProvider();
+ * const result = await calculateDynamicFee({
+ *   provider,
+ *   sender: '0x123...',
+ *   recipientAddress: '0x456...',
+ *   fromDomainID: 1,
+ *   toDomainID: 2,
+ *   resourceID: 'resource-id',
+ *   tokenAmount: '1000',
+ *   feeOracleBaseUrl: 'https://fee-oracle.example.com/',
+ *   feeOracleHandlerAddress: '0x789...',
+ * });
+ * console.log(result);
+ *
+ * @param {Object} options - An object containing the following properties:
+ * @param {ethers.providers.Provider} options.provider - The ethers provider to use.
+ * @param {string} options.sender - The address of the sender.
+ * @param {string} options.recipientAddress - The address of the recipient.
+ * @param {number} options.fromDomainID - The domainId of the home network
+ * @param {number} options.toDomainID - The domainId of the destination network
+ * @param {string} options.resourceID - The resourceId of the token/asset
+ * @param {string} options.tokenAmount - The amount of tokens being transferred.
+ * @param {string} options.feeOracleBaseUrl - The base URL of the Fee Oracle.
+ * @param {string} options.dynamicERC20FeeHandlerAddress - The address of dynamic fee handler
+ * @returns {Promise<FeeDataResult>} The result of the calculation, containing the fee, calculated rate, ERC20 token address, fee data, and type.
  */
-export const calculateFeeData = async ({
+export const calculateDynamicFee = async ({
   provider,
   sender,
   recipientAddress,
@@ -73,7 +98,7 @@ export const calculateFeeData = async ({
   resourceID,
   tokenAmount,
   feeOracleBaseUrl,
-  feeOracleHandlerAddress,
+  dynamicERC20FeeHandlerAddress,
 }: {
   provider: ethers.providers.Provider;
   sender: string;
@@ -83,8 +108,8 @@ export const calculateFeeData = async ({
   resourceID: string;
   tokenAmount: string;
   feeOracleBaseUrl: string;
-  feeOracleHandlerAddress: string;
-}): Promise<FeeDataResult | undefined> => {
+  dynamicERC20FeeHandlerAddress: string;
+}): Promise<FeeDataResult> => {
   const depositData = constructDepositDataEvmSubstrate(tokenAmount, recipientAddress);
 
   let oracleResponse;
@@ -100,7 +125,7 @@ export const calculateFeeData = async ({
   }
   const feeData = createOracleFeeData(oracleResponse, tokenAmount);
   const FeeHandlerWithOracleInstance = DynamicERC20FeeHandlerEVM__factory.connect(
-    feeOracleHandlerAddress,
+    dynamicERC20FeeHandlerAddress,
     provider,
   );
   const res = await FeeHandlerWithOracleInstance.calculateFee(
@@ -123,7 +148,7 @@ export const calculateFeeData = async ({
 
 /**
  * Fetches oracle resource data from the FeeOracle service.
-
+ *
  * @param {Object} options - The options for the request.
  * @param {string} options.feeOracleBaseUrl - The base URL for the FeeOracle service.
  * @param {number} options.fromDomainID - The domain ID of the sending domain.

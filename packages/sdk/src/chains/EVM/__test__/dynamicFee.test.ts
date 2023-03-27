@@ -1,6 +1,10 @@
 import { BigNumber, ethers } from 'ethers';
 import fetch from 'cross-fetch';
-import { requestFeeFromFeeOracle, createOracleFeeData, calculateFeeData } from '../fee/feeOracle';
+import {
+  requestFeeFromFeeOracle,
+  createOracleFeeData,
+  calculateDynamicFee,
+} from '../fee/dynamicFee';
 
 jest.mock('cross-fetch');
 const { Response } = jest.requireActual<typeof import('cross-fetch')>('cross-fetch');
@@ -110,7 +114,7 @@ describe('feeOracle', () => {
       );
 
       const provider = new ethers.providers.JsonRpcProvider();
-      const feeData = await calculateFeeData({
+      const feeData = await calculateDynamicFee({
         provider,
         sender: ethers.constants.AddressZero,
         recipientAddress: '0x74d2946319bEEe4A140068eb83F9ee3a90B06F4f',
@@ -119,7 +123,7 @@ describe('feeOracle', () => {
         resourceID: '0x0000000000000000000000000000000000000000000000000000000000000001',
         tokenAmount: '100',
         feeOracleBaseUrl: 'http://localhost:8091',
-        feeOracleHandlerAddress: '0xa9ddD97e1762920679f3C20ec779D79a81903c0B',
+        dynamicERC20FeeHandlerAddress: '0xa9ddD97e1762920679f3C20ec779D79a81903c0B',
       });
       expect(feeData?.feeData).toContain(oracleResponse.response.signature);
       expect(feeData).toMatchObject({
@@ -134,7 +138,7 @@ describe('feeOracle', () => {
       (fetch as jest.MockedFunction<typeof fetch>).mockRejectedValue('Err');
       try {
         const provider = new ethers.providers.JsonRpcProvider();
-        await calculateFeeData({
+        await calculateDynamicFee({
           provider,
           sender: ethers.constants.AddressZero,
           recipientAddress: '0x74d2946319bEEe4A140068eb83F9ee3a90B06F4f',
@@ -143,7 +147,7 @@ describe('feeOracle', () => {
           resourceID: '0x0000000000000000000000000000000000000000000000000000000000000001',
           tokenAmount: '100',
           feeOracleBaseUrl: 'http://localhost:8091',
-          feeOracleHandlerAddress: '0xa9ddD97e1762920679f3C20ec779D79a81903c0B',
+          dynamicERC20FeeHandlerAddress: '0xa9ddD97e1762920679f3C20ec779D79a81903c0B',
         });
       } catch (e) {
         expect(e).toMatch('Err');
@@ -156,7 +160,7 @@ describe('feeOracle', () => {
       );
       const provider = new ethers.providers.JsonRpcProvider();
       await expect(
-        calculateFeeData({
+        calculateDynamicFee({
           provider,
           sender: ethers.constants.AddressZero,
           recipientAddress: '0x74d2946319bEEe4A140068eb83F9ee3a90B06F4f',
@@ -165,7 +169,7 @@ describe('feeOracle', () => {
           resourceID: '0x0000000000000000000000000000000000000000000000000000000000000001',
           tokenAmount: '100',
           feeOracleBaseUrl: 'http://localhost:8091',
-          feeOracleHandlerAddress: '0xa9ddD97e1762920679f3C20ec779D79a81903c0B',
+          dynamicERC20FeeHandlerAddress: '0xa9ddD97e1762920679f3C20ec779D79a81903c0B',
         }),
       ).rejects.toThrowError('Empty response data from fee oracle service');
     });
