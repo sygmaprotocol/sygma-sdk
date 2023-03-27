@@ -19,6 +19,7 @@ const bridgeSetup: BridgeData = {
     erc20HandlerAddress: erc20HandlerAddress,
     erc721HandlerAddress: erc721HandlerAddress,
     rpcUrl: "http://localhost:8545",
+    type: "Ethereum",
     tokens: [
       {
         type: "erc20",
@@ -45,6 +46,7 @@ const bridgeSetup: BridgeData = {
     erc20HandlerAddress: "0x1ED1d77911944622FCcDDEad8A731fd77E94173e",
     erc721HandlerAddress: "0x481f97f9C82a971B3844a422936a4d3c4082bF84",
     rpcUrl: "http://localhost:8547",
+    type: "Ethereum",
     tokens: [
       {
         type: "erc20",

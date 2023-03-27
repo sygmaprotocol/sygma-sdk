@@ -1,7 +1,7 @@
-import { BigNumber, ContractInterface, ethers } from "ethers";
+import { ContractInterface, ethers } from "ethers";
 import Chalk from "chalk";
 import dotenv from "dotenv";
-import { FeeDataResult, Sygma } from "@buildwithsygma/sygma-sdk-core";
+import { FeeDataResult } from "@buildwithsygma/sygma-sdk-core";
 import ColorsAddress from "./colors.json";
 import { abi as ColorsABI } from "./abis/colors-abi.json";
 import { decodeColor } from "./abis/decodeColor";
@@ -27,6 +27,8 @@ const depositGeneric = async (): Promise<void> => {
     ColorsAddress.colorsAddressNode1,
     ColorsABI as ContractInterface
   ) as Colors;
+
+  // const colorContractNode1 = Colors__factory.connect(ColorsAddress.colorsAddressNode1, signerDestinationChain)
 
   const colorContractNode2 = new ethers.Contract(
     ColorsAddress.colorsAddressNode2,
@@ -95,9 +97,9 @@ const depositGeneric = async (): Promise<void> => {
     const permissionlessGenericHandlerResourceID =
       "0x0000000000000000000000000000000000000000000000000000000000000500";
 
-    const sygmaConnected = setupSygma(account) as unknown;
+    const sygmaConnected = setupSygma(account);
 
-    const basicFeeData = await (sygmaConnected as Sygma).fetchBasicFeeData({
+    const basicFeeData = await sygmaConnected.fetchBasicFeeData({
       amount: "1000000",
       recipientAddress: bridgeAdmin,
     });
