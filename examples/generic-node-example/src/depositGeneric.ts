@@ -28,8 +28,6 @@ const depositGeneric = async (): Promise<void> => {
     ColorsABI as ContractInterface
   ) as Colors;
 
-  // const colorContractNode1 = Colors__factory.connect(ColorsAddress.colorsAddressNode1, signerDestinationChain)
-
   const colorContractNode2 = new ethers.Contract(
     ColorsAddress.colorsAddressNode2,
     ColorsABI as ContractInterface
@@ -80,8 +78,10 @@ const depositGeneric = async (): Promise<void> => {
 
     const colors = [];
 
-    for await (const k of iterable) {
-      const color = await colorContractNode1.connect(signer).colorsArray(k);
+    for await (const virtualColorPosition of iterable) {
+      const color = await colorContractNode1
+        .connect(signer)
+        .colorsArray(virtualColorPosition);
 
       const colorDecoded = decodeColor(color);
       console.log(
