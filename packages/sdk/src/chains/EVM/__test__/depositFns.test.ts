@@ -6,7 +6,7 @@ import {
 
 import { FeeDataResult } from 'types';
 import { ethers, providers, ContractReceipt, BigNumber } from 'ethers';
-import { ProcessTokenTranferParamsType } from '../types';
+import { TokenTransfer } from '../types';
 import * as EVM from '../utils/depositFns';
 
 jest.mock('../helpers', () => {
@@ -18,8 +18,8 @@ jest.mock('../helpers', () => {
   };
 });
 jest.mock('../utils/approvesAndChecksFns', () => ({
-  checkCurrentAllowanceOfErc20: jest.fn().mockResolvedValue(123),
-  getApproved: jest.fn().mockResolvedValue(true),
+  getERC20Allowance: jest.fn().mockResolvedValue(123),
+  isApproved: jest.fn().mockResolvedValue(true),
 }));
 
 jest.mock(
@@ -238,7 +238,7 @@ describe('deposit functions', () => {
           },
           provider,
           overrides,
-        } as unknown as ProcessTokenTranferParamsType),
+        } as unknown as TokenTransfer),
       ).rejects.toThrowError(`Can't find in networkConfig token with resourceID: 123`);
     });
 
@@ -256,7 +256,7 @@ describe('deposit functions', () => {
         },
         provider,
         overrides,
-      } as unknown as ProcessTokenTranferParamsType);
+      } as unknown as TokenTransfer);
 
       expect(receipt).toMatchObject({ blockHash: '0x01' });
     });
@@ -275,7 +275,7 @@ describe('deposit functions', () => {
         },
         provider: new ethers.providers.JsonRpcProvider(),
         overrides: { gasLimit: 100000 },
-      } as unknown as ProcessTokenTranferParamsType);
+      } as unknown as TokenTransfer);
 
       expect(receipt).toMatchObject({ blockHash: '0x01' });
     });

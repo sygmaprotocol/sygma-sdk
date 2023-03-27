@@ -6,7 +6,7 @@ import { ERC20, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts
  *
  * @example
  * // Assuming you have a valid tokenId, an ERC721 token instance (tokenInstance), and a handler address (handlerAddress)
- * const isApproved = await getApproved(tokenId, tokenInstance, handlerAddress);
+ * const tokenApproved = await isApproved(tokenId, tokenInstance, handlerAddress);
  * console.log(`Token approval status for ${tokenID}:`, isApproved);
  *
  * @param {number} tokenId - The TokenId of the token to be checked.
@@ -34,7 +34,7 @@ export const isApproved = async (
  *
  * @example
  * // Assuming you have a valid sender address, an ERC20 token instance (erc20Instance), and a handler address (erc20HandlerAddress)
- * const currentAllowance = await checkCurrentAllowanceOfErc20(senderAddress, erc20Instance, erc20HandlerAddress);
+ * const currentAllowance = await getERC20Allowance(senderAddress, erc20Instance, erc20HandlerAddress);
  * console.log('Current allowance:', currentAllowance);
  *
  * @param {string} senderAddress - The address of the token sender.
@@ -52,7 +52,7 @@ export const getERC20Allowance = async (
 
     return Number(utils.formatUnits(currentAllowance, 18));
   } catch (error) {
-    console.error('Error on checkCurrentAllowanceOfErc20', error);
+    console.error('Error on getERC20Allowance', error);
     return Promise.reject(error);
   }
 };

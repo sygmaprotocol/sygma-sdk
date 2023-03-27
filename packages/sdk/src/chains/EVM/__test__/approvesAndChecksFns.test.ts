@@ -1,6 +1,6 @@
 import { ERC721MinterBurnerPauser, ERC20 } from '@buildwithsygma/sygma-contracts';
 import { ContractReceipt, ethers, BigNumber } from 'ethers';
-import { getApproved, checkCurrentAllowanceOfErc20, approve } from '../utils/approvesAndChecksFns';
+import { isApproved, getERC20Allowance, approve } from '../utils/approvesAndChecksFns';
 
 describe('getApproved Function Tests', () => {
   it('should determine whether the specified token is approved for the provided handler address', async () => {
@@ -10,8 +10,8 @@ describe('getApproved Function Tests', () => {
     } as unknown as ERC721MinterBurnerPauser;
     const handlerAddress = '0x1234567890123456789012345678901234567890';
 
-    const isApproved = await getApproved(tokenId, tokenInstance, handlerAddress);
-    expect(isApproved).toBeTruthy();
+    const approved = await isApproved(tokenId, tokenInstance, handlerAddress);
+    expect(approved).toBeTruthy();
   });
 
   it('should thrown error', async () => {
@@ -21,7 +21,7 @@ describe('getApproved Function Tests', () => {
     } as unknown as ERC721MinterBurnerPauser;
     const handlerAddress = '0x1234567890123456789012345678901234567890';
 
-    await expect(getApproved(tokenId, tokenInstance, handlerAddress)).rejects.toThrowError(
+    await expect(isApproved(tokenId, tokenInstance, handlerAddress)).rejects.toThrowError(
       'Sick error',
     );
   });
@@ -44,11 +44,7 @@ describe('checkCurrentAllowanceOfErc20', () => {
       allowance: jest.fn().mockResolvedValue(mockAllowance),
     } as unknown as ERC20;
 
-    const result = await checkCurrentAllowanceOfErc20(
-      senderAddress,
-      erc20Instance,
-      erc20HandlerAddress,
-    );
+    const result = await getERC20Allowance(senderAddress, erc20Instance, erc20HandlerAddress);
     expect(result.toString()).toEqual('6.5536e-14');
   });
 
@@ -58,11 +54,7 @@ describe('checkCurrentAllowanceOfErc20', () => {
       allowance: jest.fn().mockResolvedValue(mockAllowance),
     } as unknown as ERC20;
 
-    const result = await checkCurrentAllowanceOfErc20(
-      senderAddress,
-      erc20Instance,
-      erc20HandlerAddress,
-    );
+    const result = await getERC20Allowance(senderAddress, erc20Instance, erc20HandlerAddress);
     expect(result).toEqual(0);
   });
 
@@ -73,7 +65,7 @@ describe('checkCurrentAllowanceOfErc20', () => {
     } as unknown as ERC20;
 
     await expect(
-      checkCurrentAllowanceOfErc20(senderAddress, erc20Instance, erc20HandlerAddress),
+      getERC20Allowance(senderAddress, erc20Instance, erc20HandlerAddress),
     ).rejects.toEqual(mockError);
   });
 });

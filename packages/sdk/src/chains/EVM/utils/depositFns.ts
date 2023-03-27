@@ -8,11 +8,7 @@ import {
 import { DepositEvent } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge';
 
 import { FeeDataResult } from 'types';
-import {
-  Erc20TransferParamsType,
-  Erc721TransferParamsType,
-  ProcessTokenTranferParamsType,
-} from '../types';
+import { Erc20TransferParamsType, Erc721TransferParamsType, TokenTransfer } from '../types';
 
 import {
   constructDepositDataEvmSubstrate,
@@ -21,7 +17,7 @@ import {
   isEIP1559MaxFeePerGas,
 } from '../helpers';
 
-import { getApproved, checkCurrentAllowanceOfErc20 } from './approvesAndChecksFns';
+import { isApproved, getERC20Allowance } from './approvesAndChecksFns';
 
 /**
  * Perform an erc20 transfer
@@ -70,7 +66,7 @@ export const erc20Transfer = async ({
   const senderAddress = await bridgeInstance.signer.getAddress();
   console.log(
     'allowance before deposit',
-    await checkCurrentAllowanceOfErc20(senderAddress, tokenInstance, handlerAddress),
+    await getERC20Allowance(senderAddress, tokenInstance, handlerAddress),
   );
 
   // pass data to smartcontract function and create a transaction
@@ -126,7 +122,7 @@ export const erc721Transfer = async ({
   // Chcke approval for this particular tokenID
   console.log(
     'Approval before deposit',
-    await getApproved(Number(tokenId), tokenInstance, handlerAddress),
+    await isApproved(Number(tokenId), tokenInstance, handlerAddress),
   );
 
   // pass data to smartcontract function and create a transaction
@@ -245,7 +241,7 @@ export const getDepositEventFromReceipt = async (
  * const receipt = await processTokenTranfer({ depositParams, bridgeConfig, provider, overrides });
  * // use the getDepositEventFromReceipt method to get the depositNonce
  *
- * @param {ProcessTokenTranferParamsType} params - The parameters for processing the token transfer.
+ * @param {TokenTransfer} params - The parameters for processing the token transfer.
  * @returns {Promise<ethers.ContractReceipt>} - A promise that resolves to the transaction receipt once the transfer is complete.
  */
 export const processTokenTranfer = async ({
@@ -253,7 +249,7 @@ export const processTokenTranfer = async ({
   bridgeConfig,
   provider,
   overrides,
-}: ProcessTokenTranferParamsType): Promise<ethers.ContractReceipt> => {
+}: TokenTransfer): Promise<ethers.ContractReceipt> => {
   const { tokens, bridgeAddress, domainId, confirmations: defaultConfirmations } = bridgeConfig;
   const { resourceId } = depositParams;
 
