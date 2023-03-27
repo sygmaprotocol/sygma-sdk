@@ -65,7 +65,7 @@ export type TokenDeposit  = {
   feeData: FeeDataResult;
 };
 
-export type ProcessTokenTranferParamsType = {
+export type TokenTransfer  = {
   /** The information needed for processing the token transfer deposit. */
   depositParams: ProcessTokenTranferDepositParamsType;
   /** The bridge configuration parameters for processing the token transfer. */
