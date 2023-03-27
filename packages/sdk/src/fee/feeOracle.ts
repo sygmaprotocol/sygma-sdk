@@ -87,11 +87,9 @@ export const calculateFeeData = async ({
   feeOracleBaseUrl: string;
   feeOracleHandlerAddress: string;
 }): Promise<FeeDataResult | undefined> => {
-  console.log('Calculate fee');
   const depositData = constructDepositDataEvmSubstrate(tokenAmount, recipientAddress);
 
   let oracleResponse;
-
   try {
     oracleResponse = await requestFeeFromFeeOracle({
       feeOracleBaseUrl,
@@ -100,12 +98,8 @@ export const calculateFeeData = async ({
       resourceID,
     });
   } catch (e) {
-    console.log('🚀 ~ file: feeOracle.ts:103 ~ e:', e);
     return Promise.reject(e);
   }
-
-  console.log('🚀 ~ file: feeOracle.ts:127 ~ oracleResponse:', oracleResponse);
-
   const feeData = createOracleFeeData(oracleResponse as OracleResource, tokenAmount);
   const FeeHandlerWithOracleInstance = DynamicERC20FeeHandlerEVM__factory.connect(
     feeOracleHandlerAddress,
