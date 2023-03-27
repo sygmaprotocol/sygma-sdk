@@ -14,7 +14,7 @@ import { ERC20, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts
  * @param {string} handlerAddress - The handler address for which the token approval status is checked.
  * @returns {Promise<boolean>} A promise that resolves to a boolean indicating whether the token is approved for the handler address.
  */
-export const getApproved = async (
+export const isApproved = async (
   tokenId: number,
   tokenInstance: ERC721MinterBurnerPauser,
   handlerAddress: string,
