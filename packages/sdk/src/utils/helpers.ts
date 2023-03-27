@@ -85,8 +85,19 @@ export const constructMainDepositData = (
  * constructDepositDataEvmSubstrate('1', '0x1234567890123456789012345678901234567890', 18);
  *
  * @example
- * // Substrate address
- * constructDepositDataEvmSubstrate('2', '5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt', 12);
+ * // Substrate MultiLocation
+ * const multiLocation = JSON.stringify({
+ *   parents: 0,
+ *     interior: {
+ *       X1: {
+ *         AccountId32: {
+ *           network: { any: null },
+ *           id: "0x06a220edf5f82b84fc5f9270f8a30a17636bf29c05a5c16279405ca20918aa39",
+ *         },
+ *       },
+ *     },
+ *   })
+ * constructDepositDataEvmSubstrate('2', multiLocation);
  *
  * @param {string} tokenAmount - The amount of tokens to be transferred.
  * @param {string} recipientAddress - The address of the recipient.
@@ -109,10 +120,10 @@ export const constructDepositDataEvmSubstrate = (
 /**
  * Converts a recipient address to a Uint8Array of bytes.
  *
- * @param recipientAddress - The recipient address, either as a string (EVM address) or a JSON object (Substrate multilocation).
- * @returns The recipient address as a Uint8Array of bytes
+ * @param {string} recipientAddress - The recipient address, either as a string (EVM address) or a JSON object (Substrate multilocation).
+ * @returns {Uint8Array} The recipient address as a Uint8Array of bytes
  */
-const getRecipientAddressInBytes = (recipientAddress: string): Uint8Array => {
+export const getRecipientAddressInBytes = (recipientAddress: string): Uint8Array => {
   if (utils.isAddress(recipientAddress)) {
     // EVM address
     return utils.arrayify(recipientAddress);
