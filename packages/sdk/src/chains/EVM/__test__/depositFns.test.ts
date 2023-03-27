@@ -242,6 +242,38 @@ describe('deposit functions', () => {
       ).rejects.toThrowError(`Can't find in networkConfig token with resourceID: 123`);
     });
 
+    it('should throw an error when token type is undefined', async () => {
+      await expect(
+        EVM.processTokenTranfer({
+          depositParams: { resourceId: '456' },
+          bridgeConfig: {
+            tokens: [{ resourceId: '456', address: '0x123' }],
+            bridgeAddress: '0x123',
+            domainId: '1',
+            erc721HandlerAddress: '0x123',
+          },
+          provider,
+          overrides,
+        } as unknown as TokenTransfer),
+      ).rejects.toThrowError(`Unsupported token type: undefined`);
+    });
+
+    it('should throw an error when token type is erc1155', async () => {
+      await expect(
+        EVM.processTokenTranfer({
+          depositParams: { resourceId: '456' },
+          bridgeConfig: {
+            tokens: [{ resourceId: '456', type: 'erc1155', address: '0x123' }],
+            bridgeAddress: '0x123',
+            domainId: '1',
+            erc721HandlerAddress: '0x123',
+          },
+          provider,
+          overrides,
+        } as unknown as TokenTransfer),
+      ).rejects.toThrowError(`Unsupported token type: erc1155`);
+    });
+
     it('should call erc721Transfer function when given a selectedToken with type erc721', async () => {
       jest
         .spyOn(EVM, 'erc721Transfer')

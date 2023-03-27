@@ -271,22 +271,33 @@ export const processTokenTranfer = async ({
     overrides,
   };
 
-  if (selectedToken.type === 'erc721') {
-    const tokenInstance = ERC721MinterBurnerPauser__factory.connect(
-      selectedToken.address,
-      provider,
-    );
-    return erc721Transfer({
-      ...commonTransferParams,
-      handlerAddress: bridgeConfig.erc721HandlerAddress,
-      tokenInstance,
-    });
-  } else {
-    const tokenInstance = ERC20__factory.connect(selectedToken.address, provider);
-    return erc20Transfer({
-      ...commonTransferParams,
-      handlerAddress: bridgeConfig.erc20HandlerAddress,
-      tokenInstance,
-    });
+  const tokenTypeHandlers = {
+    erc721: async () => {
+      const tokenInstance = ERC721MinterBurnerPauser__factory.connect(
+        selectedToken.address,
+        provider,
+      );
+      return erc721Transfer({
+        ...commonTransferParams,
+        handlerAddress: bridgeConfig.erc721HandlerAddress,
+        tokenInstance,
+      });
+    },
+    erc20: async () => {
+      const tokenInstance = ERC20__factory.connect(selectedToken.address, provider);
+      return erc20Transfer({
+        ...commonTransferParams,
+        handlerAddress: bridgeConfig.erc20HandlerAddress,
+        tokenInstance,
+      });
+    },
+  };
+
+  const handleTokenTransfer = tokenTypeHandlers[selectedToken.type];
+
+  if (!handleTokenTransfer) {
+    throw Error(`Unsupported token type: ${selectedToken.type}`);
   }
+
+  return handleTokenTransfer();
 };
