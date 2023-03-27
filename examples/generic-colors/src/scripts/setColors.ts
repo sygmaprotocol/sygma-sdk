@@ -1,7 +1,7 @@
 import { ethers, BigNumber } from 'ethers'
 import { NonceManager } from '@ethersproject/experimental'
-import ColorsAbi from '../abis/colors-abi.json'
-const colorsAddress = "0xE54Dc792c226AEF99D6086527b98b36a4ADDe56a";
+import { Colors__factory } from '../types/Colors__factory'
+import ColorsAddresses from '../../public/colors.json'
 
 const toHex = (covertThis: string, padding: number) => {
   return ethers.utils.hexZeroPad(ethers.utils.hexlify(BigNumber.from(covertThis)), padding);
@@ -48,10 +48,9 @@ const setColor = async () => {
   const signerProvider1 = provider1.getSigner(firstAccount)
   const signerProvider2 = provider2.getSigner(firstAccount)
 
-  const colorContract = new ethers.Contract(
-    colorsAddress,
-    ColorsAbi.abi
-  )
+  const colorContractNode1 = Colors__factory.connect(ColorsAddresses.colorsAddressNode1, signerProvider1)
+  
+  const colorsContractNode2 = Colors__factory.connect(ColorsAddresses.colorsAddressNode2, signerProvider2)
 
   const colorsNode1 = ['0x70F3FF', '0xB2B2B2']
   const colorsNode2 = ['0xFF8787', '0x00ABB3']
@@ -68,7 +67,7 @@ const setColor = async () => {
   for await (let colorHexed of colorsToHexNode1) {
     try {
       await (
-        await colorContract.connect(signerProvider1).setColor(depositData, colorHexed)
+        await colorContractNode1.setColor(depositData, colorHexed)
       ).wait(1)
       console.log(`Success to setup color ${colorHexed} on Node 1`)
     } catch (e) {
@@ -79,7 +78,7 @@ const setColor = async () => {
   for await (let colorsHexed of colorsToHexNode2) {
     try {
       await (
-        await colorContract.connect(signerProvider2).setColor(depositData, colorsHexed)
+        await colorsContractNode2.setColor(depositData, colorsHexed)
       ).wait(1)
       console.log(`Success to setup color ${colorsHexed} on Node 2`)
     } catch (e) {

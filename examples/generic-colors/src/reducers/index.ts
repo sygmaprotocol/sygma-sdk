@@ -15,7 +15,8 @@ export type State = {
   destinationChainUrl: string,
   depositStatus: string,
   colorSelected: string | undefined,
-  loading: boolean
+  loading: boolean,
+  colorsAddresses: { colorsAddressNode1: string, colorsAddressNode2: string }
 }
 
 export type Actions =
@@ -36,7 +37,8 @@ export type Actions =
   | { type: "depositSuccess"; payload: "init" | "done" | "error" | "none" }
   | { type: "selectColor"; payload: string }
   | { type: "resetColorSelected" }
-  | { type: "loading"; payload: boolean };
+  | { type: "loading"; payload: boolean }
+  | { type: "setColorsAddresses"; payload: { colorsAddressNode1: string, colorsAddressNode2: string } }
 
 const reducer = (state: State, action: Actions): State => {
   switch (action.type) {
@@ -139,6 +141,12 @@ const reducer = (state: State, action: Actions): State => {
       return {
         ...state,
         loading: action.payload
+      }
+    }
+    case 'setColorsAddresses': {
+      return {
+        ...state,
+        colorsAddresses: action.payload
       }
     }
     default: {

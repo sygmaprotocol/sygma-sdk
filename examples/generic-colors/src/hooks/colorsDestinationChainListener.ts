@@ -1,23 +1,20 @@
 import { useEffect } from 'react'
 import { Actions, State } from "../reducers";
-import ColorsAbi from '../abis/colors-abi.json'
-import { ethers } from 'ethers';
-import ColorsAddress from "../colors.json";
+import { Colors__factory } from '../types/Colors__factory'
+import { setColorEventEvent } from '../types/Colors';
 
 const ColorsDestinationChainListener = (state: State, dispatch: React.Dispatch<Actions>) => {
   useEffect(() => {
     if (state.metamaskConnected && state.accountData && state.sygmaInstance && state.accountDataFromSygma) {
-      const colorsContractDestinationChain = new ethers.Contract(
-        ColorsAddress.colorsAddressNode1,
-        ColorsAbi.abi
-      )
       const providerDestinationChain = state.sygmaInstance?.getDestinationChainProvider()
       const signerDestinationChain = providerDestinationChain?.getSigner(state.accountData)
 
-      const filters = colorsContractDestinationChain.connect(signerDestinationChain!).filters.setColorEvent()
+      const colorsContractDestinationChain = Colors__factory.connect(state.colorsAddresses.colorsAddressNode2, signerDestinationChain)
 
-      colorsContractDestinationChain.connect(signerDestinationChain!).on(filters, (color) => {
-        console.warn("🚀 ~ file: colorsDestinationChainListener.ts ~ line 26 ~ colorsContractDestinationChain.on ~ color", color)
+      const filters = colorsContractDestinationChain.filters.setColorEvent()
+
+      colorsContractDestinationChain.on(filters, (color: string, tx: setColorEventEvent): void => {
+        console.warn("Color on destination chain", color)
         dispatch({
           type: 'depositSuccess',
           payload: 'done'

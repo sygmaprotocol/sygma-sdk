@@ -31,17 +31,30 @@ const handleConnect = (state: State, dispatch: React.Dispatch<Actions>) => {
       });
   } else if (state.metamaskConnected) {
     // SETTING ACCOUNT DATA
-    window.ethereum.request({ method: "eth_requestAccounts"}).then(async (address: string[]) => {
+    window.ethereum.request({ method: "eth_requestAccounts" }).then(async (address: string[]) => {
       console.warn("Metamask is unlocked")
+
       const [addr] = address;
+
       dispatch({
         type: 'setAccountData',
         payload: addr
       })
+
       console.warn("Initializing Sygma instance on handleConnect function")
-      const data = await state.sygmaInstance?.initializeConnectionFromWeb3Provider(
+
+      const setup = { bridgeSetupList }
+      const sygma = new Sygma(setup)
+      
+      dispatch({
+        type: 'setSygmaInstance',
+        payload: sygma
+      })
+
+      const data = sygma?.initializeConnectionFromWeb3Provider(
         window.ethereum,
       );
+
       dispatch({
         type: 'setData',
         payload: data
@@ -49,10 +62,10 @@ const handleConnect = (state: State, dispatch: React.Dispatch<Actions>) => {
 
     })
     // HERE WE SET HOME AND DESTINATION CHAIN
-    window.ethereum.request({ method: 'eth_chainId'}).then((num: number) => {
+    window.ethereum.request({ method: 'eth_chainId' }).then((num: number) => {
       const currenChainId = BigNumber.from(num).toNumber()
       const homeChain = bridgeSetupList.find((chain: any) => chain.networkId === currenChainId)
-      
+
       const destinationChain = bridgeSetupList.find((chain: any) => chain.networkId !== currenChainId)
       dispatch({
         type: 'setHomeChain',
@@ -76,7 +89,7 @@ function Connection(state: State, dispatch: React.Dispatch<Actions>) {
         window.location.reload();
       });
       window.ethereum._metamask.isUnlocked().then((res: boolean) => {
-        console.log("is metamask unlocked?", res);
+        console.warn("is metamask unlocked?", res);
         dispatch({
           type: 'connectMetamask',
           payload: res

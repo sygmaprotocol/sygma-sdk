@@ -1,15 +1,13 @@
-import { useReducer, useState, useRef } from "react";
-import { ContractInterface, ethers } from "ethers";
+import { useReducer, useState, useRef, useEffect } from "react";
+import { ethers } from "ethers";
 import { FeeDataResult } from "@buildwithsygma/sygma-sdk-core";
 import "./App.css";
 import { reducer, State } from "./reducers";
-import ColorsAbi from "./abis/colors-abi.json";
 import { bridgeAdmin } from "./bridgeSetup";
 import { Connection, handleConnect } from "./hooks/connection";
 import { AccountData } from "./hooks/accountData";
 import { GetColors } from "./hooks/getColors";
 import { ColorsDestinationChainListener } from "./hooks/colorsDestinationChainListener";
-import ColorsAddress from "./colors.json";
 
 const initState: State = {
   colorsNode1: [],
@@ -27,6 +25,7 @@ const initState: State = {
   homeChainUrl: "",
   destinationChainUrl: "",
   loading: false,
+  colorsAddresses: { colorsAddressNode1: '', colorsAddressNode2: '' }
 };
 
 function App() {
@@ -34,16 +33,6 @@ function App() {
   const checkboxRefColor2 = useRef(null);
   const [nodeId, setNodeId] = useState<string | undefined>(undefined);
   const [state, dispatch] = useReducer(reducer, initState);
-
-  const colorContractNode1 = new ethers.Contract(
-    ColorsAddress.colorsAddressNode1 as string,
-    ColorsAbi.abi as ContractInterface
-  );
-
-  const colorContractNode2 = new ethers.Contract(
-    ColorsAddress.colorsAddressNode2 as string,
-    ColorsAbi.abi as ContractInterface
-  );
 
   /**
    * Initialization of hooks for data and connection
@@ -55,10 +44,10 @@ function App() {
    */
   AccountData(state, dispatch);
 
-  /**
-   * Hook that gets the colors from the contract
-   */
-  GetColors(state, dispatch, colorContractNode1, colorContractNode2);
+  // /**
+  //  * Hook that gets the colors from the contract
+  //  */
+  GetColors(state, dispatch);
 
   /**
    * Hooks that setups listener over colors contract on destination chain
@@ -107,7 +96,7 @@ function App() {
     const depositData: string =
       state.sygmaInstance?.formatPermissionlessGenericDepositData(
         depositFunctionSignature,
-        ColorsAddress.colorsAddressNode1 as string,
+        state.colorsAddresses.colorsAddressNode1 as string,
         "2000000",
         accountData,
         hexColor,
