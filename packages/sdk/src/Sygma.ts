@@ -37,7 +37,7 @@ import {
   listTokensOfOwner,
 } from './utils';
 import { EvmBridge, TokenConfig } from './chains';
-import { calculateBasicfee, calculateFeeData, getFeeHandlerAddress } from './fee';
+import { calculateBasicfee, calculateDynamicFee, getFeeHandlerAddress } from './fee';
 import Connector from './connectors/Connectors';
 import {
   createPermissionedGenericDepositData,
@@ -653,7 +653,7 @@ export class Sygma implements SygmaSDK {
     // We use sender address or zero because of contracts
     const sender = (await this.signers!.chain1?.getAddress()) ?? ethers.constants.AddressZero;
 
-    const feeData = calculateFeeData({
+    const feeData = calculateDynamicFee({
       provider,
       sender,
       recipientAddress,
@@ -662,7 +662,7 @@ export class Sygma implements SygmaSDK {
       resourceID,
       tokenAmount: amount,
       feeOracleBaseUrl,
-      feeOracleHandlerAddress,
+      dynamicERC20FeeHandlerAddress: feeOracleHandlerAddress,
     });
 
     return feeData;
