@@ -42,7 +42,7 @@ export const isApproved = async (
  * @param {string} erc20HandlerAddress - The handler address for which the token allowance is checked.
  * @returns {Promise<number>} A promise that resolves to a number representing the current allowance of the ERC20 token.
  */
-export const checkCurrentAllowanceOfErc20 = async (
+export const getERC20Allowance = async (
   senderAddress: string,
   erc20Instance: ERC20,
   erc20HandlerAddress: string,
