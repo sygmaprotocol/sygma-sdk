@@ -663,7 +663,7 @@ export class Sygma implements SygmaSDK {
       feeOracleHandlerAddress,
     });
 
-    return feeData;
+    return feeData as Promise<FeeDataResult>;
   }
 
   /**
@@ -1022,7 +1022,8 @@ export class Sygma implements SygmaSDK {
    * @returns {string} - the address of the fee router
    */
   public getFeeRouterAddress(chain: 'chain1' | 'chain2'): string {
-    return this.bridgeSetup[chain as keyof BridgeData].feeRouterAddress;
+    const { feeRouterAddress } = this.bridgeSetup![chain as keyof BridgeData];
+    return feeRouterAddress;
   }
 
   /**
