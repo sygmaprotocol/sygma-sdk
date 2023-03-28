@@ -1032,7 +1032,7 @@ export class Sygma implements SygmaSDK {
    * @returns {EvmBridgeSetup} - the current configuration for that chain
    */
   public getBridgeSetup(chain: 'chain1' | 'chain2'): EvmBridgeSetup {
-    return this.bridgeSetup[chain as keyof BridgeData];
+    return this.bridgeSetup![chain as keyof BridgeData];
   }
 
   /**
@@ -1048,7 +1048,7 @@ export class Sygma implements SygmaSDK {
     tokenAddress: string,
     chain: 'chain1' | 'chain2',
   ): void {
-    const tokenFound = this.bridgeSetup[chain as keyof BridgeData].tokens.find(
+    const tokenFound = this.bridgeSetup![chain as keyof BridgeData].tokens.find(
       token => token.address === tokenAddress,
     );
 
@@ -1057,7 +1057,9 @@ export class Sygma implements SygmaSDK {
       feeSettings: { type, address },
     };
 
-    this.bridgeSetup[chain as keyof BridgeData].tokens = this.bridgeSetup[chain as keyof BridgeData].tokens.map(token => {
+    this.bridgeSetup![chain as keyof BridgeData].tokens = this.bridgeSetup![
+      chain as keyof BridgeData
+    ].tokens.map(token => {
       if (token.address === tokenFound?.address) {
         return tokenUpdate;
       }
