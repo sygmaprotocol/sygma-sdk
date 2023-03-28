@@ -1054,13 +1054,13 @@ export class Sygma implements SygmaSDK {
     const tokenUpdate = {
       ...tokenFound,
       feeSettings: { type, address },
-    }
+    };
 
     this.bridgeSetup[chain as keyof BridgeData].tokens = this.bridgeSetup[chain as keyof BridgeData].tokens.map(token => {
       if (token.address === tokenFound?.address) {
         return tokenUpdate;
       }
       return token;
-    })
+    });
   }
 }
