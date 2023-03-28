@@ -35,7 +35,6 @@
     "lint:fix": "yarn run lint --fix",
     "run:nodes": "docker-compose -f docker-compose.yml up",
     "clean": "rm -rf ./dist ./dist-cjs ./dist-esm ./types",
-    "watch:all": "yarn tsc --watch -p tsconfig.esm.json && yarn tsc --watch -p tsconfig.cjs.json && yarn tsc --watch -p tsconfig.types.json"
   },
   "keywords": [
     "sygma",
