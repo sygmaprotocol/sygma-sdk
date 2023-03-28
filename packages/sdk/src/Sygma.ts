@@ -1013,6 +1013,9 @@ export class Sygma implements SygmaSDK {
    * @returns {ethers.providers.JsonRpcProvider}
    */
   public getDestinationChainProvider(): ethers.providers.JsonRpcProvider {
+    return this.providers.chain2 as ethers.providers.JsonRpcProvider;
+  }
+
   /**
    * @name getFeeRouterAddress
    * @param chain - the chain to get the fee router address
