@@ -1013,14 +1013,31 @@ export class Sygma implements SygmaSDK {
    * @returns {ethers.providers.JsonRpcProvider}
    */
   public getDestinationChainProvider(): ethers.providers.JsonRpcProvider {
+  /**
+   * @name getFeeRouterAddress
+   * @param chain - the chain to get the fee router address
+   * @returns {string} - the address of the fee router
+   */
   public getFeeRouterAddress(chain: 'chain1' | 'chain2'): string {
     return this.bridgeSetup[chain as keyof BridgeData].feeRouterAddress;
   }
 
+  /**
+   * @name getBridgeSetup
+   * @param chain - chain to select to return the configuration that was passed on intiantiation
+   * @returns {EvmBridgeSetup} - the current configuration for that chain
+   */
   public getBridgeSetup(chain: 'chain1' | 'chain2'): EvmBridgeSetup {
     return this.bridgeSetup[chain as keyof BridgeData];
   }
 
+  /**
+   * @name setFeeSettings
+   * @param type - the fee settings type: current options are oracle or basic
+   * @param address - address of the fee handler
+   * @param tokenAddress - the token on which the fee settings are being set
+   * @param chain - the chain on which the token is going to be altered
+   */
   public setFeeSettings(
     type: string,
     address: string,
