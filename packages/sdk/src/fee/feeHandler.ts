@@ -7,7 +7,6 @@ export const getFeeHandlerAddress = async (
   domainId: string,
   resourceId: string,
 ): Promise<string | Error> => {
-
   const feeHandlerContract = FeeHandlerRouter__factory.connect(feeRouterAddress, signerOrProvider);
   let feeHandlerAddress: string;
 

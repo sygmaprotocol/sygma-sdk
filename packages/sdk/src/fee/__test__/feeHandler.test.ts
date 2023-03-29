@@ -30,6 +30,6 @@ describe('feeHandler', () => {
       '1',
       '0x000000',
     );
-    expect(feeHandlerAddress).toEqual('0x141F8690A87A7E57C2E270ee77Be94935970c035')
+    expect(feeHandlerAddress).toEqual('0x141F8690A87A7E57C2E270ee77Be94935970c035');
   });
 });
