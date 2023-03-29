@@ -66,7 +66,7 @@ export const calculateBasicfee = async ({
       type: 'basic',
     };
   } catch (error) {
-    console.error('Invalidad basic fee response');
+    console.error('Invalidad basic fee response', error);
     return Promise.reject(error);
   }
 };
