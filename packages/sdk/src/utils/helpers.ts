@@ -38,29 +38,8 @@ export const createResourceID = (contractAddress: string, domainID: number): str
 };
 
 /**
- * @name createERCDepositData
- * @description creates the deposit data to use on bridge.deposit method interface
- * @param tokenAmountOrID - number | string | BigNumber of the amount of token or Id fo the token
- * @param lenRecipientAddress
- * @param recipientAddress
- * @returns {string}
- */
-export const createERCDepositData = (
-  tokenAmountOrID: string | number | BigNumber,
-  lenRecipientAddress: number,
-  recipientAddress: string,
-): string => {
-  return (
-    '0x' +
-    toHex(tokenAmountOrID, 32).substr(2) + // Token amount or ID to deposit (32 bytes)
-    toHex(lenRecipientAddress, 32).substr(2) + // len(recipientAddress)          (32 bytes)
-    recipientAddress.substr(2)
-  ); // recipientAddress               (?? bytes)
-};
-
-/**
- * @name constructMainDepositData
- * @description Constructs the main deposit data for a given token and recipient.
+ * Constructs the main deposit data for a given token and recipient.
+ *
  * @param {BigNumber} tokenStats - The amount of ERC20 tokens or the token ID of ERC721 tokens.
  * @param {Uint8Array} destRecipient - The recipient address in bytes array
  * @returns {Uint8Array} The main deposit data in bytes array
@@ -82,7 +61,7 @@ export const constructMainDepositData = (
  *
  * @example
  * // EVM address
- * constructDepositDataEvmSubstrate('1', '0x1234567890123456789012345678901234567890', 18);
+ * createERCDepositData('1', '0x1234567890123456789012345678901234567890', 18);
  *
  * @example
  * // Substrate MultiLocation
@@ -97,14 +76,14 @@ export const constructMainDepositData = (
  *       },
  *     },
  *   })
- * constructDepositDataEvmSubstrate('2', multiLocation);
+ * createERCDepositData('2', multiLocation);
  *
  * @param {string} tokenAmount - The amount of tokens to be transferred.
  * @param {string} recipientAddress - The address of the recipient.
  * @param {number} [decimals=18] - The number of decimals of the token.
  * @returns {string} The deposit data as hex string
  */
-export const constructDepositDataEvmSubstrate = (
+export const createERCDepositData = (
   tokenAmount: string,
   recipientAddress: string,
   decimals = 18,

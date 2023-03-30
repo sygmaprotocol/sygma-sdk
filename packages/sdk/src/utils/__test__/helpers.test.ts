@@ -2,7 +2,7 @@ import { BigNumber, utils } from 'ethers';
 import { TypeRegistry } from '@polkadot/types';
 import {
   constructMainDepositData,
-  constructDepositDataEvmSubstrate,
+  createERCDepositData,
   getRecipientAddressInBytes,
 } from '../helpers';
 import * as helpers from '../helpers';
@@ -43,7 +43,7 @@ describe('constructDepositDataEvmSubstrate', () => {
       .mockReturnValueOnce(new Uint8Array([18, 52, 86]));
     jest.spyOn(utils, 'hexlify').mockReturnValueOnce(expectedDepositData);
 
-    const depositData = constructDepositDataEvmSubstrate(tokenAmount, recipientAddress, decimals);
+    const depositData = createERCDepositData(tokenAmount, recipientAddress, decimals);
 
     expect(utils.parseUnits).toHaveBeenCalledWith(tokenAmount, decimals);
     expect(helpers.getRecipientAddressInBytes).toHaveBeenCalledWith(recipientAddress);

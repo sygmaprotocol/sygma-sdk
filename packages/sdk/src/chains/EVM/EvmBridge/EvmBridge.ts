@@ -9,7 +9,7 @@ import { Directions, Provider, FeeDataResult } from '../../../types';
 import { Erc20Detailed } from '../../../Contracts/Erc20Detailed';
 import { Erc20DetailedFactory } from '../../../Contracts/Erc20DetailedFactory';
 
-import { createERCDepositData, constructDepositDataEvmSubstrate } from '../../../utils/helpers';
+import { createERCDepositData } from '../../../utils/helpers';
 
 /**
  * @name EvmBridge
@@ -60,13 +60,13 @@ export default class EvmBridge {
     resourceId: string;
     feeData: FeeDataResult;
   }): Promise<ContractReceipt | undefined> {
-    let depositData: string;
+    let decimals: number;
     if (tokenType === 'erc20') {
-      const erc20TokenDecimals = await (tokenInstance as Erc20Detailed).decimals();
-      depositData = constructDepositDataEvmSubstrate(amount, recipientAddress, erc20TokenDecimals);
+      decimals = await (tokenInstance as Erc20Detailed).decimals();
     } else {
-      depositData = createERCDepositData(amount, 20, recipientAddress);
+      decimals = 0;
     }
+    const depositData = createERCDepositData(amount, recipientAddress, decimals);
 
     const gasPrice = await this.isEIP1559MaxFeePerGas(provider);
 

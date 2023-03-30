@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import fetch from 'cross-fetch';
 
 import { OracleResource, FeeDataResult } from '../../../types';
-import { toHex, constructDepositDataEvmSubstrate } from '../../../utils/helpers';
+import { toHex, createERCDepositData } from '../../../utils/helpers';
 
 type OracleResponse = {
   error?: string;
@@ -110,7 +110,7 @@ export const calculateDynamicFee = async ({
   feeOracleBaseUrl: string;
   dynamicERC20FeeHandlerAddress: string;
 }): Promise<FeeDataResult> => {
-  const depositData = constructDepositDataEvmSubstrate(tokenAmount, recipientAddress);
+  const depositData = createERCDepositData(tokenAmount, recipientAddress);
 
   let oracleResponse;
   try {
