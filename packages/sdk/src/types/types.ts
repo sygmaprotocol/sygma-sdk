@@ -2,6 +2,7 @@ import { Bridge, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contract
 import { ethers } from 'ethers';
 
 import { Erc20Detailed } from '../Contracts/Erc20Detailed';
+import { FeeType, TokenConfig } from '../chains/EVM';
 
 export interface SygmaSDK {}
 
@@ -12,24 +13,6 @@ export type Setup = {
   bridgeSetup?: BridgeData;
   feeOracleSetup?: FeeOracleData;
 };
-
-export type TokenConfig = {
-  type: 'erc20' | 'erc721';
-  address: string;
-  name?: string;
-  symbol?: string;
-  imageUri?: string;
-  resourceId: string;
-  isNativeWrappedToken?: boolean;
-  decimals?: number;
-  isDoubleApproval?: boolean;
-  feeSettings: {
-    type: FeeType;
-    address: string;
-  };
-};
-
-export type FeeType = 'basic' | 'feeOracle' | 'none';
 
 export type EvmBridgeSetup = {
   name: string;
