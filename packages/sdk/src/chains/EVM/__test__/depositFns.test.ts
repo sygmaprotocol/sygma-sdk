@@ -5,8 +5,8 @@ import {
 } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge';
 
 import { FeeDataResult } from 'types';
-import { ethers, providers, ContractReceipt, BigNumber } from 'ethers';
-import { ProcessTokenTranferParamsType } from '../types';
+import { ethers, providers, ContractReceipt, ContractTransaction, BigNumber } from 'ethers';
+import { TokenTransfer } from '../types';
 import * as EVM from '../utils/depositFns';
 
 jest.mock('../helpers', () => {
@@ -18,8 +18,8 @@ jest.mock('../helpers', () => {
   };
 });
 jest.mock('../utils/approvesAndChecksFns', () => ({
-  checkCurrentAllowanceOfErc20: jest.fn().mockResolvedValue(123),
-  getApproved: jest.fn().mockResolvedValue(true),
+  getERC20Allowance: jest.fn().mockResolvedValue(123),
+  isApproved: jest.fn().mockResolvedValue(true),
 }));
 
 jest.mock(
@@ -43,7 +43,6 @@ describe('deposit functions', () => {
   let depositData: string;
   let feeData: FeeDataResult;
   let bridgeInstance: Bridge;
-  let confirmations: number;
   let provider: providers.Provider;
   let overrides: ethers.PayableOverrides;
   let handlerAddress: string;
@@ -60,7 +59,6 @@ describe('deposit functions', () => {
       erc20TokenAddress: '0x00',
     };
     bridgeInstance = { deposit: jest.fn() } as unknown as Bridge;
-    confirmations = 1;
     provider = jest.fn() as unknown as providers.Provider;
     overrides = { gasLimit: 30000 };
     handlerAddress = '0x9867';
@@ -71,11 +69,11 @@ describe('deposit functions', () => {
   describe('executeDeposit', () => {
     it('should successfully execute deposit', async () => {
       // Mock the required functions
-      bridgeInstance = {
+      const bridgeInstance = {
         deposit: jest.fn().mockResolvedValueOnce({
           wait: jest.fn().mockResolvedValueOnce({} as ContractReceipt),
-        }),
-      } as unknown as Bridge;
+        } as unknown as ContractTransaction),
+      };
 
       // Call the function and test the result
       const result = await EVM.executeDeposit(
@@ -83,14 +81,12 @@ describe('deposit functions', () => {
         resourceId,
         depositData,
         feeData,
-        bridgeInstance,
-        confirmations,
+        bridgeInstance as unknown as Bridge,
         provider,
         overrides,
       );
 
       expect(result).toBeDefined();
-      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(bridgeInstance.deposit).toHaveBeenCalledTimes(1);
     });
 
@@ -99,7 +95,7 @@ describe('deposit functions', () => {
       bridgeInstance.deposit = jest.fn().mockRejectedValueOnce(new Error('Deposit failed'));
 
       // Mock console.log to prevent logging in tests
-      const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
+      const consoleLogSpy = jest.spyOn(console, 'error').mockImplementation();
 
       await expect(
         EVM.executeDeposit(
@@ -108,7 +104,6 @@ describe('deposit functions', () => {
           depositData,
           feeData,
           bridgeInstance,
-          confirmations,
           provider,
           overrides,
         ),
@@ -120,7 +115,7 @@ describe('deposit functions', () => {
   });
   describe('erc20Transfer', () => {
     it('should successfully execute', async () => {
-      jest.spyOn(EVM, 'executeDeposit').mockResolvedValueOnce({} as ContractReceipt);
+      jest.spyOn(EVM, 'executeDeposit').mockResolvedValueOnce({} as ContractTransaction);
       bridgeInstance = {
         signer: {
           getAddress: jest.fn().mockResolvedValue('0xMyaddress'),
@@ -139,7 +134,6 @@ describe('deposit functions', () => {
         domainId,
         resourceId,
         feeData,
-        confirmations,
         overrides,
       };
       await EVM.erc20Transfer(erc20Params);
@@ -150,7 +144,6 @@ describe('deposit functions', () => {
         '0xdepositData',
         feeData,
         bridgeInstance,
-        confirmations,
         provider,
         overrides,
       );
@@ -158,7 +151,7 @@ describe('deposit functions', () => {
   });
   describe('erc721Transfer', () => {
     it('should successfully execute', async () => {
-      jest.spyOn(EVM, 'executeDeposit').mockResolvedValueOnce({} as ContractReceipt);
+      jest.spyOn(EVM, 'executeDeposit').mockResolvedValueOnce({} as ContractTransaction);
 
       const tokenInstance = {} as ERC721MinterBurnerPauser;
 
@@ -172,7 +165,6 @@ describe('deposit functions', () => {
         domainId,
         resourceId,
         feeData,
-        confirmations,
         overrides,
       };
       await EVM.erc721Transfer(erc721Params);
@@ -183,7 +175,6 @@ describe('deposit functions', () => {
         '0x0erc20value',
         feeData,
         bridgeInstance,
-        confirmations,
         provider,
         overrides,
       );
@@ -239,14 +230,46 @@ describe('deposit functions', () => {
           },
           provider,
           overrides,
-        } as unknown as ProcessTokenTranferParamsType),
+        } as unknown as TokenTransfer),
       ).rejects.toThrowError(`Can't find in networkConfig token with resourceID: 123`);
+    });
+
+    it('should throw an error when token type is undefined', async () => {
+      await expect(
+        EVM.processTokenTranfer({
+          depositParams: { resourceId: '456' },
+          bridgeConfig: {
+            tokens: [{ resourceId: '456', address: '0x123' }],
+            bridgeAddress: '0x123',
+            domainId: '1',
+            erc721HandlerAddress: '0x123',
+          },
+          provider,
+          overrides,
+        } as unknown as TokenTransfer),
+      ).rejects.toThrowError(`Unsupported token type: undefined`);
+    });
+
+    it('should throw an error when token type is erc1155', async () => {
+      await expect(
+        EVM.processTokenTranfer({
+          depositParams: { resourceId: '456' },
+          bridgeConfig: {
+            tokens: [{ resourceId: '456', type: 'erc1155', address: '0x123' }],
+            bridgeAddress: '0x123',
+            domainId: '1',
+            erc721HandlerAddress: '0x123',
+          },
+          provider,
+          overrides,
+        } as unknown as TokenTransfer),
+      ).rejects.toThrowError(`Unsupported token type: erc1155`);
     });
 
     it('should call erc721Transfer function when given a selectedToken with type erc721', async () => {
       jest
         .spyOn(EVM, 'erc721Transfer')
-        .mockResolvedValue({ blockHash: '0x01' } as unknown as ContractReceipt);
+        .mockResolvedValue({ blockHash: '0x01' } as unknown as ContractTransaction);
       const receipt = await EVM.processTokenTranfer({
         depositParams: { resourceId: '456' },
         bridgeConfig: {
@@ -257,7 +280,7 @@ describe('deposit functions', () => {
         },
         provider,
         overrides,
-      } as unknown as ProcessTokenTranferParamsType);
+      } as unknown as TokenTransfer);
 
       expect(receipt).toMatchObject({ blockHash: '0x01' });
     });
@@ -265,7 +288,7 @@ describe('deposit functions', () => {
     it('should call erc20Transfer function when given a selectedToken with type erc20', async () => {
       jest
         .spyOn(EVM, 'erc20Transfer')
-        .mockResolvedValue({ blockHash: '0x01' } as unknown as ContractReceipt);
+        .mockResolvedValue({ blockHash: '0x01' } as unknown as ContractTransaction);
       const receipt = await EVM.processTokenTranfer({
         depositParams: { resourceId: '456' },
         bridgeConfig: {
@@ -276,7 +299,7 @@ describe('deposit functions', () => {
         },
         provider: new ethers.providers.JsonRpcProvider(),
         overrides: { gasLimit: 100000 },
-      } as unknown as ProcessTokenTranferParamsType);
+      } as unknown as TokenTransfer);
 
       expect(receipt).toMatchObject({ blockHash: '0x01' });
     });

@@ -19,6 +19,7 @@ export type EvmBridgeSetup = {
   type: 'Ethereum';
   networkId: number;
   bridgeAddress: string;
+  feeRouterAddress: string;
   erc20HandlerAddress: string;
   erc721HandlerAddress: string;
   feeOracleHandlerAddress?: string;
@@ -27,6 +28,7 @@ export type EvmBridgeSetup = {
   decimals: number;
   tokens: TokenConfig[];
   confirmations?: number;
+  feeHandlers: Array<{ address: string; type: 'basic' | 'oracle' }>;
 };
 
 export type EvmBridgeSetupList = EvmBridgeSetup[];

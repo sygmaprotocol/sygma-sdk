@@ -6,7 +6,7 @@ import { ERC20, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts
  *
  * @example
  * // Assuming you have a valid tokenId, an ERC721 token instance (tokenInstance), and a handler address (handlerAddress)
- * const isApproved = await getApproved(tokenId, tokenInstance, handlerAddress);
+ * const tokenApproved = await isApproved(tokenId, tokenInstance, handlerAddress);
  * console.log(`Token approval status for ${tokenID}:`, isApproved);
  *
  * @param {number} tokenId - The TokenId of the token to be checked.
@@ -14,7 +14,7 @@ import { ERC20, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts
  * @param {string} handlerAddress - The handler address for which the token approval status is checked.
  * @returns {Promise<boolean>} A promise that resolves to a boolean indicating whether the token is approved for the handler address.
  */
-export const getApproved = async (
+export const isApproved = async (
   tokenId: number,
   tokenInstance: ERC721MinterBurnerPauser,
   handlerAddress: string,
@@ -24,7 +24,7 @@ export const getApproved = async (
     const isApproved = approvedAddress === handlerAddress;
     return isApproved;
   } catch (error) {
-    console.log('Error on checkCurrentAllowanceOfErc20', error);
+    console.error('Error on isApproved', error);
     return Promise.reject(error);
   }
 };
@@ -34,7 +34,7 @@ export const getApproved = async (
  *
  * @example
  * // Assuming you have a valid sender address, an ERC20 token instance (erc20Instance), and a handler address (erc20HandlerAddress)
- * const currentAllowance = await checkCurrentAllowanceOfErc20(senderAddress, erc20Instance, erc20HandlerAddress);
+ * const currentAllowance = await getERC20Allowance(senderAddress, erc20Instance, erc20HandlerAddress);
  * console.log('Current allowance:', currentAllowance);
  *
  * @param {string} senderAddress - The address of the token sender.
@@ -42,7 +42,7 @@ export const getApproved = async (
  * @param {string} erc20HandlerAddress - The handler address for which the token allowance is checked.
  * @returns {Promise<number>} A promise that resolves to a number representing the current allowance of the ERC20 token.
  */
-export const checkCurrentAllowanceOfErc20 = async (
+export const getERC20Allowance = async (
   senderAddress: string,
   erc20Instance: ERC20,
   erc20HandlerAddress: string,
@@ -52,7 +52,7 @@ export const checkCurrentAllowanceOfErc20 = async (
 
     return Number(utils.formatUnits(currentAllowance, 18));
   } catch (error) {
-    console.log('Error on checkCurrentAllowanceOfErc20', error);
+    console.error('Error on getERC20Allowance', error);
     return Promise.reject(error);
   }
 };
@@ -80,7 +80,7 @@ export const approve = async (
     const approvalAction = await tx.wait(confirmations);
     return approvalAction;
   } catch (error) {
-    console.log('Error on approve', error);
+    console.error('Error on approve', error);
     return Promise.reject(error);
   }
 };

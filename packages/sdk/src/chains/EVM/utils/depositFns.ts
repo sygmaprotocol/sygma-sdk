@@ -1,4 +1,4 @@
-import { ContractReceipt, providers, ethers } from 'ethers';
+import { ContractTransaction, ContractReceipt, providers, ethers } from 'ethers';
 import {
   Bridge,
   Bridge__factory,
@@ -8,11 +8,7 @@ import {
 import { DepositEvent } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge';
 
 import { FeeDataResult } from 'types';
-import {
-  Erc20TransferParamsType,
-  Erc721TransferParamsType,
-  ProcessTokenTranferParamsType,
-} from '../types';
+import { Erc20TransferParamsType, Erc721TransferParamsType, TokenTransfer } from '../types';
 
 import {
   constructDepositDataEvmSubstrate,
@@ -21,7 +17,7 @@ import {
   isEIP1559MaxFeePerGas,
 } from '../helpers';
 
-import { getApproved, checkCurrentAllowanceOfErc20 } from './approvesAndChecksFns';
+import { isApproved, getERC20Allowance } from './approvesAndChecksFns';
 
 /**
  * Perform an erc20 transfer
@@ -43,7 +39,7 @@ import { getApproved, checkCurrentAllowanceOfErc20 } from './approvesAndChecksFn
  * const receipt = await erc20Transfer(params)
  *
  * @param {Erc20TransferParamsType} params - The parameters for the erc20 transfer function.
- * @returns {Promise<ContractReceipt>} - The transaction receipt.
+ * @returns {Promise<ContractTransaction>} - The transaction receipt.
  */
 
 export const erc20Transfer = async ({
@@ -56,9 +52,8 @@ export const erc20Transfer = async ({
   domainId,
   resourceId,
   feeData,
-  confirmations,
   overrides,
-}: Erc20TransferParamsType): Promise<ContractReceipt> => {
+}: Erc20TransferParamsType): Promise<ContractTransaction> => {
   // construct the deposit data
   const depositData = constructDepositDataEvmSubstrate(
     amount,
@@ -70,7 +65,7 @@ export const erc20Transfer = async ({
   const senderAddress = await bridgeInstance.signer.getAddress();
   console.log(
     'allowance before deposit',
-    await checkCurrentAllowanceOfErc20(senderAddress, tokenInstance, handlerAddress),
+    await getERC20Allowance(senderAddress, tokenInstance, handlerAddress),
   );
 
   // pass data to smartcontract function and create a transaction
@@ -80,7 +75,6 @@ export const erc20Transfer = async ({
     depositData,
     feeData,
     bridgeInstance,
-    confirmations,
     provider,
     overrides,
   );
@@ -105,7 +99,7 @@ export const erc20Transfer = async ({
  * const receipt = await erc721Transfer(params);
  *
  * @param {Erc721TransferParamsType} params - The parameters for ERC721 token transfer.
- * @returns {Promise<ContractReceipt>} A promise that resolves to the contract receipt.
+ * @returns {Promise<ContractTransaction>} A promise that resolves to the contract receipt.
  */
 export const erc721Transfer = async ({
   amountOrId: tokenId,
@@ -117,16 +111,15 @@ export const erc721Transfer = async ({
   domainId,
   resourceId,
   feeData,
-  confirmations,
   overrides,
-}: Erc721TransferParamsType): Promise<ContractReceipt> => {
+}: Erc721TransferParamsType): Promise<ContractTransaction> => {
   // construct the deposit data
   const depositData = createERCDepositData(tokenId, 20, recipientAddress);
 
   // Chcke approval for this particular tokenID
   console.log(
     'Approval before deposit',
-    await getApproved(Number(tokenId), tokenInstance, handlerAddress),
+    await isApproved(Number(tokenId), tokenInstance, handlerAddress),
   );
 
   // pass data to smartcontract function and create a transaction
@@ -136,7 +129,6 @@ export const erc721Transfer = async ({
     depositData,
     feeData,
     bridgeInstance,
-    confirmations,
     provider,
     overrides,
   );
@@ -155,9 +147,11 @@ export const erc721Transfer = async ({
  * const provider = new ethers.providers.JsonRpcProvider();
  * const overrides = { gasLimit: 200000 };
  *
- * executeDeposit(domainId, resourceId, depositData, feeData, bridgeInstance, confirmations, provider, overrides)
+ * const transaction = executeDeposit(domainId, resourceId, depositData, feeData, bridgeInstance, confirmations, provider, overrides)
  *   .then((receipt) => console.log('Deposit executed:', receipt))
  *   .catch((error) => console.error('Error on deposit execution:', error));
+ * // wait for 10 confiramtions to finalize the transaction
+ * const receipt = await transaction.wait(10)
  *
  * @param {string} domainId - The unique identifier for destination network.
  * @param {string} resourceId - The resource ID associated with the token.
@@ -167,7 +161,7 @@ export const erc721Transfer = async ({
  * @param {number} confirmations - The number of confirmations required before the transaction is considered successful.
  * @param {providers.Provider} provider - The provider used for the Ethereum network connection.
  * @param {ethers.PayableOverrides} [overrides] - Optional transaction overrides to be applied.
- * @returns {Promise<ContractReceipt>} A promise that resolves to a contract receipt once the deposit is executed.
+ * @returns {Promise<ContractTransaction>} A promise that resolves to a contract receipt once the deposit is executed.
  */
 export const executeDeposit = async (
   domainId: string,
@@ -175,10 +169,9 @@ export const executeDeposit = async (
   depositData: string,
   feeData: FeeDataResult,
   bridgeInstance: Bridge,
-  confirmations: number,
   provider: providers.Provider,
   overrides?: ethers.PayableOverrides,
-): Promise<ContractReceipt> => {
+): Promise<ContractTransaction> => {
   try {
     const gasPrice = await isEIP1559MaxFeePerGas(provider);
     const gasPriceStringify = typeof gasPrice !== 'boolean' ? gasPrice.toString() : undefined;
@@ -195,10 +188,9 @@ export const executeDeposit = async (
       feeData.feeData,
       payableOverrides,
     );
-    const depositAction = await tx.wait(confirmations);
-    return depositAction;
+    return tx;
   } catch (error) {
-    console.log('Error on executeDeposit', error);
+    console.error('Error on executeDeposit', error);
     return Promise.reject(error);
   }
 };
@@ -212,13 +204,13 @@ export const executeDeposit = async (
  * console.log('Deposit event:', depositEvent);
  * console.log('Deposit nonce:', depositEvent.args.depositNonce)
  *
- * @param {ethers.ContractReceipt} depositTx - The contract receipt containing the deposit transaction details.
+ * @param {ContractReceipt} depositTx - The contract receipt containing the deposit transaction details.
  * @param {Bridge} bridgeContract - The bridge contract instance used to query the deposit event.
  * @returns {Promise<DepositEvent>} A promise that resolves to the deposit event associated with the given contract receipt.
  */
 
 export const getDepositEventFromReceipt = async (
-  depositTx: ethers.ContractReceipt,
+  depositTx: ContractReceipt,
   bridgeContract: Bridge,
 ): Promise<DepositEvent> => {
   try {
@@ -245,15 +237,15 @@ export const getDepositEventFromReceipt = async (
  * const receipt = await processTokenTranfer({ depositParams, bridgeConfig, provider, overrides });
  * // use the getDepositEventFromReceipt method to get the depositNonce
  *
- * @param {ProcessTokenTranferParamsType} params - The parameters for processing the token transfer.
- * @returns {Promise<ethers.ContractReceipt>} - A promise that resolves to the transaction receipt once the transfer is complete.
+ * @param {TokenTransfer} params - The parameters for processing the token transfer.
+ * @returns {Promise<ContractTransaction>} - A promise that resolves to the transaction receipt once the transfer is complete.
  */
 export const processTokenTranfer = async ({
   depositParams,
   bridgeConfig,
   provider,
   overrides,
-}: ProcessTokenTranferParamsType): Promise<ethers.ContractReceipt> => {
+}: TokenTransfer): Promise<ContractTransaction> => {
   const { tokens, bridgeAddress, domainId, confirmations: defaultConfirmations } = bridgeConfig;
   const { resourceId } = depositParams;
 
@@ -275,22 +267,33 @@ export const processTokenTranfer = async ({
     overrides,
   };
 
-  if (selectedToken.type === 'erc721') {
-    const tokenInstance = ERC721MinterBurnerPauser__factory.connect(
-      selectedToken.address,
-      provider,
-    );
-    return erc721Transfer({
-      ...commonTransferParams,
-      handlerAddress: bridgeConfig.erc721HandlerAddress,
-      tokenInstance,
-    });
-  } else {
-    const tokenInstance = ERC20__factory.connect(selectedToken.address, provider);
-    return erc20Transfer({
-      ...commonTransferParams,
-      handlerAddress: bridgeConfig.erc20HandlerAddress,
-      tokenInstance,
-    });
+  const tokenTypeHandlers = {
+    erc721: async () => {
+      const tokenInstance = ERC721MinterBurnerPauser__factory.connect(
+        selectedToken.address,
+        provider,
+      );
+      return erc721Transfer({
+        ...commonTransferParams,
+        handlerAddress: bridgeConfig.erc721HandlerAddress,
+        tokenInstance,
+      });
+    },
+    erc20: async () => {
+      const tokenInstance = ERC20__factory.connect(selectedToken.address, provider);
+      return erc20Transfer({
+        ...commonTransferParams,
+        handlerAddress: bridgeConfig.erc20HandlerAddress,
+        tokenInstance,
+      });
+    },
+  };
+
+  const handleTokenTransfer = tokenTypeHandlers[selectedToken.type];
+
+  if (!handleTokenTransfer) {
+    throw Error(`Unsupported token type: ${selectedToken.type}`);
   }
+
+  return handleTokenTransfer();
 };
