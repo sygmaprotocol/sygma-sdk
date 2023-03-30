@@ -1049,7 +1049,7 @@ export class Sygma implements SygmaSDK {
     type: string,
     address: string,
     tokenAddress: string,
-    chain: 'chain1' | 'chain2',
+    chain: Directions,
   ): void {
     const tokenFound = this.bridgeSetup![chain as keyof BridgeData].tokens.find(
       token => token.address === tokenAddress,
