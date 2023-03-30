@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.2.1...sygma-sdk-core-v1.3.0) (2023-03-30)
+
+
+### Features
+
+* Extract deposit and approval functions to EVM folder from Sygma class ([#204](https://github.com/sygmaprotocol/sygma-sdk/issues/204)) ([b9396e3](https://github.com/sygmaprotocol/sygma-sdk/commit/b9396e341a69b453819cd9c94d34a0abfbf61170))
+* Methods to set fee settings and general usage with shared config ([#212](https://github.com/sygmaprotocol/sygma-sdk/issues/212)) ([e4b3eaa](https://github.com/sygmaprotocol/sygma-sdk/commit/e4b3eaa31ebbfd7503f8216919f2fed49491c121))
+
 ## [1.2.1](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.2.0...sygma-sdk-core-v1.2.1) (2023-03-20)
 
 
