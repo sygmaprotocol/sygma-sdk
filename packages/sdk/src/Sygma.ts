@@ -37,7 +37,7 @@ import {
   listTokensOfOwner,
 } from './utils';
 import { EvmBridge, TokenConfig } from './chains';
-import { calculateBasicfee, calculateDynamicFee, getFeeHandlerAddress } from './fee';
+import { calculateBasicfee, calculateDynamicFee, getFeeHandlerAddress } from './chains/EVM/fee';
 import Connector from './connectors/Connectors';
 import {
   createPermissionedGenericDepositData,
