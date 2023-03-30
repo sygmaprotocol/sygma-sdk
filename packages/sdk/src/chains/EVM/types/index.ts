@@ -37,7 +37,7 @@ export type FeeType = 'basic' | 'feeOracle' | 'none';
 /**
  *  The config of the bridge
  */
-export type ProcessTokenTranferBridgeConfigParamsType = {
+export BridgeConfigParam = {
   /** The address of the bridge contract. */
   bridgeAddress: string;
   /** The address of the ERC20 handler contract. */
