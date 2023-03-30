@@ -192,7 +192,7 @@ export async function isEIP1559MaxFeePerGas(provider: providers.Provider): Promi
     const { gasPrice } = feeData;
     return gasPrice as BigNumber;
   } catch (error) {
-    console.error('error getting EIP 1559');
+    console.error('error getting EIP 1559', error);
     return Promise.reject(error);
   }
 }
