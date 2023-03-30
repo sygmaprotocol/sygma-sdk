@@ -38,7 +38,7 @@ import {
   listTokensOfOwner,
 } from './utils';
 import { EvmBridge } from './chains';
-import { calculateBasicfee, calculateFeeData } from './fee';
+import { calculateBasicfee, calculateFeeData, getFeeHandlerAddress } from './fee';
 import Connector from './connectors/Connectors';
 import {
   createPermissionedGenericDepositData,
@@ -565,9 +565,12 @@ export class Sygma implements SygmaSDK {
     recipientAddress: string;
   }): Promise<FeeDataResult | Error | undefined> {
     const { amount, recipientAddress } = params;
+    console.log('🚀 ~ file: Sygma.ts:567 ~ Sygma ~ recipientAddress:', recipientAddress);
     const {
       feeSettings: { type },
     } = this.getSelectedToken();
+
+    console.warn('fee settings', this.getSelectedToken());
 
     if (type === 'none') {
       console.warn('No fee settings provided');
@@ -1065,5 +1068,25 @@ export class Sygma implements SygmaSDK {
       }
       return token;
     }) as TokenConfig[];
+  }
+
+  public async getFeeHandlerAddress(
+    signerOrProvider: ethers.providers.JsonRpcProvider | ethers.Signer,
+    feeRouterAddress: string,
+    domainId: string,
+    resourceId: string,
+  ): Promise<string | Error> {
+    try {
+      const feeHandlerAddress = await getFeeHandlerAddress(
+        signerOrProvider,
+        feeRouterAddress,
+        domainId,
+        resourceId,
+      );
+      return feeHandlerAddress;
+    } catch (error) {
+      console.error("Couldn't get fee handler address", error);
+      return error as Error;
+    }
   }
 }

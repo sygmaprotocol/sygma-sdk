@@ -6,7 +6,7 @@ export const getFeeHandlerAddress = async (
   feeRouterAddress: string,
   domainId: string,
   resourceId: string,
-): Promise<string | Error> => {
+): Promise<string> => {
   const feeHandlerContract = FeeHandlerRouter__factory.connect(feeRouterAddress, signerOrProvider);
   let feeHandlerAddress: string;
 
@@ -19,6 +19,6 @@ export const getFeeHandlerAddress = async (
     return feeHandlerAddress;
   } catch (error) {
     console.warn('Error fetching fee handler address', error);
-    return Promise.reject(new Error('Error fetching fee handler address'));
+    return Promise.reject(error);
   }
 };
