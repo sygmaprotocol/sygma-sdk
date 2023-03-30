@@ -37,7 +37,7 @@ export type FeeType = 'basic' | 'feeOracle' | 'none';
 /**
  *  The config of the bridge
  */
-export BridgeConfigParam = {
+export type BridgeConfigParam = {
   /** The address of the bridge contract. */
   bridgeAddress: string;
   /** The address of the ERC20 handler contract. */
@@ -69,7 +69,7 @@ export type TokenTransfer = {
   /** The information needed for processing the token transfer deposit. */
   depositParams: TokenDeposit;
   /** The bridge configuration parameters for processing the token transfer. */
-  bridgeConfig: ProcessTokenTranferBridgeConfigParamsType;
+  bridgeConfig: BridgeConfigParam;
   /** The provider used to interact with the blockchain network. */
   provider: providers.Provider;
   /** Optional overrides for the transaction, such as gas price, gas limit, or value. */
@@ -93,8 +93,6 @@ export type Erc20TransferParamsType = {
   bridgeInstance: Bridge;
   /** The fee data associated with the ERC20 token transfer, including the gas price and gas limit. */
   feeData: FeeDataResult;
-  /** The number of confirmations required for the ERC20 token transfer. */
-  confirmations: number;
   /** The provider used to interact with the blockchain network. */
   provider: providers.Provider;
   /** Optional overrides for the transaction, such as gas price, gas limit, or value. */
@@ -118,8 +116,6 @@ export type Erc721TransferParamsType = {
   bridgeInstance: Bridge;
   /** The fee data associated with the ERC721 token transfer. */
   feeData: FeeDataResult;
-  /** The number of confirmations required for transaction. */
-  confirmations: number;
   /** The provider used to interact with the blockchain network. */
   provider: providers.Provider;
   /** Optional overrides for the transaction, such as gas price, gas limit, or value. */
