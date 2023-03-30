@@ -43,7 +43,6 @@ describe('deposit functions', () => {
   let depositData: string;
   let feeData: FeeDataResult;
   let bridgeInstance: Bridge;
-  let confirmations: number;
   let provider: providers.Provider;
   let overrides: ethers.PayableOverrides;
   let handlerAddress: string;
@@ -60,7 +59,6 @@ describe('deposit functions', () => {
       erc20TokenAddress: '0x00',
     };
     bridgeInstance = { deposit: jest.fn() } as unknown as Bridge;
-    confirmations = 1;
     provider = jest.fn() as unknown as providers.Provider;
     overrides = { gasLimit: 30000 };
     handlerAddress = '0x9867';
