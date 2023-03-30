@@ -39,7 +39,7 @@ import { isApproved, getERC20Allowance } from './approvesAndChecksFns';
  * const receipt = await erc20Transfer(params)
  *
  * @param {Erc20TransferParamsType} params - The parameters for the erc20 transfer function.
- * @returns {Promise<ContractReceipt>} - The transaction receipt.
+ * @returns {Promise<ContractTransaction>} - The transaction receipt.
  */
 
 export const erc20Transfer = async ({
@@ -99,7 +99,7 @@ export const erc20Transfer = async ({
  * const receipt = await erc721Transfer(params);
  *
  * @param {Erc721TransferParamsType} params - The parameters for ERC721 token transfer.
- * @returns {Promise<ContractReceipt>} A promise that resolves to the contract receipt.
+ * @returns {Promise<ContractTransaction>} A promise that resolves to the contract receipt.
  */
 export const erc721Transfer = async ({
   amountOrId: tokenId,
