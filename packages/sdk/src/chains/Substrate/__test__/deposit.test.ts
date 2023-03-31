@@ -1,6 +1,5 @@
 import { ApiPromise } from '@polkadot/api';
 import { BN } from '@polkadot/util';
-import { web3FromAddress } from '@polkadot/extension-dapp';
 import { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 import { XcmMultiAssetIdType } from '../types';
 import { DepositCallbacksType } from '../utils/depositFns';

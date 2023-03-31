@@ -4,10 +4,10 @@ import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 
 import { substrateConfig, evmSetupList } from "../config";
 import { reducer, initialState, StateType } from './state';
+import { loadAccounts } from "../utils/loadAccounts";
 
 const {
   substrateSocketConnect,
-  loadAccounts,
   getNativeTokenBalance,
   getAssetBalance,
   getBasicFee,
