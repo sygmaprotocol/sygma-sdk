@@ -1,9 +1,10 @@
 import React, { useReducer, useContext, useEffect } from "react";
 import { Substrate, EVM } from "@buildwithsygma/sygma-sdk-core";
-import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
+import { web3FromAddress } from "@polkadot/extension-dapp";
+import type { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
 
 import { substrateConfig, evmSetupList } from "../config";
-import { reducer, initialState, StateType } from './state';
+import { reducer, initialState, StateType } from "./state";
 import { loadAccounts } from "../utils/loadAccounts";
 
 const {
@@ -12,6 +13,7 @@ const {
   getAssetBalance,
   getBasicFee,
   deposit,
+  handleTxExtrinsicResult,
 } = Substrate;
 
 const {
@@ -111,7 +113,10 @@ const SubstrateContextProvider = (props: {
   }, [state.selectedAsset, state.api, state.destinationDomainId]);
 
   function setCurrentAccount(acct: unknown) {
-    dispatch({ type: "SET_CURRENT_ACCOUNT", payload: (acct as InjectedAccountWithMeta) });
+    dispatch({
+      type: "SET_CURRENT_ACCOUNT",
+      payload: acct as InjectedAccountWithMeta,
+    });
   }
 
   function setSelectedAsset(assetId: number) {
@@ -154,43 +159,48 @@ const SubstrateContextProvider = (props: {
     }
   }, [state.depositNonce]);
 
-  function makeDeposit(
+  async function makeDeposit(
     amount: string,
     address: string,
     destinationDomainId: string
   ) {
-    return deposit(
+    const injector = await web3FromAddress(state.currentAccount!.address);
+    const unsub = await deposit(
       state.api!,
-      state.currentAccount!,
       state.selectedAsset!.xsmMultiAssetId,
       amount,
       destinationDomainId,
-      address,
-      {
-        onInBlock: (extrensicStatus) => {
-          dispatch({ type: "SET_TRANSFER_STATUS", payload: "In block" });
-          dispatch({
-            type: "SET_TRANSFER_STATUS_BLOCK",
-            payload: extrensicStatus.asInBlock.toString(),
-          });
-        },
-        onFinalized: (extrensicStatus) => {
-          dispatch({ type: "SET_TRANSFER_STATUS", payload: "Finalized" });
-          dispatch({
-            type: "SET_TRANSFER_STATUS_BLOCK",
-            payload: extrensicStatus.asFinalized.toString(),
-          });
-        },
-        onDepositEvent: (depositData) => {
-          dispatch({
-            type: "SET_DEPOSIT_NONCE",
-            payload: Number(depositData.depositNonce),
-          });
-          dispatch({
-            type: "SET_EVM_STATUS",
-            payload: `Awaiting for ProposalExecution event for depositNonce: ${depositData.depositNonce}`,
-          });
-        },
+      address
+    ).signAndSend(
+      state.currentAccount!.address,
+      { signer: injector.signer },
+      (result) => {
+        handleTxExtrinsicResult(state.api!, result, unsub, {
+          onInBlock: (extrensicStatus) => {
+            dispatch({ type: "SET_TRANSFER_STATUS", payload: "In block" });
+            dispatch({
+              type: "SET_TRANSFER_STATUS_BLOCK",
+              payload: extrensicStatus.asInBlock.toString(),
+            });
+          },
+          onFinalized: (extrensicStatus) => {
+            dispatch({ type: "SET_TRANSFER_STATUS", payload: "Finalized" });
+            dispatch({
+              type: "SET_TRANSFER_STATUS_BLOCK",
+              payload: extrensicStatus.asFinalized.toString(),
+            });
+          },
+          onDepositEvent: (depositData) => {
+            dispatch({
+              type: "SET_DEPOSIT_NONCE",
+              payload: Number(depositData.depositNonce),
+            });
+            dispatch({
+              type: "SET_EVM_STATUS",
+              payload: `Awaiting for ProposalExecution event for depositNonce: ${depositData.depositNonce}`,
+            });
+          },
+        });
       }
     );
   }
