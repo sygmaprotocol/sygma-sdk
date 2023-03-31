@@ -89,6 +89,13 @@ export const throwErrorIfAny = (
 /**
  * Handles the transaction extrinsic result.
  *
+ * @example
+ * handleTxExtrinsicResult(api, result, unsub, {
+ *   onInBlock: (status) => console.log('Transaction in block:', status),
+ *   onDepositEvent: (data) => console.log('Deposit event data:', data),
+ *   onFinalized: (status) => console.log('Transaction finalized:', status),
+ * });
+ *
  * @param {ApiPromise} api - The API promise object.
  * @param {SubmittableResult} result - The submittable result object.
  * @param {Function} unsub - A function to stop listen for events.
@@ -132,7 +139,7 @@ export const handleTxExtrinsicResult = (
  * @param {string} domainId - The domain identifier.
  * @returns {object} - The destination multilocation object.
  */
-const createDestIdMultilocationData = (address: string, domainId: string): object => ({
+export const createDestIdMultilocationData = (address: string, domainId: string): object => ({
   parents: 0,
   interior: {
     x2: [{ generalKey: address }, { generalKey: numberToHex(Number(domainId)) }],
@@ -147,7 +154,7 @@ const createDestIdMultilocationData = (address: string, domainId: string): objec
  * @param {string} amount - The deposit amount.
  * @returns {object} - The asset object.
  */
-const createMultiAssetData = (
+export const createMultiAssetData = (
   xcmMultiAssetId: XcmMultiAssetIdType,
   api: ApiPromise,
   amount: string,
@@ -163,7 +170,7 @@ const createMultiAssetData = (
  *
  * @example
  * const injector = await web3FromAddress(currentAccount.address);
- * const unsub = await api.tx.sygmaBridge.deposit(asset, destIdMultilocation)
+ * const unsub = await deposit(api, asset, amount, domainId, address)
  *   .signAndSend(currentAccount.address, { signer: injector.signer }, result => {
  *      handleTxExtrinsicResult(api, result, unsub, callbacks);
  *    });
