@@ -1,7 +1,6 @@
 import { BigNumber, ethers } from 'ethers';
 import { BasicFeeHandler__factory } from '@buildwithsygma/sygma-contracts';
-import { FeeDataResult } from '../../types';
-import { calculateBasicfee } from '../basicFee';
+import { calculateBasicfee } from '../fee/basicFee';
 
 jest.mock(
   '@buildwithsygma/sygma-contracts',
@@ -33,7 +32,7 @@ describe('CalculateBasicFee', () => {
       recipientAddress: '0xF4314cb9046bECe6AA54bb9533155434d0c76909',
     });
 
-    const { calculatedRate } = res as FeeDataResult;
+    const { calculatedRate } = res;
 
     expect(calculatedRate).toBe('0.0000001');
   });
@@ -60,7 +59,7 @@ describe('CalculateBasicFee', () => {
       });
     } catch (e) {
       expect(console.error).toHaveBeenCalled();
-      expect((e as Error).message).toBe('Invalidad basic fee response');
+      expect((e as Error).message).toBe('BasicFeeHandlerInstance.calculateFee is not a function');
     }
   });
 });
