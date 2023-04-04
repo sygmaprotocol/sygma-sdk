@@ -61,6 +61,7 @@ describe('getRecipientAddressInBytes', () => {
     const expectedResult = utils.arrayify(evmAddress);
 
     expect(result).toEqual(expectedResult);
+    expect(result).toBeInstanceOf(Uint8Array);
   });
 
   it('should convert a Substrate multilocation to a Uint8Array of bytes', () => {
@@ -83,5 +84,6 @@ describe('getRecipientAddressInBytes', () => {
       .toU8a();
 
     expect(result).toEqual(expectedResult);
+    expect(result).toBeInstanceOf(Uint8Array);
   });
 });
