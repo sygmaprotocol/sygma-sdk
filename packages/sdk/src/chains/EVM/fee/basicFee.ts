@@ -42,7 +42,6 @@ export const calculateBasicfee = async ({
   recipientAddress: string;
 }): Promise<FeeDataResult> => {
   const depositData = createERCDepositData(tokenAmount, recipientAddress);
-  // WHY 0X00 AND NOT 0X0?
   const feeData = '0x00';
   const BasicFeeHandlerInstance = BasicFeeHandler.connect(basicFeeHandlerAddress, provider);
 
