@@ -1,5 +1,7 @@
 import { utils, BigNumber } from 'ethers';
-import { decodeAddress } from '@polkadot/util-crypto';
+import { TypeRegistry } from '@polkadot/types/create';
+
+const registry = new TypeRegistry();
 
 /**
  * @name toHex
@@ -36,29 +38,8 @@ export const createResourceID = (contractAddress: string, domainID: number): str
 };
 
 /**
- * @name createERCDepositData
- * @description creates the deposit data to use on bridge.deposit method interface
- * @param tokenAmountOrID - number | string | BigNumber of the amount of token or Id fo the token
- * @param lenRecipientAddress
- * @param recipientAddress
- * @returns {string}
- */
-export const createERCDepositData = (
-  tokenAmountOrID: string | number | BigNumber,
-  lenRecipientAddress: number,
-  recipientAddress: string,
-): string => {
-  return (
-    '0x' +
-    toHex(tokenAmountOrID, 32).substr(2) + // Token amount or ID to deposit (32 bytes)
-    toHex(lenRecipientAddress, 32).substr(2) + // len(recipientAddress)          (32 bytes)
-    recipientAddress.substr(2)
-  ); // recipientAddress               (?? bytes)
-};
-
-/**
- * @name constructMainDepositData
- * @description Constructs the main deposit data for a given token and recipient.
+ * Constructs the main deposit data for a given token and recipient.
+ *
  * @param {BigNumber} tokenStats - The amount of ERC20 tokens or the token ID of ERC721 tokens.
  * @param {Uint8Array} destRecipient - The recipient address in bytes array
  * @returns {Uint8Array} The main deposit data in bytes array
@@ -80,30 +61,60 @@ export const constructMainDepositData = (
  *
  * @example
  * // EVM address
- * constructDepositDataEvmSubstrate('1', '0x1234567890123456789012345678901234567890', 18);
+ * createERCDepositData('1', '0x1234567890123456789012345678901234567890', 18);
  *
  * @example
- * // Substrate address
- * constructDepositDataEvmSubstrate('2', '5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt', 12);
+ * // Substrate MultiLocation
+ * const addressPublicKeyInBytes = decodeAddress(
+ *   '5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt',
+ * );
+ * const addressPublicKeyHexString = ethers.utils.hexlify(addressPublicKeyInBytes);
+ * // console.log(addressPublicKeyHexString) => "0x06a220edf5f82b84fc5f9270f8a30a17636bf29c05a5c16279405ca20918aa39"
+ * const multiLocation = JSON.stringify({
+ *   parents: 0,
+ *     interior: {
+ *       X1: {
+ *         AccountId32: {
+ *           network: { any: null },
+ *           id: addressPublicKeyHexString,
+ *         },
+ *       },
+ *     },
+ *   })
+ * createERCDepositData('2', multiLocation);
  *
  * @param {string} tokenAmount - The amount of tokens to be transferred.
  * @param {string} recipientAddress - The address of the recipient.
  * @param {number} [decimals=18] - The number of decimals of the token.
  * @returns {string} The deposit data as hex string
  */
-export const constructDepositDataEvmSubstrate = (
+export const createERCDepositData = (
   tokenAmount: string,
   recipientAddress: string,
-  decimals: number = 18,
+  decimals = 18,
 ): string => {
   const convertedAmount = utils.parseUnits(tokenAmount, decimals);
-  // convert to bytes array
-  const recipientAddressInBytes = utils.isAddress(recipientAddress)
-    ? utils.arrayify(recipientAddress)
-    : decodeAddress(recipientAddress);
+  const recipientAddressInBytes = getRecipientAddressInBytes(recipientAddress);
   const depositDataBytes = constructMainDepositData(convertedAmount, recipientAddressInBytes);
   const depositData = utils.hexlify(depositDataBytes);
+
   return depositData;
+};
+
+/**
+ * Converts a recipient address to a Uint8Array of bytes.
+ *
+ * @param {string} recipientAddress - The recipient address, either as a string (EVM address) or a JSON object (Substrate multilocation).
+ * @returns {Uint8Array} The recipient address as a Uint8Array of bytes
+ */
+export const getRecipientAddressInBytes = (recipientAddress: string): Uint8Array => {
+  if (utils.isAddress(recipientAddress)) {
+    // EVM address
+    return utils.arrayify(recipientAddress);
+  }
+
+  // Substrate multilocation
+  return registry.createType('MultiLocation', JSON.parse(recipientAddress)).toU8a();
 };
 
 /**

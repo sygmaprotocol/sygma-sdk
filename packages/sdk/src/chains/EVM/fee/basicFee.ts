@@ -1,7 +1,7 @@
 import { BasicFeeHandler__factory as BasicFeeHandler } from '@buildwithsygma/sygma-contracts';
 import { ethers } from 'ethers';
 import { FeeDataResult } from '../../../types';
-import { constructDepositDataEvmSubstrate } from '../../../utils/helpers';
+import { createERCDepositData } from '../../../utils/helpers';
 
 /**
  * Calculates and returns the feeData object after query the FeeOracle service
@@ -41,8 +41,7 @@ export const calculateBasicfee = async ({
   tokenAmount: string;
   recipientAddress: string;
 }): Promise<FeeDataResult> => {
-  const depositData = constructDepositDataEvmSubstrate(tokenAmount, recipientAddress);
-  // WHY 0X00 AND NOT 0X0?
+  const depositData = createERCDepositData(tokenAmount, recipientAddress);
   const feeData = '0x00';
   const BasicFeeHandlerInstance = BasicFeeHandler.connect(basicFeeHandlerAddress, provider);
 
