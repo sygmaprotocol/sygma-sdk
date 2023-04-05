@@ -65,13 +65,18 @@ export const constructMainDepositData = (
  *
  * @example
  * // Substrate MultiLocation
+ * const addressPublicKeyInBytes = decodeAddress(
+ *   '5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt',
+ * );
+ * const addressPublicKeyHexString = ethers.utils.hexlify(addressPublicKeyInBytes);
+ * // console.log(addressPublicKeyHexString) => "0x06a220edf5f82b84fc5f9270f8a30a17636bf29c05a5c16279405ca20918aa39"
  * const multiLocation = JSON.stringify({
  *   parents: 0,
  *     interior: {
  *       X1: {
  *         AccountId32: {
  *           network: { any: null },
- *           id: "0x06a220edf5f82b84fc5f9270f8a30a17636bf29c05a5c16279405ca20918aa39",
+ *           id: addressPublicKeyHexString,
  *         },
  *       },
  *     },
