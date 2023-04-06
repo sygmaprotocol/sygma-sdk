@@ -4,12 +4,26 @@ import "./App.css";
 import { EvmContextProvider, useEvm } from "./evm-lib";
 
 import UserInfo from "./components/UserInfo";
+import Form from "./components/Form";
+
+const Loader = (text: string): JSX.Element => <div>{text}</div>;
 
 function Main(): JSX.Element {
+  const {
+    state: { signer },
+  } = useEvm();
+
+  if (!signer) {
+    return Loader("Please connect with MetaMask");
+  }
 
   return (
     <div className="App">
-      <UserInfo />
+      <div>
+        <h2 className="mainTitle">Minimal example Evm to Substrate</h2>
+        <UserInfo />
+        <Form />
+      </div>
     </div>
   );
 }

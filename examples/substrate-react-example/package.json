@@ -15,7 +15,8 @@
     "bn.js": "^5.2.1",
     "dotenv": "^16.0.3",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.30.0"
   },
   "devDependencies": {
     "@polkadot/api": "^9.9.1",

@@ -1,12 +1,56 @@
 import React, { useEffect, useState } from "react";
-// import { formatBalance } from "@polkadot/util";
-// import { useSubstrateState, useSubstrate } from "../substrate-lib";
-// import { substrateConfig } from "../config";
+import { utils } from "ethers";
+import { useEvm } from "../evm-lib";
 
 function Main(): JSX.Element {
+  const {
+    state: {
+      currentAccount,
+      ethBalance,
+      selectedErc20Balance,
+      basicFee,
+      erc20AllowanceForBridge,
+      erc20AllowanceForFeeHandler
+    },
+  } = useEvm();
   return (
     <div>
-      <h1>Evm Account Info</h1>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <h3>Account data</h3>
+        Account address: <span>{currentAccount}</span>
+        {ethBalance && (
+          <p>
+            ETH balance: <span>{utils.formatEther(ethBalance)}</span>
+          </p>
+        )}
+        {selectedErc20Balance && (
+          <p>
+            Balance of ERC20 tokens:{" "}
+            <strong>{utils.formatUnits(selectedErc20Balance, 18)}</strong>
+          </p>
+        )}
+        {basicFee && (
+          <p>
+            Basic fee: <strong>{basicFee.calculatedRate.toString()}</strong>
+          </p>
+        )}
+        <p>
+          ERC20 allowance for Bridge:{" "}
+          <strong>{utils.formatUnits(erc20AllowanceForBridge ?? 0, 18)}</strong>
+        </p>
+        <p>
+          ERC20 allowance for FeeHandler:{" "}
+          <strong>
+            {utils.formatUnits(erc20AllowanceForFeeHandler ?? 0, 18)}
+          </strong>
+        </p>
+      </div>
     </div>
   );
 }
@@ -14,8 +58,8 @@ function Main(): JSX.Element {
 export default function UserInfo(
   props: JSX.IntrinsicAttributes
 ): JSX.Element | null {
-  // const state = useSubstrateState();
-  // const api = state?.api;
-  // return api?.rpc && api.rpc.state ? <Main {...props} /> : null;
-  return <Main {...props} />;
+  const {
+    state: { signer },
+  } = useEvm();
+  return signer ? <Main {...props} /> : null;
 }

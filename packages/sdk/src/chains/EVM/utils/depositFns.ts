@@ -32,11 +32,11 @@ import { isApproved, getERC20Allowance } from './approvesAndChecksFns';
  *   domainId: '1',
  *   resourceId: '0x000000000000000001',
  *   feeData: { ... }, // fee data
- *   confirmations: 6,
  *   provider: new ethers.providers.Web3Provider(window.ethereum),
  *   overrides: { gasLimit: 1000000 } // optional
  * }
- * const receipt = await erc20Transfer(params)
+ * const transaction = await erc20Transfer(params)
+ * const receipt = await transaction.wait(1)
  *
  * @param {Erc20TransferParamsType} params - The parameters for the erc20 transfer function.
  * @returns {Promise<ContractTransaction>} - The transaction receipt.
@@ -47,11 +47,11 @@ export const erc20Transfer = async ({
   recipientAddress,
   tokenInstance,
   bridgeInstance,
-  provider,
   handlerAddress,
   domainId,
   resourceId,
   feeData,
+  provider,
   overrides,
 }: Erc20TransferParamsType): Promise<ContractTransaction> => {
   // construct the deposit data
