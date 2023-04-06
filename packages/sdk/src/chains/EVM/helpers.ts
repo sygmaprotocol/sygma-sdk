@@ -1,6 +1,9 @@
 import { utils, BigNumber, providers } from 'ethers';
 import { decodeAddress } from '@polkadot/util-crypto';
+import { TypeRegistry } from '@polkadot/types/create';
 import { ERC20 } from '@buildwithsygma/sygma-contracts';
+
+const registry = new TypeRegistry();
 
 /**
  * @name toHex
@@ -37,24 +40,64 @@ export const createResourceID = (contractAddress: string, domainID: number): str
 };
 
 /**
- * @name createERCDepositData
- * @description creates the deposit data to use on bridge.deposit method interface
- * @param tokenAmountOrID - number | string | BigNumber of the amount of token or Id fo the token
- * @param lenRecipientAddress
- * @param recipientAddress
- * @returns {string}
+ * Constructs the deposit data for an EVM-Substrate bridge transaction.
+ *
+ * @example
+ * // EVM address
+ * createERCDepositData('1', '0x1234567890123456789012345678901234567890', 18);
+ *
+ * @example
+ * // Substrate MultiLocation
+ * const addressPublicKeyInBytes = decodeAddress(
+ *   '5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt',
+ * );
+ * const addressPublicKeyHexString = ethers.utils.hexlify(addressPublicKeyInBytes);
+ * // console.log(addressPublicKeyHexString) => "0x06a220edf5f82b84fc5f9270f8a30a17636bf29c05a5c16279405ca20918aa39"
+ * const multiLocation = JSON.stringify({
+ *   parents: 0,
+ *     interior: {
+ *       X1: {
+ *         AccountId32: {
+ *           network: { any: null },
+ *           id: addressPublicKeyHexString,
+ *         },
+ *       },
+ *     },
+ *   })
+ * createERCDepositData('2', multiLocation);
+ *
+ * @param {string} tokenAmount - The amount of tokens to be transferred.
+ * @param {string} recipientAddress - The address of the recipient.
+ * @param {number} [decimals=18] - The number of decimals of the token.
+ * @returns {string} The deposit data as hex string
  */
 export const createERCDepositData = (
-  tokenAmountOrID: string | number | BigNumber,
-  lenRecipientAddress: number,
+  tokenAmount: string,
   recipientAddress: string,
+  decimals = 18,
 ): string => {
-  return (
-    '0x' +
-    toHex(tokenAmountOrID, 32).substring(2) + // Token amount or ID to deposit (32 bytes)
-    toHex(lenRecipientAddress, 32).substring(2) + // len(recipientAddress) (32 bytes)
-    recipientAddress.substring(2) // recipientAddress (?? bytes)
-  );
+  const convertedAmount = utils.parseUnits(tokenAmount, decimals);
+  const recipientAddressInBytes = getRecipientAddressInBytes(recipientAddress);
+  const depositDataBytes = constructMainDepositData(convertedAmount, recipientAddressInBytes);
+  const depositData = utils.hexlify(depositDataBytes);
+
+  return depositData;
+};
+
+/**
+ * Converts a recipient address to a Uint8Array of bytes.
+ *
+ * @param {string} recipientAddress - The recipient address, either as a string (EVM address) or a JSON object (Substrate multilocation).
+ * @returns {Uint8Array} The recipient address as a Uint8Array of bytes
+ */
+export const getRecipientAddressInBytes = (recipientAddress: string): Uint8Array => {
+  if (utils.isAddress(recipientAddress)) {
+    // EVM address
+    return utils.arrayify(recipientAddress);
+  }
+
+  // Substrate multilocation
+  return registry.createType('MultiLocation', JSON.parse(recipientAddress)).toU8a();
 };
 
 /**

@@ -55,7 +55,7 @@ export const erc20Transfer = async ({
   overrides,
 }: Erc20TransferParamsType): Promise<ContractTransaction> => {
   // construct the deposit data
-  const depositData = constructDepositDataEvmSubstrate(
+  const depositData = createERCDepositData(
     amount,
     recipientAddress,
     await getTokenDecimals(tokenInstance),
@@ -114,7 +114,7 @@ export const erc721Transfer = async ({
   overrides,
 }: Erc721TransferParamsType): Promise<ContractTransaction> => {
   // construct the deposit data
-  const depositData = createERCDepositData(tokenId, 20, recipientAddress);
+  const depositData = createERCDepositData(tokenId, recipientAddress);
 
   // Chcke approval for this particular tokenID
   console.log(
