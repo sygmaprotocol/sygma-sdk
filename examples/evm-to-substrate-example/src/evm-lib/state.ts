@@ -18,7 +18,6 @@ export type StateType = {
   selectedErc20Balance: BigNumber | null;
   basicFee: FeeDataResult | null;
   erc20AllowanceForBridge: BigNumber | null;
-  erc20AllowanceForFeeHandler: BigNumber | null;
   destinationDomainId: number;
   homeChainId: number;
   transferStatus: string | null;
@@ -45,7 +44,6 @@ export const initialState: StateType = {
   selectedErc20Balance: null,
   basicFee: null,
   erc20AllowanceForBridge: null,
-  erc20AllowanceForFeeHandler: null,
   destinationDomainId: 3,
   homeChainId: 1,
   transferStatus: "Init",
@@ -101,11 +99,6 @@ export const reducer = (state: StateType, action: ActionType): StateType => {
       return { ...state, selectedErc20Instance: action.payload as ERC20 };
     case "SET_ERC20_ALLOWANCE_FOR_BRIDGE":
       return { ...state, erc20AllowanceForBridge: action.payload as BigNumber };
-    case "SET_ERC20_ALLOWANCE_FOR_FEE_HANDLER":
-      return {
-        ...state,
-        erc20AllowanceForFeeHandler: action.payload as BigNumber,
-      };
     case "SET_BASIC_FEE":
       return { ...state, basicFee: action.payload as FeeDataResult };
     case "SET_TRANSFER_STATUS":

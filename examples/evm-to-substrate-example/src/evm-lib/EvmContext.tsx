@@ -4,6 +4,7 @@ import {
   ERC20__factory,
   Bridge__factory,
 } from "@buildwithsygma/sygma-contracts";
+import { decodeAddress } from "@polkadot/util-crypto";
 import { Substrate, EVM } from "@buildwithsygma/sygma-sdk-core";
 
 import { evmSetupList } from "../config";
@@ -110,20 +111,11 @@ const EvmContextProvider = (props: {
 
         const erc20AllowanceForBridge = await erc20TokenInstance.allowance(
           currentAccountAddress,
-          evmConfig.bridgeAddress
+          evmConfig.erc20HandlerAddress
         );
         dispatch({
           type: "SET_ERC20_ALLOWANCE_FOR_BRIDGE",
           payload: erc20AllowanceForBridge,
-        });
-
-        const erc20AllowanceForFeeHandler = await erc20TokenInstance.allowance(
-          currentAccountAddress,
-          selectedErc20TokenConfig.feeSettings.address
-        );
-        dispatch({
-          type: "SET_ERC20_ALLOWANCE_FOR_FEE_HANDLER",
-          payload: erc20AllowanceForFeeHandler,
         });
 
       })();
@@ -174,7 +166,6 @@ const EvmContextProvider = (props: {
     console.log("makeDeposit", amount, address, destinationDomainId);
     const {
       erc20AllowanceForBridge,
-      erc20AllowanceForFeeHandler,
       selectedErc20Instance,
       selectedErc20TokenConfig,
       selectedEvmConfig,
@@ -189,21 +180,29 @@ const EvmContextProvider = (props: {
           erc20AllowanceForBridge!.sub(amountInWei);
         await approveForBridge(allowedAmountForBridge.abs());
       }
-      if (erc20AllowanceForFeeHandler!.lt(amountInWei)) {
-        const allowedAmountForFeeHandler =
-          erc20AllowanceForFeeHandler!.sub(amountInWei);
-        await approveForFeeHandler(allowedAmountForFeeHandler.abs());
-      }
+
       const bridgeInstance = Bridge__factory.connect(
         selectedEvmConfig!.bridgeAddress,
         signer!
       );
-      const destinationMultiLocation = {
-
-      }
+      const addressPublicKeyInBytes = decodeAddress(address);
+      const addressPublicKeyHexString = ethers.utils.hexlify(
+        addressPublicKeyInBytes
+      );
+      const destinationMultiLocation = JSON.stringify({
+        parents: 0,
+        interior: {
+          X1: {
+            AccountId32: {
+              network: { any: null },
+              id: addressPublicKeyHexString,
+            },
+          },
+        },
+      });
       const depositTransaction = await erc20Transfer({
         amountOrId: amount,
-        recipientAddress: address,
+        recipientAddress: destinationMultiLocation,
         tokenInstance: selectedErc20Instance!,
         bridgeInstance,
         handlerAddress: selectedEvmConfig!.erc20HandlerAddress,
@@ -240,22 +239,6 @@ const EvmContextProvider = (props: {
       amount,
       selectedErc20Instance!,
       selectedEvmConfig!.erc20HandlerAddress,
-      1,
-      {
-        gasPrice,
-      }
-    );
-  }
-
-  async function approveForFeeHandler(amount: BigNumber): Promise<void> {
-    const { selectedErc20Instance, selectedErc20TokenConfig, signer } = state;
-    const gasPrice = await isEIP1559MaxFeePerGas(
-      signer!.provider as providers.Web3Provider
-    );
-    await approve(
-      amount,
-      selectedErc20Instance!,
-      selectedErc20TokenConfig!.address,
       1,
       {
         gasPrice,

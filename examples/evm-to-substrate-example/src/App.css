@@ -57,3 +57,8 @@
   font-weight: 800;
   border-radius: 5px;
 }
+
+p {
+  margin: 5px 0;
+  padding: 0;
+}

@@ -10,7 +10,6 @@ function Main(): JSX.Element {
       selectedErc20Balance,
       basicFee,
       erc20AllowanceForBridge,
-      erc20AllowanceForFeeHandler
     },
   } = useEvm();
   return (
@@ -37,18 +36,13 @@ function Main(): JSX.Element {
         )}
         {basicFee && (
           <p>
-            Basic fee: <strong>{basicFee.calculatedRate.toString()}</strong>
+            Basic fee(ETH):{" "}
+            <strong>{basicFee.calculatedRate.toString()}</strong>
           </p>
         )}
         <p>
           ERC20 allowance for Bridge:{" "}
           <strong>{utils.formatUnits(erc20AllowanceForBridge ?? 0, 18)}</strong>
-        </p>
-        <p>
-          ERC20 allowance for FeeHandler:{" "}
-          <strong>
-            {utils.formatUnits(erc20AllowanceForFeeHandler ?? 0, 18)}
-          </strong>
         </p>
       </div>
     </div>
