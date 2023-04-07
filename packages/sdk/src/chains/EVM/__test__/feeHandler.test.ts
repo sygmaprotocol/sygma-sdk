@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { getFeeHandlerAddress } from '../feeHandler';
+import { getFeeHandlerAddress } from '../fee/feeHandler';
 
 jest.mock(
   '@buildwithsygma/sygma-contracts',
