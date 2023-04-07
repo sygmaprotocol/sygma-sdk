@@ -10,12 +10,7 @@ import { DepositEvent } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge
 import { FeeDataResult } from 'types';
 import { Erc20TransferParamsType, Erc721TransferParamsType, TokenTransfer } from '../types';
 
-import {
-  constructDepositDataEvmSubstrate,
-  createERCDepositData,
-  getTokenDecimals,
-  isEIP1559MaxFeePerGas,
-} from '../helpers';
+import { createERCDepositData, getTokenDecimals, isEIP1559MaxFeePerGas } from '../helpers';
 
 import { isApproved, getERC20Allowance } from './approvesAndChecksFns';
 
