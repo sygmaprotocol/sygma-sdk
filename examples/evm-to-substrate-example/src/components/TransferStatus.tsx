@@ -1,16 +1,24 @@
 import React from "react";
-import { useSubstrateState } from "../substrate-lib";
+import { useEvm } from "../evm-lib";
 
-function TransferStatus() {
-  const { transferStatus, transferStatusBlock, evmStatus, proposalExecution } =
-    useSubstrateState();
+function TransferStatus(): JSX.Element {
+  const {
+    state: {
+      transferStatus,
+      transferStatusBlock,
+      substrateStatus,
+      proposalExecution,
+    },
+  } = useEvm();
   return (
     <div>
-      {transferStatus && <div>Substrate transfer status: {transferStatus}</div>}
+      {transferStatus && <div>EVM transfer status: {transferStatus}</div>}
       {transferStatusBlock && <div>Block: {transferStatusBlock}</div>}
-      {evmStatus && <div>EVM transfer status: {evmStatus}</div>}
+      {substrateStatus && (
+        <div>Substrate transfer status: {substrateStatus}</div>
+      )}
       {proposalExecution && (
-        <div>ProposalExecution tx: {proposalExecution}</div>
+        <div>ProposalExecution data: {proposalExecution}</div>
       )}
     </div>
   );

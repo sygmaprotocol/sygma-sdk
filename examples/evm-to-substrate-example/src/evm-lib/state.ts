@@ -1,4 +1,7 @@
 import { providers, BigNumber } from "ethers";
+import jsonrpc from "@polkadot/types/interfaces/jsonrpc";
+import { ApiPromise } from "@polkadot/api";
+import { DefinitionRpcExt } from "@polkadot/types/types";
 import {
   EvmBridgeSetup,
   TokenConfig,
@@ -6,7 +9,16 @@ import {
 } from "@buildwithsygma/sygma-sdk-core";
 import { ERC20 } from "@buildwithsygma/sygma-contracts";
 
+import { substrateConfig } from "../config";
+
+const connectedSocket = substrateConfig.provider_socket;
+
 export type StateType = {
+  socket: string;
+  jsonrpc: {
+    [x: string]: Record<string, DefinitionRpcExt>;
+  };
+  api: ApiPromise | null;
   apiError: unknown;
   apiState: string | null;
   selectedEvmConfig: EvmBridgeSetup | null;
@@ -23,7 +35,7 @@ export type StateType = {
   transferStatus: string | null;
   transferStatusBlock: string | null;
   depositNonce: number | null;
-  evmStatus: string | null;
+  substrateStatus: string | null;
   proposalExecution: string | null;
 };
 type ActionType = { type: string; payload?: unknown };
@@ -33,6 +45,9 @@ type ActionType = { type: string; payload?: unknown };
  */
 export const initialState: StateType = {
   // These are the states
+  socket: connectedSocket,
+  jsonrpc: { ...jsonrpc },
+  api: null,
   apiError: null,
   apiState: null,
   selectedEvmConfig: null,
@@ -44,12 +59,12 @@ export const initialState: StateType = {
   selectedErc20Balance: null,
   basicFee: null,
   erc20AllowanceForBridge: null,
-  destinationDomainId: 3,
+  destinationDomainId: Number(substrateConfig.domainId),
   homeChainId: 1,
   transferStatus: "Init",
   transferStatusBlock: null,
   depositNonce: null,
-  evmStatus: "Init",
+  substrateStatus: "Init",
   proposalExecution: null,
 };
 
@@ -64,7 +79,7 @@ export const reducer = (state: StateType, action: ActionType): StateType => {
     case "CONNECT":
       return {
         ...state,
-        // api: action.payload as string,
+        api: action.payload as ApiPromise,
         apiState: "CONNECTING",
       };
     case "CONNECT_SUCCESS":
@@ -107,12 +122,12 @@ export const reducer = (state: StateType, action: ActionType): StateType => {
       return { ...state, transferStatusBlock: action.payload as string };
     case "SET_DEPOSIT_NONCE":
       return { ...state, depositNonce: action.payload as number };
-    case "SET_EVM_STATUS":
-      return { ...state, evmStatus: action.payload as string };
+    case "SET_SUBSTRATE_STATUS":
+      return { ...state, substrateStatus: action.payload as string };
     case "SET_PROPOSAL_EXECUTION_BLOCK":
       return {
         ...state,
-        evmStatus: "ProposalExecution event has found. Tranfer finished",
+        substrateStatus: "ProposalExecution event has found. Tranfer finished",
         proposalExecution: action.payload as string,
       };
     default:

@@ -18,6 +18,8 @@ const {
   isEIP1559MaxFeePerGas,
 } = EVM;
 
+const { listenForEvent, substrateSocketConnect } = Substrate;
+
 export type EvmContextType = {
   state: StateType;
   makeDeposit: (
@@ -51,7 +53,7 @@ const EvmContextProvider = (props: {
         const provider = new ethers.providers.Web3Provider(window.ethereum!);
         await provider.send("eth_requestAccounts", []);
         const network = await provider.getNetwork();
-        // console.log("🚀 ~ file: EvmContext.tsx:42 ~ void ~ network:", window.ethereum);
+
         if (![1337, 1338].includes(network.chainId)) {
           // throw new Error("Please connect to the right network");
           // @ts-ignore-line
@@ -117,7 +119,6 @@ const EvmContextProvider = (props: {
           type: "SET_ERC20_ALLOWANCE_FOR_BRIDGE",
           payload: erc20AllowanceForBridge,
         });
-
       })();
     }
   }, [state.currentAccount, dispatch]);
@@ -128,12 +129,14 @@ const EvmContextProvider = (props: {
       currentAccount,
       selectedErc20TokenConfig,
       selectedEvmConfig,
+      destinationDomainId
     } = state;
     if (
       signer &&
       currentAccount &&
       selectedErc20TokenConfig &&
-      selectedEvmConfig
+      selectedEvmConfig &&
+      destinationDomainId
     ) {
       void (async () => {
         const basicFee = await calculateBasicfee({
@@ -142,7 +145,7 @@ const EvmContextProvider = (props: {
           sender: currentAccount,
           fromDomainID: selectedEvmConfig.domainId,
           // TODO: extract to constant
-          toDomainID: "3", // substrate destination netwrok domainID
+          toDomainID: destinationDomainId.toString(), // substrate destination netwrok domainID
           resourceID: selectedErc20TokenConfig.resourceId,
           tokenAmount: "1",
           recipientAddress: ethers.constants.AddressZero,
@@ -155,8 +158,43 @@ const EvmContextProvider = (props: {
     state.selectedErc20TokenConfig,
     state.signer,
     state.selectedEvmConfig,
+    state.destinationDomainId,
     dispatch,
   ]);
+
+  useEffect(() => {
+    if (state.api && state.depositNonce) {
+      void (async () => {
+        dispatch({
+          type: "SET_SUBSTRATE_STATUS",
+          payload: "Start listening for ProposalExecution event",
+        });
+        await listenForEvent(state.api!, "ProposalExecution", (data) => {
+          console.log("ProposalExecution", data);
+          const dataEvent = data as {
+            depositNonce: string;
+            dataHash: string;
+          };
+          dispatch({
+            type: "SET_SUBSTRATE_STATUS",
+            payload: "ProposalExecution event is emmited. Transfer is finished",
+          });
+          dispatch({
+            type: "SET_PROPOSAL_EXECUTION_BLOCK",
+            payload: dataEvent.dataHash,
+          });
+        });
+      })();
+    }
+  }, [state.api, state.depositNonce]);
+
+  substrateSocketConnect(state, {
+    onConnectInit: () => dispatch({ type: "CONNECT_INIT", payload: undefined }),
+    onConnect: (_api) => dispatch({ type: "CONNECT", payload: _api }),
+    onConnectSucccess: () =>
+      dispatch({ type: "CONNECT_SUCCESS", payload: undefined }),
+    onConnectError: (err) => dispatch({ type: "CONNECT_ERROR", payload: err }),
+  });
 
   async function makeDeposit(
     amount: string,
@@ -211,18 +249,29 @@ const EvmContextProvider = (props: {
         feeData: basicFee,
         provider: signer!.provider as providers.Web3Provider,
       });
+      dispatch({
+        type: "SET_TRANSFER_STATUS",
+        payload: "Deposit transaction sent",
+      });
+      dispatch({
+        type: "SET_TRANSFER_STATUS_BLOCK",
+        payload: depositTransaction.hash,
+      });
       const depositTransactionReceipt = await depositTransaction.wait(1);
 
       const depositEvent = await getDepositEventFromReceipt(
         depositTransactionReceipt,
         bridgeInstance
       );
-      console.log(
-        "🚀 ~ file: EvmContext.tsx:207 ~ depositEvent:",
-        depositEvent
-      );
+      dispatch({
+        type: "SET_TRANSFER_STATUS",
+        payload: "DepositEvent is received",
+      });
       console.log("depositNonce", depositEvent.args.depositNonce);
-      return Promise.resolve();
+      dispatch({
+        type: "SET_DEPOSIT_NONCE",
+        payload: depositEvent.args.depositNonce,
+      });
     } catch (e) {
       console.log("error in makeDeposit", e);
       return Promise.reject(e);

@@ -5,6 +5,7 @@ import { EvmContextProvider, useEvm } from "./evm-lib";
 
 import UserInfo from "./components/UserInfo";
 import Form from "./components/Form";
+import TransferStatus from "./components/TransferStatus";
 
 const Loader = (text: string): JSX.Element => <div>{text}</div>;
 
@@ -23,6 +24,7 @@ function Main(): JSX.Element {
         <h2 className="mainTitle">Minimal example Evm to Substrate</h2>
         <UserInfo />
         <Form />
+        <TransferStatus />
       </div>
     </div>
   );

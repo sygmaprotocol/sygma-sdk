@@ -41,7 +41,7 @@ function Main(): JSX.Element {
           </p>
         )}
         <p>
-          ERC20 allowance for Bridge:{" "}
+          ERC20 allowance for ERC Bridge Handler contract:{" "}
           <strong>{utils.formatUnits(erc20AllowanceForBridge ?? 0, 18)}</strong>
         </p>
       </div>

@@ -13,7 +13,7 @@ function Main(): JSX.Element {
   const { register, handleSubmit } = useForm({
     defaultValues: {
       amount: "11",
-      address: "5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt",
+      address: "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty", // Bob's address
       from: "1",
       to: "3",
     },
