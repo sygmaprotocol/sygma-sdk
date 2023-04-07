@@ -1,7 +1,7 @@
 import { BasicFeeHandler__factory as BasicFeeHandler } from '@buildwithsygma/sygma-contracts';
 import { ethers } from 'ethers';
 import { FeeDataResult } from '../../../types';
-import { createERCDepositData } from '../../../utils/helpers';
+import { createERCDepositData } from '../helpers';
 
 /**
  * Calculates and returns the feeData object after query the FeeOracle service

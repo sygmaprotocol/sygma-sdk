@@ -1,5 +1,13 @@
 import { BigNumber, utils } from 'ethers';
-import { constructMainDepositData, constructDepositDataEvmSubstrate } from '../helpers';
+import { TypeRegistry } from '@polkadot/types';
+import { decodeAddress } from '@polkadot/util-crypto';
+import {
+  constructMainDepositData,
+  constructDepositDataEvmSubstrate,
+  getRecipientAddressInBytes,
+} from '../helpers';
+
+const registry = new TypeRegistry();
 
 describe('constructMainDepositData', () => {
   it('should return the correct data', () => {
@@ -42,5 +50,45 @@ describe('constructDepositDataEvmSubstrate', () => {
     expect(utils.arrayify).toHaveBeenCalledWith(recipientAddress);
     expect(utils.hexlify).toHaveBeenCalledWith(expectedBytesArr);
     expect(depositData).toEqual(expectedDepositData);
+  });
+});
+
+describe('getRecipientAddressInBytes', () => {
+  it('should convert an EVM address to a Uint8Array of bytes', () => {
+    const evmAddress = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
+    expect(utils.isAddress(evmAddress)).toBeTruthy();
+
+    const result = getRecipientAddressInBytes(evmAddress);
+    const expectedResult = utils.arrayify(evmAddress);
+
+    expect(result).toEqual(expectedResult);
+    expect(result).toBeInstanceOf(Uint8Array);
+  });
+
+  it('should convert a Substrate multilocation to a Uint8Array of bytes', () => {
+    const addressPublicKeyInBytes = decodeAddress(
+      '5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt',
+    );
+    const addressPublicKeyHexString = utils.hexlify(addressPublicKeyInBytes);
+    const substrateMultilocation = JSON.stringify({
+      parents: 0,
+      interior: {
+        X1: {
+          AccountId32: {
+            network: { any: null },
+            id: addressPublicKeyHexString,
+          },
+        },
+      },
+    });
+    expect(utils.isAddress(substrateMultilocation)).toBeFalsy();
+
+    const result = getRecipientAddressInBytes(substrateMultilocation);
+    const expectedResult = registry
+      .createType('MultiLocation', JSON.parse(substrateMultilocation))
+      .toU8a();
+
+    expect(result).toEqual(expectedResult);
+    expect(result).toBeInstanceOf(Uint8Array);
   });
 });
