@@ -4,7 +4,6 @@ import {
   constructDepositDataEvmSubstrate,
   toHex,
   addPadding,
-  createResourceID,
   createERCDepositData,
 } from '../helpers';
 import * as helpers from '../helpers';
@@ -94,42 +93,6 @@ describe('addPadding', () => {
     const padding = 4;
     addPadding(input, padding);
     expect(utils.hexZeroPad).toHaveBeenCalledWith('0x42', padding);
-  });
-});
-
-describe('createResourceID', () => {
-  it('should return correct Resource ID when contractAddress and domainID are provided', () => {
-    const contractAddress = '0x42Da3Ba8c586F6fe9eF6ed1d09423eB73E4fe25b';
-    const domainID = 1;
-    const resourceID = createResourceID(contractAddress, domainID);
-    expect(resourceID).toEqual(
-      '0x000000000000000000000042Da3Ba8c586F6fe9eF6ed1d09423eB73E4fe25b01',
-    );
-  });
-
-  it('should throw error because of value greater then uin8', () => {
-    const contractAddress = '0x42Da3Ba8c586F6fe9eF6ed1d09423eB73E4fe25b';
-    const domainID = 1000000;
-    expect(() => {
-      createResourceID(contractAddress, domainID);
-    }).toThrowError('domainId should be uint8 comaptible');
-  });
-
-  it('should throw error because of value lesser then uin8', () => {
-    const contractAddress = '0x42Da3Ba8c586F6fe9eF6ed1d09423eB73E4fe25b';
-    const domainID = '-1';
-    expect(() => {
-      createResourceID(contractAddress, domainID);
-    }).toThrowError('domainId should be uint8 comaptible');
-  });
-
-  it('should return correct Resource ID when contractAddress is an empty string', () => {
-    const contractAddress = '';
-    const domainID = '100';
-    const resourceID = createResourceID(contractAddress, domainID);
-    expect(resourceID).toEqual(
-      '0x0000000000000000000000000000000000000000000000000000000000000040',
-    );
   });
 });
 

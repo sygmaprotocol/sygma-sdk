@@ -28,20 +28,6 @@ export const addPadding = (covertThis: string | number, padding: number): string
 };
 
 /**
- * Creates a resource id based on the contract address
- *
- * @param contractAddress
- * @param domainID
- * @returns {string}
- */
-export const createResourceID = (contractAddress: string, domainID: string | number): string => {
-  if (!isUint8(domainID)) {
-    throw new Error('domainId should be uint8 comaptible');
-  }
-  return toHex(contractAddress + toHex(domainID, 1).substring(2), 32);
-};
-
-/**
  * Creates the deposit data to use on bridge.deposit method interface
  *
  * @param tokenAmountOrID - number | string | BigNumber of the amount of token or Id fo the token
