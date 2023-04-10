@@ -27,17 +27,6 @@ export const addPadding = (covertThis: string | number, padding: number): string
 };
 
 /**
- * @name createResourceID
- * @description creates a resource id based on the contract address
- * @param contractAddress
- * @param domainID
- * @returns {string}
- */
-export const createResourceID = (contractAddress: string, domainID: number): string => {
-  return toHex(contractAddress + toHex(domainID, 1).substr(2), 32);
-};
-
-/**
  * Constructs the main deposit data for a given token and recipient.
  *
  * @param {BigNumber} tokenStats - The amount of ERC20 tokens or the token ID of ERC721 tokens.

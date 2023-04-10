@@ -24,7 +24,7 @@ export const isApproved = async (
     const isApproved = approvedAddress === handlerAddress;
     return isApproved;
   } catch (error) {
-    console.error('Error on checkCurrentAllowanceOfErc20', error);
+    console.error('Error on isApproved', error);
     return Promise.reject(error);
   }
 };
