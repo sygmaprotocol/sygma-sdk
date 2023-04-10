@@ -68,5 +68,5 @@ Import private key of our test account and to be able to use premined ERC20 toke
 
 And connect this account with address `0x5C1F5961696BaD2e73f73417f07EF55C62a2dC5b`to the example application
 
-Don't forget to reset account(Settings -> Advanced -> Reset account) in MetaMask every time you restart the local nodes to avoid transaction nonce errors.
+Don't forget to clear activity and nonce data (Settings -> Advanced -> Clear activity tab data) in MetaMask every time you restart the local nodes to avoid transaction nonce errors.
 

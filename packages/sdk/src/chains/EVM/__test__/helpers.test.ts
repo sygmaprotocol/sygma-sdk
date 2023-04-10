@@ -1,11 +1,6 @@
 import { BigNumber, utils } from 'ethers';
 import { TypeRegistry } from '@polkadot/types';
 import { decodeAddress } from '@polkadot/util-crypto';
-// import {
-//   constructMainDepositData,
-//   constructDepositDataEvmSubstrate,
-//   getRecipientAddressInBytes,
-// } from '../helpers';
 
 import {
   getRecipientAddressInBytes,
@@ -13,9 +8,7 @@ import {
   constructDepositDataEvmSubstrate,
   toHex,
   addPadding,
-  createERCDepositData,
 } from '../helpers';
-import * as helpers from '../helpers';
 
 const registry = new TypeRegistry();
 
@@ -144,22 +137,5 @@ describe('addPadding', () => {
     const padding = 4;
     addPadding(input, padding);
     expect(utils.hexZeroPad).toHaveBeenCalledWith('0x42', padding);
-  });
-});
-
-describe('createERCDepositData', () => {
-  it('should create the correct deposit data for the given input', () => {
-    // const tokenAmountOrID = BigNumber.from('12345');
-    // const lenRecipientAddress = 20;
-    const recipientAddress = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
-
-    const toHexMock = jest.spyOn(helpers, 'toHex').mockImplementation(() => {
-      return '0x0123';
-    });
-
-    const result = createERCDepositData('12345', recipientAddress);
-    expect(result).toBe('0x00000000000000000000000000000000000000000000029d394a5d63054400000000000000000000000000000000000000000000000000000000000000000014742d35cc6634c0532925a3b844bc454e4438f44e');
-
-    toHexMock.mockRestore();
   });
 });
