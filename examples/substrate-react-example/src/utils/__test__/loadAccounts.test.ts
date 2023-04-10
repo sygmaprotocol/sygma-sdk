@@ -2,11 +2,11 @@ import { ApiPromise } from '@polkadot/api';
 import { TypeRegistry } from '@polkadot/types/create';
 import { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
 import { keyring as Keyring } from '@polkadot/ui-keyring';
-import { SubstrateConfigType } from '../types';
+import { SubstrateConfigType } from '../loadAccounts';
 
-import * as Utils from '../utils';
-import { retrieveChainInfo } from '../utils';
-import { LoadAccountsCallbacksType } from '../utils/loadAccounts';
+import * as Utils from '../index';
+import { retrieveChainInfo } from '../index';
+import { LoadAccountsCallbacksType } from '../loadAccounts';
 
 jest.mock('@polkadot/extension-dapp', () => ({
   web3Enable: jest.fn().mockResolvedValue(true),

@@ -28,18 +28,21 @@ const proposalExecutionEventsLogs = (
   console.warn("Transfer complete!");
 };
 
-void (async () => {
+const main = async (): Promise<void> => {
   // CHAIN 1 ADRESSES
   const bridgeSetupList: EvmBridgeSetupList = [
     {
       domainId: "1",
+      type: "Ethereum",
       networkId: 1337,
       name: "Local EVM 1",
       decimals: 18,
       bridgeAddress: "0x6CdE2Cd82a4F8B74693Ff5e194c19CA08c2d1c68",
       erc20HandlerAddress: "0x02091EefF969b33A5CE8A729DaE325879bf76f90",
       erc721HandlerAddress: "0xC2D334e2f27A9dB2Ed8C4561De86C1A00EBf6760",
+      feeRouterAddress: "",
       rpcUrl: "http://localhost:8545",
+      feeHandlers: [],
       tokens: [
         {
           type: "erc20",
@@ -59,12 +62,15 @@ void (async () => {
     },
     {
       domainId: "2",
+      type: "Ethereum",
       networkId: 1338,
       name: "Local EVM 2",
       decimals: 18,
       bridgeAddress: "0x6CdE2Cd82a4F8B74693Ff5e194c19CA08c2d1c68",
       erc20HandlerAddress: "0x02091EefF969b33A5CE8A729DaE325879bf76f90",
       erc721HandlerAddress: "0x481f97f9C82a971B3844a422936a4d3c4082bF84",
+      feeRouterAddress: "",
+      feeHandlers: [],
       rpcUrl: "http://localhost:8547",
       tokens: [
         {
@@ -140,4 +146,5 @@ void (async () => {
       );
     }
   }
-})();
+};
+void main();

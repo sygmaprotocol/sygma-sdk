@@ -2,7 +2,7 @@ import { ApiPromise } from '@polkadot/api';
 import { TypeRegistry } from '@polkadot/types/create';
 import { ChainType } from '@polkadot/types/interfaces';
 
-import { retrieveChainInfo } from '../utils';
+import { retrieveChainInfo } from '../index';
 
 const registry = new TypeRegistry();
 

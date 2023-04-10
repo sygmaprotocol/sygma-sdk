@@ -1,9 +1,8 @@
 import { ApiPromise, SubmittableResult } from '@polkadot/api';
-import { BN, numberToHex } from '@polkadot/util';
-import { web3FromAddress } from '@polkadot/extension-dapp';
-import type { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
+import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
 
-import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
+import { BN, numberToHex } from '@polkadot/util';
+import type { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
 
 import { XcmMultiAssetIdType } from '../types';
 
@@ -90,6 +89,13 @@ export const throwErrorIfAny = (
 /**
  * Handles the transaction extrinsic result.
  *
+ * @example
+ * handleTxExtrinsicResult(api, result, unsub, {
+ *   onInBlock: (status) => console.log('Transaction in block:', status),
+ *   onDepositEvent: (data) => console.log('Deposit event data:', data),
+ *   onFinalized: (status) => console.log('Transaction finalized:', status),
+ * });
+ *
  * @param {ApiPromise} api - The API promise object.
  * @param {SubmittableResult} result - The submittable result object.
  * @param {Function} unsub - A function to stop listen for events.
@@ -127,51 +133,64 @@ export const handleTxExtrinsicResult = (
 };
 
 /**
- * Deposit function
+ * Creates a destination multilocation object for the deposit transaction.
  *
- * @description Performs a deposit transaction on the Sygna Bridge.
+ * @param {string} address - The recipient address.
+ * @param {string} domainId - The domain identifier.
+ * @returns {object} - The destination multilocation object.
+ */
+export const createDestIdMultilocationData = (address: string, domainId: string): object => ({
+  parents: 0,
+  interior: {
+    x2: [{ generalKey: address }, { generalKey: numberToHex(Number(domainId)) }],
+  },
+});
+
+/**
+ * Creates an MultiAsset data for the deposit transaction.
+ *
+ * @param {XcmMultiAssetIdType} xcmMultiAssetId - The XCM multi-asset identifier.
+ * @param {ApiPromise} api - The Polkadot API promise object.
+ * @param {string} amount - The deposit amount.
+ * @returns {object} - The asset object.
+ */
+export const createMultiAssetData = (
+  xcmMultiAssetId: XcmMultiAssetIdType,
+  api: ApiPromise,
+  amount: string,
+): object => ({
+  id: xcmMultiAssetId,
+  fun: {
+    fungible: calculateBigNumber(api, amount).toString(),
+  },
+});
+
+/**
+ * Performs a deposit extrinsic transaction
+ *
+ * @example
+ * const injector = await web3FromAddress(currentAccount.address);
+ * const unsub = await deposit(api, asset, amount, domainId, address)
+ *   .signAndSend(currentAccount.address, { signer: injector.signer }, result => {
+ *      handleTxExtrinsicResult(api, result, unsub, callbacks);
+ *    });
+ *
  * @param {ApiPromise} api - The ApiPromise instance.
- * @param {InjectedAccountWithMeta} currentAccount - The current account instance.
  * @param {XcmMultiAssetIdType} xcmMultiAssetId - The XCM multi-asset ID type.
  * @param {string} amount - The amount to be deposited.
  * @param {string} domainId - The domain ID of the destination address.
  * @param {string} address - The destination address of the deposit transaction.
- * @param {DepositCallbacksType=} callbacks - Optional callbacks for success and error cases.
+ * @returns {SubmittableExtrinsic<"promise", SubmittableResult>} - A SubmittableExtrinsic representing the deposit transaction.
  */
-export const deposit = async (
+export const deposit = (
   api: ApiPromise,
-  currentAccount: InjectedAccountWithMeta,
   xcmMultiAssetId: XcmMultiAssetIdType,
   amount: string,
   domainId: string,
   address: string,
-  callbacks?: DepositCallbacksType,
-): Promise<void> => {
-  const convertedAmount = calculateBigNumber(api, amount);
+): SubmittableExtrinsic<'promise', SubmittableResult> => {
+  const asset = createMultiAssetData(xcmMultiAssetId, api, amount);
+  const destIdMultilocation = createDestIdMultilocationData(address, domainId);
 
-  const xcmV1MultiassetFungibility = { fungible: convertedAmount.toString() };
-
-  const destIdMultilocation = {
-    parents: 0,
-    interior: {
-      x2: [{ generalKey: address }, { generalKey: numberToHex(Number(domainId)) }],
-    },
-  };
-  const asset = { id: xcmMultiAssetId, fun: xcmV1MultiassetFungibility };
-
-  let unsub: () => void;
-
-  try {
-    // finds an injector for an address
-    const injector = await web3FromAddress(currentAccount.address);
-
-    unsub = await api.tx.sygmaBridge
-      .deposit(asset, destIdMultilocation)
-      .signAndSend(currentAccount.address, { signer: injector.signer }, result => {
-        handleTxExtrinsicResult(api, result, unsub, callbacks);
-      });
-  } catch (e) {
-    console.error('Substrate deposit error: ', e);
-    callbacks?.onError?.(e);
-  }
+  return api.tx.sygmaBridge.deposit(asset, destIdMultilocation);
 };

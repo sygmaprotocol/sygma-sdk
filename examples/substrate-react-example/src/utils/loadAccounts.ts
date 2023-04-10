@@ -2,10 +2,23 @@ import { ApiPromise } from '@polkadot/api';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { keyring as Keyring } from '@polkadot/ui-keyring';
 import { isTestChain } from '@polkadot/util';
+import { XcmMultiAssetIdType } from "@buildwithsygma/sygma-sdk-core";
 
-import { SubstrateConfigType } from '../types';
 
-import { retrieveChainInfo } from '../utils';
+import { retrieveChainInfo } from './retrieveChainInfo';
+
+export type SubstrateConfigAssetType = {
+  assetName: string;
+  assetId: number;
+  xsmMultiAssetId: XcmMultiAssetIdType;
+};
+
+export type SubstrateConfigType = {
+  domainId: string;
+  appName: string;
+  provider_socket: string;
+  assets: SubstrateConfigAssetType[];
+};
 
 export type LoadAccountsCallbacksType = {
   /**
