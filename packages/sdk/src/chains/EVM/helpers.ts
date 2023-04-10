@@ -6,8 +6,9 @@ import { ERC20 } from '@buildwithsygma/sygma-contracts';
 const registry = new TypeRegistry();
 
 /**
- * @name toHex
- * @description return hex data padded to the number defined as padding
+ * Return hex data padded to the number defined as padding
+ * based on ethers.utils.hexZeroPad
+ *
  * @param covertThis - data to convert
  * @param padding - number to padd the data
  * @returns {string}
@@ -18,8 +19,9 @@ export const toHex = (covertThis: string | number | BigNumber, padding: number):
 };
 
 /**
- * @name addPadding
- * @description pads the data
+ * Pads the data
+ * based on ethers.utils.hexZeroPad
+ *
  * @param covertThis - data to convert
  * @param padding - padding
  * @returns {string}
@@ -29,47 +31,12 @@ export const addPadding = (covertThis: string | number, padding: number): string
 };
 
 /**
- * @name createResourceID
- * @description creates a resource id based on the contract address
- * @param contractAddress
- * @param domainID
+ * Creates the deposit data to use on bridge.deposit method interface
+ *
+ * @param tokenAmountOrID - number | string | BigNumber of the amount of token or Id fo the token
+ * @param lenRecipientAddress
+ * @param recipientAddress
  * @returns {string}
- */
-export const createResourceID = (contractAddress: string, domainID: number): string => {
-  return toHex(contractAddress + toHex(domainID, 1).substr(2), 32);
-};
-
-/**
- * Constructs the deposit data for an EVM-Substrate bridge transaction.
- *
- * @example
- * // EVM address
- * createERCDepositData('1', '0x1234567890123456789012345678901234567890', 18);
- *
- * @example
- * // Substrate MultiLocation
- * const addressPublicKeyInBytes = decodeAddress(
- *   '5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt',
- * );
- * const addressPublicKeyHexString = ethers.utils.hexlify(addressPublicKeyInBytes);
- * // console.log(addressPublicKeyHexString) => "0x06a220edf5f82b84fc5f9270f8a30a17636bf29c05a5c16279405ca20918aa39"
- * const multiLocation = JSON.stringify({
- *   parents: 0,
- *     interior: {
- *       X1: {
- *         AccountId32: {
- *           network: { any: null },
- *           id: addressPublicKeyHexString,
- *         },
- *       },
- *     },
- *   })
- * createERCDepositData('2', multiLocation);
- *
- * @param {string} tokenAmount - The amount of tokens to be transferred.
- * @param {string} recipientAddress - The address of the recipient.
- * @param {number} [decimals=18] - The number of decimals of the token.
- * @returns {string} The deposit data as hex string
  */
 export const createERCDepositData = (
   tokenAmount: string,
@@ -101,8 +68,8 @@ export const getRecipientAddressInBytes = (recipientAddress: string): Uint8Array
 };
 
 /**
- * @name constructMainDepositData
- * @description Constructs the main deposit data for a given token and recipient.
+ * Constructs the main deposit data for a given token and recipient.
+ *
  * @param {BigNumber} tokenStats - The amount of ERC20 tokens or the token ID of ERC721 tokens.
  * @param {Uint8Array} destRecipient - The recipient address in bytes array
  * @returns {Uint8Array} The main deposit data in bytes array
@@ -151,8 +118,8 @@ export const constructDepositDataEvmSubstrate = (
 };
 
 /**
- * @name createPermissionedGenericDepositData
- * @description creates data for permissioned generic handler
+ * Creates data for permissioned generic handler
+ *
  * @param hexMetaData
  * @returns {string}
  */
@@ -165,8 +132,8 @@ export const createPermissionedGenericDepositData = (hexMetaData: string): strin
 };
 
 /**
- * @name createPermissionlessGenericDepositData
- * @description creates the data for permissionless generic handler
+ * Creates the data for permissionless generic handler
+ *
  * @param executeFunctionSignature - execution function signature
  * @param executeContractAddress - execution contract address
  * @param maxFee - max fee defined
@@ -213,6 +180,11 @@ export function isERC20(tokenInstance: ERC20): tokenInstance is ERC20 {
   return 'decimals' in tokenInstance;
 }
 
+export const isUint8 = (value: unknown): boolean => {
+  const bn = BigNumber.from(value);
+  return bn.gte(0) && bn.lte(255);
+};
+
 /**
  * Check the fee data of the provider and returns the gas price if the node is not EIP1559
  *
@@ -225,7 +197,7 @@ export async function isEIP1559MaxFeePerGas(provider: providers.Provider): Promi
     const { gasPrice } = feeData;
     return gasPrice as BigNumber;
   } catch (error) {
-    console.error('error getting EIP 1559');
+    console.error('error getting EIP 1559', error);
     return Promise.reject(error);
   }
 }

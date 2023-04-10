@@ -6,6 +6,9 @@ import {
   proposalExecutionEventListenerCount,
   removeProposalExecutionEventListener,
   connectToBridge,
+  createDepositEventListener,
+  removeDepositEventListener,
+  getProviderByRpcUrl,
 } from '../utils/eventListeners';
 
 describe('createProposalExecutionEventListener', () => {
@@ -102,5 +105,77 @@ describe('connectToBridge', () => {
         address: '0x1234567890123456789012345678901234567890',
       }),
     );
+  });
+});
+
+describe('createDepositEventListener', () => {
+  it('should call the callback function with the correct arguments', () => {
+    const bridge = {
+      filters: { Deposit: jest.fn() },
+      once: jest
+        .fn()
+        .mockImplementation(
+          (
+            filter,
+            callback: (
+              destinationDomainId: number,
+              resourceId: string,
+              depositNonce: BigNumber,
+              user: string,
+              data: string,
+              handleResponse: string,
+              tx: string,
+            ) => void,
+          ) =>
+            void callback(
+              1,
+              'mockedResourceId',
+              BigNumber.from(1),
+              'mockedUser',
+              'mockedData',
+              'mockedHandleResponse',
+              'mockedTx',
+            ),
+        ),
+    } as unknown as Bridge;
+    const userAddress = '0x1234';
+    const callbackFn = jest.fn();
+
+    createDepositEventListener(bridge, userAddress, callbackFn);
+
+    expect(callbackFn).toHaveBeenCalledWith(
+      1,
+      'mockedResourceId',
+      BigNumber.from(1),
+      'mockedUser',
+      'mockedData',
+      'mockedHandleResponse',
+      'mockedTx',
+    );
+  });
+});
+
+describe('removeDepositEventListener', () => {
+  it('should remove all listeners for a given proposal filter', () => {
+    const Deposit = jest.fn().mockReturnValue('deposit');
+    const removeAllListeners = jest.fn();
+    const bridge = {
+      filters: { Deposit },
+      removeAllListeners,
+    } as unknown as Bridge;
+
+    removeDepositEventListener(bridge);
+
+    expect(Deposit).toHaveBeenCalledWith(null, null, null, null, null, null);
+    expect(removeAllListeners).toHaveBeenCalledWith('deposit');
+  });
+});
+
+describe('getProviderByRpcUrl', () => {
+  const rpcURL = 'https://rpc.example.com'; // Replace with your desired RPC URL
+
+  it('should return a new instance of JsonRpcProvider', () => {
+    const provider = getProviderByRpcUrl(rpcURL);
+    expect(provider).toBeInstanceOf(ethers.providers.JsonRpcProvider);
   });
 });

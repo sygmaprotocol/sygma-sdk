@@ -153,7 +153,6 @@ export const erc721Transfer = async ({
  * @param {string} depositData - The deposit data required for the operation.
  * @param {FeeDataResult} feeData - The fee data result for the deposit operation.
  * @param {Bridge} bridgeInstance - The bridge instance used to perform the deposit operation.
- * @param {number} confirmations - The number of confirmations required before the transaction is considered successful.
  * @param {providers.Provider} provider - The provider used for the Ethereum network connection.
  * @param {ethers.PayableOverrides} [overrides] - Optional transaction overrides to be applied.
  * @returns {Promise<ContractTransaction>} A promise that resolves to a contract receipt once the deposit is executed.

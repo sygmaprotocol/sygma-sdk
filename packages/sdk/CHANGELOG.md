@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.4.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.3.0...sygma-sdk-core-v1.4.0) (2023-04-10)
+
+
+### Features
+
+* Extract event listeners functions for Deposit and ProposalExecution to EVM folder from Sygma class ([#207](https://github.com/sygmaprotocol/sygma-sdk/issues/207)) ([b471a5d](https://github.com/sygmaprotocol/sygma-sdk/commit/b471a5d57dd0a04fbc14555dcd45212f1941e2ac))
+* Extract or move current evm fee related functions to EVM folder ([#209](https://github.com/sygmaprotocol/sygma-sdk/issues/209)) ([d18ce85](https://github.com/sygmaprotocol/sygma-sdk/commit/d18ce85e7da38cbc00601ff6529ebc30f480b4ed))
+* Implement MultiLocation support in the deposit method in EVM and Substrate ([#208](https://github.com/sygmaprotocol/sygma-sdk/issues/208)) ([05f27ea](https://github.com/sygmaprotocol/sygma-sdk/commit/05f27eae67820f9a2e65af8628f015198cf6a3a8))
+* NodeJS compatibility, Substrate deposit upgrade, Jsdoc examples updated ([#217](https://github.com/sygmaprotocol/sygma-sdk/issues/217)) ([4f8c94a](https://github.com/sygmaprotocol/sygma-sdk/commit/4f8c94a7e5613347b4fb294307f637415b571061))
+
 ## [1.3.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.2.1...sygma-sdk-core-v1.3.0) (2023-03-30)
 
 

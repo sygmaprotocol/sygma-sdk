@@ -2025,7 +2025,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@buildwithsygma/sygma-sdk-core@*, @buildwithsygma/sygma-sdk-core@workspace:*, @buildwithsygma/sygma-sdk-core@workspace:packages/sdk":
+"@buildwithsygma/sygma-sdk-core@workspace:*, @buildwithsygma/sygma-sdk-core@workspace:packages/sdk":
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-core@workspace:packages/sdk"
   dependencies:
@@ -2036,7 +2036,6 @@ __metadata:
     "@ethersproject/providers": ^5.7.2
     "@polkadot/api": ^9.9.1
     "@polkadot/api-augment": ^9.9.1
-    "@polkadot/extension-dapp": ^0.44.8
     "@polkadot/extension-inject": ^0.45.3
     "@polkadot/keyring": ^10.1.13
     "@polkadot/rpc-provider": ^9.9.1
@@ -2167,7 +2166,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-node-example@workspace:examples/node-example"
   dependencies:
-    "@buildwithsygma/sygma-sdk-core": "*"
+    "@buildwithsygma/sygma-sdk-core": "workspace:*"
     ethereum-waffle: ^3.4.4
     ethers: 5.6.2
     ganache: ^7.1.0
@@ -2198,6 +2197,7 @@ __metadata:
   dependencies:
     "@buildwithsygma/sygma-sdk-core": "workspace:*"
     "@polkadot/api": ^9.9.1
+    "@polkadot/extension-dapp": ^0.45.4
     "@polkadot/types": ^9.9.1
     "@polkadot/ui-keyring": ^2.10.1
     "@polkadot/util": ^10.1.13
@@ -5457,35 +5457,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/extension-dapp@npm:^0.44.8":
-  version: 0.44.8
-  resolution: "@polkadot/extension-dapp@npm:0.44.8"
+"@polkadot/extension-dapp@npm:^0.45.4":
+  version: 0.45.4
+  resolution: "@polkadot/extension-dapp@npm:0.45.4"
   dependencies:
-    "@babel/runtime": ^7.20.7
-    "@polkadot/extension-inject": ^0.44.8
-    "@polkadot/util": ^10.2.3
-    "@polkadot/util-crypto": ^10.2.3
+    "@polkadot/extension-inject": ^0.45.4
+    "@polkadot/util": ^11.1.2
+    "@polkadot/util-crypto": ^11.1.2
+    tslib: ^2.5.0
   peerDependencies:
     "@polkadot/api": "*"
     "@polkadot/util": "*"
     "@polkadot/util-crypto": "*"
-  checksum: bcb246d778885a0ddd79eac68cd0cd90887f593b811d1f0ccd036590580b3fd1ac192c08edfc472ad9fda8f44b09680cc452447fe01f02e82ef66325fd43bcce
-  languageName: node
-  linkType: hard
-
-"@polkadot/extension-inject@npm:^0.44.8":
-  version: 0.44.8
-  resolution: "@polkadot/extension-inject@npm:0.44.8"
-  dependencies:
-    "@babel/runtime": ^7.20.7
-    "@polkadot/rpc-provider": ^9.11.1
-    "@polkadot/types": ^9.11.1
-    "@polkadot/util": ^10.2.3
-    "@polkadot/util-crypto": ^10.2.3
-    "@polkadot/x-global": ^10.2.3
-  peerDependencies:
-    "@polkadot/api": "*"
-  checksum: ddd42a7fe4b69976ef320d86f86219ed3972e139756a40d296f2002fea1ab49e3188d38f76ac1fcc233b33c84dea62d005d38b2f95ca16a61d72ef516b1902cd
+  checksum: 7a58c2afe0fbaff6d604fbacaf2d2c48775e0a6fe9d922621b468e3a22ef71c524720bd4a3383a6c1afb23bb7461af4b2ff1532c98e46243641b71172662795d
   languageName: node
   linkType: hard
 
@@ -5502,6 +5486,22 @@ __metadata:
   peerDependencies:
     "@polkadot/api": "*"
   checksum: 743bf64c8eea980386c680248cc5b50279b63c4d629befdd130c84eadb798b34358f70b4060b79e357e9fabb051d5378ddfecf1f86673fd2d581aa2a0090a285
+  languageName: node
+  linkType: hard
+
+"@polkadot/extension-inject@npm:^0.45.4":
+  version: 0.45.4
+  resolution: "@polkadot/extension-inject@npm:0.45.4"
+  dependencies:
+    "@polkadot/rpc-provider": ^10.2.1
+    "@polkadot/types": ^10.2.1
+    "@polkadot/util": ^11.1.2
+    "@polkadot/util-crypto": ^11.1.2
+    "@polkadot/x-global": ^11.1.2
+    tslib: ^2.5.0
+  peerDependencies:
+    "@polkadot/api": "*"
+  checksum: 3f299d987b8bef83d636a6082ca8978675205b9e373cd1e34a41e3a9b9bddcb54051bccbc449d8e8c3408b90dc83f075768ee3b3f71900ba0218b98f7c95da5c
   languageName: node
   linkType: hard
 

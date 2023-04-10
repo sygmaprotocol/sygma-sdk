@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@buildwithsygma/sygma-sdk-core": "workspace:*",
+    "@polkadot/extension-dapp": "^0.45.4",
     "@polkadot/util": "^10.1.13",
     "bn.js": "^5.2.1",
     "dotenv": "^16.0.3",

@@ -3,20 +3,13 @@
   "extends": "ts-node/node12/tsconfig.json",
   // Most ts-node options can be specified here using their programmatic names.
   "ts-node": {
-    // It is faster to skip typechecking.
-    // Remove if you want ts-node to do typechecking.
-    "transpileOnly": true,
-    "files": true,
-    "compilerOptions": {
-      // compilerOptions specified here will override those declared below,
-      // but *only* in ts-node.  Useful if you want ts-node and tsc to use
-      // different options with a single tsconfig.json.
-    }
+    "esm": true,
+    "experimentalSpecifierResolution": "node",
   },
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "es5",
+    "module": "ESNext",
     "outDir": "dist",
-    "module": "commonjs",
     "allowJs": true,
     "composite": true,
     "declaration": true,

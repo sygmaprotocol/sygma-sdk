@@ -1,11 +1,21 @@
 import { BigNumber, utils } from 'ethers';
 import { TypeRegistry } from '@polkadot/types';
 import { decodeAddress } from '@polkadot/util-crypto';
+// import {
+//   constructMainDepositData,
+//   constructDepositDataEvmSubstrate,
+//   getRecipientAddressInBytes,
+// } from '../helpers';
+
 import {
+  getRecipientAddressInBytes,
   constructMainDepositData,
   constructDepositDataEvmSubstrate,
-  getRecipientAddressInBytes,
+  toHex,
+  addPadding,
+  createERCDepositData,
 } from '../helpers';
+import * as helpers from '../helpers';
 
 const registry = new TypeRegistry();
 
@@ -90,5 +100,66 @@ describe('getRecipientAddressInBytes', () => {
 
     expect(result).toEqual(expectedResult);
     expect(result).toBeInstanceOf(Uint8Array);
+  });
+});
+
+describe('toHex', () => {
+  test('should convert string to hex', () => {
+    const result = toHex('1234', 6);
+    expect(result).toBe('0x0000000004d2');
+  });
+
+  test('should convert number to hex', () => {
+    const result = toHex(5678, 8);
+    expect(result).toBe('0x000000000000162e');
+  });
+
+  test('should convert BigNumber to hex', () => {
+    const num = BigNumber.from('900000000000000000000000');
+    const result = toHex(num, 32);
+    expect(result).toBe('0x00000000000000000000000000000000000000000000be951906eba2aa800000');
+  });
+});
+
+describe('addPadding', () => {
+  it('should pads a string with zeros', () => {
+    const input = 'abc';
+    const padding = 10;
+    const expectedOutput = '0x00000000000000000abc';
+    const actualOutput = addPadding(input, padding);
+    expect(actualOutput).toEqual(expectedOutput);
+  });
+
+  it('should pads a number with zeros', () => {
+    const input = 123;
+    const padding = 4;
+    const expectedOutput = '0x00000123';
+    const actualOutput = addPadding(input, padding);
+    expect(actualOutput).toEqual(expectedOutput);
+  });
+
+  it('should passes the correct arguments to hexZeroPad', () => {
+    jest.spyOn(utils, 'hexZeroPad');
+    const input = 42;
+    const padding = 4;
+    addPadding(input, padding);
+    expect(utils.hexZeroPad).toHaveBeenCalledWith('0x42', padding);
+  });
+});
+
+describe('createERCDepositData', () => {
+  it('should create the correct deposit data for the given input', () => {
+    // const tokenAmountOrID = BigNumber.from('12345');
+    // const lenRecipientAddress = 20;
+    const recipientAddress = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
+
+    const toHexMock = jest.spyOn(helpers, 'toHex').mockImplementation(() => {
+      return '0x0123';
+    });
+
+    const result = createERCDepositData('12345', recipientAddress);
+    expect(result).toBe('0x00000000000000000000000000000000000000000000029d394a5d63054400000000000000000000000000000000000000000000000000000000000000000014742d35cc6634c0532925a3b844bc454e4438f44e');
+
+    toHexMock.mockRestore();
   });
 });
