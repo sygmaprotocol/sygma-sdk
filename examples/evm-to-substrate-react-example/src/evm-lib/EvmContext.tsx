@@ -48,9 +48,19 @@ const EvmContextProvider = (props: {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
+    if (window.ethereum) {
+      window.ethereum.on("chainChanged", () => {
+        window.location.reload();
+      });
+      window.ethereum.on("connect", () => {
+        window.location.reload();
+      });
+    }
     if (window.ethereum && !state.currentAccount) {
       void (async () => {
-        const provider = new ethers.providers.Web3Provider(window.ethereum!);
+        const provider = new ethers.providers.Web3Provider(
+          window.ethereum as unknown as providers.ExternalProvider
+        );
         await provider.send("eth_requestAccounts", []);
         const network = await provider.getNetwork();
 

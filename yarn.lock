@@ -2138,13 +2138,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@buildwithsygma/sygma-sdk-evm-to-substrate-react-ts-example@workspace:examples/evm-to-substrate-example":
+"@buildwithsygma/sygma-sdk-evm-to-substrate-react-example@workspace:examples/evm-to-substrate-react-example":
   version: 0.0.0-use.local
-  resolution: "@buildwithsygma/sygma-sdk-evm-to-substrate-react-ts-example@workspace:examples/evm-to-substrate-example"
+  resolution: "@buildwithsygma/sygma-sdk-evm-to-substrate-react-example@workspace:examples/evm-to-substrate-react-example"
   dependencies:
     "@buildwithsygma/sygma-contracts": 2.1.2
     "@buildwithsygma/sygma-sdk-core": "workspace:*"
-    "@ethersproject/providers": ^5.7.2
     "@metamask/providers": ^10.2.1
     "@polkadot/api": ^9.9.1
     "@polkadot/types": ^9.9.1
@@ -2193,9 +2192,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@buildwithsygma/sygma-sdk-substrate-react-example@workspace:examples/substrate-react-example":
+"@buildwithsygma/sygma-sdk-substrate-to-evm-react-example@workspace:examples/substrate-to-evm-react-example":
   version: 0.0.0-use.local
-  resolution: "@buildwithsygma/sygma-sdk-substrate-react-example@workspace:examples/substrate-react-example"
+  resolution: "@buildwithsygma/sygma-sdk-substrate-to-evm-react-example@workspace:examples/substrate-to-evm-react-example"
   dependencies:
     "@buildwithsygma/sygma-sdk-core": "workspace:*"
     "@polkadot/api": ^9.9.1

@@ -27,8 +27,9 @@ function Main(): JSX.Element {
   }): Promise<void> => {
     console.log("form data", values);
     if (values.amount && values.address) {
-      // setIsLoading(true);
+      setIsLoading(true);
       await makeDeposit(values.amount, values.address, values.to);
+      setIsLoading(false);
     }
   };
 
