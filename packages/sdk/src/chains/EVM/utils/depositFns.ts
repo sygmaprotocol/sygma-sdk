@@ -36,7 +36,11 @@ import { isApproved, getERC20Allowance } from './approvesAndChecksFns';
  *   provider: new ethers.providers.Web3Provider(window.ethereum),
  *   overrides: { gasLimit: 1000000 } // optional
  * }
- * const receipt = await erc20Transfer(params)
+ * const transaction = await erc20Transfer(params)
+ * // wait for the transaction to be mined
+ * const receipt = await transaction.wait(3)
+ * // get the deposit event
+ * const depositEvent = getDepositEvent(receipt)
  *
  * @category Bridge deposit
  * @param {Erc20TransferParamsType} params - The parameters for the erc20 transfer function.
