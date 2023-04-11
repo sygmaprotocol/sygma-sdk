@@ -6,7 +6,11 @@ import { Contract, ContractTransaction, Overrides, CallOverrides } from '@ethers
 import { BytesLike } from '@ethersproject/bytes';
 import { Listener, Provider } from '@ethersproject/providers';
 import { FunctionFragment, EventFragment, Result } from '@ethersproject/abi';
-
+/**
+ * @deprecated since version 1.4.0
+ * Erc20 detailed interface
+ *
+ */
 interface Erc20DetailedInterface extends ethers.utils.Interface {
   functions: {
     'approve(address,uint256)': FunctionFragment;
@@ -51,7 +55,10 @@ interface Erc20DetailedInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'Transfer'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Approval'): EventFragment;
 }
-
+/**
+ * @deprecated since version 1.4.0
+ * Erc20 detailed
+ */
 export class Erc20Detailed extends Contract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;

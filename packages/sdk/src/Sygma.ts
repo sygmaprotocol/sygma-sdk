@@ -36,7 +36,8 @@ import {
   setConnectorRPC,
   listTokensOfOwner,
 } from './utils';
-import { EvmBridge, TokenConfig } from './chains';
+import EvmBridge from './chains/EVM/EvmBridge';
+import { TokenConfig } from './chains/EVM/types';
 import { calculateBasicfee, calculateDynamicFee, getFeeHandlerAddress } from './chains/EVM/fee';
 import Connector from './connectors/Connectors';
 import {
@@ -46,6 +47,7 @@ import {
 } from './utils/helpers';
 
 /**
+ * @deprecated since version 1.4.0
  * @name Sygma
  * @description Sygma is the main class that allows you to have bridging capabilities
  * with simple usage
