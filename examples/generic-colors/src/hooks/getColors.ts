@@ -4,7 +4,7 @@ import { Actions, State } from "../reducers";
 import { Colors__factory } from "../types/Colors__factory";
 import { decodeColor } from "../utils";
 
-function GetColors(state: State, dispatch: React.Dispatch<Actions>){
+function useGetColors(state: State, dispatch: React.Dispatch<Actions>){
 
   const getColorHomeChain = async (signerNode1: Signer) => {
     const colorLength = await Colors__factory.connect(state.colorsAddresses.colorsAddressNode1, signerNode1!).getColorsArrayLenght()
@@ -65,4 +65,4 @@ function GetColors(state: State, dispatch: React.Dispatch<Actions>){
   }, [state.depositStatus])
 }
 
-export { GetColors }
+export { useGetColors }

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { utils } from 'ethers'
 import { Actions, State } from "../reducers";
 
-function AccountData(state: State, dispatch: React.Dispatch<Actions>) {
+function useAccountData(state: State, dispatch: React.Dispatch<Actions>) {
   const getData = async () => {
     if(state.accountDataFromSygma === undefined){
       const balance = await state?.sygmaInstance!.getSignerBalance('chain1')
@@ -33,4 +33,4 @@ function AccountData(state: State, dispatch: React.Dispatch<Actions>) {
   }, [state.sygmaInstance, state.data])
 }
 
-export { AccountData }
+export { useAccountData }

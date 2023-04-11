@@ -81,7 +81,7 @@ const handleConnect = (state: State, dispatch: React.Dispatch<Actions>) => {
   }
 };
 
-function Connection(state: State, dispatch: React.Dispatch<Actions>) {
+function useConnection(state: State, dispatch: React.Dispatch<Actions>) {
 
   useEffect(() => {
     if (window.ethereum !== undefined) {
@@ -113,4 +113,4 @@ function Connection(state: State, dispatch: React.Dispatch<Actions>) {
   }, [state.metamaskConnected]);
 }
 
-export { Connection, handleConnect }
+export { useConnection, handleConnect }

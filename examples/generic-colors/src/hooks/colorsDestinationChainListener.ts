@@ -3,7 +3,7 @@ import { Actions, State } from "../reducers";
 import { Colors__factory } from '../types/Colors__factory'
 import { setColorEventEvent } from '../types/Colors';
 
-const ColorsDestinationChainListener = (state: State, dispatch: React.Dispatch<Actions>) => {
+const useColorsDestinationChainListener = (state: State, dispatch: React.Dispatch<Actions>) => {
   useEffect(() => {
     if (state.metamaskConnected && state.accountData && state.sygmaInstance && state.accountDataFromSygma) {
       const providerDestinationChain = state.sygmaInstance?.getDestinationChainProvider()
@@ -25,4 +25,4 @@ const ColorsDestinationChainListener = (state: State, dispatch: React.Dispatch<A
   }, [state.accountData, state.metamaskConnected, state.sygmaInstance, state.accountDataFromSygma])
 }
 
-export { ColorsDestinationChainListener }
+export { useColorsDestinationChainListener }

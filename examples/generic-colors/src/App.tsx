@@ -4,10 +4,10 @@ import { FeeDataResult } from "@buildwithsygma/sygma-sdk-core";
 import "./App.css";
 import { reducer, State } from "./reducers";
 import { bridgeAdmin } from "./bridgeSetup";
-import { Connection, handleConnect } from "./hooks/connection";
-import { AccountData } from "./hooks/accountData";
-import { GetColors } from "./hooks/getColors";
-import { ColorsDestinationChainListener } from "./hooks/colorsDestinationChainListener";
+import { useConnection, handleConnect } from "./hooks/connection";
+import { useAccountData } from "./hooks/accountData";
+import { useGetColors } from "./hooks/getColors";
+import { useColorsDestinationChainListener } from "./hooks/colorsDestinationChainListener";
 
 const initState: State = {
   colorsNode1: [],
@@ -37,22 +37,22 @@ function App() {
   /**
    * Initialization of hooks for data and connection
    */
-  Connection(state, dispatch);
+  useConnection(state, dispatch);
 
   /**
    * Hook that gets data from the account
    */
-  AccountData(state, dispatch);
+  useAccountData(state, dispatch);
 
   // /**
   //  * Hook that gets the colors from the contract
   //  */
-  GetColors(state, dispatch);
+  useGetColors(state, dispatch);
 
   /**
    * Hooks that setups listener over colors contract on destination chain
    */
-  ColorsDestinationChainListener(state, dispatch);
+  useColorsDestinationChainListener(state, dispatch);
 
   const handleConnectInit = (): void => handleConnect(state, dispatch);
 
