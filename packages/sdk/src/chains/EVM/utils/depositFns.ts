@@ -38,10 +38,10 @@ import { isApproved, getERC20Allowance } from './approvesAndChecksFns';
  * }
  * const receipt = await erc20Transfer(params)
  *
+ * @category Bridge deposit
  * @param {Erc20TransferParamsType} params - The parameters for the erc20 transfer function.
  * @returns {Promise<ContractTransaction>} - The transaction receipt.
  */
-
 export const erc20Transfer = async ({
   amountOrId: amount,
   recipientAddress,
@@ -98,6 +98,7 @@ export const erc20Transfer = async ({
  * };
  * const receipt = await erc721Transfer(params);
  *
+ * @category Bridge deposit
  * @param {Erc721TransferParamsType} params - The parameters for ERC721 token transfer.
  * @returns {Promise<ContractTransaction>} A promise that resolves to the contract receipt.
  */
@@ -153,6 +154,7 @@ export const erc721Transfer = async ({
  * // wait for 10 confiramtions to finalize the transaction
  * const receipt = await transaction.wait(10)
  *
+ * @category Bridge deposit
  * @param {string} domainId - The unique identifier for destination network.
  * @param {string} resourceId - The resource ID associated with the token.
  * @param {string} depositData - The deposit data required for the operation.
@@ -203,11 +205,11 @@ export const executeDeposit = async (
  * console.log('Deposit event:', depositEvent);
  * console.log('Deposit nonce:', depositEvent.args.depositNonce)
  *
+ * @category Bridge deposit
  * @param {ContractReceipt} depositTx - The contract receipt containing the deposit transaction details.
  * @param {Bridge} bridgeContract - The bridge contract instance used to query the deposit event.
  * @returns {Promise<DepositEvent>} A promise that resolves to the deposit event associated with the given contract receipt.
  */
-
 export const getDepositEventFromReceipt = async (
   depositTx: ContractReceipt,
   bridgeContract: Bridge,
@@ -236,6 +238,7 @@ export const getDepositEventFromReceipt = async (
  * const receipt = await processTokenTranfer({ depositParams, bridgeConfig, provider, overrides });
  * // use the getDepositEventFromReceipt method to get the depositNonce
  *
+ * @category Bridge deposit
  * @param {TokenTransfer} params - The parameters for processing the token transfer.
  * @returns {Promise<ContractTransaction>} - A promise that resolves to the transaction receipt once the transfer is complete.
  */

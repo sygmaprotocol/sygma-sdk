@@ -9,6 +9,7 @@ import { ERC20, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts
  * const tokenApproved = await isApproved(tokenId, tokenInstance, handlerAddress);
  * console.log(`Token approval status for ${tokenID}:`, isApproved);
  *
+ * @category Token iteractions
  * @param {number} tokenId - The TokenId of the token to be checked.
  * @param {ERC721MinterBurnerPauser} tokenInstance - The ERC721 token instance used to query the approval status.
  * @param {string} handlerAddress - The handler address for which the token approval status is checked.
@@ -37,6 +38,7 @@ export const isApproved = async (
  * const currentAllowance = await getERC20Allowance(senderAddress, erc20Instance, erc20HandlerAddress);
  * console.log('Current allowance:', currentAllowance);
  *
+ * @category Token iteractions
  * @param {string} senderAddress - The address of the token sender.
  * @param {ERC20} erc20Instance - The ERC20 token instance used to query the allowance.
  * @param {string} erc20HandlerAddress - The handler address for which the token allowance is checked.
@@ -60,6 +62,7 @@ export const getERC20Allowance = async (
 /**
  * Approves the specified token instance for a given amount or tokenId and the handler address.
  *
+ * @category Token iteractions
  * @param {BigNumber} amountOrIdForApproval - The amount or tokenId to be approved.
  * @param {ERC20 | ERC721MinterBurnerPauser} tokenInstance - The ERC20 or ERC721 token instance to be approved.
  * @param {string} handlerAddress - The handler address for which the token is being approved.

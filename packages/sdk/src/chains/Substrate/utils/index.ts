@@ -1,12 +1,7 @@
-export { substrateSocketConnect } from './substrateSocketConnect';
-export { getAssetBalance } from './getAssetBalance';
-export { getBasicFee } from './getBasicFee';
-export { getNativeTokenBalance } from './getNativeTokenBalance';
-
-export {
-  deposit,
-  throwErrorIfAny,
-  handleTxExtrinsicResult,
-  calculateBigNumber,
-} from './depositFns';
-export { listenForEvent } from './listenForEvent';
+export * from './substrateSocketConnect';
+export * from './getAssetBalance';
+export * from './getBasicFee';
+export * from './getNativeTokenBalance';
+export * from './depositFns';
+export * from './listenForEvent';
+export * from '../types';

@@ -22,6 +22,7 @@ export type SubstrateSocketConnectionCallbacksType = {
 /**
  * Connects to a Substrate node using WebSockets API by creating a new WsProvider instance with the given socket address.
  *
+ * @category Helpers
  * @param {Object} state - An object that contains the state of the API, including the connection status, socket address, and JSON-RPC interface.
  * @param {SubstrateSocketConnectionCallbacksType} callbacks - Optional callbacks
  * @returns {ApiPromise} - An instance of the ApiPromise class.

@@ -6,6 +6,7 @@ import { ERC20 } from '@buildwithsygma/sygma-contracts';
  * Return hex data padded to the number defined as padding
  * based on ethers.utils.hexZeroPad
  *
+ * @category Helpers
  * @param covertThis - data to convert
  * @param padding - number to padd the data
  * @returns {string}
@@ -19,6 +20,7 @@ export const toHex = (covertThis: string | number | BigNumber, padding: number):
  * Pads the data
  * based on ethers.utils.hexZeroPad
  *
+ * @category Helpers
  * @param covertThis - data to convert
  * @param padding - padding
  * @returns {string}
@@ -30,6 +32,7 @@ export const addPadding = (covertThis: string | number, padding: number): string
 /**
  * Creates the deposit data to use on bridge.deposit method interface
  *
+ * @category Helpers
  * @param tokenAmountOrID - number | string | BigNumber of the amount of token or Id fo the token
  * @param lenRecipientAddress
  * @param recipientAddress
@@ -51,6 +54,7 @@ export const createERCDepositData = (
 /**
  * Constructs the main deposit data for a given token and recipient.
  *
+ * @category Helpers
  * @param {BigNumber} tokenStats - The amount of ERC20 tokens or the token ID of ERC721 tokens.
  * @param {Uint8Array} destRecipient - The recipient address in bytes array
  * @returns {Uint8Array} The main deposit data in bytes array
@@ -78,6 +82,7 @@ export const constructMainDepositData = (
  * // Substrate address
  * constructDepositDataEvmSubstrate('2', '5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt', 12);
  *
+ * @category Helpers
  * @param {string} tokenAmount - The amount of tokens to be transferred.
  * @param {string} recipientAddress - The address of the recipient.
  * @param {number} [decimals=18] - The number of decimals of the token.
@@ -101,6 +106,7 @@ export const constructDepositDataEvmSubstrate = (
 /**
  * Creates data for permissioned generic handler
  *
+ * @category Helpers
  * @param hexMetaData
  * @returns {string}
  */
@@ -115,6 +121,7 @@ export const createPermissionedGenericDepositData = (hexMetaData: string): strin
 /**
  * Creates the data for permissionless generic handler
  *
+ * @category Helpers
  * @param executeFunctionSignature - execution function signature
  * @param executeContractAddress - execution contract address
  * @param maxFee - max fee defined
@@ -148,7 +155,14 @@ export const createPermissionlessGenericDepositData = (
   ) // bytes
     .toLowerCase();
 };
-
+/**
+ * Gets the number of decimals for an ERC20 token.
+ *
+ * @category Helpers
+ * @param {ERC20} tokenInstance - An instance of an ERC20 token.
+ * @returns {Promise<number>} - A promise that resolves with the number of decimals for the token.
+ * @throws Error if the input token instance is not an ERC20 token.
+ */
 export async function getTokenDecimals(tokenInstance: ERC20): Promise<number> {
   if (isERC20(tokenInstance)) {
     return await tokenInstance.decimals();
@@ -156,11 +170,24 @@ export async function getTokenDecimals(tokenInstance: ERC20): Promise<number> {
     throw new Error('Token instance is not ERC20');
   }
 }
-
+/**
+ * Type guard function that determines if a given object is an instance of the ERC20 interface.
+ *
+ * @category Helpers
+ * @param {ERC20} tokenInstance - The object to be checked.
+ * @returns {boolean} - Returns `true` if the object is an instance of ERC20, `false` otherwise.
+ */
 export function isERC20(tokenInstance: ERC20): tokenInstance is ERC20 {
   return 'decimals' in tokenInstance;
 }
 
+/**
+ * Checks if a given value is a number within the range of 0 and 255.
+ *
+ * @category Helpers
+ * @param {unknown} value - The value to check.
+ * @returns {boolean} - `true` if the number is within the range of 0 and 255, otherwise `false`.
+ */
 export const isUint8 = (value: unknown): boolean => {
   const bn = BigNumber.from(value);
   return bn.gte(0) && bn.lte(255);
@@ -169,6 +196,7 @@ export const isUint8 = (value: unknown): boolean => {
 /**
  * Check the fee data of the provider and returns the gas price if the node is not EIP1559
  *
+ * @category Helpers
  * @param provider - JsonRpcProvider | Web3Provider
  * @returns {Promise<BigNumber | boolean>}
  */

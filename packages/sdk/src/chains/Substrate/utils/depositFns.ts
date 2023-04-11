@@ -38,6 +38,7 @@ export type DepositCallbacksType = {
 /**
  * Calculates a big number from an amount and chain decimals retrived from API.
  *
+ * @category Bridge deposit
  * @param {ApiPromise} api - An API Promise object.
  * @param {string} amount - The amount to be converted.
  * @returns {BN} The converted amount as a BN object.
@@ -53,6 +54,7 @@ export const calculateBigNumber = (api: ApiPromise, amount: string): BN => {
 /**
  * Throw errors from a SubmittableResult.
  *
+ * @category Bridge deposit
  * @param {ApiPromise} api - The ApiPromise instance used to find meta errors.
  * @param {SubmittableResult} result - The SubmittableResult to log errors from.
  * @param {() => void} unsub - A function to stop listen for events.
@@ -96,6 +98,7 @@ export const throwErrorIfAny = (
  *   onFinalized: (status) => console.log('Transaction finalized:', status),
  * });
  *
+ * @category Bridge deposit
  * @param {ApiPromise} api - The API promise object.
  * @param {SubmittableResult} result - The submittable result object.
  * @param {Function} unsub - A function to stop listen for events.
@@ -135,6 +138,23 @@ export const handleTxExtrinsicResult = (
 /**
  * Creates a destination multilocation object for the deposit transaction.
  *
+ * @example
+ * // Create a destination multilocation object
+ * const address = '0x123abc';
+ * const domainId = '42';
+ * const multilocationData = createDestIdMultilocationData(address, domainId);
+ * console.log(multilocationData);
+ * // Output: {
+ * //   parents: 0,
+ * //   interior: {
+ * //     x2: [
+ * //       { generalKey: '0x123abc' },
+ * //       { generalKey: '0x2a' }
+ * //     ]
+ * //   }
+ * // }
+ *
+ * @category Bridge deposit
  * @param {string} address - The recipient address.
  * @param {string} domainId - The domain identifier.
  * @returns {object} - The destination multilocation object.
@@ -149,6 +169,7 @@ export const createDestIdMultilocationData = (address: string, domainId: string)
 /**
  * Creates an MultiAsset data for the deposit transaction.
  *
+ * @category Bridge deposit
  * @param {XcmMultiAssetIdType} xcmMultiAssetId - The XCM multi-asset identifier.
  * @param {ApiPromise} api - The Polkadot API promise object.
  * @param {string} amount - The deposit amount.
@@ -175,6 +196,7 @@ export const createMultiAssetData = (
  *      handleTxExtrinsicResult(api, result, unsub, callbacks);
  *    });
  *
+ * @category Bridge deposit
  * @param {ApiPromise} api - The ApiPromise instance.
  * @param {XcmMultiAssetIdType} xcmMultiAssetId - The XCM multi-asset ID type.
  * @param {string} amount - The amount to be deposited.

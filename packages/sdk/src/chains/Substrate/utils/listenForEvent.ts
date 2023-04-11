@@ -5,6 +5,7 @@ import type { AnyJson } from '@polkadot/types-codec/types';
 /**
  * Listens for an event and calls a callback when it is triggered.
  *
+ * @category Event handling
  * @param {ApiPromise} api - An ApiPromise instance.
  * @param {string} eventName - The name of the event to listen for.
  * @param {(data: AnyJson) => void} callback - The function to call when the event is triggered.
