@@ -53,7 +53,7 @@ const deployColorsContract = async (): Promise<void> => {
   const colors = { colorsAddressNode1, colorsAddressNode2 };
 
   await writeFile(
-    `${process.cwd()}/public/colors.json`,
+    `${process.cwd()}/src/colors.json`,
     JSON.stringify(colors),
     "utf-8"
   );

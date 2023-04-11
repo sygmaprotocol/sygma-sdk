@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { utils } from 'ethers'
 import { Actions, State } from "../reducers";
+import colorsAddresses from '../colors.json'
 
 function useAccountData(state: State, dispatch: React.Dispatch<Actions>) {
   const getData = async () => {
@@ -14,21 +15,15 @@ function useAccountData(state: State, dispatch: React.Dispatch<Actions>) {
     }
   }
 
-  const fetchColors = async () => {
-    const response = await fetch('./colors.json')
-    const colorsAddresses = await response.json()
-    dispatch({
-      type: 'setColorsAddresses',
-      payload: colorsAddresses
-    })
-  }
-
 
   useEffect(() => {
     if (state.sygmaInstance !== undefined && state.data !== undefined) {
       console.warn("Getting account info", state.sygmaInstance)
       getData()
-      fetchColors()
+      dispatch({
+        type: 'setColorsAddresses',
+        payload: colorsAddresses
+      })
     }
   }, [state.sygmaInstance, state.data])
 }

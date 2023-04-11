@@ -35,6 +35,10 @@ module.exports = function override(config) {
         fullySpecified: false,
       },
     },
+    {
+      test: /\.json$/,
+      use: "json-loader",
+    },
   ]);
   return config;
 };

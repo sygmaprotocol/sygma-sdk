@@ -1,5 +1,4 @@
-import fs from "fs";
-import { promisify } from "util";
+import fs from "fs/promises";
 import { ContractInterface, ethers } from "ethers";
 import { NonceManager } from "@ethersproject/experimental";
 import dotenv from "dotenv";
@@ -7,8 +6,6 @@ import {
   abi as ColorsABI,
   bytecode as ColorsByteCode,
 } from "./abis/colors-abi.json";
-
-const writeFile = promisify(fs.writeFile);
 
 void dotenv.config();
 
@@ -53,7 +50,7 @@ const deployColorsContract = async (): Promise<void> => {
   const colorsAddressNode2 = colorContractInstanceNode2.address;
   const colors = { colorsAddressNode1, colorsAddressNode2 };
 
-  await writeFile(
+  await fs.writeFile(
     `${process.cwd()}/src/colors.json`,
     JSON.stringify(colors),
     "utf-8"
