@@ -1,11 +1,11 @@
-import { utils, BigNumber } from 'ethers';
-import { TypeRegistry } from '@polkadot/types/create';
-
-const registry = new TypeRegistry();
+import { utils, BigNumber, providers } from 'ethers';
+import { decodeAddress } from '@polkadot/util-crypto';
+import { ERC20 } from '@buildwithsygma/sygma-contracts';
 
 /**
- * @name toHex
- * @description return hex data padded to the number defined as padding
+ * Return hex data padded to the number defined as padding
+ * based on ethers.utils.hexZeroPad
+ *
  * @param covertThis - data to convert
  * @param padding - number to padd the data
  * @returns {string}
@@ -16,14 +16,36 @@ export const toHex = (covertThis: string | number | BigNumber, padding: number):
 };
 
 /**
- * @name addPadding
- * @description pads the data
+ * Pads the data
+ * based on ethers.utils.hexZeroPad
+ *
  * @param covertThis - data to convert
  * @param padding - padding
  * @returns {string}
  */
 export const addPadding = (covertThis: string | number, padding: number): string => {
   return utils.hexZeroPad(`0x${covertThis}`, padding);
+};
+
+/**
+ * Creates the deposit data to use on bridge.deposit method interface
+ *
+ * @param tokenAmountOrID - number | string | BigNumber of the amount of token or Id fo the token
+ * @param lenRecipientAddress
+ * @param recipientAddress
+ * @returns {string}
+ */
+export const createERCDepositData = (
+  tokenAmountOrID: string | number | BigNumber,
+  lenRecipientAddress: number,
+  recipientAddress: string,
+): string => {
+  return (
+    '0x' +
+    toHex(tokenAmountOrID, 32).substr(2) + // Token amount or ID to deposit (32 bytes)
+    toHex(lenRecipientAddress, 32).substr(2) + // len(recipientAddress)          (32 bytes)
+    recipientAddress.substr(2)
+  ); // recipientAddress               (?? bytes)
 };
 
 /**
@@ -50,65 +72,35 @@ export const constructMainDepositData = (
  *
  * @example
  * // EVM address
- * createERCDepositData('1', '0x1234567890123456789012345678901234567890', 18);
+ * constructDepositDataEvmSubstrate('1', '0x1234567890123456789012345678901234567890', 18);
  *
  * @example
- * // Substrate MultiLocation
- * const addressPublicKeyInBytes = decodeAddress(
- *   '5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt',
- * );
- * const addressPublicKeyHexString = ethers.utils.hexlify(addressPublicKeyInBytes);
- * // console.log(addressPublicKeyHexString) => "0x06a220edf5f82b84fc5f9270f8a30a17636bf29c05a5c16279405ca20918aa39"
- * const multiLocation = JSON.stringify({
- *   parents: 0,
- *     interior: {
- *       X1: {
- *         AccountId32: {
- *           network: { any: null },
- *           id: addressPublicKeyHexString,
- *         },
- *       },
- *     },
- *   })
- * createERCDepositData('2', multiLocation);
+ * // Substrate address
+ * constructDepositDataEvmSubstrate('2', '5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt', 12);
  *
  * @param {string} tokenAmount - The amount of tokens to be transferred.
  * @param {string} recipientAddress - The address of the recipient.
  * @param {number} [decimals=18] - The number of decimals of the token.
  * @returns {string} The deposit data as hex string
  */
-export const createERCDepositData = (
+export const constructDepositDataEvmSubstrate = (
   tokenAmount: string,
   recipientAddress: string,
-  decimals = 18,
+  decimals: number = 18,
 ): string => {
   const convertedAmount = utils.parseUnits(tokenAmount, decimals);
-  const recipientAddressInBytes = getRecipientAddressInBytes(recipientAddress);
+  // convert to bytes array
+  const recipientAddressInBytes = utils.isAddress(recipientAddress)
+    ? utils.arrayify(recipientAddress)
+    : decodeAddress(recipientAddress);
   const depositDataBytes = constructMainDepositData(convertedAmount, recipientAddressInBytes);
   const depositData = utils.hexlify(depositDataBytes);
-
   return depositData;
 };
 
 /**
- * Converts a recipient address to a Uint8Array of bytes.
+ * Creates data for permissioned generic handler
  *
- * @param {string} recipientAddress - The recipient address, either as a string (EVM address) or a JSON object (Substrate multilocation).
- * @returns {Uint8Array} The recipient address as a Uint8Array of bytes
- */
-export const getRecipientAddressInBytes = (recipientAddress: string): Uint8Array => {
-  if (utils.isAddress(recipientAddress)) {
-    // EVM address
-    return utils.arrayify(recipientAddress);
-  }
-
-  // Substrate multilocation
-  return registry.createType('MultiLocation', JSON.parse(recipientAddress)).toU8a();
-};
-
-/**
- * @name createPermissionedGenericDepositData
- * @description creates data for permissioned generic handler
  * @param hexMetaData
  * @returns {string}
  */
@@ -121,8 +113,8 @@ export const createPermissionedGenericDepositData = (hexMetaData: string): strin
 };
 
 /**
- * @name createPermissionlessGenericDepositData
- * @description creates the data for permissionless generic handler
+ * Creates the data for permissionless generic handler
+ *
  * @param executeFunctionSignature - execution function signature
  * @param executeContractAddress - execution contract address
  * @param maxFee - max fee defined
@@ -156,3 +148,37 @@ export const createPermissionlessGenericDepositData = (
   ) // bytes
     .toLowerCase();
 };
+
+export async function getTokenDecimals(tokenInstance: ERC20): Promise<number> {
+  if (isERC20(tokenInstance)) {
+    return await tokenInstance.decimals();
+  } else {
+    throw new Error('Token instance is not ERC20');
+  }
+}
+
+export function isERC20(tokenInstance: ERC20): tokenInstance is ERC20 {
+  return 'decimals' in tokenInstance;
+}
+
+export const isUint8 = (value: unknown): boolean => {
+  const bn = BigNumber.from(value);
+  return bn.gte(0) && bn.lte(255);
+};
+
+/**
+ * Check the fee data of the provider and returns the gas price if the node is not EIP1559
+ *
+ * @param provider - JsonRpcProvider | Web3Provider
+ * @returns {Promise<BigNumber | boolean>}
+ */
+export async function isEIP1559MaxFeePerGas(provider: providers.Provider): Promise<BigNumber> {
+  try {
+    const feeData = await provider.getFeeData();
+    const { gasPrice } = feeData;
+    return gasPrice as BigNumber;
+  } catch (error) {
+    console.error('error getting EIP 1559', error);
+    return Promise.reject(error);
+  }
+}

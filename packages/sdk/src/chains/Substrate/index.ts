@@ -1,8 +1,4 @@
-export type {
-  XcmMultiAssetIdType,
-  SubstrateConfigAssetType,
-  SubstrateConfigType,
-} from '../Substrate/types';
+export type { XcmMultiAssetIdType } from '../Substrate/types';
 
 export * as Substrate from './utils';
 export * from './utils';

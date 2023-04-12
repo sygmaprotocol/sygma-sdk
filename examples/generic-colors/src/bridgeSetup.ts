@@ -20,6 +20,8 @@ const bridgeSetupList: EvmBridgeSetupList = [
     erc721HandlerAddress: erc721HandlerAddress,
     rpcUrl: "http://localhost:8545",
     type: "Ethereum",
+    feeRouterAddress: "",
+    feeHandlers: [],
     tokens: [
       {
         type: "erc20",
@@ -47,6 +49,8 @@ const bridgeSetupList: EvmBridgeSetupList = [
     erc721HandlerAddress: "0x481f97f9C82a971B3844a422936a4d3c4082bF84",
     rpcUrl: "http://localhost:8547",
     type: "Ethereum",
+    feeRouterAddress: "",
+    feeHandlers: [],
     tokens: [
       {
         type: "erc20",

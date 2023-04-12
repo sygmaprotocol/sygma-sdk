@@ -26,7 +26,6 @@ import {
   FeeDataResult,
   EvmBridgeSetupList,
   EvmBridgeSetup,
-  TokenConfig,
 } from './types';
 import {
   computeBridges,
@@ -37,8 +36,8 @@ import {
   setConnectorRPC,
   listTokensOfOwner,
 } from './utils';
-import { EvmBridge } from './chains';
-import { calculateBasicfee, calculateFeeData } from './fee';
+import { EvmBridge, TokenConfig } from './chains';
+import { calculateBasicfee, calculateDynamicFee, getFeeHandlerAddress } from './chains/EVM/fee';
 import Connector from './connectors/Connectors';
 import {
   createPermissionedGenericDepositData,
@@ -565,9 +564,12 @@ export class Sygma implements SygmaSDK {
     recipientAddress: string;
   }): Promise<FeeDataResult | Error | undefined> {
     const { amount, recipientAddress } = params;
+    console.log('🚀 ~ file: Sygma.ts:567 ~ Sygma ~ recipientAddress:', recipientAddress);
     const {
       feeSettings: { type },
     } = this.getSelectedToken();
+
+    console.warn('fee settings', this.getSelectedToken());
 
     if (type === 'none') {
       console.warn('No fee settings provided');
@@ -651,7 +653,7 @@ export class Sygma implements SygmaSDK {
     // We use sender address or zero because of contracts
     const sender = (await this.signers!.chain1?.getAddress()) ?? ethers.constants.AddressZero;
 
-    const feeData = calculateFeeData({
+    const feeData = calculateDynamicFee({
       provider,
       sender,
       recipientAddress,
@@ -660,7 +662,7 @@ export class Sygma implements SygmaSDK {
       resourceID,
       tokenAmount: amount,
       feeOracleBaseUrl,
-      feeOracleHandlerAddress,
+      dynamicERC20FeeHandlerAddress: feeOracleHandlerAddress,
     });
 
     return feeData;
@@ -1014,5 +1016,76 @@ export class Sygma implements SygmaSDK {
    */
   public getDestinationChainProvider(): ethers.providers.JsonRpcProvider {
     return this.providers!.chain2 as ethers.providers.JsonRpcProvider;
+  }
+
+  /**
+   * @name getFeeRouterAddress
+   * @param chain - the chain to get the fee router address
+   * @returns {string} - the address of the fee router
+   */
+  public getFeeRouterAddress(chain: 'chain1' | 'chain2'): string {
+    const { feeRouterAddress } = this.bridgeSetup![chain as keyof BridgeData];
+    return feeRouterAddress;
+  }
+
+  /**
+   * @name getBridgeSetup
+   * @param chain - chain to select to return the configuration that was passed on intiantiation
+   * @returns {EvmBridgeSetup} - the current configuration for that chain
+   */
+  public getBridgeSetup(chain: 'chain1' | 'chain2'): EvmBridgeSetup {
+    return this.bridgeSetup![chain as keyof BridgeData];
+  }
+
+  /**
+   * @name setFeeSettings
+   * @param type - the fee settings type: current options are oracle or basic
+   * @param address - address of the fee handler
+   * @param tokenAddress - the token on which the fee settings are being set
+   * @param chain - the chain on which the token is going to be altered
+   */
+  public setFeeSettings(
+    type: string,
+    address: string,
+    tokenAddress: string,
+    chain: Directions,
+  ): void {
+    const tokenFound = this.bridgeSetup![chain as keyof BridgeData].tokens.find(
+      token => token.address === tokenAddress,
+    );
+
+    const tokenUpdate = {
+      ...tokenFound,
+      feeSettings: { type, address },
+    };
+
+    this.bridgeSetup![chain as keyof BridgeData].tokens = this.bridgeSetup![
+      chain as keyof BridgeData
+    ].tokens.map(token => {
+      if (token.address === tokenFound?.address) {
+        return tokenUpdate;
+      }
+      return token;
+    }) as TokenConfig[];
+  }
+
+  public async getFeeHandlerAddress(
+    signerOrProvider: ethers.providers.JsonRpcProvider | ethers.Signer,
+    feeRouterAddress: string,
+    domainId: string,
+    resourceId: string,
+  ): Promise<string | Error> {
+    try {
+      const feeHandlerAddress = await getFeeHandlerAddress(
+        signerOrProvider,
+        feeRouterAddress,
+        domainId,
+        resourceId,
+      );
+      return feeHandlerAddress;
+    } catch (error) {
+      console.error("Couldn't get fee handler address", error);
+      return error as Error;
+    }
   }
 }
