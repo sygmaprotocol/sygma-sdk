@@ -38,7 +38,7 @@ To get started, clone this repository to your local machine:
 
 ```bash
 git clone git@github.com:sygmaprotocol/sygma-sdk.git
-cd sygma-sdk/examples/evm-to-substrate-example
+cd sygma-sdk/
 ```
 
 ### 2. Install dependencies
@@ -49,16 +49,26 @@ Install the project dependencies by running:
 yarn install
 ```
 
+### 3. Build the sdk
 
-### 3. Start the development server
+To start the example you need to build the sdk first:
 
 ```bash
+yarn sdk:build
+```
+
+### 4. Start the development server
+
+Change to `example/evm-to-substrate-react-example` and start the dev server
+
+```bash
+cd example/evm-to-substrate-react-example
 yarn dev
 ```
 
 Open browser on http://localhost:5174/
 
-### 4. Use our test ethereum account
+### 5. Use our test ethereum account
 
 Import private key of our test account and to be able to use premined ERC20 tokens
 
