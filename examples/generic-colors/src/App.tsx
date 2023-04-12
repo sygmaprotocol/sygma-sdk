@@ -140,7 +140,7 @@ function App() {
 
   const handleColorSelected =
     (colorId: string) =>
-    ({ target: { value, checked } }: any) => {
+    ({ target: { value, checked } }: React.ChangeEvent<HTMLInputElement>) => {
       setNodeId(colorId);
       if (checked) {
         dispatch({
