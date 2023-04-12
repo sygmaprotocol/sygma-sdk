@@ -1,12 +1,18 @@
 import { ethers, BigNumber } from 'ethers'
 import { NonceManager } from '@ethersproject/experimental'
 import { Colors__factory } from '../types/Colors__factory'
-import ColorsAddresses from '../../public/colors.json'
+import ColorsAddresses from '../colors.json'
 
 const toHex = (covertThis: string, padding: number) => {
   return ethers.utils.hexZeroPad(ethers.utils.hexlify(BigNumber.from(covertThis)), padding);
 };
 
+/**
+ * This script sets the colors for the bridge admin account on both nodes
+ * It uses the bridge admin account for the local setup
+ * The end result of running the script will be that, once you run the react app
+ * you will see three colors on both nodes rendered on the screen
+ */
 const setColor = async () => {
   const bridgeAdmin = "0x5C1F5961696BaD2e73f73417f07EF55C62a2dC5b";
   const provider1 = new ethers.providers.JsonRpcProvider('http://localhost:8545')
@@ -20,11 +26,6 @@ const setColor = async () => {
   );
 
   const walletSignerNode1 = wallet.connect(provider1);
-  console.log(
-    "🚀 ~ file: colors.local.tx.ts ~ line 33 ~ walletSignerNode1",
-    walletSignerNode1.address,
-  );
-  console.log("wallet address", walletSignerNode1.address)
 
   const tx = {
     to: firstAccount,
@@ -36,10 +37,6 @@ const setColor = async () => {
   await (await managedSignerNode1.sendTransaction(tx)).wait(1)
 
   const walletSignerNode2 = wallet.connect(provider2);
-  console.log(
-    "🚀 ~ file: colors.local.tx.ts ~ line 33 ~ walletSignerNode1",
-    walletSignerNode2.address,
-  );
 
   const managedSignerNode2 = new NonceManager(walletSignerNode2);
   await managedSignerNode2.signTransaction(tx)
@@ -53,15 +50,13 @@ const setColor = async () => {
   const colorsContractNode2 = Colors__factory.connect(ColorsAddresses.colorsAddressNode2, signerProvider2)
 
   const colorsNode1 = ['0x70F3FF', '0xB2B2B2']
+
   const colorsNode2 = ['0xFF8787', '0x00ABB3']
+
   const colorsToHexNode1 = colorsNode1.map(color => toHex(color, 32))
-  colorsToHexNode1.forEach(color => {
-    console.log("🚀 ~ file: setColors.ts ~ line 47 ~ setColor ~ color node 1", color)
-  })
+
   const colorsToHexNode2 = colorsNode2.map(color => toHex(color, 32))
-  colorsToHexNode2.forEach(color => {
-    console.log("🚀 ~ file: setColors.ts ~ line 47 ~ setColor ~ color node 2", color)
-  })
+
   const depositData = toHex(bridgeAdmin, 32)
 
   for await (let colorHexed of colorsToHexNode1) {

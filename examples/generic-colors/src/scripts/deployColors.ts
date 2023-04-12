@@ -10,6 +10,10 @@ import {
 // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 const writeFile = promisify(fs.writeFile);
 
+/**
+ * This script deploys the colors contract to both nodes using the bridge admin account for the local setup
+ * it saves the addresses of the deployed contracts in the src/colors.json file
+ */
 const deployColorsContract = async (): Promise<void> => {
   const provider1 = new ethers.providers.JsonRpcProvider(
     "http://localhost:8545"

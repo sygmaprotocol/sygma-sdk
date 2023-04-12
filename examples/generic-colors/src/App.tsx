@@ -25,7 +25,7 @@ const initState: State = {
   homeChainUrl: "",
   destinationChainUrl: "",
   loading: false,
-  colorsAddresses: { colorsAddressNode1: '', colorsAddressNode2: '' }
+  colorsAddresses: { colorsAddressNode1: "", colorsAddressNode2: "" },
 };
 
 function App() {
@@ -35,7 +35,7 @@ function App() {
   const [state, dispatch] = useReducer(reducer, initState);
 
   /**
-   * Initialization of hooks for data and connection
+   * Initialization of hooks for data and connection using Sygma SDK
    */
   useConnection(state, dispatch);
 
@@ -44,9 +44,9 @@ function App() {
    */
   useAccountData(state, dispatch);
 
-  // /**
-  //  * Hook that gets the colors from the contract
-  //  */
+  /**
+   * Hook that gets the colors from the Colors contract
+   */
   useGetColors(state, dispatch);
 
   /**
@@ -56,6 +56,16 @@ function App() {
 
   const handleConnectInit = (): void => handleConnect(state, dispatch);
 
+  /**
+   * This function handles the logic of performign the generic deposit
+   * For this it gets the data to transfer: the hex format of the color
+   * Then it gets the fee data for the deposit using the fetchBaiscFeeData method from the Sygma class
+   * Then it formats the deposit data using the formatPermissionlessGenericDepositData method from the Sygma class
+   * Note that the method requires you to pass the function signature of the method you want to call on the contract that's deployed over the destination chain
+   * It also uses the address of the contract. Since this example is using local setup, addresses are the same, hence it uses the same address for the first node
+   * We also pass the max fee value that we want to pay for the transaction, alongside the recipient address, the actual data to transfer and a boolean flag for depositor check
+   * Finally we call the depositGeneric method from the Sygma class, passing the resource id of the colors contract, the deposit data and the fee data
+   */
   const handleClick = async (): Promise<void> => {
     const first = state.colorSelected;
     const nodeElement = document.getElementById(nodeId!);
@@ -63,21 +73,6 @@ function App() {
     const depositFunctionSignature = "0x103b854b";
     const colorsResouceId =
       "0x0000000000000000000000000000000000000000000000000000000000000500";
-    console.log(
-      "🚀 ~ file: App.tsx ~ line 148 ~ handleClick ~ first",
-      formatedHex
-    );
-    const depositDataFee = `0x${
-      // @ts-ignore-next-line
-      ethers.utils.hexZeroPad(100, 32).substring(2) +
-      // @ts-ignore-next-line
-      ethers.utils.hexZeroPad(bridgeAdmin.length, 32).substring(2) +
-      state?.accountData?.substring(2)
-    }`;
-    console.log(
-      "🚀 ~ file: App.tsx ~ line 127 ~ handleClick ~ depositDataFee",
-      depositDataFee
-    );
 
     const { accountData = "" } = state;
 
@@ -85,10 +80,6 @@ function App() {
       amount: "1000000",
       recipientAddress: accountData,
     });
-    console.log(
-      "🚀 ~ file: App.tsx ~ line 169 ~ handleClick ~ basicFeeData",
-      basicFeeData
-    );
 
     const hexColor: string =
       state.sygmaInstance?.toHex(`0x${formatedHex}`, 32) || "";
@@ -100,26 +91,18 @@ function App() {
         "2000000",
         accountData,
         hexColor,
-        false
+        false,
       ) || "";
-    console.log(
-      "🚀 ~ file: App.tsx ~ line 172 ~ handleClick ~ depositData",
-      depositData
-    );
 
     dispatch({
       type: "resetColorSelected",
     });
 
     try {
-      const depositTx = await state.sygmaInstance?.depositGeneric(
+      await state.sygmaInstance?.depositGeneric(
         colorsResouceId,
         depositData,
-        basicFeeData as FeeDataResult
-      );
-      console.log(
-        "🚀 ~ file: App.tsx ~ line 160 ~ handleClick ~ depositTx",
-        depositTx
+        basicFeeData as FeeDataResult,
       );
 
       dispatch({
@@ -153,8 +136,6 @@ function App() {
         });
       }
     };
-
-  console.log(state);
 
   return (
     <div className="App">
@@ -195,7 +176,7 @@ function App() {
                   <input
                     id={`${idx}-${color}`}
                     type="checkbox"
-                    onClick={handleColorSelected(`${idx}-${color}`)}
+                    onChange={handleColorSelected(`${idx}-${color}`)}
                     value={color}
                     ref={idx === 0 ? checkboxRefColor1 : checkboxRefColor2}
                   />
