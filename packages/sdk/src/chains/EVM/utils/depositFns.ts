@@ -234,12 +234,31 @@ export const getDepositEventFromReceipt = async (
  *
  * @example
  * // this short example could miss some params, please look at types for correct info
- * const depositParams = { resourceId: '0x123', amountOrId: "100", recepientAddress: "0x0123", feeData: "// fee data ///" };
- * const bridgeConfig = { tokens: [{ resourceId: '0x123', address: '0x456', type: 'erc20' }], bridgeAddress: '0x789', domainId: 1 };
+ * const depositParams = {
+ *   resourceId: '0x123',
+ *   amountOrId: "100",
+ *   recepientAddress:"0x0123",
+ *   feeData: "// fee data ///"
+ * };
+ * const bridgeConfig = {
+ *  tokens: [{
+ *    resourceId: '0x123',
+ *    address: '0x456',
+ *    type: 'erc20'
+ *  }],
+ *  bridgeAddress: '0x789',
+ *  domainId: 1
+ * };
  * const provider = new ethers.providers.Web3Provider(window.ethereum);
- * // any ovveride settting for etherjs tranasaction
+ * // any override settting for etherjs tranasaction
  * const overrides = { gasLimit: 100000 };
- * const receipt = await processTokenTranfer({ depositParams, bridgeConfig, provider, overrides });
+ * const receipt =
+ *  await processTokenTranfer({
+ *    depositParams,
+ *    bridgeConfig,
+ *    provider,
+ *    overrides
+ *  });
  * // use the getDepositEventFromReceipt method to get the depositNonce
  *
  * @category Bridge deposit
