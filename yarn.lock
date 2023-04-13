@@ -1920,6 +1920,7 @@ __metadata:
     ts-jest: ^29.0.5
     ts-node: 10.7.0
     typedoc: ^0.24.1
+    typedoc-plugin-markdown: ^3.15.1
     typescript: 4.6.3
   languageName: unknown
   linkType: soft
@@ -14895,6 +14896,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"handlebars@npm:^4.7.7":
+  version: 4.7.7
+  resolution: "handlebars@npm:4.7.7"
+  dependencies:
+    minimist: ^1.2.5
+    neo-async: ^2.6.0
+    source-map: ^0.6.1
+    uglify-js: ^3.1.4
+    wordwrap: ^1.0.0
+  dependenciesMeta:
+    uglify-js:
+      optional: true
+  bin:
+    handlebars: bin/handlebars
+  checksum: 4c0913fc0018a2a2e358ee94e4fe83f071762b8bec51a473d187e6642e94e569843adcf550ffe329554c63ad450c062f3a05447bd2e3fff5ebfe698e214225c6
+  languageName: node
+  linkType: hard
+
 "har-schema@npm:^2.0.0":
   version: 2.0.0
   resolution: "har-schema@npm:2.0.0"
@@ -19531,7 +19550,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"neo-async@npm:^2.6.2":
+"neo-async@npm:^2.6.0, neo-async@npm:^2.6.2":
   version: 2.6.2
   resolution: "neo-async@npm:2.6.2"
   checksum: c2f5a604a54a8ec5438a342e1f356dff4bc33ccccdb6dc668d94fe8e5eccfc9d2c2eea6064b0967a767ba63b33763f51ccf2cd2441b461a7322656c1f06b3f5d
@@ -25363,6 +25382,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typedoc-plugin-markdown@npm:^3.15.1":
+  version: 3.15.1
+  resolution: "typedoc-plugin-markdown@npm:3.15.1"
+  dependencies:
+    handlebars: ^4.7.7
+  peerDependencies:
+    typedoc: ">=0.24.0"
+  checksum: 221f1a71fa383fc35b5d6818ebf3969c172418c3dd8287e819ac8d4109dd476b299408efb5e4741b06095fac4073194c4e1e6fec336f85f1e85c7511d622ea12
+  languageName: node
+  linkType: hard
+
 "typedoc@npm:^0.24.1":
   version: 0.24.1
   resolution: "typedoc@npm:0.24.1"
@@ -25426,6 +25456,15 @@ __metadata:
   version: 2.6.1
   resolution: "typical@npm:2.6.1"
   checksum: b3dee3aa4e8bbc2821c95dc98cb4618cac47735a399b0b24594f541049593381c5e01ff1ce3a35c9ebb3166ebd3edc62a3f6e34a99ccd2bdf20f205597f0df99
+  languageName: node
+  linkType: hard
+
+"uglify-js@npm:^3.1.4":
+  version: 3.17.4
+  resolution: "uglify-js@npm:3.17.4"
+  bin:
+    uglifyjs: bin/uglifyjs
+  checksum: 8b7fcdca69deb284fed7d2025b73eb747ce37f9aca6af53422844f46427152d5440601b6e2a033e77856a2f0591e4167153d5a21b68674ad11f662034ec13ced
   languageName: node
   linkType: hard
 
@@ -27378,6 +27417,13 @@ __metadata:
   version: 1.2.3
   resolution: "word-wrap@npm:1.2.3"
   checksum: 1cb6558996deb22c909330db1f01d672feee41d7f0664492912de3de282da3f28ba2d49e87b723024e99d56ba2dac2f3ab28f8db07ac199f5e5d5e2e437833de
+  languageName: node
+  linkType: hard
+
+"wordwrap@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "wordwrap@npm:1.0.0"
+  checksum: 7ed2e44f3c33c5c3e3771134d2b0aee4314c9e49c749e37f464bf69f2bcdf0cbf9419ca638098e2717cff4875c47f56a007532f6111c3319f557a2ca91278e92
   languageName: node
   linkType: hard
 

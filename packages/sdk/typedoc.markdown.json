@@ -1,0 +1,6 @@
+{
+  "entryPoints": ["src/index.ts"],
+  "categoryOrder": ["Bridge deposit", "Event handling", "Fee", "Token iteractions", "Helpers"],
+  "plugin": "typedoc-plugin-markdown",
+  "out": "docs-md"
+}
