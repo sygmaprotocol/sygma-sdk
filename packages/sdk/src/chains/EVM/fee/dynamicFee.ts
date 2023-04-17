@@ -13,6 +13,7 @@ type OracleResponse = {
 /**
  * Creates feeData structure with the following parameters.
  *
+ * @category Fee
  * @param {object} oracleResponse - Response received from the Oracle resource.
  * @param {string} amount - Amount in string format.
  * @returns {string} - Returns the oracleMessage, signature and amount.
@@ -62,7 +63,6 @@ export const createOracleFeeData = (oracleResponse: OracleResource, amount: stri
  * Calculates the dynamic fee for a transaction using the provided parameters and the Fee Oracle.
  *
  * @example
- * // Example usage:
  * const provider = new ethers.providers.JsonRpcProvider();
  * const result = await calculateDynamicFee({
  *   provider,
@@ -77,6 +77,7 @@ export const createOracleFeeData = (oracleResponse: OracleResource, amount: stri
  * });
  * console.log(result);
  *
+ * @category Fee
  * @param {Object} options - An object containing the following properties:
  * @param {ethers.providers.Provider} options.provider - The ethers provider to use.
  * @param {string} options.sender - The address of the sender.
@@ -149,6 +150,7 @@ export const calculateDynamicFee = async ({
 /**
  * Fetches oracle resource data from the FeeOracle service.
  *
+ * @category Fee
  * @param {Object} options - The options for the request.
  * @param {string} options.feeOracleBaseUrl - The base URL for the FeeOracle service.
  * @param {number} options.fromDomainID - The domain ID of the sending domain.

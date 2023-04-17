@@ -5,6 +5,7 @@ import { Connector } from '../connectors';
 import { BridgeData, Bridges, SygmaContracts, SygmaErc20Contracts, SygmaProviders } from '../types';
 
 /**
+ * @deprecated since version 1.4.0
  * @name computeBridges
  * @description returns object with contracts sorted by chain
  * @param contracts - object with contracts
@@ -22,6 +23,7 @@ export const computeBridges = (contracts: SygmaContracts): Bridges =>
   }, {});
 
 /**
+ * @deprecated since version 1.4.0
  * @name computeERC20Contracts
  * @description returns object with ERC20 contracts sorted by chain
  * @param contracts - object with contracts
@@ -39,6 +41,7 @@ export const computeERC20Contracts = (contracts: SygmaContracts): SygmaErc20Cont
   }, {});
 
 /**
+ * @deprecated since version 1.4.0
  * @name computeProvidersAndSignersRPC
  * @description returns object with RPC provider sorted by chain1 and chain2 descriptors
  * @param bridgeSetup - bridge data defined to use the SDK
@@ -56,6 +59,7 @@ export const computeProvidersAndSignersRPC = (
 };
 
 /**
+ * @deprecated since version 1.4.0
  * @name computeProvidersAndSignersWeb3
  * @description returns object with Web3 providers sorted by chain1 and chain2 descriptors
  * @param bridgeSetup - bridge setup to use the SDK
@@ -73,6 +77,7 @@ export const computeProvidersAndSignersWeb3 = (
 };
 
 /**
+ * @deprecated since version 1.4.0
  * @name setConnectorRPC
  * @description connects to RPC node
  * @param rpcUrl
@@ -94,6 +99,7 @@ export const setConnectorWeb3 = (web3ProviderInstance: providers.ExternalProvide
 };
 
 /**
+ * @deprecated since version 1.4.0
  * @name processAmountForERC20Transfer
  * @description prepares the amount of data to tranfer for ERC20 token
  * @param amount
@@ -106,6 +112,7 @@ export const processAmountForERC20Transfer = (amount: string): string => {
 };
 
 /**
+ * @deprecated since version 1.4.0
  * @name processLenRecipientAddress
  * @description returns hex data of the recipient address
  * @param recipientAddress
@@ -117,6 +124,7 @@ export const processLenRecipientAddress = (recipientAddress: string): string => 
 };
 
 /**
+ * @deprecated since version 1.4.0
  * @name listTokensOfOwner
  * @description list the tokens of the account
  * @param {Object}

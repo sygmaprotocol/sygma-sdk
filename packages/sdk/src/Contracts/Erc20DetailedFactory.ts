@@ -5,7 +5,10 @@ import { Contract, Signer } from 'ethers';
 import { Provider } from '@ethersproject/providers';
 
 import { Erc20Detailed } from './Erc20Detailed';
-
+/**
+ * @deprecated since version 1.4.0
+ * Erc20 detailed factory
+ */
 export class Erc20DetailedFactory {
   static connect(address: string, signerOrProvider: Signer | Provider): Erc20Detailed {
     return new Contract(address, _abi, signerOrProvider) as unknown as Erc20Detailed;
