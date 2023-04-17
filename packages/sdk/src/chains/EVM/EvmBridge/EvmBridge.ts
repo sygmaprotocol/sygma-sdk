@@ -12,6 +12,7 @@ import { Erc20DetailedFactory } from '../../../Contracts/Erc20DetailedFactory';
 import { createERCDepositData } from '../helpers';
 
 /**
+ * @deprecated since version 1.4.0
  * @name EvmBridge
  * @description class that implements methods to bridge EVM networks
  */

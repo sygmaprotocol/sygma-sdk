@@ -31,6 +31,7 @@ import { Bridge, Bridge__factory } from '@buildwithsygma/sygma-contracts';
  *  }
  *);
  *
+ * @category Event handling
  * @param {number} homeDepositNonce - The deposit nonce of the home chain.
  * @param {Bridge} bridge - The Bridge Contract instance to listen to.
  * @param {function(originDomainId: number, depositNonce: BigNumber, dataHash: string, tx: Event): void} callbackFn - Callback function to execute when a ProposalExecution event is emitted.
@@ -62,6 +63,7 @@ export const createProposalExecutionEventListener = (
 /**
  * Returns the number of listeners for the ProposalExecution event.
  *
+ * @category Event handling
  * @param {Bridge} bridge The bridge to get the listener count from.
  * @returns {number} The number of listeners for the ProposalExecution event.
  */
@@ -74,6 +76,7 @@ export const proposalExecutionEventListenerCount = (bridge: Bridge): number => {
 /**
  * Removes a Proposal Execution event listener from the Bridge.
  *
+ * @category Event handling
  * @param {Bridge} bridge - The Bridge instance to remove the listener from.
  * @returns {Bridge} The Bridge instance with the listener removed.
  */
@@ -85,6 +88,7 @@ export const removeProposalExecutionEventListener = (bridge: Bridge): Bridge => 
 /**
  * Connects to an EVM Bridge contract.
  *
+ * @category Event handling
  * @param {string} bridgeAddress - The address of the bridge contract.
  * @param {ethers.providers.Provider | ethers.Signer} signerOrProvider - The signer or provider to use for connecting to the bridge contract.
  * @returns {Bridge} The connected Bridge contract instance.
@@ -99,6 +103,7 @@ export const connectToBridge = (
 /**
  * Creates a new JsonRpcProvider instance based on the given RPC URL
  *
+ * @category Event handling
  * @param {string} rpcURL - The RPC URL to use for the provider
  * @returns {ethers.providers.JsonRpcProvider} A new JsonRpcProvider instance
  */
@@ -126,6 +131,7 @@ export const getProviderByRpcUrl = (rpcURL: string): ethers.providers.JsonRpcPro
  * }
  * const eventBridge = createDepositEventListener(bridge, userAddress, depositCallback);
  *
+ * @category Event handling
  * @param {Bridge} bridge - The Bridge contract instance.
  * @param {string} userAddress - The user address to filter deposit events for.
  * @param {function} callbackFn - The callback function to be executed when a deposit event is triggered.
@@ -164,6 +170,7 @@ export const createDepositEventListener = (
 /**
  * Removes the deposit event listener from the bridge instance.
  *
+ * @category Event handling
  * @param {Bridge} bridge - a Bridge instance to remove the listener from.
  * @returns {Bridge} - bridge instance without the deposit listener.
  */

@@ -1,3 +1,4 @@
-export * from '../EVM/types';
-export { default as EvmBridge } from './EvmBridge';
-export * as EVM from './utils';
+export * from './utils';
+export * from './types';
+export * from './fee';
+export * from './helpers';

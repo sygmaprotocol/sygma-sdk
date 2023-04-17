@@ -2,8 +2,11 @@ import { Bridge, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contract
 import { ethers } from 'ethers';
 
 import { Erc20Detailed } from '../Contracts/Erc20Detailed';
-import { FeeType, TokenConfig } from '../chains/EVM';
+import { FeeType, TokenConfig } from '../chains/EVM/types';
 
+/**
+ * @deprecated since version 1.4.0
+ */
 export interface SygmaSDK {}
 
 export type Directions = 'chain1' | 'chain2';

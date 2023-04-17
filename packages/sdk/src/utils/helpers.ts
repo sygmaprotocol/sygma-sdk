@@ -4,6 +4,7 @@ import { TypeRegistry } from '@polkadot/types/create';
 const registry = new TypeRegistry();
 
 /**
+ * @deprecated since version 1.4.0
  * @name toHex
  * @description return hex data padded to the number defined as padding
  * @param covertThis - data to convert
@@ -16,6 +17,7 @@ export const toHex = (covertThis: string | number | BigNumber, padding: number):
 };
 
 /**
+ * @deprecated since version 1.4.0
  * @name addPadding
  * @description pads the data
  * @param covertThis - data to convert
@@ -27,6 +29,7 @@ export const addPadding = (covertThis: string | number, padding: number): string
 };
 
 /**
+ * @deprecated since version 1.4.0
  * Constructs the main deposit data for a given token and recipient.
  *
  * @param {BigNumber} tokenStats - The amount of ERC20 tokens or the token ID of ERC721 tokens.
@@ -46,6 +49,7 @@ export const constructMainDepositData = (
 };
 
 /**
+ * @deprecated since version 1.4.0
  * Constructs the deposit data for an EVM-Substrate bridge transaction.
  *
  * @example
@@ -107,6 +111,7 @@ export const getRecipientAddressInBytes = (recipientAddress: string): Uint8Array
 };
 
 /**
+ * @deprecated since version 1.4.0
  * @name createPermissionedGenericDepositData
  * @description creates data for permissioned generic handler
  * @param hexMetaData
@@ -121,6 +126,7 @@ export const createPermissionedGenericDepositData = (hexMetaData: string): strin
 };
 
 /**
+ * @deprecated since version 1.4.0
  * @name createPermissionlessGenericDepositData
  * @description creates the data for permissionless generic handler
  * @param executeFunctionSignature - execution function signature

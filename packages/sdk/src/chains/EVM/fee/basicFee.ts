@@ -19,6 +19,7 @@ import { createERCDepositData } from '../helpers';
  * });
  * console.log(basicFeeData);
  *
+ * @category Fee
  * @param {Object} - Object to get the fee data
  * @returns {Promise<FeeDataResult>}
  */
