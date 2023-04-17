@@ -1,6 +1,7 @@
-import { BigNumber, utils } from 'ethers';
+import { BigNumber, utils, providers } from 'ethers';
 import { TypeRegistry } from '@polkadot/types';
 import { decodeAddress } from '@polkadot/util-crypto';
+import { ERC20 } from '@buildwithsygma/sygma-contracts';
 
 import {
   getRecipientAddressInBytes,
@@ -8,7 +9,10 @@ import {
   constructDepositDataEvmSubstrate,
   toHex,
   addPadding,
+  isUint8,
+  createPermissionedGenericDepositData,
 } from '../helpers';
+import * as helpers from '../helpers';
 
 const registry = new TypeRegistry();
 
@@ -137,5 +141,184 @@ describe('addPadding', () => {
     const padding = 4;
     addPadding(input, padding);
     expect(utils.hexZeroPad).toHaveBeenCalledWith('0x42', padding);
+  });
+});
+
+describe('createPermissionlessGenericDepositData', () => {
+  let toHexSpy: jest.SpyInstance;
+
+  beforeEach(() => {
+    toHexSpy = jest.spyOn(helpers, 'toHex');
+  });
+
+  afterEach(() => {
+    toHexSpy.mockRestore();
+  });
+
+  test('should return correct value when depositorCheck is true', () => {
+    const executeFunctionSignature = '0x12345678';
+    const executeContractAddress = '0xabcdef1234567890';
+    const maxFee = '0x1000';
+    const depositor = '0x1234abcd5678ef90';
+    const executionData = '0x0102030405060708';
+    // const depositorCheck = true;
+
+    toHexSpy.mockReturnValue('mockedHexValue');
+
+    const result = helpers.createPermissionlessGenericDepositData(
+      executeFunctionSignature,
+      executeContractAddress,
+      maxFee,
+      depositor,
+      executionData,
+      // depositorCheck,
+    );
+
+    expect(result).toEqual(
+      '0xckedhexvalueckedhexvalue12345678ckedhexvalueabcdef1234567890ckedhexvalueckedhexvalue0102030405060708ckedhexvalue',
+    );
+  });
+
+  test('should return correct value when depositorCheck is false', () => {
+    const executeFunctionSignature = '0x12345678';
+    const executeContractAddress = '0xabcdef1234567890';
+    const maxFee = '0x1000';
+    const depositor = '0x1234abcd5678ef90';
+    const executionData = '0x0102030405060708';
+    const depositorCheck = false;
+
+    toHexSpy.mockReturnValue('mockedHexValue');
+
+    const result = helpers.createPermissionlessGenericDepositData(
+      executeFunctionSignature,
+      executeContractAddress,
+      maxFee,
+      depositor,
+      executionData,
+      depositorCheck,
+    );
+
+    expect(result).toEqual(
+      '0xckedhexvalueckedhexvalue12345678ckedhexvalueabcdef1234567890ckedhexvalueckedhexvalue0102030405060708',
+    );
+  });
+});
+
+describe('getTokenDecimals', () => {
+  afterAll(() => {
+    jest.restoreAllMocks();
+  });
+  it('should return the decimal value of the token instance if it is an ERC20 token', async () => {
+    // Given
+    const tokenInstance = {
+      decimals: jest.fn().mockResolvedValue(18),
+    } as unknown as ERC20;
+    jest.spyOn(helpers, 'isERC20').mockReturnValue(true);
+
+    // When
+    const decimals = await helpers.getTokenDecimals(tokenInstance);
+
+    // Then
+    expect(helpers.isERC20).toHaveBeenCalledWith(tokenInstance);
+    expect(decimals).toBe(18);
+  });
+
+  it('should throw an error if the token instance is not an ERC20 token', async () => {
+    // Given
+    const tokenInstance = {} as unknown as ERC20;
+    jest.spyOn(helpers, 'isERC20').mockReturnValue(false);
+
+    // When & Then
+    await expect(helpers.getTokenDecimals(tokenInstance)).rejects.toThrow(
+      'Token instance is not ERC20',
+    );
+    expect(helpers.isERC20).toHaveBeenCalledWith(tokenInstance);
+  });
+});
+
+describe('isERC20', () => {
+  it('should return true when given an ERC20 token instance', () => {
+    const tokenInstance = {
+      name: 'MockToken',
+      symbol: 'MT',
+      decimals: 18,
+    } as unknown as ERC20;
+    const result = helpers.isERC20(tokenInstance);
+    expect(result).toBe(true);
+  });
+
+  it('should return false when given a non-ERC20 token instance', () => {
+    const tokenInstance = {
+      id: 123,
+      name: 'MockToken',
+      totalSupply: 100000,
+    } as unknown as ERC20;
+    const result = helpers.isERC20(tokenInstance);
+    expect(result).toBe(false);
+  });
+});
+
+describe('isUint8', () => {
+  it('returns true for values between 0 and 255', () => {
+    expect(isUint8(0)).toBe(true);
+    expect(isUint8(127)).toBe(true);
+    expect(isUint8(255)).toBe(true);
+  });
+
+  it('returns false for values outside the range of 0 to 255', () => {
+    expect(isUint8(-1)).toBe(false);
+    expect(isUint8(256)).toBe(false);
+    expect(() => isUint8('not a number' as unknown)).toThrowError();
+  });
+});
+
+describe('isEIP1559MaxFeePerGas', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should return the gas price if the node is not EIP1559', async () => {
+    const mockProvider: Partial<providers.Provider> = {
+      getFeeData: jest.fn().mockResolvedValue({ gasPrice: BigNumber.from(100) }),
+    };
+
+    const result = await helpers.isEIP1559MaxFeePerGas(mockProvider as providers.Provider);
+
+    expect(mockProvider.getFeeData).toHaveBeenCalledTimes(1);
+    expect(result).toEqual(BigNumber.from(100));
+  });
+
+  it('should throw an error if there is an issue getting EIP1559 data', async () => {
+    const error = new Error('Error getting EIP 1559 data');
+    const mockProvider: Partial<providers.Provider> = {
+      getFeeData: jest.fn().mockRejectedValue(error),
+    };
+
+    await expect(helpers.isEIP1559MaxFeePerGas(mockProvider as providers.Provider)).rejects.toThrow(
+      error,
+    );
+
+    expect(mockProvider.getFeeData).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('createPermissionedGenericDepositData', () => {
+  it('should create depositData for permissioned generic handler', () => {
+    const hexMetaData = '0x68656c6c6f776f726c64'; // 'helloworld' in hex
+    const expectedResult =
+      '0x000000000000000000000000000000000000000000000000000000000000000a68656c6c6f776f726c64';
+
+    const result = createPermissionedGenericDepositData(hexMetaData);
+
+    expect(result).toBe(expectedResult);
+  });
+
+  it('should handle an empty hex string', () => {
+    const hexMetaData = '0x';
+    const expectedResult = '0x0000000000000000000000000000000000000000000000000000000000000000';
+
+    const result = createPermissionedGenericDepositData(hexMetaData);
+
+    expect(result).toBe(expectedResult);
   });
 });

@@ -123,16 +123,13 @@ export const constructDepositDataEvmSubstrate = (
 };
 
 /**
- * Creates data for permissioned generic handler
+ * Creates depositData for permissioned generic handler
  *
  * @category Helpers
  * @param hexMetaData
  * @returns {string}
  */
 export const createPermissionedGenericDepositData = (hexMetaData: string): string => {
-  if (hexMetaData === null) {
-    return '0x' + toHex(0, 32).substr(2); // len(metaData) (32 bytes)
-  }
   const hexMetaDataLength = hexMetaData.substr(2).length / 2;
   return '0x' + toHex(hexMetaDataLength, 32).substr(2) + hexMetaData.substr(2);
 };
@@ -198,7 +195,7 @@ export async function getTokenDecimals(tokenInstance: ERC20): Promise<number> {
  */
 export function isERC20(tokenInstance: ERC20): tokenInstance is ERC20 {
   return 'decimals' in tokenInstance;
-}
+};
 
 /**
  * Checks if a given value is a number within the range of 0 and 255.
