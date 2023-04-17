@@ -173,11 +173,15 @@ export const executeDeposit = async (
 ): Promise<ContractTransaction> => {
   try {
     const gasPrice = await isEIP1559MaxFeePerGas(provider);
-    const gasPriceStringify = typeof gasPrice !== 'boolean' ? gasPrice.toString() : undefined;
+    const gasPriceStringify = gasPrice.toString();
 
-    const payableOverrides = {
+    const transactionSettings = {
       gasPrice: gasPriceStringify,
       value: feeData.type === 'basic' ? feeData.fee : undefined,
+    };
+
+    const payableOverrides = {
+      ...transactionSettings,
       ...overrides,
     };
     const tx = await bridgeInstance.deposit(

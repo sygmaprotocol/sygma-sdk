@@ -6,7 +6,7 @@ import { ERC20 } from '@buildwithsygma/sygma-contracts';
 import {
   getRecipientAddressInBytes,
   constructMainDepositData,
-  constructDepositDataEvmSubstrate,
+  createERCDepositData,
   toHex,
   addPadding,
   isUint8,
@@ -33,7 +33,7 @@ describe('constructMainDepositData', () => {
   });
 });
 
-describe('constructDepositDataEvmSubstrate', () => {
+describe('createERCDepositData', () => {
   it('should return the correct deposit data', () => {
     const tokenAmount = '100';
     const recipientAddress = '0x1234567890123456789012345678901234567890';
@@ -50,7 +50,7 @@ describe('constructDepositDataEvmSubstrate', () => {
     jest.spyOn(utils, 'arrayify').mockReturnValueOnce(new Uint8Array([18, 52, 86]));
     jest.spyOn(utils, 'hexlify').mockReturnValueOnce(expectedDepositData);
 
-    const depositData = constructDepositDataEvmSubstrate(tokenAmount, recipientAddress, decimals);
+    const depositData = createERCDepositData(tokenAmount, recipientAddress, decimals);
 
     expect(utils.parseUnits).toHaveBeenCalledWith(tokenAmount, decimals);
     expect(utils.isAddress).toHaveBeenCalledWith(recipientAddress);
@@ -224,11 +224,9 @@ describe('getTokenDecimals', () => {
   });
 
   it('should throw an error if the token instance is not an ERC20 token', async () => {
-    // Given
     const tokenInstance = {} as unknown as ERC20;
     jest.spyOn(helpers, 'isERC20').mockReturnValue(false);
 
-    // When & Then
     await expect(helpers.getTokenDecimals(tokenInstance)).rejects.toThrow(
       'Token instance is not ERC20',
     );

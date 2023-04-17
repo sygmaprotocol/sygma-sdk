@@ -67,14 +67,12 @@ describe('deposit functions', () => {
   });
   describe('executeDeposit', () => {
     it('should successfully execute deposit', async () => {
-      // Mock the required functions
       const bridgeInstance = {
         deposit: jest.fn().mockResolvedValueOnce({
           wait: jest.fn().mockResolvedValueOnce({} as ContractReceipt),
         } as unknown as ContractTransaction),
       };
 
-      // Call the function and test the result
       const result = await EVM.executeDeposit(
         domainId,
         resourceId,
@@ -89,11 +87,69 @@ describe('deposit functions', () => {
       expect(bridgeInstance.deposit).toHaveBeenCalledTimes(1);
     });
 
+    it('should successfully execute deposit without overrides', async () => {
+      const bridgeInstance = {
+        deposit: jest.fn().mockResolvedValueOnce({
+          wait: jest.fn().mockResolvedValueOnce({} as ContractReceipt),
+        } as unknown as ContractTransaction),
+      };
+
+      const result = await EVM.executeDeposit(
+        domainId,
+        resourceId,
+        depositData,
+        feeData,
+        bridgeInstance as unknown as Bridge,
+        provider,
+      );
+
+      expect(result).toBeDefined();
+      expect(bridgeInstance.deposit).toHaveBeenCalledTimes(1);
+      expect(bridgeInstance.deposit).toHaveBeenCalledWith(
+        'domainId',
+        'resourceId',
+        'depositData',
+        'feeData',
+        { gasPrice: '100', value: feeData.fee },
+      );
+    });
+    it('should successfully execute deposit without overrides and with dynamic (oracle) fee', async () => {
+      feeData = {
+        type: 'feeOracle',
+        fee: BigNumber.from('100'),
+        feeData: 'feeData',
+        calculatedRate: '1.5',
+        erc20TokenAddress: '0x00',
+      };
+      const bridgeInstance = {
+        deposit: jest.fn().mockResolvedValueOnce({
+          wait: jest.fn().mockResolvedValueOnce({} as ContractReceipt),
+        } as unknown as ContractTransaction),
+      };
+
+      const result = await EVM.executeDeposit(
+        domainId,
+        resourceId,
+        depositData,
+        feeData,
+        bridgeInstance as unknown as Bridge,
+        provider,
+      );
+
+      expect(result).toBeDefined();
+      expect(bridgeInstance.deposit).toHaveBeenCalledTimes(1);
+      expect(bridgeInstance.deposit).toHaveBeenCalledWith(
+        'domainId',
+        'resourceId',
+        'depositData',
+        'feeData',
+        { gasPrice: '100', value: undefined },
+      );
+    });
+
     it('should handle error on execute deposit', async () => {
-      // Mock the required functions
       bridgeInstance.deposit = jest.fn().mockRejectedValueOnce(new Error('Deposit failed'));
 
-      // Mock console.log to prevent logging in tests
       const consoleLogSpy = jest.spyOn(console, 'error').mockImplementation();
 
       await expect(

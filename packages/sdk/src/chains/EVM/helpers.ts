@@ -1,5 +1,4 @@
 import { utils, BigNumber, providers } from 'ethers';
-import { decodeAddress } from '@polkadot/util-crypto';
 import { TypeRegistry } from '@polkadot/types/create';
 import { ERC20 } from '@buildwithsygma/sygma-contracts';
 
@@ -33,13 +32,37 @@ export const addPadding = (covertThis: string | number, padding: number): string
 };
 
 /**
- * Creates the deposit data to use on bridge.deposit method interface
+ * Constructs the deposit data for an EVM-Substrate bridge transaction.
  *
- * @category Helpers
- * @param tokenAmountOrID - number | string | BigNumber of the amount of token or Id fo the token
- * @param lenRecipientAddress
- * @param recipientAddress
- * @returns {string}
+ * @example
+ * // EVM address
+ * createERCDepositData('1', '0x1234567890123456789012345678901234567890', 18);
+ *
+ * @example
+ * import { decodeAddress } from '@polkadot/util-crypto';
+ * // Substrate MultiLocation
+ * const addressPublicKeyInBytes = decodeAddress(
+ *   '5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt',
+ * );
+ * const addressPublicKeyHexString = ethers.utils.hexlify(addressPublicKeyInBytes);
+ * // console.log(addressPublicKeyHexString) => "0x06a220edf5f82b84fc5f9270f8a30a17636bf29c05a5c16279405ca20918aa39"
+ * const multiLocation = JSON.stringify({
+ *   parents: 0,
+ *     interior: {
+ *       X1: {
+ *         AccountId32: {
+ *           network: { any: null },
+ *           id: addressPublicKeyHexString,
+ *         },
+ *       },
+ *     },
+ *   })
+ * createERCDepositData('2', multiLocation);
+ *
+ * @param {string} tokenAmount - The amount of tokens to be transferred.
+ * @param {string} recipientAddress - The address of the recipient.
+ * @param {number} [decimals=18] - The number of decimals of the token.
+ * @returns {string} The deposit data as hex string
  */
 export const createERCDepositData = (
   tokenAmount: string,
@@ -88,38 +111,6 @@ export const constructMainDepositData = (
     destRecipient, // Recipient
   ]);
   return data;
-};
-
-/**
- * Constructs the deposit data for an EVM-Substrate bridge transaction.
- *
- * @example
- * // EVM address
- * constructDepositDataEvmSubstrate('1', '0x1234567890123456789012345678901234567890', 18);
- *
- * @example
- * // Substrate address
- * constructDepositDataEvmSubstrate('2', '5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt', 12);
- *
- * @category Helpers
- * @param {string} tokenAmount - The amount of tokens to be transferred.
- * @param {string} recipientAddress - The address of the recipient.
- * @param {number} [decimals=18] - The number of decimals of the token.
- * @returns {string} The deposit data as hex string
- */
-export const constructDepositDataEvmSubstrate = (
-  tokenAmount: string,
-  recipientAddress: string,
-  decimals: number = 18,
-): string => {
-  const convertedAmount = utils.parseUnits(tokenAmount, decimals);
-  // convert to bytes array
-  const recipientAddressInBytes = utils.isAddress(recipientAddress)
-    ? utils.arrayify(recipientAddress)
-    : decodeAddress(recipientAddress);
-  const depositDataBytes = constructMainDepositData(convertedAmount, recipientAddressInBytes);
-  const depositData = utils.hexlify(depositDataBytes);
-  return depositData;
 };
 
 /**
