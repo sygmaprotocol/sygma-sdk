@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { useEvm } from "../evm-lib";
-// import { evmSetupList } from "../config";
 
 function Main(): JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
@@ -70,13 +69,6 @@ function Main(): JSX.Element {
           {...register("to")}
           className="input"
         />
-        {/* <select {...register("to")} className="input">
-          {evmSetupList.map((bridgeItem) => (
-            <option key={bridgeItem.domainId} value={bridgeItem.domainId}>
-              {bridgeItem.name}
-            </option>
-          ))}
-        </select> */}
         <div
           style={{
             display: "flex",
