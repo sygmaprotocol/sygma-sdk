@@ -1,6 +1,9 @@
 import { utils, BigNumber, providers } from 'ethers';
 import { decodeAddress } from '@polkadot/util-crypto';
+import { TypeRegistry } from '@polkadot/types/create';
 import { ERC20 } from '@buildwithsygma/sygma-contracts';
+
+const registry = new TypeRegistry();
 
 /**
  * Return hex data padded to the number defined as padding
@@ -39,16 +42,32 @@ export const addPadding = (covertThis: string | number, padding: number): string
  * @returns {string}
  */
 export const createERCDepositData = (
-  tokenAmountOrID: string | number | BigNumber,
-  lenRecipientAddress: number,
+  tokenAmount: string,
   recipientAddress: string,
+  decimals = 18,
 ): string => {
-  return (
-    '0x' +
-    toHex(tokenAmountOrID, 32).substr(2) + // Token amount or ID to deposit (32 bytes)
-    toHex(lenRecipientAddress, 32).substr(2) + // len(recipientAddress)          (32 bytes)
-    recipientAddress.substr(2)
-  ); // recipientAddress               (?? bytes)
+  const convertedAmount = utils.parseUnits(tokenAmount, decimals);
+  const recipientAddressInBytes = getRecipientAddressInBytes(recipientAddress);
+  const depositDataBytes = constructMainDepositData(convertedAmount, recipientAddressInBytes);
+  const depositData = utils.hexlify(depositDataBytes);
+
+  return depositData;
+};
+
+/**
+ * Converts a recipient address to a Uint8Array of bytes.
+ *
+ * @param {string} recipientAddress - The recipient address, either as a string (EVM address) or a JSON object (Substrate multilocation).
+ * @returns {Uint8Array} The recipient address as a Uint8Array of bytes
+ */
+export const getRecipientAddressInBytes = (recipientAddress: string): Uint8Array => {
+  if (utils.isAddress(recipientAddress)) {
+    // EVM address
+    return utils.arrayify(recipientAddress);
+  }
+
+  // Substrate multilocation
+  return registry.createType('MultiLocation', JSON.parse(recipientAddress)).toU8a();
 };
 
 /**

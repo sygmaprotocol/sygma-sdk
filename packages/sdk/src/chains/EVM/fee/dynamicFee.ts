@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import fetch from 'cross-fetch';
 
 import { OracleResource, FeeDataResult } from '../../../types';
-import { toHex, createERCDepositData } from '../../../utils/helpers';
+import { toHex, createERCDepositData } from '../helpers';
 
 type OracleResponse = {
   error?: string;

@@ -10,12 +10,7 @@ import { DepositEvent } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge
 import { FeeDataResult } from 'types';
 import { Erc20TransferParamsType, Erc721TransferParamsType, TokenTransfer } from '../types';
 
-import {
-  constructDepositDataEvmSubstrate,
-  createERCDepositData,
-  getTokenDecimals,
-  isEIP1559MaxFeePerGas,
-} from '../helpers';
+import { createERCDepositData, getTokenDecimals, isEIP1559MaxFeePerGas } from '../helpers';
 
 import { isApproved, getERC20Allowance } from './approvesAndChecksFns';
 
@@ -32,7 +27,6 @@ import { isApproved, getERC20Allowance } from './approvesAndChecksFns';
  *   domainId: '1',
  *   resourceId: '0x000000000000000001',
  *   feeData: { ... }, // fee data
- *   confirmations: 6,
  *   provider: new ethers.providers.Web3Provider(window.ethereum),
  *   overrides: { gasLimit: 1000000 } // optional
  * }
@@ -51,15 +45,15 @@ export const erc20Transfer = async ({
   recipientAddress,
   tokenInstance,
   bridgeInstance,
-  provider,
   handlerAddress,
   domainId,
   resourceId,
   feeData,
+  provider,
   overrides,
 }: Erc20TransferParamsType): Promise<ContractTransaction> => {
   // construct the deposit data
-  const depositData = constructDepositDataEvmSubstrate(
+  const depositData = createERCDepositData(
     amount,
     recipientAddress,
     await getTokenDecimals(tokenInstance),
@@ -119,7 +113,7 @@ export const erc721Transfer = async ({
   overrides,
 }: Erc721TransferParamsType): Promise<ContractTransaction> => {
   // construct the deposit data
-  const depositData = createERCDepositData(tokenId, 20, recipientAddress);
+  const depositData = createERCDepositData(tokenId, recipientAddress);
 
   // Chcke approval for this particular tokenID
   console.log(

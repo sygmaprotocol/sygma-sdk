@@ -13,7 +13,6 @@ jest.mock('../helpers', () => {
   return {
     isEIP1559MaxFeePerGas: jest.fn().mockResolvedValue(BigNumber.from('100')),
     getTokenDecimals: jest.fn().mockResolvedValue(1),
-    constructDepositDataEvmSubstrate: jest.fn().mockReturnValue('0xdepositData'),
     createERCDepositData: jest.fn().mockReturnValue('0x0erc20value'),
   };
 });
@@ -141,7 +140,7 @@ describe('deposit functions', () => {
       expect(EVM.executeDeposit).toBeCalledWith(
         domainId,
         resourceId,
-        '0xdepositData',
+        '0x0erc20value',
         feeData,
         bridgeInstance,
         provider,

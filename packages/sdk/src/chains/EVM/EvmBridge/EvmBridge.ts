@@ -9,7 +9,7 @@ import { Directions, Provider, FeeDataResult } from '../../../types';
 import { Erc20Detailed } from '../../../Contracts/Erc20Detailed';
 import { Erc20DetailedFactory } from '../../../Contracts/Erc20DetailedFactory';
 
-import { createERCDepositData } from '../../../utils/helpers';
+import { createERCDepositData } from '../helpers';
 
 /**
  * @deprecated since version 1.4.0
