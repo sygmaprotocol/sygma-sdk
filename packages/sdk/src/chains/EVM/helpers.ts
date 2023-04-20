@@ -186,7 +186,7 @@ export async function getTokenDecimals(tokenInstance: ERC20): Promise<number> {
  */
 export function isERC20(tokenInstance: ERC20): tokenInstance is ERC20 {
   return 'decimals' in tokenInstance;
-};
+}
 
 /**
  * Checks if a given value is a number within the range of 0 and 255.

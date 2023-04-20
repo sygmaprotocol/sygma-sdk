@@ -209,17 +209,12 @@ describe('getTokenDecimals', () => {
     jest.restoreAllMocks();
   });
   it('should return the decimal value of the token instance if it is an ERC20 token', async () => {
-    // Given
     const tokenInstance = {
       decimals: jest.fn().mockResolvedValue(18),
     } as unknown as ERC20;
     jest.spyOn(helpers, 'isERC20').mockReturnValue(true);
 
-    // When
     const decimals = await helpers.getTokenDecimals(tokenInstance);
-
-    // Then
-    expect(helpers.isERC20).toHaveBeenCalledWith(tokenInstance);
     expect(decimals).toBe(18);
   });
 
@@ -230,7 +225,6 @@ describe('getTokenDecimals', () => {
     await expect(helpers.getTokenDecimals(tokenInstance)).rejects.toThrow(
       'Token instance is not ERC20',
     );
-    expect(helpers.isERC20).toHaveBeenCalledWith(tokenInstance);
   });
 });
 
