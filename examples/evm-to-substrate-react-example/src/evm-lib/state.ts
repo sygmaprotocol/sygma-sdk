@@ -6,7 +6,7 @@ import { EvmBridgeSetup, FeeDataResult } from "@buildwithsygma/sygma-sdk-core";
 import { TokenConfig } from "@buildwithsygma/sygma-sdk-core/src/chains/EVM";
 import { ERC20 } from "@buildwithsygma/sygma-contracts";
 
-import { substrateConfig } from "../config";
+import { substrateConfig } from "../config/goerliToRococo";
 
 const connectedSocket = substrateConfig.provider_socket;
 

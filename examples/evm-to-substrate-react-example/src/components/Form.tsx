@@ -12,9 +12,9 @@ function Main(): JSX.Element {
   const { register, handleSubmit } = useForm({
     defaultValues: {
       amount: "11",
-      address: "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty", // Bob's address
-      from: "1",
-      to: "3",
+      address: "3zmVCqbvMRgtrt48zR8C5Kz3Ast6sVsdMXNJt2mAETj7s2z8", // Bob's address
+      from: "0",
+      to: "5",
     },
   });
 
@@ -61,7 +61,7 @@ function Main(): JSX.Element {
           Home EVM network domainID: {selectedEvmConfig!.domainId}
         </label>
         <label htmlFor="to" className="label">
-          Destination EVM network:
+          Destination Substrate network domainID:
         </label>
         <input
           type="text"

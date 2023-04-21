@@ -7,7 +7,7 @@ import {
 import { decodeAddress } from "@polkadot/util-crypto";
 import { Substrate, EVM } from "@buildwithsygma/sygma-sdk-core";
 
-import { evmSetupList } from "../config";
+import { evmSetupList } from "../config/goerliToRococo";
 import { reducer, initialState, StateType } from "./state";
 
 const {
@@ -64,7 +64,10 @@ const EvmContextProvider = (props: {
         await provider.send("eth_requestAccounts", []);
         const network = await provider.getNetwork();
 
-        if (![1337, 1338].includes(network.chainId)) {
+        const homeNetworksChainIDs = evmSetupList.map(
+          (evmSetup) => evmSetup.networkId
+        );
+        if (!homeNetworksChainIDs.includes(network.chainId)) {
           // throw new Error("Please connect to the right network");
           // @ts-ignore-line
           await window.ethereum.request({
