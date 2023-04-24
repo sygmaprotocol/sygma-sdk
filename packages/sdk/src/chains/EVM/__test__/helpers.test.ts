@@ -161,7 +161,6 @@ describe('createPermissionlessGenericDepositData', () => {
     const maxFee = '0x1000';
     const depositor = '0x1234abcd5678ef90';
     const executionData = '0x0102030405060708';
-    // const depositorCheck = true;
 
     toHexSpy.mockReturnValue('mockedHexValue');
 
@@ -171,7 +170,6 @@ describe('createPermissionlessGenericDepositData', () => {
       maxFee,
       depositor,
       executionData,
-      // depositorCheck,
     );
 
     expect(result).toEqual(

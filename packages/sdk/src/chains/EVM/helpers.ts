@@ -35,15 +35,22 @@ export const addPadding = (covertThis: string | number, padding: number): string
  * Constructs the deposit data for an EVM-Substrate bridge transaction.
  *
  * @example
+ * // Amount of tokens:
+ * const amount = '1';
  * // EVM address
- * createERCDepositData('1', '0x1234567890123456789012345678901234567890', 18);
+ * const evmAddress = '0x1234567890123456789012345678901234567890';
+ * // Decimals of the token
+ * const decimals = 18;
+ * createERCDepositData(amount, evmAddress, decimals);
  *
  * @example
  * import { decodeAddress } from '@polkadot/util-crypto';
  * // Substrate MultiLocation
+ * // Decode address to bytes of public key
  * const addressPublicKeyInBytes = decodeAddress(
  *   '5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt',
  * );
+ * // Convert bytes of public key to hex string
  * const addressPublicKeyHexString = ethers.utils.hexlify(addressPublicKeyInBytes);
  * // console.log(addressPublicKeyHexString) => "0x06a220edf5f82b84fc5f9270f8a30a17636bf29c05a5c16279405ca20918aa39"
  * const multiLocation = JSON.stringify({
@@ -57,7 +64,9 @@ export const addPadding = (covertThis: string | number, padding: number): string
  *       },
  *     },
  *   })
- * createERCDepositData('2', multiLocation);
+ * // Amount of tokens:
+ * const amount = '2';
+ * createERCDepositData(amount, multiLocation);
  *
  * @param {string} tokenAmount - The amount of tokens to be transferred.
  * @param {string} recipientAddress - The address of the recipient.
