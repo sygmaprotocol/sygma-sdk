@@ -44,7 +44,7 @@ import {
   createPermissionedGenericDepositData,
   createPermissionlessGenericDepositData,
   toHex,
-} from './utils/helpers';
+} from './chains/EVM/helpers';
 
 /**
  * @deprecated since version 1.4.0
