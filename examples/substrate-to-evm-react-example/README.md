@@ -13,23 +13,29 @@ This is an example react application to test the transfer of assets from Substra
 ### 0. Prepare local setup
 Local setup is a docker configuration to run EVM and Substrate nodes as well as relayers on the local dev machine.
 Make sure that you have latest installation of Docker and docker-compose.
-Clone the repository of sygma-relayer and got to example directory:
+Clone the repository of sygma-relayer and go to repository's directory.
 ```bash
 git clone git@github.com:sygmaprotocol/sygma-relayer.git
-cd sygma-relayer/example
+cd sygma-relayer
 ```
 
-Now we need to build the fresh docker images for relayers:
+You can build and run the local setup in a __quick way__ by running the following command:
 
 ```bash
+# assuming that you are in the root directory of sygma-relayer
+# it will build and start relayers: `docker-compose --file=./example/docker-compose.yml up --build`
+make example
+````
+__Or__ you can build and run the local setup __manually__ by running the following commands:
+
+```bash
+# assuming that you are in the root directory of sygma-relayer
+cd ./example
+# Build the fresh docker images for relayers:
 docker-compose build
-```
-
-Finally we can start our nodes and relayers:
-
-```bash
+# Finally we can start our nodes and relayers:
 docker-compose up -d
-```
+````
 
 
 ### 1. Clone the repository
