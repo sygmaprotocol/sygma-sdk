@@ -6,15 +6,20 @@ import { useEvm } from "../evm-lib";
 function Main(): JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
   const {
-    state: { currentAccount, selectedEvmConfig },
+    state: {
+      currentAccount,
+      selectedEvmConfig,
+      homeChainId,
+      destinationDomainId,
+    },
     makeDeposit,
   } = useEvm();
   const { register, handleSubmit } = useForm({
     defaultValues: {
       amount: "11",
       address: "3zmVCqbvMRgtrt48zR8C5Kz3Ast6sVsdMXNJt2mAETj7s2z8", // Bob's address
-      from: "0",
-      to: "5",
+      from: homeChainId,
+      to: destinationDomainId,
     },
   });
 
