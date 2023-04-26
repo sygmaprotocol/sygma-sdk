@@ -87,7 +87,7 @@ describe('deposit functions', () => {
       expect(bridgeInstance.deposit).toHaveBeenCalledTimes(1);
     });
 
-    it('should successfully execute deposit without overrides', async () => {
+    it('should successfully call deposit method on contract without overrides', async () => {
       const bridgeInstance = {
         deposit: jest.fn().mockResolvedValueOnce({
           wait: jest.fn().mockResolvedValueOnce({} as ContractReceipt),
@@ -113,7 +113,8 @@ describe('deposit functions', () => {
         { gasPrice: '100', value: feeData.fee },
       );
     });
-    it('should successfully execute deposit without overrides and with dynamic (oracle) fee', async () => {
+
+    it('should successfully call deposit method on contract  without overrides and with dynamic (oracle) fee', async () => {
       feeData = {
         type: 'feeOracle',
         fee: BigNumber.from('100'),
@@ -168,6 +169,7 @@ describe('deposit functions', () => {
       consoleLogSpy.mockRestore();
     });
   });
+
   describe('erc20Transfer', () => {
     it('should successfully execute', async () => {
       jest.spyOn(EVM, 'executeDeposit').mockResolvedValueOnce({} as ContractTransaction);
@@ -204,6 +206,7 @@ describe('deposit functions', () => {
       );
     });
   });
+
   describe('erc721Transfer', () => {
     it('should successfully execute', async () => {
       jest.spyOn(EVM, 'executeDeposit').mockResolvedValueOnce({} as ContractTransaction);
@@ -235,6 +238,7 @@ describe('deposit functions', () => {
       );
     });
   });
+
   it('should successfully run getDepositEventFromReceipt', async () => {
     const depositEventData = {
       destinationDomainID: 111,
