@@ -1,11 +1,11 @@
-# EVM to Substrate example
+# Substrate to EVM example
 
-This is an example react application to test the transfer of ERC20 from EVM to Substrate. It was built primarily used with [sygma-relayer's local setup](https://github.com/sygmaprotocol/sygma-relayer/)
+This is an example react application to test the transfer of assets from Substrate to EVM. It was built primarily used with [sygma-relayer's local setup](https://github.com/sygmaprotocol/sygma-relayer/)
 
 ## Prerequisites
 
 - [Yarn](https://yarnpkg.com/) (version 3.4.1 or higher)
-- [MetaMask](https://metamask.io/)
+- [Polkadot{.js} browser extension](https://polkadot.js.org/extension/)
 - [Docker](https://www.docker.com/)
 
 ## Getting Started
@@ -65,24 +65,22 @@ yarn sdk:build
 
 ### 4. Start the development server
 
-Change to `example/evm-to-substrate-react-example` and start the dev server
+Change to `example/substrate-to-evm-react-example` and start the dev server
 
 ```bash
-cd example/evm-to-substrate-react-example
+cd example/substrate-to-evm-react-example
 yarn dev
 ```
 
-Open browser on http://localhost:5174/
+Open browser on http://localhost:5173/
 
-### 5. Use our test ethereum account
+### 5. Usage
 
-Import private key of our test account and to be able to use premined ERC20 tokens
+It is build to work with the wallet from polkadot js extension and the local setup of sygma-relayer.
+- First you need to create a new account in the polkadot js extension
+- After that you need to transfer to your account some native tokens from existing accounts. To do it consider cloning an running [polkadot.js.org/apps](https://github.com/polkadot-js/apps). You can use the `//Alice` or `//Bob` account to transfer some tokens to your new account.
+- Then go to [assets page](http://localhost:3000/?rpc=ws%3A%2F%2F127.0.0.1%3A9944#/assets) in polkadotjs apps and mint some `USDC test asset` to your account.
+- Now you can go to the [example app](http://localhost:5173) and transfer some assets from Substrate to EVM.
 
-```bash
-0xcc2c32b154490f09f70c1c8d4b997238448d649e0777495863db231c4ced3616
-```
 
-And connect this account with address `0x5C1F5961696BaD2e73f73417f07EF55C62a2dC5b`to the example application
-
-Don't forget to clear activity and nonce data (Settings -> Advanced -> Clear activity tab data) in MetaMask every time you restart the local nodes to avoid transaction nonce errors.
 

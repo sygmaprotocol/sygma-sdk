@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.5.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.4.0...sygma-sdk-core-v1.5.0) (2023-04-26)
+
+
+### Features
+
+* Create EVM to Substrate example ([#219](https://github.com/sygmaprotocol/sygma-sdk/issues/219)) ([01f8f78](https://github.com/sygmaprotocol/sygma-sdk/commit/01f8f78825a3f1d6f3aea7a41377ffb8ca2ad528))
+* Generate docs based on jsdoc annotations ([#221](https://github.com/sygmaprotocol/sygma-sdk/issues/221)) ([c213370](https://github.com/sygmaprotocol/sygma-sdk/commit/c213370065785e51ad4bf0fe1db6a21fe81dc9cb))
+* Improve EVM helpers with Unit Tests ([#223](https://github.com/sygmaprotocol/sygma-sdk/issues/223)) ([9dee18d](https://github.com/sygmaprotocol/sygma-sdk/commit/9dee18d1e06ec1b1b232e64ddcb8b8777a341604))
+
 ## [1.4.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.3.0...sygma-sdk-core-v1.4.0) (2023-04-10)
 
 
