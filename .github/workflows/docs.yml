@@ -1,0 +1,26 @@
+name: Docs
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'yarn' # cache node modules
+          node-version: 18
+      - run: corepack enable
+      - run: yarn install --immutable
+      - run: yarn run sdk:lint # lint code
+      - run: yarn run sdk:build # compile typescript into javascript
+      - name: Build docs
+        run: npm run docs
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        with:
+          branch: gh-pages
+          folder: docs
