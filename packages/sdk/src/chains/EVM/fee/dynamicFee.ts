@@ -2,7 +2,7 @@ import { DynamicERC20FeeHandlerEVM__factory } from '@buildwithsygma/sygma-contra
 import { ethers } from 'ethers';
 import fetch from 'cross-fetch';
 
-import { OracleResource, FeeDataResult } from '../../../types';
+import { OracleResource, FeeDataResult } from '../../../deprecated/types';
 import { toHex, createERCDepositData } from '../helpers';
 
 type OracleResponse = {

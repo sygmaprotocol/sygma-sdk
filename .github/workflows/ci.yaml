@@ -27,3 +27,10 @@ jobs:
       - run: yarn run sdk:build # compile typescript into javascript
       - run: yarn run sdk:test:unit --silent --coverage # run unit tests
       # - run: yarn run test:integrations # run integration tests tests
+      - name: Build docs
+        run: npm run docs
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        with:
+          branch: gh-pages
+          folder: docs

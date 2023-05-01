@@ -1,5 +1,5 @@
 import { providers, ethers } from 'ethers';
-import { FeeDataResult } from 'types';
+import { FeeDataResult } from 'deprecated/types';
 import { Bridge, ERC20, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts';
 
 export type TokenConfig = {

@@ -5,7 +5,7 @@ import {
   Sygma,
   EvmBridgeSetupList,
   BridgeEvents,
-} from "@buildwithsygma/sygma-sdk-core";
+} from "@buildwithsygma/sygma-sdk-core/deprecated";
 
 const bridgeSetupList: EvmBridgeSetupList = [
   {

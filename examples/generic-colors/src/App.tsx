@@ -1,6 +1,6 @@
 import React, { useReducer, useState } from "react";
 import { ethers } from "ethers";
-import { FeeDataResult, Sygma } from "@buildwithsygma/sygma-sdk-core";
+import { FeeDataResult, Sygma } from "@buildwithsygma/sygma-sdk-core/deprecated";
 import "./App.css";
 import { reducer, State } from "./reducers";
 import ColorsAbi from "./abis/colors-abi.json";

@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
-import { BridgeData } from '../../src/types'
-import { computeProvidersAndSignersRPC } from '../../src/utils'
+import { BridgeData } from '../../src/deprecated/types'
+import { computeProvidersAndSignersRPC } from '../../src/deprecated/utils'
 
  declare global {
    interface Window {
