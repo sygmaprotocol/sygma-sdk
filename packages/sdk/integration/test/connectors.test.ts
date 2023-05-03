@@ -1,5 +1,5 @@
 import { ethers } from "ethers"
-import { Connector } from "../../src/connectors"
+import { Connector } from "../../src/deprecated/connectors"
 
 describe('Connectors', () => {
   const url = "http://localhost:8545"

@@ -1,4 +1,4 @@
-import { Connector } from "../../src/connectors"
+import { Connector } from "../../src/deprecated/connectors"
 import { ethers } from 'ethers'
 
 declare global {

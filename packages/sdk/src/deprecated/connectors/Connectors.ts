@@ -1,5 +1,5 @@
 import { ethers, providers } from 'ethers';
-import { Provider, Signer } from '../deprecated/types';
+import { Provider, Signer } from '../types';
 
 /**
  * @name Connector

@@ -47,7 +47,7 @@ export type BridgeConfigParam = {
   /** The domainId is an identifier of bridge in Sygma ecosystem. */
   domainId: string;
   /** An array of token configurations. */
-  tokens: TokenConfig[];
+  tokens: Array<TokenConfig>;
   /** The optional number of confirmations */
   confirmations?: number;
 };

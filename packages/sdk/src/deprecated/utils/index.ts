@@ -1,6 +1,6 @@
 import { ERC721MinterBurnerPauser__factory } from '@buildwithsygma/sygma-contracts';
 import { utils, BigNumber, providers } from 'ethers';
-import { Connector } from '../../connectors';
+import { Connector } from '../connectors';
 
 import { BridgeData, Bridges, SygmaContracts, SygmaErc20Contracts, SygmaProviders } from '../types';
 

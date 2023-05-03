@@ -8,12 +8,12 @@ import {
 import { DepositEvent } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge';
 import { TokenConfig } from '../chains/EVM/types';
 import { calculateBasicfee, calculateDynamicFee, getFeeHandlerAddress } from '../chains/EVM/fee';
-import Connector from '../connectors/Connectors';
 import {
   createPermissionedGenericDepositData,
   createPermissionlessGenericDepositData,
   toHex,
 } from '../chains/EVM/helpers';
+import Connector from './connectors/Connectors';
 import { Erc20DetailedFactory } from './Contracts/Erc20DetailedFactory';
 import { Erc20Detailed } from './Contracts/Erc20Detailed';
 
