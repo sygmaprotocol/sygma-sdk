@@ -1,7 +1,18 @@
-import {
-  SubstrateConfigType,
-  EvmBridgeSetupList,
-} from "@buildwithsygma/sygma-sdk-core";
+import { EvmBridgeSetupList } from "@buildwithsygma/sygma-sdk-core/deprecated";
+import { XcmMultiAssetIdType } from "@buildwithsygma/sygma-sdk-core/Substrate";
+
+export type SubstrateConfigAssetType = {
+  assetName: string;
+  assetId: number;
+  xsmMultiAssetId: XcmMultiAssetIdType;
+};
+
+export type SubstrateConfigType = {
+  domainId: string;
+  appName: string;
+  provider_socket: string;
+  assets: SubstrateConfigAssetType[];
+};
 
 export const substrateConfig: SubstrateConfigType = {
   domainId: "3",

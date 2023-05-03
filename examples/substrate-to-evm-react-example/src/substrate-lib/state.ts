@@ -1,9 +1,8 @@
 import jsonrpc from "@polkadot/types/interfaces/jsonrpc";
 import { DefinitionRpcExt } from '@polkadot/types/types';
-import type { SubstrateConfigAssetType } from "@buildwithsygma/sygma-sdk-core";
 import type {AssetBalance, AccountData} from "@polkadot/types/interfaces";
 import type { Option, u128, } from '@polkadot/types';
-import { substrateConfig, evmSetupList } from "../config";
+import { substrateConfig, SubstrateConfigAssetType } from "../config";
 import { ApiPromise } from '@polkadot/api';
 import { Keyring} from '@polkadot/ui-keyring';
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';

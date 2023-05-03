@@ -2,8 +2,11 @@ import { providers, BigNumber } from "ethers";
 import jsonrpc from "@polkadot/types/interfaces/jsonrpc";
 import { ApiPromise } from "@polkadot/api";
 import { DefinitionRpcExt } from "@polkadot/types/types";
-import { EvmBridgeSetup, FeeDataResult } from "@buildwithsygma/sygma-sdk-core";
-import { TokenConfig } from "@buildwithsygma/sygma-sdk-core/src/chains/EVM";
+import {
+  EvmBridgeSetup,
+  FeeDataResult,
+} from "@buildwithsygma/sygma-sdk-core/deprecated";
+import { TokenConfig } from "@buildwithsygma/sygma-sdk-core/EVM";
 import { ERC20 } from "@buildwithsygma/sygma-contracts";
 
 import { substrateConfig } from "../config";

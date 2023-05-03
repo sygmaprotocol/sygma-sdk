@@ -1,5 +1,5 @@
-import { EvmBridgeSetupList } from "@buildwithsygma/sygma-sdk-core";
-import { XcmMultiAssetIdType } from "@buildwithsygma/sygma-sdk-core/src/chains/Substrate";
+import { EvmBridgeSetupList } from "@buildwithsygma/sygma-sdk-core/deprecated";
+import { XcmMultiAssetIdType } from "@buildwithsygma/sygma-sdk-core/Substrate";
 
 export type SubstrateConfigAssetType = {
   assetName: string;

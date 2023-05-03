@@ -5,7 +5,6 @@ import {
   Bridge__factory,
 } from "@buildwithsygma/sygma-contracts";
 import { decodeAddress } from "@polkadot/util-crypto";
-// import { Substrate, EVM } from "@buildwithsygma/sygma-sdk-core";
 import {
   calculateBasicfee,
   erc20Transfer,
@@ -20,16 +19,6 @@ import {
 
 import { evmSetupList } from "../config";
 import { reducer, initialState, StateType } from "./state";
-
-// const {
-//   calculateBasicfee,
-//   erc20Transfer,
-//   approve,
-//   getDepositEventFromReceipt,
-//   isEIP1559MaxFeePerGas,
-// } = EVM;
-
-// const { listenForEvent, substrateSocketConnect } = Substrate;
 
 export type EvmContextType = {
   state: StateType;
