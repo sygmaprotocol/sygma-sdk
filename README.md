@@ -1,5 +1,5 @@
 <div align="center">
-    <h1>Sygma SDK <img src="./assets/logo.svg" alt="" height="26px"></h1>
+    <h1>Sygma SDK <img src="assets/logo.svg" alt="" height="26px"></h1>
 </div>
 <br>
 <p align="center">
@@ -30,7 +30,7 @@ A few of the things you can do with Sygma SDK:
 ## Overview of Sygma bridge architecture
 The Sygma messaging protocol is able to transfer arbitrary data. This allows us to transfer not only ERC20 tokens but also ERC721 (eg, NFTs) in additional to something else we refer to as: Generic data. Generic data could be used to bridge governance proposals or voting actions, for example, or any other contract call by transferring calldata.
 <p align="center">
-  <img alt='binding diagramm' src='./assets/bridging_diagram.png'>
+  <img alt='binding diagramm' src='assets/bridging_diagram.png'>
   <em>Sygma Bridging Flow Diagram</em>
 </p>
 
