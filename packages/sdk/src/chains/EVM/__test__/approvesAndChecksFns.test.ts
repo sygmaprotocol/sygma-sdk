@@ -75,7 +75,7 @@ describe('approve', () => {
   const handlerAddress = '0xabc123';
   const overrides: ethers.PayableOverrides = {};
 
-  it('should return a contract receipt when called with valid parameters', async () => {
+  it('should return a populated transaction when called with valid parameters', async () => {
     const tokenInstance = {
       populateTransaction: {
         approve: jest.fn().mockResolvedValueOnce({
