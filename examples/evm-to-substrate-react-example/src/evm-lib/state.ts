@@ -8,8 +8,6 @@ import { ERC20 } from "@buildwithsygma/sygma-contracts";
 
 import { LocalConfig, GoerliRococoConfig } from "../config";
 
-// const connectedSocket = substrateConfig.provider_socket;
-
 export type StateType = {
   enviroment: string | null;
   socket: string | null;
