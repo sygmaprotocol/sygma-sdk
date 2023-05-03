@@ -36,7 +36,6 @@ export const listenForEvent = async (
       events.forEach(({ event: { data, method, section } }) => {
         if (section === 'sygmaBridge' && method === eventName) {
           callback(data.toHuman());
-          console.log(unsub);
           unsub();
         }
       });
