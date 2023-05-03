@@ -1,4 +1,4 @@
-import { BigNumber, utils, ContractReceipt, ethers } from 'ethers';
+import { BigNumber, utils, PopulatedTransaction, ethers } from 'ethers';
 import { ERC20, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts';
 
 /**
@@ -60,7 +60,17 @@ export const getERC20Allowance = async (
 };
 
 /**
- * Approves the specified token instance for a given amount or tokenId and the handler address.
+ * Creates an unsigned approval transaction for the specified amount of ERC20 tokens.
+ *
+ * @example
+ * const unsignedTx = await approveERC20(100, erc20Instance, erc20HandlerAddress);
+ * console.log('Unsigned approval transaction:', unsignedTx);
+ * // You can now sign and send the transaction using the signer from ethersjs
+ * const tx = await signer.sendTransaction(unsignedTx);
+ * console.log('Approval transaction:', tx);
+ * // You can now wait for the transaction to be mined and check the allowance again
+ * const receipt = await tx.wait(1);
+ * const currentAllowance = await getERC20Allowance(senderAddress, erc20Instance, erc20HandlerAddress);
  *
  * @category Token iteractions
  * @param {BigNumber} amountOrIdForApproval - The amount or tokenId to be approved.
@@ -69,19 +79,21 @@ export const getERC20Allowance = async (
  * @param {BigNumber} gasPrice - The gas price for the approval transaction.
  * @param {number} confirmations - The number of confirmations required before the transaction is considered successful.
  * @param {ethers.PayableOverrides} overrides - Optional overrides for the transaction, such as gas price, gas limit,
- * @returns {Promise<ContractReceipt>} A promise that resolves to a contract receipt once the approval transaction is executed.
+ * @returns {Promise<PopulatedTransaction>} A promise that resolves to a contract receipt once the approval transaction is executed.
  */
 export const approve = async (
   amountOrIdForApproval: BigNumber,
   tokenInstance: ERC20 | ERC721MinterBurnerPauser,
   handlerAddress: string,
-  confirmations: number,
   overrides?: ethers.PayableOverrides,
-): Promise<ContractReceipt> => {
+): Promise<PopulatedTransaction> => {
   try {
-    const tx = await tokenInstance.approve(handlerAddress, amountOrIdForApproval, overrides);
-    const approvalAction = await tx.wait(confirmations);
-    return approvalAction;
+    const unsignedTx = await tokenInstance.populateTransaction.approve(
+      handlerAddress,
+      amountOrIdForApproval,
+      overrides,
+    );
+    return unsignedTx;
   } catch (error) {
     console.error('Error on approve', error);
     return Promise.reject(error);

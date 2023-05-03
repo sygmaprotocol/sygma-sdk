@@ -1,4 +1,5 @@
-import { providers, BigNumber } from "ethers";
+import { BigNumber } from "ethers";
+import { NonceManager } from "@ethersproject/experimental";
 import jsonrpc from "@polkadot/types/interfaces/jsonrpc";
 import { ApiPromise } from "@polkadot/api";
 import { DefinitionRpcExt } from "@polkadot/types/types";
@@ -19,7 +20,7 @@ export type StateType = {
   apiState: string | null;
   selectedEvmConfig: EvmBridgeSetup | null;
   currentAccount: string | null;
-  signer: providers.JsonRpcSigner | null;
+  signer: NonceManager | null;
   ethBalance: BigNumber | null;
   selectedErc20TokenConfig: TokenConfig | null;
   selectedErc20Instance: ERC20 | null;
@@ -120,7 +121,7 @@ export const reducer = (state: StateType, action: ActionType): StateType => {
     case "SET_SIGNER":
       return {
         ...state,
-        signer: action.payload as providers.JsonRpcSigner,
+        signer: action.payload as NonceManager,
       };
     case "SET_SELECTED_ERC20_TOKEN_CONFIG":
       return {

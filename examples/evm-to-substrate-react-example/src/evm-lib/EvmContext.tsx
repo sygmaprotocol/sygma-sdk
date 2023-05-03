@@ -1,5 +1,6 @@
 import React, { useEffect, useReducer, useContext, createContext } from "react";
 import { BigNumber, ethers, providers, utils } from "ethers";
+import { NonceManager } from "@ethersproject/experimental";
 import {
   ERC20__factory,
   Bridge__factory,
@@ -107,7 +108,9 @@ const EvmContextProvider = (props: {
         });
 
         const signer = provider.getSigner();
-        dispatch({ type: "SET_SIGNER", payload: signer });
+        // We need to use a NonceManager to make sure transactions have right nonce
+        const signerWithNonce = new NonceManager(signer);
+        dispatch({ type: "SET_SIGNER", payload: signerWithNonce });
 
         const currentAccountAddress = await signer.getAddress();
         dispatch({
@@ -273,7 +276,8 @@ const EvmContextProvider = (props: {
           },
         },
       });
-      const depositTransaction = await erc20Transfer({
+      // build populated (unisgned) transaction
+      const depositUnsignedTransaction = await erc20Transfer({
         amountOrId: amount,
         recipientAddress: destinationMultiLocation,
         tokenInstance: selectedErc20Instance!,
@@ -284,6 +288,10 @@ const EvmContextProvider = (props: {
         feeData: basicFee,
         provider: signer!.provider as providers.Web3Provider,
       });
+      // sign and send transaction
+      const depositTransaction = await signer!.sendTransaction(
+        depositUnsignedTransaction
+      );
       dispatch({
         type: "SET_TRANSFER_STATUS",
         payload: "Deposit transaction sent",
@@ -292,6 +300,7 @@ const EvmContextProvider = (props: {
         type: "SET_TRANSFER_STATUS_BLOCK",
         payload: depositTransaction.hash,
       });
+      // wait for transaction to be mined
       const depositTransactionReceipt = await depositTransaction.wait(1);
 
       const depositEvent = await getDepositEventFromReceipt(
@@ -319,15 +328,17 @@ const EvmContextProvider = (props: {
       signer!.provider as providers.Web3Provider
     );
 
-    await approve(
+    const unsignedTransaction = await approve(
       amount,
       selectedErc20Instance!,
       selectedEvmConfig!.erc20HandlerAddress,
-      1,
       {
         gasPrice,
       }
     );
+    await signer!.sendTransaction(unsignedTransaction);
+    // Increment transaction nonce after approve
+    signer!.incrementTransactionCount();
   }
 
   function setEnviroment(enviroment: string): void {

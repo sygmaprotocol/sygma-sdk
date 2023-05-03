@@ -1,5 +1,5 @@
 import { ERC721MinterBurnerPauser, ERC20 } from '@buildwithsygma/sygma-contracts';
-import { ContractReceipt, ethers, BigNumber } from 'ethers';
+import { PopulatedTransaction, ethers, BigNumber } from 'ethers';
 import { isApproved, getERC20Allowance, approve } from '../utils/approvesAndChecksFns';
 
 describe('getApproved Function Tests', () => {
@@ -73,32 +73,34 @@ describe('checkCurrentAllowanceOfErc20', () => {
 describe('approve', () => {
   const amountOrIdForApproval = BigNumber.from(100);
   const handlerAddress = '0xabc123';
-  const confirmations = 3;
   const overrides: ethers.PayableOverrides = {};
 
   it('should return a contract receipt when called with valid parameters', async () => {
     const tokenInstance = {
-      approve: jest.fn().mockResolvedValueOnce({
-        wait: jest.fn().mockResolvedValueOnce({} as ContractReceipt),
-      }),
+      populateTransaction: {
+        approve: jest.fn().mockResolvedValueOnce({
+          wait: jest.fn().mockResolvedValueOnce({} as PopulatedTransaction),
+        }),
+      },
     } as unknown as ERC20;
 
-    const contractReceipt: ContractReceipt = await approve(
+    const PopulatedTransaction: PopulatedTransaction = await approve(
       amountOrIdForApproval,
       tokenInstance,
       handlerAddress,
-      confirmations,
       overrides,
     );
-    expect(contractReceipt).toBeDefined();
+    expect(PopulatedTransaction).toBeDefined();
   });
 
   it('should throw an error when called with invalid token instance', async () => {
     const tokenInstance = {
-      approve: jest.fn().mockRejectedValue(new Error('NO')),
+      populateTransaction: {
+        approve: jest.fn().mockRejectedValue(new Error('NO')),
+      },
     } as unknown as ERC20;
     await expect(
-      approve(amountOrIdForApproval, tokenInstance, handlerAddress, confirmations, overrides),
+      approve(amountOrIdForApproval, tokenInstance, handlerAddress, overrides),
     ).rejects.toThrowError('NO');
   });
 });

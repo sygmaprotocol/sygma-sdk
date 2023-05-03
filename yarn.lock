@@ -2145,6 +2145,7 @@ __metadata:
   dependencies:
     "@buildwithsygma/sygma-contracts": 2.1.2
     "@buildwithsygma/sygma-sdk-core": "workspace:*"
+    "@ethersproject/experimental": ^5.7.0
     "@metamask/providers": ^10.2.1
     "@polkadot/api": ^9.9.1
     "@polkadot/types": ^9.9.1

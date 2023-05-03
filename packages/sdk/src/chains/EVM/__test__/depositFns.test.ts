@@ -5,7 +5,7 @@ import {
 } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge';
 
 import { FeeDataResult } from 'types';
-import { ethers, providers, ContractReceipt, ContractTransaction, BigNumber } from 'ethers';
+import { ethers, providers, ContractReceipt, PopulatedTransaction, BigNumber } from 'ethers';
 import { TokenTransfer } from '../types';
 import * as EVM from '../utils/depositFns';
 
@@ -68,9 +68,11 @@ describe('deposit functions', () => {
   describe('executeDeposit', () => {
     it('should successfully execute deposit', async () => {
       const bridgeInstance = {
-        deposit: jest.fn().mockResolvedValueOnce({
-          wait: jest.fn().mockResolvedValueOnce({} as ContractReceipt),
-        } as unknown as ContractTransaction),
+        populateTransaction: {
+          deposit: jest.fn().mockResolvedValueOnce({
+            wait: jest.fn().mockResolvedValueOnce({} as ContractReceipt),
+          } as unknown as PopulatedTransaction),
+        },
       };
 
       const result = await EVM.executeDeposit(
@@ -84,14 +86,16 @@ describe('deposit functions', () => {
       );
 
       expect(result).toBeDefined();
-      expect(bridgeInstance.deposit).toHaveBeenCalledTimes(1);
+      expect(bridgeInstance.populateTransaction.deposit).toHaveBeenCalledTimes(1);
     });
 
     it('should successfully call deposit method on contract without overrides', async () => {
       const bridgeInstance = {
-        deposit: jest.fn().mockResolvedValueOnce({
-          wait: jest.fn().mockResolvedValueOnce({} as ContractReceipt),
-        } as unknown as ContractTransaction),
+        populateTransaction: {
+          deposit: jest.fn().mockResolvedValueOnce({
+            wait: jest.fn().mockResolvedValueOnce({} as ContractReceipt),
+          } as unknown as PopulatedTransaction),
+        },
       };
 
       const result = await EVM.executeDeposit(
@@ -104,8 +108,8 @@ describe('deposit functions', () => {
       );
 
       expect(result).toBeDefined();
-      expect(bridgeInstance.deposit).toHaveBeenCalledTimes(1);
-      expect(bridgeInstance.deposit).toHaveBeenCalledWith(
+      expect(bridgeInstance.populateTransaction.deposit).toHaveBeenCalledTimes(1);
+      expect(bridgeInstance.populateTransaction.deposit).toHaveBeenCalledWith(
         'domainId',
         'resourceId',
         'depositData',
@@ -123,9 +127,11 @@ describe('deposit functions', () => {
         erc20TokenAddress: '0x00',
       };
       const bridgeInstance = {
-        deposit: jest.fn().mockResolvedValueOnce({
-          wait: jest.fn().mockResolvedValueOnce({} as ContractReceipt),
-        } as unknown as ContractTransaction),
+        populateTransaction: {
+          deposit: jest.fn().mockResolvedValueOnce({
+            wait: jest.fn().mockResolvedValueOnce({} as ContractReceipt),
+          } as unknown as PopulatedTransaction),
+        },
       };
 
       const result = await EVM.executeDeposit(
@@ -138,8 +144,8 @@ describe('deposit functions', () => {
       );
 
       expect(result).toBeDefined();
-      expect(bridgeInstance.deposit).toHaveBeenCalledTimes(1);
-      expect(bridgeInstance.deposit).toHaveBeenCalledWith(
+      expect(bridgeInstance.populateTransaction.deposit).toHaveBeenCalledTimes(1);
+      expect(bridgeInstance.populateTransaction.deposit).toHaveBeenCalledWith(
         'domainId',
         'resourceId',
         'depositData',
@@ -149,7 +155,11 @@ describe('deposit functions', () => {
     });
 
     it('should handle error on execute deposit', async () => {
-      bridgeInstance.deposit = jest.fn().mockRejectedValueOnce(new Error('Deposit failed'));
+      const bridgeInstance = {
+        populateTransaction: {
+          deposit: jest.fn().mockRejectedValueOnce(new Error('Deposit failed')),
+        },
+      };
 
       const consoleLogSpy = jest.spyOn(console, 'error').mockImplementation();
 
@@ -159,7 +169,7 @@ describe('deposit functions', () => {
           resourceId,
           depositData,
           feeData,
-          bridgeInstance,
+          bridgeInstance as unknown as Bridge,
           provider,
           overrides,
         ),
@@ -172,7 +182,7 @@ describe('deposit functions', () => {
 
   describe('erc20Transfer', () => {
     it('should successfully execute', async () => {
-      jest.spyOn(EVM, 'executeDeposit').mockResolvedValueOnce({} as ContractTransaction);
+      jest.spyOn(EVM, 'executeDeposit').mockResolvedValueOnce({} as PopulatedTransaction);
       bridgeInstance = {
         signer: {
           getAddress: jest.fn().mockResolvedValue('0xMyaddress'),
@@ -209,7 +219,7 @@ describe('deposit functions', () => {
 
   describe('erc721Transfer', () => {
     it('should successfully execute', async () => {
-      jest.spyOn(EVM, 'executeDeposit').mockResolvedValueOnce({} as ContractTransaction);
+      jest.spyOn(EVM, 'executeDeposit').mockResolvedValueOnce({} as PopulatedTransaction);
 
       const tokenInstance = {} as ERC721MinterBurnerPauser;
 
@@ -328,7 +338,7 @@ describe('deposit functions', () => {
     it('should call erc721Transfer function when given a selectedToken with type erc721', async () => {
       jest
         .spyOn(EVM, 'erc721Transfer')
-        .mockResolvedValue({ blockHash: '0x01' } as unknown as ContractTransaction);
+        .mockResolvedValue({ blockHash: '0x01' } as unknown as PopulatedTransaction);
       const receipt = await EVM.processTokenTranfer({
         depositParams: { resourceId: '456' },
         bridgeConfig: {
@@ -347,7 +357,7 @@ describe('deposit functions', () => {
     it('should call erc20Transfer function when given a selectedToken with type erc20', async () => {
       jest
         .spyOn(EVM, 'erc20Transfer')
-        .mockResolvedValue({ blockHash: '0x01' } as unknown as ContractTransaction);
+        .mockResolvedValue({ blockHash: '0x01' } as unknown as PopulatedTransaction);
       const receipt = await EVM.processTokenTranfer({
         depositParams: { resourceId: '456' },
         bridgeConfig: {

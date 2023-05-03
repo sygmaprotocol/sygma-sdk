@@ -1,4 +1,4 @@
-import { ContractTransaction, ContractReceipt, providers, ethers } from 'ethers';
+import { PopulatedTransaction, ContractReceipt, providers, ethers } from 'ethers';
 import {
   Bridge,
   Bridge__factory,
@@ -18,6 +18,10 @@ import { isApproved, getERC20Allowance } from './approvesAndChecksFns';
  * Perform an erc20 transfer
  *
  * @example
+ * // get the signer using ethersjs
+ * const provider = new ethers.providers.Web3Provider(window.ethereum)
+ * const signer = provider.getSigner()
+ * // building the params for erc20 transfer
  * const params = {
  *   amountOrId: '100',
  *   recipientAddress: '0x1234567890123456789012345678901234567890',
@@ -30,15 +34,17 @@ import { isApproved, getERC20Allowance } from './approvesAndChecksFns';
  *   provider: new ethers.providers.Web3Provider(window.ethereum),
  *   overrides: { gasLimit: 1000000 } // optional
  * }
- * const transaction = await erc20Transfer(params)
- * // wait for the transaction to be mined
+ * const unsignedTransaction = await erc20Transfer(params)
+ * // sign and sent the transaction
+ * const transaction = signer.sendTransaction(unsignedTransaction)
+ * // wait 3 confirmation
  * const receipt = await transaction.wait(3)
  * // get the deposit event
  * const depositEvent = getDepositEvent(receipt)
  *
  * @category Bridge deposit
  * @param {Erc20TransferParamsType} params - The parameters for the erc20 transfer function.
- * @returns {Promise<ContractTransaction>} - The transaction receipt.
+ * @returns {Promise<PopulatedTransaction>} - The transaction receipt.
  */
 export const erc20Transfer = async ({
   amountOrId: amount,
@@ -51,7 +57,7 @@ export const erc20Transfer = async ({
   feeData,
   provider,
   overrides,
-}: Erc20TransferParamsType): Promise<ContractTransaction> => {
+}: Erc20TransferParamsType): Promise<PopulatedTransaction> => {
   // construct the deposit data
   const depositData = createERCDepositData(
     amount,
@@ -82,6 +88,10 @@ export const erc20Transfer = async ({
  * Perform an erc721 transfer
  *
  * @example
+ * // get the signer using ethersjs
+ * const provider = new ethers.providers.Web3Provider(window.ethereum)
+ * const signer = provider.getSigner()
+ * // building the params for erc721 transfer
  * const params = {
  *   domainId: '9',
  *   resourceId: '0x00001',
@@ -94,11 +104,15 @@ export const erc20Transfer = async ({
  *   confirmations: 10,
  *   provider: new ethers.providers.Web3Provider(window.ethereum),
  * };
- * const receipt = await erc721Transfer(params);
+ * const unsignedTransaction = await erc20Transfer(params)
+ * // sign and sent the transaction
+ * const transaction = signer.sendTransaction(unsignedTransaction)
+ * // wait for the transaction to be mined
+ * const receipt = await transaction.await(1);
  *
  * @category Bridge deposit
  * @param {Erc721TransferParamsType} params - The parameters for ERC721 token transfer.
- * @returns {Promise<ContractTransaction>} A promise that resolves to the contract receipt.
+ * @returns {Promise<PopulatedTransaction>} A promise that resolves to the contract receipt.
  */
 export const erc721Transfer = async ({
   amountOrId: tokenId,
@@ -111,7 +125,7 @@ export const erc721Transfer = async ({
   resourceId,
   feeData,
   overrides,
-}: Erc721TransferParamsType): Promise<ContractTransaction> => {
+}: Erc721TransferParamsType): Promise<PopulatedTransaction> => {
   // construct the deposit data
   const depositData = createERCDepositData(tokenId, recipientAddress);
 
@@ -134,9 +148,13 @@ export const erc721Transfer = async ({
 };
 
 /**
- * Executes a deposit operation using the specified parameters and returns a contract receipt.
+ * Low level function for bridge deposit
  *
  * @example
+ * // get the signer using ethersjs
+ * const provider = new ethers.providers.Web3Provider(window.ethereum)
+ * const signer = provider.getSigner()
+ * // creating objects for the deposit
  * const domainId = '1';
  * const resourceId = '0x1234567890123456789012345678901234567890';
  * const depositData = '0xabcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789';
@@ -146,9 +164,11 @@ export const erc721Transfer = async ({
  * const provider = new ethers.providers.JsonRpcProvider();
  * const overrides = { gasLimit: 200000 };
  *
- * const transaction = executeDeposit(domainId, resourceId, depositData, feeData, bridgeInstance, confirmations, provider, overrides)
+ * const unsignedTransaction = executeDeposit(domainId, resourceId, depositData, feeData, bridgeInstance, confirmations, provider, overrides)
  *   .then((receipt) => console.log('Deposit executed:', receipt))
  *   .catch((error) => console.error('Error on deposit execution:', error));
+ * // sign and sent the transaction
+ * cost transaction = signer.sendTransaction(unsignedTransaction)
  * // wait for 10 confiramtions to finalize the transaction
  * const receipt = await transaction.wait(10)
  *
@@ -160,7 +180,7 @@ export const erc721Transfer = async ({
  * @param {Bridge} bridgeInstance - The bridge instance used to perform the deposit operation.
  * @param {providers.Provider} provider - The provider used for the Ethereum network connection.
  * @param {ethers.PayableOverrides} [overrides] - Optional transaction overrides to be applied.
- * @returns {Promise<ContractTransaction>} A promise that resolves to a contract receipt once the deposit is executed.
+ * @returns {Promise<PopulatedTransaction>} A promise that resolves to a contract receipt once the deposit is executed.
  */
 export const executeDeposit = async (
   domainId: string,
@@ -170,7 +190,7 @@ export const executeDeposit = async (
   bridgeInstance: Bridge,
   provider: providers.Provider,
   overrides?: ethers.PayableOverrides,
-): Promise<ContractTransaction> => {
+): Promise<PopulatedTransaction> => {
   try {
     const gasPrice = await isEIP1559MaxFeePerGas(provider);
     const gasPriceStringify = gasPrice.toString();
@@ -184,7 +204,7 @@ export const executeDeposit = async (
       ...transactionSettings,
       ...overrides,
     };
-    const tx = await bridgeInstance.deposit(
+    const tx = await bridgeInstance.populateTransaction.deposit(
       domainId,
       resourceId,
       depositData,
@@ -232,6 +252,10 @@ export const getDepositEventFromReceipt = async (
  *
  * @example
  * // this short example could miss some params, please look at types for correct info
+ * // get the signer using ethersjs
+ * const provider = new ethers.providers.Web3Provider(window.ethereum)
+ * const signer = provider.getSigner()
+ * // creating params for the deposit
  * const depositParams = {
  *   resourceId: '0x123',
  *   amountOrId: "100",
@@ -250,25 +274,29 @@ export const getDepositEventFromReceipt = async (
  * const provider = new ethers.providers.Web3Provider(window.ethereum);
  * // any override settting for etherjs tranasaction
  * const overrides = { gasLimit: 100000 };
- * const receipt =
+ * const unsignedTransaction =
  *  await processTokenTranfer({
  *    depositParams,
  *    bridgeConfig,
  *    provider,
  *    overrides
  *  });
+ *  // sign and sent the transaction
+ * cost transaction = signer.sendTransaction(unsignedTransaction)
+ * // wait for 1 confiramtions to finalize the transaction
+ * const receipt = await transaction.await(1);
  * // use the getDepositEventFromReceipt method to get the depositNonce
  *
  * @category Bridge deposit
  * @param {TokenTransfer} params - The parameters for processing the token transfer.
- * @returns {Promise<ContractTransaction>} - A promise that resolves to the transaction receipt once the transfer is complete.
+ * @returns {Promise<PopulatedTransaction>} - A promise that resolves to the transaction receipt once the transfer is complete.
  */
 export const processTokenTranfer = async ({
   depositParams,
   bridgeConfig,
   provider,
   overrides,
-}: TokenTransfer): Promise<ContractTransaction> => {
+}: TokenTransfer): Promise<PopulatedTransaction> => {
   const { tokens, bridgeAddress, domainId, confirmations: defaultConfirmations } = bridgeConfig;
   const { resourceId } = depositParams;
 
