@@ -1,4 +1,5 @@
-# Generic Colors App
+# ⚠️ This example is deprecated. Please look at docs for latest examples ⚠️
+## Generic Colors App
 
 ## Setup
 

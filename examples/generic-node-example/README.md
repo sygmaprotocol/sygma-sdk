@@ -1,4 +1,5 @@
-# Generic Colors Node.js example
+# ⚠️ This example is deprecated. Please look at docs for latest examples ⚠️
+## Generic Colors Node.js example
 
 ## Setup
 

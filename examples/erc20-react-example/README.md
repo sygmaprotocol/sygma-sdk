@@ -1,5 +1,5 @@
 <p align="center"><a href="https://https://chainsafe.io/"><img width="250" title="Chainbridge UI" src='../../assets/full-logo.png'/></a></p>
-
+# ⚠️ This example is deprecated. Please use [EVM to Substrate example](../evm-to-substrate-react-example/) instead ⚠️
 ## Sygma SDK ERC20 React Example
 <p align="center">
 <img widht="700" src='./public/erc20-example-screen.png' alt="screen" />
