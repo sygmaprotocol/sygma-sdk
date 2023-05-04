@@ -6,12 +6,11 @@ import { EvmBridgeSetup, FeeDataResult } from "@buildwithsygma/sygma-sdk-core";
 import { TokenConfig } from "@buildwithsygma/sygma-sdk-core/src/chains/EVM";
 import { ERC20 } from "@buildwithsygma/sygma-contracts";
 
-import { substrateConfig } from "../config";
-
-const connectedSocket = substrateConfig.provider_socket;
+import { LocalConfig, GoerliRococoConfig } from "../config";
 
 export type StateType = {
-  socket: string;
+  enviroment: string | null;
+  socket: string | null;
   jsonrpc: {
     [x: string]: Record<string, DefinitionRpcExt>;
   };
@@ -27,7 +26,7 @@ export type StateType = {
   selectedErc20Balance: BigNumber | null;
   basicFee: FeeDataResult | null;
   erc20AllowanceForBridge: BigNumber | null;
-  destinationDomainId: number;
+  destinationDomainId: number | null;
   homeChainId: number;
   transferStatus: string | null;
   transferStatusBlock: string | null;
@@ -42,7 +41,8 @@ type ActionType = { type: string; payload?: unknown };
  */
 export const initialState: StateType = {
   // These are the states
-  socket: connectedSocket,
+  enviroment: null,
+  socket: null,
   jsonrpc: { ...jsonrpc },
   api: null,
   apiError: null,
@@ -56,7 +56,7 @@ export const initialState: StateType = {
   selectedErc20Balance: null,
   basicFee: null,
   erc20AllowanceForBridge: null,
-  destinationDomainId: Number(substrateConfig.domainId),
+  destinationDomainId: null,
   homeChainId: 1,
   transferStatus: "Init",
   transferStatusBlock: null,
@@ -71,6 +71,27 @@ export const initialState: StateType = {
  */
 export const reducer = (state: StateType, action: ActionType): StateType => {
   switch (action.type) {
+    case "SET_ENVIROMENT":
+      switch (action.payload) {
+        case "development":
+          return {
+            ...state,
+            enviroment: action.payload as string,
+            socket: GoerliRococoConfig.substrateConfig.provider_socket,
+            destinationDomainId: Number(
+              GoerliRococoConfig.substrateConfig.domainId
+            ),
+          };
+        case "local":
+          return {
+            ...state,
+            enviroment: action.payload as string,
+            socket: LocalConfig.substrateConfig.provider_socket,
+            destinationDomainId: Number(LocalConfig.substrateConfig.domainId),
+          };
+        default:
+          return state;
+      }
     case "CONNECT_INIT":
       return { ...state, apiState: "CONNECT_INIT" };
     case "CONNECT":
@@ -83,11 +104,14 @@ export const reducer = (state: StateType, action: ActionType): StateType => {
       return { ...state, apiState: "READY" };
     case "CONNECT_ERROR":
       return { ...state, apiState: "ERROR", apiError: action.payload };
-    case "SET_EVM_CONFIG":
+    case "SET_EVM_CONFIG": {
+      const selectedEvmConfig = action.payload as EvmBridgeSetup;
       return {
         ...state,
-        selectedEvmConfig: action.payload as EvmBridgeSetup,
+        homeChainId: Number(selectedEvmConfig.domainId),
+        selectedEvmConfig,
       };
+    }
     case "SET_CURRENT_ACCOUNT":
       return {
         ...state,
