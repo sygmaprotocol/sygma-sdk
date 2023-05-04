@@ -5,7 +5,11 @@ import {
   Bridge__factory,
 } from "@buildwithsygma/sygma-contracts";
 import { decodeAddress } from "@polkadot/util-crypto";
-import {
+
+import { LocalConfig, GoerliRococoConfig } from "../config";
+import { reducer, initialState, StateType } from "./state";
+
+const {
   calculateBasicfee,
   erc20Transfer,
   approve,
@@ -27,11 +31,13 @@ export type EvmContextType = {
     address: string,
     destinationDomainId: string
   ) => Promise<void>;
+  setEnviroment: (enviroment: string) => void;
 };
 
 const EvmContext = createContext<EvmContextType>({
   state: initialState,
   makeDeposit: async () => {},
+  setEnviroment: () => {},
 });
 
 const EvmContextProvider = (props: {
@@ -58,21 +64,33 @@ const EvmContextProvider = (props: {
     }
     if (window.ethereum && !state.currentAccount) {
       void (async () => {
+        let enviroment = localStorage.getItem("enviroment");
+        if (!enviroment) {
+          enviroment = "local";
+          localStorage.setItem("enviroment", enviroment);
+        }
+        dispatch({ type: "SET_ENVIROMENT", payload: enviroment });
+        const evmSetupList =
+          enviroment === "local"
+            ? LocalConfig.evmSetupList
+            : GoerliRococoConfig.evmSetupList;
         const provider = new ethers.providers.Web3Provider(
           window.ethereum as unknown as providers.ExternalProvider
         );
         await provider.send("eth_requestAccounts", []);
         const network = await provider.getNetwork();
 
-        if (![1337, 1338].includes(network.chainId)) {
+        const homeNetworksChainIDs = evmSetupList.map(
+          (evmSetup) => evmSetup.networkId
+        );
+        if (!homeNetworksChainIDs.includes(network.chainId)) {
           // throw new Error("Please connect to the right network");
           // @ts-ignore-line
           await window.ethereum.request({
-            method: "wallet_addEthereumChain",
+            method: "wallet_switchEthereumChain",
             params: [
               {
-                chainId: "0x539",
-                rpcUrls: ["http://localhost:8545"],
+                chainId: utils.hexValue(homeNetworksChainIDs[0]),
               },
             ],
           });
@@ -139,7 +157,7 @@ const EvmContextProvider = (props: {
       currentAccount,
       selectedErc20TokenConfig,
       selectedEvmConfig,
-      destinationDomainId
+      destinationDomainId,
     } = state;
     if (
       signer &&
@@ -198,13 +216,24 @@ const EvmContextProvider = (props: {
     }
   }, [state.api, state.depositNonce]);
 
-  substrateSocketConnect(state, {
-    onConnectInit: () => dispatch({ type: "CONNECT_INIT", payload: undefined }),
-    onConnect: (_api) => dispatch({ type: "CONNECT", payload: _api }),
-    onConnectSucccess: () =>
-      dispatch({ type: "CONNECT_SUCCESS", payload: undefined }),
-    onConnectError: (err) => dispatch({ type: "CONNECT_ERROR", payload: err }),
-  });
+  useEffect(() => {
+    if (state.socket && state.jsonrpc) {
+      const connectParams = {
+        socket: state.socket,
+        jsonrpc: state.jsonrpc,
+        apiState: state.apiState,
+      };
+      substrateSocketConnect(connectParams, {
+        onConnectInit: () =>
+          dispatch({ type: "CONNECT_INIT", payload: undefined }),
+        onConnect: (_api) => dispatch({ type: "CONNECT", payload: _api }),
+        onConnectSucccess: () =>
+          dispatch({ type: "CONNECT_SUCCESS", payload: undefined }),
+        onConnectError: (err) =>
+          dispatch({ type: "CONNECT_ERROR", payload: err }),
+      });
+    }
+  }, [state.socket]);
 
   async function makeDeposit(
     amount: string,
@@ -305,8 +334,13 @@ const EvmContextProvider = (props: {
     );
   }
 
+  function setEnviroment(enviroment: string): void {
+    localStorage.setItem("enviroment", enviroment);
+    dispatch({ type: "SET_ENVIROMENT", payload: enviroment });
+  }
+
   return (
-    <EvmContext.Provider value={{ state, makeDeposit }}>
+    <EvmContext.Provider value={{ state, makeDeposit, setEnviroment }}>
       {props.children}
     </EvmContext.Provider>
   );
