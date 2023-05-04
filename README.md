@@ -262,9 +262,14 @@ const unsub = await deposit(api, asset, amount, domainId, address)
 Using deposit nonce you can listen for proposal execution event on substrate side in case of transfering from EVM network:
 
 ```typescript
-import { listenForEvent } from '@buildwithsygma/sygma-sdk-core/Substrate'
-// Assuming you have a valid ApiPromise instance (api)
-// and a callback function (callback)
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import { listenForEvent } from '@buildwithsygma/sygma-sdk/Substrate';
+// Create a new instance of the WsProvider to connect to a node
+const socket = 'wss://localhost:9944';
+const provider = new WsProvider(socket);
+// Create a new instance of the ApiPromise
+const api = await ApiPromise.create({ provider });
+//Assuming you have a and a callback function
 await listenForEvent(api, "ProposalExecution", (data) => {
   console.log("ProposalExecution", data);
   const dataEvent = data as {
