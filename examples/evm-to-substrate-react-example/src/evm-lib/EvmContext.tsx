@@ -6,10 +6,7 @@ import {
 } from "@buildwithsygma/sygma-contracts";
 import { decodeAddress } from "@polkadot/util-crypto";
 
-import { LocalConfig, GoerliRococoConfig } from "../config";
-import { reducer, initialState, StateType } from "./state";
-
-const {
+import {
   calculateBasicfee,
   erc20Transfer,
   approve,
@@ -20,8 +17,8 @@ import {
   listenForEvent,
   substrateSocketConnect,
 } from "@buildwithsygma/sygma-sdk-core/Substrate";
+import { LocalConfig, GoerliRococoConfig } from "../config";
 
-import { evmSetupList } from "../config";
 import { reducer, initialState, StateType } from "./state";
 
 export type EvmContextType = {
