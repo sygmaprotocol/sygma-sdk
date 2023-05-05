@@ -11,11 +11,6 @@
       "require": "./dist-cjs/index.js",
       "types": "./types/src/index.d.ts"
     },
-    "./deprecated": {
-      "import": "./dist-esm/deprecated/index.js",
-      "require": "./dist-cjs/deprecated/index.js",
-      "types": "./types/src/deprecated/index.d.ts"
-    },
     "./EVM": {
       "import": "./dist-esm/chains/EVM/index.js",
       "require": "./dist-cjs/chains/EVM/index.js",

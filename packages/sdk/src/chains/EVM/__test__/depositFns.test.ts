@@ -4,9 +4,8 @@ import {
   DepositEvent,
 } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge';
 
-import { FeeDataResult } from 'deprecated/types';
 import { ethers, providers, ContractReceipt, ContractTransaction, BigNumber } from 'ethers';
-import { TokenTransfer } from '../types';
+import { FeeDataResult, TokenTransfer } from '../types';
 import * as EVM from '../utils/depositFns';
 
 jest.mock('../helpers', () => {

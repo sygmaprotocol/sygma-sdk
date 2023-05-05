@@ -7,8 +7,12 @@ import {
 } from '@buildwithsygma/sygma-contracts';
 import { DepositEvent } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge';
 
-import { FeeDataResult } from 'deprecated/types';
-import { Erc20TransferParamsType, Erc721TransferParamsType, TokenTransfer } from '../types';
+import {
+  Erc20TransferParamsType,
+  Erc721TransferParamsType,
+  TokenTransfer,
+  FeeDataResult,
+} from '../types';
 
 import { createERCDepositData, getTokenDecimals, isEIP1559MaxFeePerGas } from '../helpers';
 
