@@ -1,5 +1,5 @@
 module.exports = {
-  roots: ['<rootDir>/integration/test', '<rootDir>/src'],
+  roots: ['<rootDir>/src'],
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
   verbose: true,
   preset: 'ts-jest/presets/default-esm',
@@ -11,5 +11,5 @@ module.exports = {
   transform: {
     '^.+\\.(ts|tsx)?$': ['ts-jest', { useESM: true }],
   },
-  testPathIgnorePatterns: ['./dist', '<rootDir>/integration/'],
+  testPathIgnorePatterns: ['./dist'],
 };
