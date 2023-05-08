@@ -1,12 +1,12 @@
 import { providers, ethers } from 'ethers';
 import { Bridge, ERC20, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts';
+import { FeeHandlerType } from 'types';
 
-export type FeeDataResult = {
-  type: FeeType;
+export type EvmFee = {
   fee: ethers.BigNumber;
-  calculatedRate: string;
-  erc20TokenAddress: string;
-  feeData: string;
+  feeData?: string;
+  type: FeeHandlerType;
+  tokenAddress?: string;
 };
 
 export type OracleResource = {
@@ -44,17 +44,13 @@ export type TokenConfig = {
   isDoubleApproval?: boolean;
   /** The fee settings for the token. */
   feeSettings: {
-    /** The type of fee, either 'basic', 'feeOracle', or 'none'. */
-    type: FeeType;
+    /** The type of fee, either 'basic', 'dynamic'. */
+    type: FeeHandlerType;
     /** The address of fee handler contract. */
     address: string;
   };
 };
-/**
- *  Fee startegies of the Bridge
- *  Where "basic" stands for fixed fee and "feeOracle" is for dynamic
- */
-export type FeeType = 'basic' | 'feeOracle' | 'none';
+
 /**
  *  The config of the bridge
  */
@@ -83,7 +79,7 @@ export type TokenDeposit = {
   /** The recipient's address to receive the tokens. */
   recipientAddress: string;
   /** The fee data associated with the token transfer.  */
-  feeData: FeeDataResult;
+  feeData: EvmFee;
 };
 
 export type TokenTransfer = {
@@ -113,7 +109,7 @@ export type Erc20TransferParamsType = {
   /** The bridge instance used for the transfer. */
   bridgeInstance: Bridge;
   /** The fee data associated with the ERC20 token transfer, including the gas price and gas limit. */
-  feeData: FeeDataResult;
+  feeData: EvmFee;
   /** The provider used to interact with the blockchain network. */
   provider: providers.Provider;
   /** Optional overrides for the transaction, such as gas price, gas limit, or value. */
@@ -136,7 +132,7 @@ export type Erc721TransferParamsType = {
   /** The bridge instance used for the transfer. */
   bridgeInstance: Bridge;
   /** The fee data associated with the ERC721 token transfer. */
-  feeData: FeeDataResult;
+  feeData: EvmFee;
   /** The provider used to interact with the blockchain network. */
   provider: providers.Provider;
   /** Optional overrides for the transaction, such as gas price, gas limit, or value. */

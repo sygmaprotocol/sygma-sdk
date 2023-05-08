@@ -2,7 +2,8 @@ import { DynamicERC20FeeHandlerEVM__factory } from '@buildwithsygma/sygma-contra
 import { ethers } from 'ethers';
 import fetch from 'cross-fetch';
 
-import { OracleResource, FeeDataResult } from '../types';
+import { FeeHandlerType } from 'types';
+import { OracleResource, EvmFee } from '../types';
 import { toHex, createERCDepositData } from '../helpers';
 
 type OracleResponse = {
@@ -109,7 +110,7 @@ export const calculateDynamicFee = async ({
   resourceID,
   tokenAmount,
   feeOracleBaseUrl,
-  dynamicERC20FeeHandlerAddress,
+  feeHandlerAddress,
 }: {
   provider: ethers.providers.Provider;
   sender: string;
@@ -119,24 +120,18 @@ export const calculateDynamicFee = async ({
   resourceID: string;
   tokenAmount: string;
   feeOracleBaseUrl: string;
-  dynamicERC20FeeHandlerAddress: string;
-}): Promise<FeeDataResult> => {
+  feeHandlerAddress: string;
+}): Promise<EvmFee> => {
   const depositData = createERCDepositData(tokenAmount, recipientAddress);
-
-  let oracleResponse;
-  try {
-    oracleResponse = await requestFeeFromFeeOracle({
-      feeOracleBaseUrl,
-      fromDomainID,
-      toDomainID,
-      resourceID,
-    });
-  } catch (e) {
-    return Promise.reject(e);
-  }
+  const oracleResponse = await requestFeeFromFeeOracle({
+    feeOracleBaseUrl,
+    fromDomainID,
+    toDomainID,
+    resourceID,
+  });
   const feeData = createOracleFeeData(oracleResponse, tokenAmount);
   const FeeHandlerWithOracleInstance = DynamicERC20FeeHandlerEVM__factory.connect(
-    dynamicERC20FeeHandlerAddress,
+    feeHandlerAddress,
     provider,
   );
   const res = await FeeHandlerWithOracleInstance.calculateFee(
@@ -147,14 +142,13 @@ export const calculateDynamicFee = async ({
     depositData,
     feeData,
   );
-  const result: FeeDataResult = {
+  const fee: EvmFee = {
     fee: res.fee,
-    calculatedRate: ethers.utils.formatEther(res.fee.toString()),
-    erc20TokenAddress: res.tokenAddress,
+    tokenAddress: res.tokenAddress,
     feeData,
-    type: 'feeOracle',
+    type: FeeHandlerType.DYNAMIC,
   };
-  return result;
+  return fee;
 };
 
 /**

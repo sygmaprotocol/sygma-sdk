@@ -1,7 +1,7 @@
 import { BasicFeeHandler__factory as BasicFeeHandler } from '@buildwithsygma/sygma-contracts';
 import { ethers } from 'ethers';
-import { FeeDataResult } from '../types';
-import { createERCDepositData } from '../helpers';
+import { FeeHandlerType } from 'types';
+import { EvmFee } from '../types';
 
 /**
  * Calculates and returns the feeData object after query the FeeOracle service
@@ -41,8 +41,6 @@ export const calculateBasicfee = async ({
   fromDomainID,
   toDomainID,
   resourceID,
-  tokenAmount,
-  recipientAddress,
 }: {
   basicFeeHandlerAddress: string;
   provider: ethers.providers.Provider;
@@ -50,34 +48,22 @@ export const calculateBasicfee = async ({
   fromDomainID: string;
   toDomainID: string;
   resourceID: string;
-  tokenAmount: string;
-  recipientAddress: string;
-}): Promise<FeeDataResult> => {
-  const depositData = createERCDepositData(tokenAmount, recipientAddress);
-  const feeData = '0x00';
+}): Promise<EvmFee> => {
+  const feeData = '0x0';
   const BasicFeeHandlerInstance = BasicFeeHandler.connect(basicFeeHandlerAddress, provider);
+  const calculatedFee = await BasicFeeHandlerInstance.calculateFee(
+    sender,
+    fromDomainID,
+    toDomainID,
+    resourceID,
+    '',
+    feeData,
+  );
 
-  try {
-    const calculatedFee = await BasicFeeHandlerInstance.calculateFee(
-      sender,
-      fromDomainID,
-      toDomainID,
-      resourceID,
-      depositData,
-      feeData,
-    );
-    console.log('calculatedFee', calculatedFee[0]);
-
-    const [fee, address] = calculatedFee;
-    return {
-      fee,
-      calculatedRate: ethers.utils.formatUnits(fee),
-      erc20TokenAddress: address,
-      feeData: fee.toHexString(),
-      type: 'basic',
-    };
-  } catch (error) {
-    console.error('Invalidad basic fee response', error);
-    return Promise.reject(error);
-  }
+  const [fee, _] = calculatedFee;
+  return {
+    fee,
+    feeData: fee.toHexString(),
+    type: FeeHandlerType.BASIC,
+  };
 };
