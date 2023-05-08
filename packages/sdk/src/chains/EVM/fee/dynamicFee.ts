@@ -2,7 +2,7 @@ import { DynamicERC20FeeHandlerEVM__factory } from '@buildwithsygma/sygma-contra
 import { ethers } from 'ethers';
 import fetch from 'cross-fetch';
 
-import { OracleResource, FeeDataResult } from '../../../types';
+import { OracleResource, FeeDataResult } from '../types';
 import { toHex, createERCDepositData } from '../helpers';
 
 type OracleResponse = {
@@ -63,19 +63,29 @@ export const createOracleFeeData = (oracleResponse: OracleResource, amount: stri
  * Calculates the dynamic fee for a transaction using the provided parameters and the Fee Oracle.
  *
  * @example
- * const provider = new ethers.providers.JsonRpcProvider();
+ * import { ethers } from 'ethers';
+ * import { calculateDynamicFee } from '@buildwithsygma/sygma-sdk/EVM';
+ * // also you can use valid alchemy API KEY
+ * const provider = new ethers.providers.JsonRpcProvider('https://mainnet.infura.io/v3/YOUR-PROJECT-ID');
  * const result = await calculateDynamicFee({
  *   provider,
  *   sender: '0x123...',
  *   recipientAddress: '0x456...',
  *   fromDomainID: 1,
  *   toDomainID: 2,
- *   resourceID: 'resource-id',
+ *   resourceID: '0x0000000...123',
  *   tokenAmount: '1000',
  *   feeOracleBaseUrl: 'https://fee-oracle.example.com/',
  *   feeOracleHandlerAddress: '0x789...',
  * });
  * console.log(result);
+ * // {
+ * //   type: 'feeOracle',
+ * //   fee: BigNumber { _hex: '0x...' },
+ * //   calculatedRate: '0.000000000000000001',
+ * //   erc20TokenAddress: '0x...',
+ * //   feeData: '0x...',
+ * // }
  *
  * @category Fee
  * @param {Object} options - An object containing the following properties:

@@ -1,12 +1,16 @@
 import { BasicFeeHandler__factory as BasicFeeHandler } from '@buildwithsygma/sygma-contracts';
 import { ethers } from 'ethers';
-import { FeeDataResult } from '../../../types';
+import { FeeDataResult } from '../types';
 import { createERCDepositData } from '../helpers';
 
 /**
  * Calculates and returns the feeData object after query the FeeOracle service
  *
  * @example
+ * import { ethers } from 'ethers';
+ * import { calculateBasicfee } from '@buildwithsygma/sygma-sdk/EVM';
+ * // also you can use valid alchemy API KEY
+ * const provider = new ethers.providers.JsonRpcProvider('https://mainnet.infura.io/v3/YOUR-PROJECT-ID');
  * const basicFeeData = await calculateBasicfee({
  *   basicFeeHandlerAddress: '0x1234...',
  *   provider: new ethers.providers.JsonRpcProvider('https://mainnet.infura.io/v3/YOUR-PROJECT-ID'),
@@ -18,6 +22,13 @@ import { createERCDepositData } from '../helpers';
  *   recipientAddress: '0xdef0...',
  * });
  * console.log(basicFeeData);
+ * // {
+ * //   type: 'basic',
+ * //   fee: BigNumber { _hex: '0x0' },
+ * //   calculatedRate: '0',
+ * //   erc20TokenAddress: '0x00000000ABCD0000000000000000000000000000',
+ * //   feeData: '0x0000000...HEX'
+ * // }
  *
  * @category Fee
  * @param {Object} - Object to get the fee data
