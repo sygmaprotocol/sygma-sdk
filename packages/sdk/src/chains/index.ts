@@ -3,4 +3,8 @@
  *
  */
 export * as EVM from './EVM';
+/**
+ *  Functions for interacting with substrate pallet.
+ *
+ */
 export * as Substrate from './Substrate';

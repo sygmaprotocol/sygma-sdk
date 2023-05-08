@@ -1,6 +1,27 @@
 import { providers, ethers } from 'ethers';
-import { FeeDataResult } from 'types';
 import { Bridge, ERC20, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts';
+
+export type FeeDataResult = {
+  type: FeeType;
+  fee: ethers.BigNumber;
+  calculatedRate: string;
+  erc20TokenAddress: string;
+  feeData: string;
+};
+
+export type OracleResource = {
+  baseEffectiveRate: string;
+  tokenEffectiveRate: string;
+  dstGasPrice: string;
+  signature: string;
+  fromDomainID: number;
+  toDomainID: number;
+  resourceID: string;
+  dataTimestamp: number;
+  signatureTimestamp: number;
+  expirationTimestamp: number;
+  msgGasLimit: string;
+};
 
 export type TokenConfig = {
   /** The token type (ERC20 or ERC721) */
@@ -47,7 +68,7 @@ export type BridgeConfigParam = {
   /** The domainId is an identifier of bridge in Sygma ecosystem. */
   domainId: string;
   /** An array of token configurations. */
-  tokens: TokenConfig[];
+  tokens: Array<TokenConfig>;
   /** The optional number of confirmations */
   confirmations?: number;
 };
