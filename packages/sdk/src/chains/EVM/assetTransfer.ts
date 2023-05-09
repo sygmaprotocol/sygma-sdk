@@ -49,7 +49,6 @@ export class EVMAssetTransfer {
 
   public async getFee(transfer: Transfer): Promise<EvmFee> {
     const domainConfig = this.config.getDomainConfig() as EthereumConfig;
-    console.log(domainConfig)
     const feeRouter = FeeHandlerRouter__factory.connect(domainConfig.feeRouter, this.provider);
     const feeHandlerAddress = await feeRouter._domainResourceIDToFeeHandlerAddress(
       transfer.to.id,
@@ -83,6 +82,8 @@ export class EVMAssetTransfer {
           feeHandlerAddress: feeHandlerAddress,
         });
       }
+      default:
+        throw new Error(`Unsupported fee handler type ${feeHandlerConfig.type}`)
     }
   }
 
@@ -90,10 +91,9 @@ export class EVMAssetTransfer {
     transfer: Transfer,
     fee: EvmFee,
   ): Promise<Array<UnsignedTransaction>> {
-    console.log(this.config.getDomainConfig())
 
     const bridge = Bridge__factory.connect(
-      this.config.getDomainConfig().bridgeAddress,
+      this.config.getDomainConfig().bridge,
       this.provider,
     );
     const handlerAddress = await bridge._resourceIDToHandlerAddress(transfer.resource.resourceId);
@@ -125,7 +125,7 @@ export class EVMAssetTransfer {
     fee: EvmFee,
   ): Promise<PopulatedTransaction> {
     const bridge = Bridge__factory.connect(
-      this.config.getDomainConfig().bridgeAddress,
+      this.config.getDomainConfig().bridge,
       this.provider,
     );
     switch (transfer.resource.type) {
