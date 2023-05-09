@@ -25,7 +25,7 @@ export interface BaseConfig<Type> {
   chainId: number;
   name: string;
   type: Type;
-  bridgeAddress: string;
+  bridge: string;
   nativeTokenSymbol: string;
   nativeTokenName: string;
   nativeTokenDecimals: BigInt;
@@ -35,8 +35,8 @@ export interface BaseConfig<Type> {
 }
 
 export enum FeeHandlerType {
-  BASIC,
-  DYNAMIC,
+  BASIC = 'basic',
+  DYNAMIC = 'oracle',
 }
 
 export type FeeHandler = {

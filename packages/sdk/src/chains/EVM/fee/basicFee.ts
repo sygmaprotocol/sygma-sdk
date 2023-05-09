@@ -2,6 +2,7 @@ import { BasicFeeHandler__factory as BasicFeeHandler } from '@buildwithsygma/syg
 import { ethers } from 'ethers';
 import { FeeHandlerType } from '../../../types';
 import { EvmFee } from '../types';
+import { formatBytes32String } from 'ethers/lib/utils';
 
 /**
  * Calculates and returns the feeData object after query the FeeOracle service
@@ -49,15 +50,14 @@ export const calculateBasicfee = async ({
   toDomainID: string;
   resourceID: string;
 }): Promise<EvmFee> => {
-  const feeData = '0x0';
   const BasicFeeHandlerInstance = BasicFeeHandler.connect(basicFeeHandlerAddress, provider);
   const calculatedFee = await BasicFeeHandlerInstance.calculateFee(
     sender,
     fromDomainID,
     toDomainID,
     resourceID,
-    '',
-    feeData,
+    formatBytes32String(""),
+    formatBytes32String(""),
   );
 
   const [fee, _] = calculatedFee;

@@ -1,10 +1,12 @@
-import { ContractReceipt, ethers, PopulatedTransaction } from 'ethers';
+import { BigNumber, ContractReceipt, ethers, PopulatedTransaction } from 'ethers';
 import { Bridge } from '@buildwithsygma/sygma-contracts';
 import { DepositEvent } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge';
 
 import { FeeHandlerType } from '../../../types';
 import { Erc20TransferParamsType, Erc721TransferParamsType, EvmFee } from '../types';
-import { createERCDepositData, getTokenDecimals } from '../helpers';
+import { createERCDepositData } from '../helpers';
+
+const ASSET_TRANSFER_GAS_LIMIT = BigNumber.from(300000)
 
 /**
  * Perform an erc20 transfer
@@ -45,8 +47,7 @@ export const erc20Transfer = async ({
   // construct the deposit data
   const depositData = createERCDepositData(
     amount,
-    recipientAddress,
-    await getTokenDecimals(tokenInstance),
+    recipientAddress
   );
 
   // pass data to smartcontract function and create a transaction
@@ -130,6 +131,7 @@ export const executeDeposit = async (
 ): Promise<PopulatedTransaction> => {
   const transactionSettings = {
     value: feeData.type === FeeHandlerType.BASIC ? feeData.fee : undefined,
+    gasLimit: ASSET_TRANSFER_GAS_LIMIT,
   };
 
   const payableOverrides = {
