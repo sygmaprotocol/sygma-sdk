@@ -147,6 +147,7 @@ export const calculateDynamicFee = async ({
     tokenAddress: res.tokenAddress,
     feeData,
     type: FeeHandlerType.DYNAMIC,
+    handlerAddress: feeHandlerAddress,
   };
   return fee;
 };

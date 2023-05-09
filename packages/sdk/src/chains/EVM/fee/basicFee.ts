@@ -65,5 +65,6 @@ export const calculateBasicfee = async ({
     fee,
     feeData: fee.toHexString(),
     type: FeeHandlerType.BASIC,
+    handlerAddress: basicFeeHandlerAddress,
   };
 };
