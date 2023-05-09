@@ -75,12 +75,10 @@ export const addPadding = (covertThis: string | number, padding: number): string
  */
 export const createERCDepositData = (
   tokenAmount: string,
-  recipientAddress: string,
-  decimals = 18,
+  recipientAddress: string
 ): string => {
-  const convertedAmount = utils.parseUnits(tokenAmount, decimals);
   const recipientAddressInBytes = getRecipientAddressInBytes(recipientAddress);
-  const depositDataBytes = constructMainDepositData(convertedAmount, recipientAddressInBytes);
+  const depositDataBytes = constructMainDepositData(BigNumber.from(tokenAmount), recipientAddressInBytes);
   const depositData = utils.hexlify(depositDataBytes);
 
   return depositData;
