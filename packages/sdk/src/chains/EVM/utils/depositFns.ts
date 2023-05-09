@@ -2,9 +2,8 @@ import { ContractReceipt, ethers, PopulatedTransaction } from 'ethers';
 import { Bridge } from '@buildwithsygma/sygma-contracts';
 import { DepositEvent } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge';
 
-import { FeeHandlerType } from 'types';
+import { FeeHandlerType } from '../../../types';
 import { Erc20TransferParamsType, Erc721TransferParamsType, EvmFee } from '../types';
-
 import { createERCDepositData, getTokenDecimals } from '../helpers';
 
 /**

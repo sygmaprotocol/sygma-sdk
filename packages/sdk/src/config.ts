@@ -38,9 +38,11 @@ export class Config {
     }
   }
 
+  /*
   public getDomains(): Array<Domain> {
     return this.environment.domains;
   }
+  */
 
   public getDomainResources(): Array<Resource> {
     const domain = this.environment.domains.find(
@@ -50,9 +52,7 @@ export class Config {
   }
 
   public getDomainConfig(): EthereumConfig | SubstrateConfig {
-    const config = this.environment.domains.find(
-      domain => domain.chainId === this.provider.network.chainId,
-    );
+    const config = this.environment.domains.find(domain => domain.name === 'moonbeam');
     return config!;
   }
 }

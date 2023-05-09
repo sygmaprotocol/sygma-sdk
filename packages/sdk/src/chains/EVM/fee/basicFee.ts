@@ -1,6 +1,6 @@
 import { BasicFeeHandler__factory as BasicFeeHandler } from '@buildwithsygma/sygma-contracts';
 import { ethers } from 'ethers';
-import { FeeHandlerType } from 'types';
+import { FeeHandlerType } from '../../../types';
 import { EvmFee } from '../types';
 
 /**
