@@ -12,11 +12,7 @@ export enum Network {
 }
 
 export type Handler = {
-  type:
-    | ResourceType.ERC20
-    | ResourceType.ERC721
-    | ResourceType.PERMISSIONED_GENERIC
-    | ResourceType.PERMISSIONLESS_GENERIC;
+  type: ResourceType;
   address: string;
 };
 
@@ -54,6 +50,6 @@ export interface SubstrateConfig extends BaseConfig<Network.SUBSTRATE> {
   handlers: Array<Handler>;
 }
 
-export interface ConfigDomains {
+export interface RawConfig {
   domains: Array<EthereumConfig | SubstrateConfig>;
 }

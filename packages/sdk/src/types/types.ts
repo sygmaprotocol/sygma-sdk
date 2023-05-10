@@ -4,19 +4,15 @@ export type Domain = {
 };
 
 export enum ResourceType {
-  ERC20 = 'erc20',
-  ERC721 = 'erc721',
+  FUNGIBLE = 'fungible',
+  NON_FUNGIBLE = 'nonFungible',
   PERMISSIONED_GENERIC = 'permissionedGeneric',
   PERMISSIONLESS_GENERIC = 'permissionlessGeneric',
 }
 
 export type Resource = {
   resourceId: string;
-  type:
-    | ResourceType.ERC20
-    | ResourceType.ERC721
-    | ResourceType.PERMISSIONED_GENERIC
-    | ResourceType.PERMISSIONLESS_GENERIC;
+  type: ResourceType;
   address: string;
   symbol: string;
   decimals: number;
@@ -27,17 +23,16 @@ export type FungibleAssetAmount = {
 };
 
 export type NonFungibleAssetAmount = {
-  amount?: string;
   id: string;
 };
 
 export type TransferAmount = FungibleAssetAmount | NonFungibleAssetAmount;
 
-export type Transfer = {
+export interface Transfer<TransferAmount> {
   sender: string;
   from: Domain;
   to: Domain;
   resource: Resource;
   recipient: string;
   amount: TransferAmount;
-};
+}

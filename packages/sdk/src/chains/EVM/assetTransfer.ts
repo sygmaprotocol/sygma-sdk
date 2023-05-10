@@ -13,10 +13,14 @@ import {
   Environment,
   EthereumConfig,
   FeeHandlerType,
+  FungibleAssetAmount,
   NonFungibleAssetAmount,
   ResourceType,
   Transfer,
+  TransferAmount,
 } from '../../types';
+import { Config } from '../..';
+import { getFeeOracleBaseURL } from '../../utils';
 import {
   EvmFee,
   approve,
@@ -27,8 +31,6 @@ import {
   getERC20Allowance,
   isApproved,
 } from '.';
-import { Config } from '../../';
-import { getFeeOracleBaseURL } from '../../utils';
 
 export class EVMAssetTransfer {
   private provider: providers.BaseProvider;
@@ -40,14 +42,14 @@ export class EVMAssetTransfer {
     this.provider = provider;
   }
 
-  public async init(environment: Environment): Promise<void> {
-    // const network = await this.provider.getNetwork();
-    this.environment = environment;
+  public async init(environment?: Environment): Promise<void> {
+    const network = await this.provider.getNetwork();
+    this.environment = environment ? environment : Environment.MAINNET;
     this.config = new Config();
-    await this.config.init(environment, this.provider);
+    await this.config.init(network.chainId, environment);
   }
 
-  public async getFee(transfer: Transfer): Promise<EvmFee> {
+  public async getFee(transfer: Transfer<TransferAmount>): Promise<EvmFee> {
     const domainConfig = this.config.getDomainConfig() as EthereumConfig;
     const feeRouter = FeeHandlerRouter__factory.connect(domainConfig.feeRouter, this.provider);
     const feeHandlerAddress = await feeRouter._domainResourceIDToFeeHandlerAddress(
@@ -77,40 +79,49 @@ export class EVMAssetTransfer {
           fromDomainID: Number(transfer.from.id),
           toDomainID: Number(transfer.to.id),
           resourceID: transfer.resource.resourceId,
-          tokenAmount: transfer.amount.amount as string,
+          tokenAmount: (transfer.amount as FungibleAssetAmount).amount,
           feeOracleBaseUrl: getFeeOracleBaseURL(this.environment),
           feeHandlerAddress: feeHandlerAddress,
         });
       }
       default:
-        throw new Error(`Unsupported fee handler type ${feeHandlerConfig.type}`)
+        throw new Error(`Unsupported fee handler type`);
     }
   }
 
   public async buildApprovals(
-    transfer: Transfer,
+    transfer: Transfer<TransferAmount>,
     fee: EvmFee,
   ): Promise<Array<UnsignedTransaction>> {
-
-    const bridge = Bridge__factory.connect(
-      this.config.getDomainConfig().bridge,
-      this.provider,
-    );
+    const bridge = Bridge__factory.connect(this.config.getDomainConfig().bridge, this.provider);
     const handlerAddress = await bridge._resourceIDToHandlerAddress(transfer.resource.resourceId);
 
     const approvals: Array<PopulatedTransaction> = [];
     switch (transfer.resource.type) {
-      case ResourceType.ERC20: {
+      case ResourceType.FUNGIBLE: {
         const erc20 = ERC20__factory.connect(transfer.resource.address, this.provider);
-        approvals.push(...(await this.getERC20Approvals(erc20, fee, transfer, handlerAddress)));
+        approvals.push(
+          ...(await this.getERC20Approvals(
+            erc20,
+            fee,
+            transfer as Transfer<FungibleAssetAmount>,
+            handlerAddress,
+          )),
+        );
         break;
       }
-      case ResourceType.ERC721: {
+      case ResourceType.NON_FUNGIBLE: {
         const erc721 = ERC721MinterBurnerPauser__factory.connect(
           transfer.resource.address,
           this.provider,
         );
-        approvals.push(...(await this.getERC721Approvals(erc721, transfer, handlerAddress)));
+        approvals.push(
+          ...(await this.getERC721Approvals(
+            erc721,
+            transfer as Transfer<NonFungibleAssetAmount>,
+            handlerAddress,
+          )),
+        );
         break;
       }
       default:
@@ -121,18 +132,15 @@ export class EVMAssetTransfer {
   }
 
   public async buildTransferTransaction(
-    transfer: Transfer,
+    transfer: Transfer<TransferAmount>,
     fee: EvmFee,
   ): Promise<PopulatedTransaction> {
-    const bridge = Bridge__factory.connect(
-      this.config.getDomainConfig().bridge,
-      this.provider,
-    );
+    const bridge = Bridge__factory.connect(this.config.getDomainConfig().bridge, this.provider);
     switch (transfer.resource.type) {
-      case ResourceType.ERC20: {
+      case ResourceType.FUNGIBLE: {
         const erc20 = ERC20__factory.connect(transfer.resource.address, this.provider);
         return await erc20Transfer({
-          amount: transfer.amount.amount as string,
+          amount: (transfer.amount as FungibleAssetAmount).amount,
           recipientAddress: transfer.recipient,
           tokenInstance: erc20,
           bridgeInstance: bridge,
@@ -141,7 +149,7 @@ export class EVMAssetTransfer {
           feeData: fee,
         });
       }
-      case ResourceType.ERC721: {
+      case ResourceType.NON_FUNGIBLE: {
         const erc721 = ERC721MinterBurnerPauser__factory.connect(
           transfer.resource.address,
           this.provider,
@@ -164,7 +172,7 @@ export class EVMAssetTransfer {
   private async getERC20Approvals(
     erc20: ERC20,
     fee: EvmFee,
-    transfer: Transfer,
+    transfer: Transfer<FungibleAssetAmount>,
     handlerAddress: string,
   ): Promise<Array<PopulatedTransaction>> {
     const approvals: Array<PopulatedTransaction> = [];
@@ -175,7 +183,7 @@ export class EVMAssetTransfer {
       approvals.push(await approve(fee.fee, erc20, fee.handlerAddress));
     }
 
-    const transferAmount = BigNumber.from(transfer.amount.amount as string);
+    const transferAmount = BigNumber.from(transfer.amount.amount);
     if ((await getERC20Allowance(transfer.sender, erc20, handlerAddress)).lt(transferAmount)) {
       approvals.push(await approve(transferAmount, erc20, handlerAddress));
     }
@@ -185,13 +193,12 @@ export class EVMAssetTransfer {
 
   private async getERC721Approvals(
     erc721: ERC721MinterBurnerPauser,
-    transfer: Transfer,
+    transfer: Transfer<NonFungibleAssetAmount>,
     handlerAddress: string,
   ): Promise<Array<PopulatedTransaction>> {
     const approvals: Array<PopulatedTransaction> = [];
-    const transferAmount = transfer.amount as NonFungibleAssetAmount;
-    if (!(await isApproved(Number(transferAmount.id), erc721, handlerAddress))) {
-      approvals.push(await approve(BigNumber.from(transferAmount.id), erc721, handlerAddress));
+    if (!(await isApproved(Number(transfer.amount.id), erc721, handlerAddress))) {
+      approvals.push(await approve(BigNumber.from(transfer.amount.id), erc721, handlerAddress));
     }
 
     return approvals;

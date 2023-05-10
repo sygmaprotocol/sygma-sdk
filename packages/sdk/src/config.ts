@@ -1,58 +1,54 @@
-import { BaseProvider } from '@ethersproject/providers';
-import { Environment, ConfigDomains, EthereumConfig, SubstrateConfig, Resource } from './types';
+import fetch from 'node-fetch';
+import { Environment, RawConfig, Domain, EthereumConfig, SubstrateConfig, Resource } from './types';
+import { ConfigUrl } from '.';
 
 export class Config {
-  private devnetConfigUrl = 'https://config.develop.buildwithsygma.com/share/';
-  private testnetConfigUrl = 'https://config-server.test.buildwithsygma.com/share/';
-  private mainnetConfigUrl = '';
+  private chainId!: number;
+  public environment!: RawConfig;
 
-  public environment!: ConfigDomains;
-  public provider!: BaseProvider;
-
-  public async init(environment: Environment, provider: BaseProvider): Promise<void> {
-    this.provider = provider;
-
+  public async init(chainId: number, environment?: Environment): Promise<void> {
+    this.chainId = chainId;
     let network;
     switch (environment) {
       case Environment.DEVNET: {
-        network = this.devnetConfigUrl;
+        network = ConfigUrl.DEVNET;
         break;
       }
       case Environment.TESTNET: {
-        network = this.testnetConfigUrl;
+        network = ConfigUrl.TESTNET;
         break;
       }
       default:
-        network = this.mainnetConfigUrl;
+        network = ConfigUrl.MAINNET;
     }
 
     try {
       const response = await fetch(network);
-      this.environment = (await response.json()) as unknown as ConfigDomains;
+      this.environment = (await response.json()) as RawConfig;
     } catch (err) {
       if (err instanceof Error) {
         throw new Error(`Failed to fetch shared config because of: ${err.message}`);
       } else {
-        throw new Error('Failed to fetch shared config');
+        throw new Error('Something went wrong while fetching config file');
       }
     }
   }
 
-  /*
-  public getDomains(): Array<Domain> {
-    return this.environment.domains;
+  public getDomainConfig(): EthereumConfig | SubstrateConfig {
+    const domain = this.environment.domains.find(domain => domain.name === 'moonbeam');
+    return domain!;
   }
-  */
+
+  public getDomain(): Domain {
+    const domain = this.getDomainConfig();
+    return {
+      id: domain.id.toString(),
+      name: domain.name,
+    }!;
+  }
 
   public getDomainResources(): Array<Resource> {
-    const domain = this.environment.domains.find(
-      domain => domain.chainId === this.provider.network.chainId,
-    );
-    return domain!.resources;
-  }
-
-  public getDomainConfig(): EthereumConfig | SubstrateConfig {
-    const config = this.environment.domains.find(domain => domain.name === 'moonbeam');
-    return config!;
+    const domain = this.getDomainConfig();
+    return domain.resources;
   }
 }
