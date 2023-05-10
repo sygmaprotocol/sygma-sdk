@@ -177,30 +177,25 @@ export const requestFeeFromFeeOracle = async ({
   resourceID: string;
   msgGasLimit?: number;
 }): Promise<OracleResource> => {
-  try {
-    const response = await fetch(
-      `${feeOracleBaseUrl}/v1/rate/from/${fromDomainID}/to/${toDomainID}/resourceid/${resourceID}?gasLimit=${msgGasLimit}`,
-      {
-        headers: {
-          'Cache-Control': 'no-cache',
-        },
+  const response = await fetch(
+    `${feeOracleBaseUrl}/v1/rate/from/${fromDomainID}/to/${toDomainID}/resourceid/${resourceID}?gasLimit=${msgGasLimit}`,
+    {
+      headers: {
+        'Cache-Control': 'no-cache',
       },
-    );
-    if (response.status !== 200) {
-      throw new Error(response.statusText);
-    }
-    const data = (await response.json()) as OracleResponse;
-    if (data.error) {
-      throw new Error(data.error);
-    }
-
-    if (!data.response) {
-      throw new Error('Empty response data from fee oracle service');
-    }
-
-    return data.response;
-  } catch (e) {
-    console.error('Request to FeeOracle service failed');
-    return Promise.reject(e);
+    },
+  );
+  if (response.status !== 200) {
+    throw new Error(response.statusText);
   }
+  const data = (await response.json()) as OracleResponse;
+  if (data.error) {
+    throw new Error(data.error);
+  }
+
+  if (!data.response) {
+    throw new Error('Empty response data from fee oracle service');
+  }
+
+  return data.response;
 };

@@ -6,7 +6,7 @@ import { FeeHandlerType } from '../../../types';
 import { Erc20TransferParamsType, Erc721TransferParamsType, EvmFee } from '../types';
 import { createERCDepositData } from '../helpers';
 
-const ASSET_TRANSFER_GAS_LIMIT = BigNumber.from(300000)
+export const ASSET_TRANSFER_GAS_LIMIT = BigNumber.from(300000);
 
 /**
  * Perform an erc20 transfer
@@ -37,7 +37,6 @@ const ASSET_TRANSFER_GAS_LIMIT = BigNumber.from(300000)
 export const erc20Transfer = async ({
   amount: amount,
   recipientAddress,
-  tokenInstance,
   bridgeInstance,
   domainId,
   resourceId,
@@ -45,10 +44,7 @@ export const erc20Transfer = async ({
   overrides,
 }: Erc20TransferParamsType): Promise<PopulatedTransaction> => {
   // construct the deposit data
-  const depositData = createERCDepositData(
-    amount,
-    recipientAddress
-  );
+  const depositData = createERCDepositData(amount, recipientAddress);
 
   // pass data to smartcontract function and create a transaction
   return executeDeposit(domainId, resourceId, depositData, feeData, bridgeInstance, overrides);

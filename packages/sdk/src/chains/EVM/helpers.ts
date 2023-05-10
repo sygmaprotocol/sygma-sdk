@@ -73,12 +73,12 @@ export const addPadding = (covertThis: string | number, padding: number): string
  * @param {number} [decimals=18] - The number of decimals of the token.
  * @returns {string} The deposit data as hex string
  */
-export const createERCDepositData = (
-  tokenAmount: string,
-  recipientAddress: string
-): string => {
+export const createERCDepositData = (tokenAmount: string, recipientAddress: string): string => {
   const recipientAddressInBytes = getRecipientAddressInBytes(recipientAddress);
-  const depositDataBytes = constructMainDepositData(BigNumber.from(tokenAmount), recipientAddressInBytes);
+  const depositDataBytes = constructMainDepositData(
+    BigNumber.from(tokenAmount),
+    recipientAddressInBytes,
+  );
   const depositData = utils.hexlify(depositDataBytes);
 
   return depositData;

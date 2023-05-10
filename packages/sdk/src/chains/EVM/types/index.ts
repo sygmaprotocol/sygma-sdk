@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { Bridge, ERC20, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts';
+import { Bridge } from '@buildwithsygma/sygma-contracts';
 import { FeeHandlerType } from 'types';
 
 export type EvmFee = {
@@ -33,8 +33,6 @@ export type Erc20TransferParamsType = {
   amount: string;
   /** The recipient's address to receive the tokens. */
   recipientAddress: string;
-  /** The ERC20 token instance used for the transfer. */
-  tokenInstance: ERC20;
   /** The bridge instance used for the transfer. */
   bridgeInstance: Bridge;
   /** The fee data associated with the ERC20 token transfer, including the gas price and gas limit. */
@@ -52,8 +50,6 @@ export type Erc721TransferParamsType = {
   id: string;
   /** The recipient's address to receive the token. */
   recipientAddress: string;
-  /** The ERC721 token instance used for the transfer. */
-  tokenInstance: ERC721MinterBurnerPauser;
   /** The bridge instance used for the transfer. */
   bridgeInstance: Bridge;
   /** The fee data associated with the ERC721 token transfer. */
