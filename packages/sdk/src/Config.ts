@@ -1,64 +1,65 @@
 import { BaseProvider } from '@ethersproject/providers';
+import fetch from 'node-fetch';
 import {
   Environment,
-  ConfigDomains,
+  RawConfig,
+  Domain,
   EthereumConfig,
   SubstrateConfig,
   Resource,
-} from 'types/config';
+} from './types/config';
+import { ConfigUrl } from '.';
 
 export class Config {
-  private devnetConfigUrl = 'https://config.develop.buildwithsygma.com/share/';
-  private testnetConfigUrl = 'https://config-server.test.buildwithsygma.com/share/';
-  private mainnetConfigUrl = '';
-
-  public environment!: ConfigDomains;
+  public environment!: RawConfig;
   public provider!: BaseProvider;
 
-  public async init(environment: Environment, provider: BaseProvider): Promise<void> {
-    this.provider = provider;
+  public async init(chainId: number, environment?: Environment): Promise<void> {
+    this.provider = new BaseProvider(chainId);
 
     let network;
     switch (environment) {
       case Environment.DEVNET: {
-        network = this.devnetConfigUrl;
+        network = ConfigUrl.DEVNET;
         break;
       }
       case Environment.TESTNET: {
-        network = this.testnetConfigUrl;
+        network = ConfigUrl.TESTNET;
         break;
       }
       default:
-        network = this.mainnetConfigUrl;
+        network = ConfigUrl.MAINNET;
     }
 
     try {
       const response = await fetch(network);
-      this.environment = (await response.json()) as unknown as ConfigDomains;
+      this.environment = (await response.json()) as RawConfig;
     } catch (err) {
       if (err instanceof Error) {
         throw new Error(`Failed to fetch shared config because of: ${err.message}`);
       } else {
-        throw new Error('Failed to fetch shared config');
+        throw new Error('Something went wrong while fetching config file');
       }
     }
   }
 
-  public getDomains(): Array<EthereumConfig | SubstrateConfig> {
-    return this.environment.domains;
-  }
-
-  public getDomainResources(): Array<Resource> {
+  public getDomainConfig(): EthereumConfig | SubstrateConfig {
     const domain = this.environment.domains.find(
       domain => domain.chainId === this.provider.network.chainId,
     );
-    return domain!.resources;
+    return domain!;
   }
 
-  public getDomainConfig(): EthereumConfig | SubstrateConfig {
-    const config = this.environment.domains.find(
-      domain => domain.chainId === this.provider.network.chainId,
-    );
-    return config!;
+  public getDomain(): Domain {
+    const domain = this.getDomainConfig();
+    return {
+      id: domain.chainId,
+      name: domain.name,
+    }!;
+  }
+
+  public getDomainResources(): Array<Resource> {
+    const domain = this.getDomainConfig();
+    return domain.resources;
   }
 }

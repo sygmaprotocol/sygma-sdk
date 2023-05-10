@@ -675,6 +675,7 @@ __metadata:
     jest: ^29.4.1
     jest-environment-jsdom: ^29.4.1
     jest-extended: 1.2.0
+    node-fetch: 2.6.11
     ts-jest: ^29.0.5
     ts-node: 10.7.0
     typedoc: ^0.24.1
@@ -11780,6 +11781,20 @@ __metadata:
     object.getownpropertydescriptors: ^2.0.3
     semver: ^5.7.0
   checksum: 8be86f294f8b065a1e126e9ceb7a4b38b75eb7ec6391060e6e093ab9649e5c1fa977f2a5fe799b6ada862d65ce8259d1b7eabf2057774d641306e467d58cb96b
+  languageName: node
+  linkType: hard
+
+"node-fetch@npm:2.6.11":
+  version: 2.6.11
+  resolution: "node-fetch@npm:2.6.11"
+  dependencies:
+    whatwg-url: ^5.0.0
+  peerDependencies:
+    encoding: ^0.1.0
+  peerDependenciesMeta:
+    encoding:
+      optional: true
+  checksum: 3ec847ca43f678d07b80abfd85bdf06523c2554ee9a494c992c5fc61f5d9cde9f9f16aa33ff09a62f19eee9d54813b8850d7f054cdfee8b2daf789c57f8eeaea
   languageName: node
   linkType: hard
 

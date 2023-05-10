@@ -92,6 +92,7 @@
     "@polkadot/util": "^10.1.13",
     "@polkadot/util-crypto": "^10.1.13",
     "cross-fetch": "^3.1.5",
-    "ethers": "5.6.2"
+    "ethers": "5.6.2",
+    "node-fetch": "2.6.11"
   }
 }
