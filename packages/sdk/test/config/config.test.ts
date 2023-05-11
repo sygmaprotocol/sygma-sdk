@@ -1,37 +1,24 @@
-import fetch, { Response, RequestInfo } from 'node-fetch';
+import axios from 'axios';
+import MockAdapter from "axios-mock-adapter";
 import { Environment } from '../../src/types/config';
 import { Config } from '../../src/config';
 import { testingConfigData } from '../constants';
-import {ConfigUrl} from '../../src/constants';
+import { ConfigUrl } from '../../src/constants';
 
-jest.mock('node-fetch');
+const axiosMock = new MockAdapter(axios);
 
 describe('Config', () => {
   let config: Config = new Config();
 
-  let fetchMock = fetch as jest.MockedFunction<typeof fetch>;
 
   beforeEach(() => {
-    fetchMock.mockImplementation(async (url: RequestInfo) => {
-      if (url === ConfigUrl.DEVNET) {
-        return Promise.resolve({
-          json: jest.fn().mockResolvedValue(testingConfigData),
-        } as unknown as Response);
-      } else if (url === ConfigUrl.TESTNET) {
-        // mock not configured domain
-        return Promise.resolve({
-          json: jest.fn().mockResolvedValue({
-            domains: []
-          }) as unknown as Response,
-        } as unknown as Response);
-      } else {
-        return Promise.reject()
-      }
-    });
+    axiosMock.onGet(ConfigUrl.DEVNET).reply(200, testingConfigData)
+    axiosMock.onGet(ConfigUrl.TESTNET).reply(200, {domains: []})
+    axiosMock.onGet(ConfigUrl.MAINNET).networkError()
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    axiosMock.reset();
   });
 
   it('Should successfully initialize config for the corresponding environment', async function () {
@@ -41,7 +28,7 @@ describe('Config', () => {
   });
 
   it('Should throw error if failed to fetch config', async function () {
-    const expectedError = new Error("Something went wrong while fetching config file");
+    const expectedError = new Error("Failed to fetch shared config because of: Network Error");
 
     await expect(config.init(44, Environment.MAINNET)).rejects.toThrowError(expectedError);
   });

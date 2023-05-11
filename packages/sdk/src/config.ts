@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import axios from 'axios';
 import {
   Environment,
   RawConfig,
@@ -29,8 +29,8 @@ export class Config {
     }
 
     try {
-      const response = await fetch(network);
-      this.environment = (await response.json()) as RawConfig;
+      const response = await axios.get(network);
+      this.environment = response.data as unknown as RawConfig;
     } catch (err) {
       if (err instanceof Error) {
         throw new Error(`Failed to fetch shared config because of: ${err.message}`);
