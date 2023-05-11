@@ -1,4 +1,3 @@
-import { BaseProvider } from '@ethersproject/providers';
 import fetch from 'node-fetch';
 import {
   Environment,
@@ -12,11 +11,9 @@ import { ConfigUrl } from '.';
 
 export class Config {
   public environment!: RawConfig;
-  public provider!: BaseProvider;
+  public chainId!: number;
 
   public async init(chainId: number, environment?: Environment): Promise<void> {
-    this.provider = new BaseProvider(chainId);
-
     let network;
     switch (environment) {
       case Environment.DEVNET: {
@@ -44,18 +41,15 @@ export class Config {
   }
 
   public getDomainConfig(): EthereumConfig | SubstrateConfig {
-    const domain = this.environment.domains.find(
-      domain => domain.chainId === this.provider.network.chainId,
-    );
-    return domain!;
+    const domain = this.environment.domains.find(domain => domain.chainId === this.chainId);
+    if (!domain) {
+      throw new Error('Config for the provided domain is not setup');
+    }
+    return domain;
   }
 
-  public getDomain(): Domain {
-    const domain = this.getDomainConfig();
-    return {
-      id: domain.chainId,
-      name: domain.name,
-    }!;
+  public getDomains(): Array<Domain> {
+    return this.environment.domains.map(({ id, name }) => ({ id, name }));
   }
 
   public getDomainResources(): Array<Resource> {

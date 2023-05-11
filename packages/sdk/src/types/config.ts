@@ -24,22 +24,14 @@ export enum Network {
 
 export type Resource = {
   resourceId: string;
-  type:
-    | ResourceType.FUNGIBLE
-    | ResourceType.NON_FUNGIBLE
-    | ResourceType.PERMISSIONED_GENERIC
-    | ResourceType.PERMISSIONLESS_GENERIC;
+  type: ResourceType;
   address: string;
   symbol?: string;
   decimals?: number;
 };
 
 export type Handler = {
-  type:
-    | ResourceType.FUNGIBLE
-    | ResourceType.NON_FUNGIBLE
-    | ResourceType.PERMISSIONED_GENERIC
-    | ResourceType.PERMISSIONLESS_GENERIC;
+  type: ResourceType;
   address: string;
 };
 
