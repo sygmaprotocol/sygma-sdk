@@ -1,5 +1,5 @@
 module.exports = {
-  roots: ['<rootDir>/src'],
+  roots: ['<rootDir>/src', '<rootDir>/test'],
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
   verbose: true,
   preset: 'ts-jest/presets/default-esm',
