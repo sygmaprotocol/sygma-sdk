@@ -65,8 +65,8 @@ export class EVMAssetTransfer {
         return await calculateBasicfee({
           basicFeeHandlerAddress: feeHandlerAddress,
           provider: this.provider,
-          fromDomainID: transfer.from.id.toString(),
-          toDomainID: transfer.to.id.toString(),
+          fromDomainID: transfer.from.id,
+          toDomainID: transfer.to.id,
           resourceID: transfer.resource.resourceId,
           sender: transfer.sender,
         });
@@ -173,12 +173,12 @@ export class EVMAssetTransfer {
       fee.type == FeeHandlerType.DYNAMIC &&
       (await getERC20Allowance(transfer.sender, erc20, fee.handlerAddress)).lt(fee.fee)
     ) {
-      approvals.push(await approve(fee.fee, erc20, fee.handlerAddress));
+      approvals.push(await approve(fee.fee.toString(), erc20, fee.handlerAddress));
     }
 
     const transferAmount = BigNumber.from(transfer.amount.amount);
     if ((await getERC20Allowance(transfer.sender, erc20, handlerAddress)).lt(transferAmount)) {
-      approvals.push(await approve(transferAmount, erc20, handlerAddress));
+      approvals.push(await approve(transferAmount.toString(), erc20, handlerAddress));
     }
 
     return approvals;
@@ -191,7 +191,7 @@ export class EVMAssetTransfer {
   ): Promise<Array<PopulatedTransaction>> {
     const approvals: Array<PopulatedTransaction> = [];
     if (!(await isApproved(Number(transfer.amount.id), erc721, handlerAddress))) {
-      approvals.push(await approve(BigNumber.from(transfer.amount.id), erc721, handlerAddress));
+      approvals.push(await approve(transfer.amount.id, erc721, handlerAddress));
     }
 
     return approvals;

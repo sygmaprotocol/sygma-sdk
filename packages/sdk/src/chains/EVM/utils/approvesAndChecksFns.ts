@@ -51,14 +51,14 @@ export const getERC20Allowance = async (
  * Approves the specified token instance for a given amount or tokenId and the handler address.
  *
  * @category Token iteractions
- * @param {BigNumber} amountOrIdForApproval - The amount or tokenId to be approved.
+ * @param {string} amountOrIdForApproval - The amount or tokenId to be approved.
  * @param {ERC20 | ERC721MinterBurnerPauser} tokenInstance - The ERC20 or ERC721 token instance to be approved.
  * @param {string} handlerAddress - The handler address for which the token is being approved.
  * @param {BigNumber} gasPrice - The gas price for the approval transaction.
  * @returns {Promise<ContractReceipt>} A promise that resolves to a contract receipt once the approval transaction is executed.
  */
 export const approve = async (
-  amountOrIdForApproval: BigNumber,
+  amountOrIdForApproval: string,
   tokenInstance: ERC20 | ERC721MinterBurnerPauser,
   handlerAddress: string,
 ): Promise<PopulatedTransaction> => {

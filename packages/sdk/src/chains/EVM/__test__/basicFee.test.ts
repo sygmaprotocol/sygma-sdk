@@ -24,8 +24,8 @@ describe('CalculateBasicFee', () => {
       basicFeeHandlerAddress: '0x08CFcF164dc2C4AB1E0966F236E87F913DE77b69',
       provider: {} as ethers.providers.JsonRpcProvider,
       sender: '0xF4314cb9046bECe6AA54bb9533155434d0c76909',
-      fromDomainID: '1',
-      toDomainID: '2',
+      fromDomainID: 1,
+      toDomainID: 2,
       resourceID: '0x0000000000000000000000000000000000000000000000000000000000000000',
     });
 
@@ -46,8 +46,8 @@ describe('CalculateBasicFee', () => {
         basicFeeHandlerAddress: '0x08CFcF164dc2C4AB1E0966F236E87F913DE77b69',
         provider: {} as ethers.providers.JsonRpcProvider,
         sender: '0xF4314cb9046bECe6AA54bb9533155434d0c76909',
-        fromDomainID: '1',
-        toDomainID: '2',
+        fromDomainID: 1,
+        toDomainID: 2,
         resourceID: '0x0000000000000000000000000000000000000000000000000000000000000000',
       });
     } catch (e) {

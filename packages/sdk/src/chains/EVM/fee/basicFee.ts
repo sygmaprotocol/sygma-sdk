@@ -46,8 +46,8 @@ export const calculateBasicfee = async ({
   basicFeeHandlerAddress: string;
   provider: ethers.providers.Provider;
   sender: string;
-  fromDomainID: string;
-  toDomainID: string;
+  fromDomainID: number;
+  toDomainID: number;
   resourceID: string;
 }): Promise<EvmFee> => {
   const BasicFeeHandlerInstance = BasicFeeHandler.connect(basicFeeHandlerAddress, provider);

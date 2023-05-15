@@ -248,6 +248,10 @@ export const testingConfigData = {
           address: '0xe495c86962DcA7208ECcF2020A273395AcE8da3e',
           type: 'oracle',
         },
+        {
+          address: '0xunsupported',
+          type: 'unsupported',
+        },
       ],
       resources: [
         {
