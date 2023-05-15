@@ -1,3 +1,5 @@
+import { FeeHandlerType, Resource, ResourceType } from './types';
+
 export enum Environment {
   LOCAL = 'local',
   DEVNET = 'devnet',
@@ -27,11 +29,6 @@ export interface BaseConfig<Type> {
   startBlock: BigInt;
   blockConfirmations: number;
   resources: Array<Resource>;
-}
-
-export enum FeeHandlerType {
-  BASIC = 'basic',
-  DYNAMIC = 'oracle',
 }
 
 export type FeeHandler = {

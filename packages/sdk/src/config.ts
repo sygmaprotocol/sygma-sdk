@@ -1,12 +1,5 @@
 import axios from 'axios';
-import {
-  Environment,
-  RawConfig,
-  Domain,
-  EthereumConfig,
-  SubstrateConfig,
-  Resource,
-} from './types/config';
+import { Environment, RawConfig, Domain, EthereumConfig, SubstrateConfig, Resource } from './types';
 import { ConfigUrl } from '.';
 
 export class Config {
@@ -29,7 +22,9 @@ export class Config {
     }
 
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       const response = await axios.get(network);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       this.environment = response.data as unknown as RawConfig;
     } catch (err) {
       if (err instanceof Error) {
