@@ -19,6 +19,25 @@ export type Resource = {
 };
 
 export enum FeeHandlerType {
-  ORACLE = 'oracle',
+  DYNAMIC = 'oracle',
   BASIC = 'basic',
 }
+
+export type FungibleAmount = {
+  amount: string;
+};
+
+export type NonFungibleAmount = {
+  id: string;
+};
+
+export type TransferAmount = FungibleAmount | NonFungibleAmount;
+
+export type Transfer<TransferAmount> = {
+  amount: TransferAmount;
+  to: Domain;
+  from: Domain;
+  resource: Resource;
+  sender: string;
+  recipient: string;
+};

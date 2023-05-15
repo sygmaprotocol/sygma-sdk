@@ -13,8 +13,8 @@ import {
   Environment,
   EthereumConfig,
   FeeHandlerType,
-  FungibleAssetAmount,
-  NonFungibleAssetAmount,
+  FungibleAmount,
+  NonFungibleAmount,
   ResourceType,
   Transfer,
   TransferAmount,
@@ -65,8 +65,8 @@ export class EVMAssetTransfer {
         return await calculateBasicfee({
           basicFeeHandlerAddress: feeHandlerAddress,
           provider: this.provider,
-          fromDomainID: transfer.from.id,
-          toDomainID: transfer.to.id,
+          fromDomainID: transfer.from.id.toString(),
+          toDomainID: transfer.to.id.toString(),
           resourceID: transfer.resource.resourceId,
           sender: transfer.sender,
         });
@@ -79,7 +79,7 @@ export class EVMAssetTransfer {
           fromDomainID: Number(transfer.from.id),
           toDomainID: Number(transfer.to.id),
           resourceID: transfer.resource.resourceId,
-          tokenAmount: (transfer.amount as FungibleAssetAmount).amount,
+          tokenAmount: (transfer.amount as FungibleAmount).amount,
           feeOracleBaseUrl: getFeeOracleBaseURL(this.environment),
           feeHandlerAddress: feeHandlerAddress,
         });
@@ -104,7 +104,7 @@ export class EVMAssetTransfer {
           ...(await this.getERC20Approvals(
             erc20,
             fee,
-            transfer as Transfer<FungibleAssetAmount>,
+            transfer as Transfer<FungibleAmount>,
             handlerAddress,
           )),
         );
@@ -118,7 +118,7 @@ export class EVMAssetTransfer {
         approvals.push(
           ...(await this.getERC721Approvals(
             erc721,
-            transfer as Transfer<NonFungibleAssetAmount>,
+            transfer as Transfer<NonFungibleAmount>,
             handlerAddress,
           )),
         );
@@ -139,20 +139,20 @@ export class EVMAssetTransfer {
     switch (transfer.resource.type) {
       case ResourceType.FUNGIBLE: {
         return await erc20Transfer({
-          amount: (transfer.amount as FungibleAssetAmount).amount,
+          amount: (transfer.amount as FungibleAmount).amount,
           recipientAddress: transfer.recipient,
           bridgeInstance: bridge,
-          domainId: transfer.to.id,
+          domainId: transfer.to.id.toString(),
           resourceId: transfer.resource.resourceId,
           feeData: fee,
         });
       }
       case ResourceType.NON_FUNGIBLE: {
         return await erc721Transfer({
-          id: (transfer.amount as NonFungibleAssetAmount).id,
+          id: (transfer.amount as NonFungibleAmount).id,
           recipientAddress: transfer.recipient,
           bridgeInstance: bridge,
-          domainId: transfer.to.id,
+          domainId: transfer.to.id.toString(),
           resourceId: transfer.resource.resourceId,
           feeData: fee,
         });
@@ -165,7 +165,7 @@ export class EVMAssetTransfer {
   private async getERC20Approvals(
     erc20: ERC20,
     fee: EvmFee,
-    transfer: Transfer<FungibleAssetAmount>,
+    transfer: Transfer<FungibleAmount>,
     handlerAddress: string,
   ): Promise<Array<PopulatedTransaction>> {
     const approvals: Array<PopulatedTransaction> = [];
@@ -186,7 +186,7 @@ export class EVMAssetTransfer {
 
   private async getERC721Approvals(
     erc721: ERC721MinterBurnerPauser,
-    transfer: Transfer<NonFungibleAssetAmount>,
+    transfer: Transfer<NonFungibleAmount>,
     handlerAddress: string,
   ): Promise<Array<PopulatedTransaction>> {
     const approvals: Array<PopulatedTransaction> = [];
