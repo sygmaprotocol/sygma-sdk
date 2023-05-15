@@ -1,13 +1,19 @@
-import fetch from 'node-fetch';
-import { Environment, RawConfig, Domain, EthereumConfig, SubstrateConfig, Resource } from './types';
+import axios from 'axios';
+import {
+  Environment,
+  RawConfig,
+  Domain,
+  EthereumConfig,
+  SubstrateConfig,
+  Resource,
+} from './types/config';
 import { ConfigUrl } from '.';
 
 export class Config {
-  private chainId!: number;
   public environment!: RawConfig;
+  public chainId!: number;
 
   public async init(chainId: number, environment?: Environment): Promise<void> {
-    this.chainId = chainId;
     let network;
     switch (environment) {
       case Environment.DEVNET: {
@@ -23,8 +29,8 @@ export class Config {
     }
 
     try {
-      const response = await fetch(network);
-      this.environment = (await response.json()) as RawConfig;
+      const response = await axios.get(network);
+      this.environment = response.data as unknown as RawConfig;
     } catch (err) {
       if (err instanceof Error) {
         throw new Error(`Failed to fetch shared config because of: ${err.message}`);
@@ -35,16 +41,15 @@ export class Config {
   }
 
   public getDomainConfig(): EthereumConfig | SubstrateConfig {
-    const domain = this.environment.domains.find(domain => domain.name === 'moonbeam');
-    return domain!;
+    const domain = this.environment.domains.find(domain => domain.chainId === this.chainId);
+    if (!domain) {
+      throw new Error('Config for the provided domain is not setup');
+    }
+    return domain;
   }
 
-  public getDomain(): Domain {
-    const domain = this.getDomainConfig();
-    return {
-      id: domain.id.toString(),
-      name: domain.name,
-    }!;
+  public getDomains(): Array<Domain> {
+    return this.environment.domains.map(({ id, name }) => ({ id, name }));
   }
 
   public getDomainResources(): Array<Resource> {
