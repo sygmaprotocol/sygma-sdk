@@ -138,11 +138,9 @@ export class EVMAssetTransfer {
     const bridge = Bridge__factory.connect(this.config.getDomainConfig().bridge, this.provider);
     switch (transfer.resource.type) {
       case ResourceType.FUNGIBLE: {
-        const erc20 = ERC20__factory.connect(transfer.resource.address, this.provider);
         return await erc20Transfer({
           amount: (transfer.amount as FungibleAssetAmount).amount,
           recipientAddress: transfer.recipient,
-          tokenInstance: erc20,
           bridgeInstance: bridge,
           domainId: transfer.to.id,
           resourceId: transfer.resource.resourceId,
@@ -150,14 +148,9 @@ export class EVMAssetTransfer {
         });
       }
       case ResourceType.NON_FUNGIBLE: {
-        const erc721 = ERC721MinterBurnerPauser__factory.connect(
-          transfer.resource.address,
-          this.provider,
-        );
         return await erc721Transfer({
           id: (transfer.amount as NonFungibleAssetAmount).id,
           recipientAddress: transfer.recipient,
-          tokenInstance: erc721,
           bridgeInstance: bridge,
           domainId: transfer.to.id,
           resourceId: transfer.resource.resourceId,
