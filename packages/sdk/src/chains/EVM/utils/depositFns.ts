@@ -13,26 +13,18 @@ export const ASSET_TRANSFER_GAS_LIMIT = BigNumber.from(300000);
  *
  * @example
  * const params = {
- *   amountOrId: '100',
+ *   amount: '100',
  *   recipientAddress: '0x1234567890123456789012345678901234567890',
- *   tokenInstance: new ERC20(), // ERC20 instance
  *   bridgeInstance: new Bridge(), // Bridge instance from the sygma-contracts
- *   handlerAddress: '0x0987654321098765432109876543210987654321',
  *   domainId: '1',
  *   resourceId: '0x000000000000000001',
  *   feeData: { ... }, // fee data
- *   provider: new ethers.providers.Web3Provider(window.ethereum),
- *   overrides: { gasLimit: 1000000 } // optional
  * }
  * const transaction = await erc20Transfer(params)
- * // wait for the transaction to be mined
- * const receipt = await transaction.wait(3)
- * // get the deposit event
- * const depositEvent = getDepositEvent(receipt)
  *
  * @category Bridge deposit
  * @param {Erc20TransferParamsType} params - The parameters for the erc20 transfer function.
- * @returns {Promise<ContractTransaction>} - The transaction receipt.
+ * @returns {Promise<ContractTransaction>} - The populated transaction.
  */
 export const erc20Transfer = async ({
   amount: amount,
@@ -57,16 +49,12 @@ export const erc20Transfer = async ({
  * const params = {
  *   domainId: '9',
  *   resourceId: '0x00001',
- *   amountOrId: '123123123', // tokenID from the ERC721
+ *   id: '123123123', // tokenID from the ERC721
  *   recipientAddress: '0x123ABCD',
- *   handlerAddress: '0xabc123',
- *   tokenInstance: new ERC721MinterBurnerPauser(), // from the sygma-contacts
  *   bridgeInstance: new Bridge(),  // from the sygma-contacts
  *   feeData: { .. }, // fee data
- *   confirmations: 10,
- *   provider: new ethers.providers.Web3Provider(window.ethereum),
  * };
- * const receipt = await erc721Transfer(params);
+ * const tx = await erc721Transfer(params);
  *
  * @category Bridge deposit
  * @param {Erc721TransferParamsType} params - The parameters for ERC721 token transfer.
@@ -89,23 +77,8 @@ export const erc721Transfer = async ({
 };
 
 /**
- * Executes a deposit operation using the specified parameters and returns a contract receipt.
+ * Executes a deposit operation using the specified parameters and returns a populated transaction.
  *
- * @example
- * const domainId = '1';
- * const resourceId = '0x1234567890123456789012345678901234567890';
- * const depositData = '0xabcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789';
- * const feeData = { type: 'basic', fee: ethers.BigNumber.from('1000000000000000'), feeData: {} }; // fee data is madatory
- * const bridgeInstance = new Bridge() // Bridge instance from sygma-contracts package;
- * const confirmations = 3;
- * const provider = new ethers.providers.JsonRpcProvider();
- * const overrides = { gasLimit: 200000 };
- *
- * const transaction = executeDeposit(domainId, resourceId, depositData, feeData, bridgeInstance, confirmations, provider, overrides)
- *   .then((receipt) => console.log('Deposit executed:', receipt))
- *   .catch((error) => console.error('Error on deposit execution:', error));
- * // wait for 10 confiramtions to finalize the transaction
- * const receipt = await transaction.wait(10)
  *
  * @category Bridge deposit
  * @param {string} domainId - The unique identifier for destination network.
@@ -113,9 +86,7 @@ export const erc721Transfer = async ({
  * @param {string} depositData - The deposit data required for the operation.
  * @param {FeeDataResult} feeData - The fee data result for the deposit operation.
  * @param {Bridge} bridgeInstance - The bridge instance used to perform the deposit operation.
- * @param {providers.Provider} provider - The provider used for the Ethereum network connection.
- * @param {ethers.PayableOverrides} [overrides] - Optional transaction overrides to be applied.
- * @returns {Promise<ContractTransaction>} A promise that resolves to a contract receipt once the deposit is executed.
+ * @returns {Promise<PopulatedTransaction>} Unsigned transaction
  */
 export const executeDeposit = async (
   domainId: string,

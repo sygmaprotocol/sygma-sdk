@@ -248,36 +248,6 @@ describe('isUint8', () => {
   });
 });
 
-describe('isEIP1559MaxFeePerGas', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('should return the gas price if the node is not EIP1559', async () => {
-    const mockProvider: Partial<providers.Provider> = {
-      getFeeData: jest.fn().mockResolvedValue({ gasPrice: BigNumber.from(100) }),
-    };
-
-    const result = await helpers.isEIP1559MaxFeePerGas(mockProvider as providers.Provider);
-
-    expect(mockProvider.getFeeData).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(BigNumber.from(100));
-  });
-
-  it('should throw an error if there is an issue getting EIP1559 data', async () => {
-    const error = new Error('Error getting EIP 1559 data');
-    const mockProvider: Partial<providers.Provider> = {
-      getFeeData: jest.fn().mockRejectedValue(error),
-    };
-
-    await expect(helpers.isEIP1559MaxFeePerGas(mockProvider as providers.Provider)).rejects.toThrow(
-      error,
-    );
-
-    expect(mockProvider.getFeeData).toHaveBeenCalledTimes(1);
-  });
-});
-
 describe('createPermissionedGenericDepositData', () => {
   it('should create depositData for permissioned generic handler', () => {
     const hexMetaData = '0x68656c6c6f776f726c64'; // 'helloworld' in hex

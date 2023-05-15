@@ -5,7 +5,7 @@ import { FeeHandlerType } from '../../../types';
 import { EvmFee } from '../types';
 
 /**
- * Calculates and returns the feeData object after query the FeeOracle service
+ * Calculates and returns the fee in native currency.
  *
  * @example
  * import { ethers } from 'ethers';
@@ -16,11 +16,9 @@ import { EvmFee } from '../types';
  *   basicFeeHandlerAddress: '0x1234...',
  *   provider: new ethers.providers.JsonRpcProvider('https://mainnet.infura.io/v3/YOUR-PROJECT-ID'),
  *   sender: '0x5678...',
- *   fromDomainID: '1',
- *   toDomainID: '2',
+ *   fromDomainID: 1,
+ *   toDomainID: 2,
  *   resourceID: '0x00000...0001',
- *   tokenAmount: '100',
- *   recipientAddress: '0xdef0...',
  * });
  * console.log(basicFeeData);
  * // {

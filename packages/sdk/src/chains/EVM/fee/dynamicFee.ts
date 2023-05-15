@@ -77,7 +77,7 @@ export const createOracleFeeData = (oracleResponse: OracleResource, amount: stri
  *   resourceID: '0x0000000...123',
  *   tokenAmount: '1000',
  *   feeOracleBaseUrl: 'https://fee-oracle.example.com/',
- *   feeOracleHandlerAddress: '0x789...',
+ *   feeHandlerAddress: '0x789...',
  * });
  * console.log(result);
  * // {
@@ -98,7 +98,7 @@ export const createOracleFeeData = (oracleResponse: OracleResource, amount: stri
  * @param {string} options.resourceID - The resourceId of the token/asset
  * @param {string} options.tokenAmount - The amount of tokens being transferred.
  * @param {string} options.feeOracleBaseUrl - The base URL of the Fee Oracle.
- * @param {string} options.dynamicERC20FeeHandlerAddress - The address of dynamic fee handler
+ * @param {string} options.feeHandlerAddress - The address of dynamic fee handler
  * @returns {Promise<FeeDataResult>} The result of the calculation, containing the fee, calculated rate, ERC20 token address, fee data, and type.
  */
 export const calculateDynamicFee = async ({

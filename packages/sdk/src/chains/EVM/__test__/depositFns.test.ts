@@ -11,7 +11,6 @@ import { EvmFee } from '..';
 
 jest.mock('../helpers', () => {
   return {
-    isEIP1559MaxFeePerGas: jest.fn().mockResolvedValue(BigNumber.from('100')),
     getTokenDecimals: jest.fn().mockResolvedValue(1),
     createERCDepositData: jest.fn().mockReturnValue('0x0erc20value'),
   };
