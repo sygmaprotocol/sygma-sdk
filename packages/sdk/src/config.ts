@@ -7,6 +7,8 @@ export class Config {
   public chainId!: number;
 
   public async init(chainId: number, environment?: Environment): Promise<void> {
+    this.chainId = chainId;
+
     let network;
     switch (environment) {
       case Environment.DEVNET: {

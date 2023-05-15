@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { Bridge } from '@buildwithsygma/sygma-contracts';
-import { FeeHandlerType } from 'types';
+import { FeeHandlerType } from '../../../types';
 
 export type EvmFee = {
   fee: ethers.BigNumber;

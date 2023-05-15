@@ -34,7 +34,7 @@
     "test:unit": "jest --detectOpenHandles",
     "test:fee": "jest --watchAll --testPathPattern=src/fee/__test__/",
     "test:substrate": "jest --watchAll --testPathPattern=src/chains/Substrate/__test__/",
-    "test:evm": "jest --watchAll --testPathPattern=src/chains/EVM/__test__/",
+    "test:evm": "jest --testPathPattern=test/chains/EVM",
     "run:all": "concurrently \"yarn run prepareNodes\" \"yarn run test\"",
     "build": "tsc -p tsconfig.build.json",
     "build:esm": "tsc -p tsconfig.esm.json",
