@@ -5,10 +5,10 @@ import MockAdapter from "axios-mock-adapter";
 import {
   Transfer,
   ResourceType,
-  FungibleAmount,
   FeeHandlerType,
   Environment,
-  NonFungibleAmount,
+  NonFungible,
+  Fungible,
 } from "../../../src/types";
 import { testingConfigData } from "../../constants";
 import { ConfigUrl } from "../../../src/constants";
@@ -78,7 +78,7 @@ const erc721TransferMock = jest.spyOn(EVM, "erc721Transfer");
 
 describe("EVM asset transfer", () => {
   let assetTransfer: EVMAssetTransfer;
-  const transfer: Transfer<FungibleAmount> = {
+  const transfer: Transfer<Fungible> = {
     to: {
       name: "Sepolia",
       id: 3,
@@ -101,7 +101,7 @@ describe("EVM asset transfer", () => {
       amount: "200",
     },
   };
-  const nonFungibleTransfer: Transfer<NonFungibleAmount> = {
+  const nonFungibleTransfer: Transfer<NonFungible> = {
     to: {
       name: "Sepolia",
       id: 3,
@@ -127,10 +127,8 @@ describe("EVM asset transfer", () => {
 
   beforeEach(async () => {
     axiosMock.onGet(ConfigUrl.DEVNET).reply(200, testingConfigData);
-    assetTransfer = new EVMAssetTransfer(
-      mockProvider as providers.BaseProvider
-    );
-    await assetTransfer.init(Environment.DEVNET);
+    assetTransfer = new EVMAssetTransfer();
+    await assetTransfer.init(mockProvider as providers.BaseProvider, Environment.DEVNET);
   });
 
   afterEach(() => {

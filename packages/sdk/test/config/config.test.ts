@@ -22,7 +22,7 @@ describe('Config', () => {
   });
 
   it('Should successfully initialize config for the corresponding environment', async function () {
-    await config.init(1, Environment.DEVNET);
+    await config.init(6, Environment.DEVNET);
 
     expect(config.environment).toEqual(testingConfigData);
   });
@@ -33,7 +33,9 @@ describe('Config', () => {
     await expect(config.init(44, Environment.MAINNET)).rejects.toThrowError(expectedError);
   });
 
-  it('Should successfully return all domains from config', function () {
+  it('Should successfully return all domains from config', async function () {
+    await config.init(6, Environment.DEVNET);
+    
     const domainConfig = config.getDomainConfig();
 
     expect(domainConfig).toEqual(testingConfigData.domains[0]);
@@ -47,14 +49,16 @@ describe('Config', () => {
   });
 
   it('Should successfully return all resources for domain', async function () {
-    await config.init(1, Environment.DEVNET);
+    await config.init(6, Environment.DEVNET);
+
     const resources = config.getDomainResources();
 
     expect(resources).toEqual(testingConfigData.domains[0].resources);
   });
 
   it('Should successfully all supported domains from config', async function () {
-    await config.init(1, Environment.DEVNET);
+    await config.init(6, Environment.DEVNET);
+    
     const domains = config.getDomains();
 
     expect(domains).toEqual(testingConfigData.domains.map(({ id, name }) => ({ id, name })))

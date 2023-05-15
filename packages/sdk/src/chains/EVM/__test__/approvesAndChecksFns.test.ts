@@ -72,7 +72,7 @@ describe('checkCurrentAllowanceOfErc20', () => {
 });
 
 describe('approve', () => {
-  const amountOrIdForApproval = BigNumber.from(100);
+  const amountOrIdForApproval = '100';
   const handlerAddress = '0xabc123';
 
   it('should return a populated transaction when called with valid parameters', async () => {
