@@ -1,4 +1,4 @@
-import { BigNumber, utils, providers } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { TypeRegistry } from '@polkadot/types';
 import { decodeAddress } from '@polkadot/util-crypto';
 import { ERC20 } from '@buildwithsygma/sygma-contracts';
