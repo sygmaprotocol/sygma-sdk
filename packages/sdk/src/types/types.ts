@@ -23,18 +23,18 @@ export enum FeeHandlerType {
   BASIC = 'basic',
 }
 
-export type FungibleAmount = {
+export type Fungible = {
   amount: string;
 };
 
-export type NonFungibleAmount = {
+export type NonFungible = {
   id: string;
 };
 
-export type TransferAmount = FungibleAmount | NonFungibleAmount;
+export type TransferType = Fungible | NonFungible;
 
-export type Transfer<TransferAmount> = {
-  amount: TransferAmount;
+export type Transfer<TransferType> = {
+  amount: TransferType;
   to: Domain;
   from: Domain;
   resource: Resource;
