@@ -81,10 +81,12 @@ describe("EVM asset transfer", () => {
   const transfer: Transfer<Fungible> = {
     to: {
       name: "Sepolia",
+      chainId: 11155111, 
       id: 3,
     },
     from: {
       name: "Mumbai",
+      chainId: 80001,
       id: 2,
     },
     resource: {
@@ -104,10 +106,12 @@ describe("EVM asset transfer", () => {
   const nonFungibleTransfer: Transfer<NonFungible> = {
     to: {
       name: "Sepolia",
+      chainId: 11155111, 
       id: 3,
     },
     from: {
       name: "Mumbai",
+      chainId: 80001,
       id: 2,
     },
     resource: {

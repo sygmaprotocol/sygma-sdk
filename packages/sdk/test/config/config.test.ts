@@ -56,11 +56,11 @@ describe('Config', () => {
     expect(resources).toEqual(testingConfigData.domains[0].resources);
   });
 
-  it('Should successfully all supported domains from config', async function () {
+  it('Should successfully get all supported domains from config', async function () {
     await config.init(6, Environment.DEVNET);
     
     const domains = config.getDomains();
 
-    expect(domains).toEqual(testingConfigData.domains.map(({ id, name }) => ({ id, name })))
+    expect(domains).toEqual(testingConfigData.domains.map(({ id, chainId, name }) => ({ id, chainId, name })))
   });
 });
