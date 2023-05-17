@@ -36,7 +36,6 @@
     "test:substrate": "jest --watchAll --testPathPattern=src/chains/Substrate/__test__/",
     "test:evm": "jest --watchAll --testPathPattern=src/chains/EVM/__test__/",
     "run:all": "concurrently \"yarn run prepareNodes\" \"yarn run test\"",
-    "build": "tsc -p tsconfig.build.json",
     "build:esm": "tsc -p tsconfig.esm.json && echo '{\"type\": \"module\"}' > ./dist-esm/package.json",
     "build:cjs": "tsc -p tsconfig.cjs.json && echo '{\"type\": \"commonjs\"}' > ./dist-cjs/package.json",
     "build:types": "tsc -p tsconfig.types.json",
