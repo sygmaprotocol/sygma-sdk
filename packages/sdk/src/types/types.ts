@@ -1,5 +1,6 @@
 export type Domain = {
   id: number;
+  chainId: number;
   name: string;
 };
 

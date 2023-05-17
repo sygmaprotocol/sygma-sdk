@@ -58,7 +58,7 @@ export const calculateBasicfee = async ({
     formatBytes32String(''),
   );
 
-  const [fee, _] = calculatedFee;
+  const [fee] = calculatedFee;
   return {
     fee,
     feeData: fee.toHexString(),
