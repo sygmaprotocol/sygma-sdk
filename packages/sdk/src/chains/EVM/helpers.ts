@@ -141,9 +141,8 @@ export const createPermissionedGenericDepositData = (hexMetaData: string): strin
  * @param executeFunctionSignature - execution function signature
  * @param executeContractAddress - execution contract address
  * @param maxFee - max fee defined
- * @param depositor - address of depositor on destination chain
+ * @param depositor - address of depositor on source chain
  * @param executionData - the data to pass as parameter of the function being called on destination chain
- * @param depositorCheck - true if you want to check depositor
  * @returns {string}
  */
 export const createPermissionlessGenericDepositData = (
@@ -152,12 +151,7 @@ export const createPermissionlessGenericDepositData = (
   maxFee: string,
   depositor: string,
   executionData: string,
-  depositorCheck: boolean = true,
 ): string => {
-  if (depositorCheck) {
-    // if "depositorCheck" is true -> append depositor address for destination chain check
-    executionData = executionData.concat(toHex(depositor, 32).substr(2));
-  }
   return (
     '0x' +
     toHex(maxFee, 32).substr(2) + // uint256
@@ -165,8 +159,8 @@ export const createPermissionlessGenericDepositData = (
     executeFunctionSignature.substr(2) + // bytes
     toHex(executeContractAddress.substr(2).length / 2, 1).substr(2) + // uint8
     executeContractAddress.substr(2) + // bytes
-    toHex(32, 1).substr(2) + // uint8
-    toHex(depositor, 32).substr(2) + // bytes32
+    toHex(depositor.substr(2).length / 2, 1).substr(2) + // uint8
+    depositor.substr(2) +
     executionData.substr(2)
   ) // bytes
     .toLowerCase();
