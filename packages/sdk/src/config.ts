@@ -6,8 +6,8 @@ import {
   EthereumConfig,
   SubstrateConfig,
   Resource,
-} from './types/config';
-import { ConfigUrl } from '.';
+} from './types/config.js';
+import { ConfigUrl } from './index.js';
 
 export class Config {
   public environment!: RawConfig;

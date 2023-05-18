@@ -2,7 +2,7 @@ import { ApiPromise } from '@polkadot/api';
 import { u128, Option } from '@polkadot/types';
 import { TypeRegistry } from '@polkadot/types/create';
 
-import { getBasicFee } from '../utils';
+import { getBasicFee } from '../utils.js';
 
 const registry = new TypeRegistry();
 

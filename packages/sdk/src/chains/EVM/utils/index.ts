@@ -1,3 +1,3 @@
-export * from './eventListeners';
-export * from './approvesAndChecksFns';
-export * from './depositFns';
+export * from './eventListeners.js';
+export * from './approvesAndChecksFns.js';
+export * from './depositFns.js';

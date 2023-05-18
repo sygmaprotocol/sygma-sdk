@@ -4,7 +4,7 @@ import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import { BN, numberToHex } from '@polkadot/util';
 import type { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
 
-import { XcmMultiAssetIdType } from '../types';
+import { XcmMultiAssetIdType } from '../types/index.js';
 
 export type DepositEventDataType = {
   depositData: string;

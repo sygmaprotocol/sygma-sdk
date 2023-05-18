@@ -1,9 +1,9 @@
 import axios from 'axios';
 import MockAdapter from "axios-mock-adapter";
-import { Environment } from '../../src/types/config';
-import { Config } from '../../src/config';
-import { testingConfigData } from '../constants';
-import { ConfigUrl } from '../../src/constants';
+import { Environment } from '../../src/types/config.js';
+import { Config } from '../../src/config.js';
+import { testingConfigData } from '../constants.js';
+import { ConfigUrl } from '../../src/constants.js';
 
 const axiosMock = new MockAdapter(axios);
 

@@ -1,6 +1,6 @@
 import { ERC721MinterBurnerPauser, ERC20 } from '@buildwithsygma/sygma-contracts';
 import { ContractReceipt, ethers, BigNumber } from 'ethers';
-import { isApproved, getERC20Allowance, approve } from '../utils/approvesAndChecksFns';
+import { isApproved, getERC20Allowance, approve } from '../utils/approvesAndChecksFns.js';
 
 describe('getApproved Function Tests', () => {
   it('should determine whether the specified token is approved for the provided handler address', async () => {

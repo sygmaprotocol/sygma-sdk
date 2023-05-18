@@ -1,7 +1,7 @@
 import { ApiPromise } from '@polkadot/api';
 import type { AnyJson } from '@polkadot/types-codec/types';
 
-import { listenForEvent } from '../utils';
+import { listenForEvent } from '../utils.js';
 
 type MockCB = (v: { event: { data: string | Object; method: string; section: string } }[]) => void;
 describe('listenForEvent', () => {

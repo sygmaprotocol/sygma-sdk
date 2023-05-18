@@ -4,7 +4,7 @@ import {
   requestFeeFromFeeOracle,
   createOracleFeeData,
   calculateDynamicFee,
-} from '../fee/dynamicFee';
+} from '../fee/dynamicFee.js';
 
 jest.mock('cross-fetch');
 const { Response } = jest.requireActual<typeof import('cross-fetch')>('cross-fetch');

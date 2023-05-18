@@ -12,11 +12,11 @@ import {
   Erc721TransferParamsType,
   TokenTransfer,
   FeeDataResult,
-} from '../types';
+} from '../types/index.js';
 
-import { createERCDepositData, getTokenDecimals, isEIP1559MaxFeePerGas } from '../helpers';
+import { createERCDepositData, getTokenDecimals, isEIP1559MaxFeePerGas } from '../helpers.js';
 
-import { isApproved, getERC20Allowance } from './approvesAndChecksFns';
+import { isApproved, getERC20Allowance } from './approvesAndChecksFns.js';
 
 /**
  * Perform an erc20 transfer
