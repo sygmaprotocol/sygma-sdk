@@ -145,24 +145,12 @@ describe('addPadding', () => {
 });
 
 describe('createPermissionlessGenericDepositData', () => {
-  let toHexSpy: jest.SpyInstance;
-
-  beforeEach(() => {
-    toHexSpy = jest.spyOn(helpers, 'toHex');
-  });
-
-  afterEach(() => {
-    toHexSpy.mockRestore();
-  });
-
-  test('should return correct value when depositorCheck is true', () => {
+  test('should return correct value', () => {
     const executeFunctionSignature = '0x12345678';
     const executeContractAddress = '0xabcdef1234567890';
     const maxFee = '0x1000';
     const depositor = '0x1234abcd5678ef90';
     const executionData = '0x0102030405060708';
-
-    toHexSpy.mockReturnValue('mockedHexValue');
 
     const result = helpers.createPermissionlessGenericDepositData(
       executeFunctionSignature,
@@ -173,31 +161,7 @@ describe('createPermissionlessGenericDepositData', () => {
     );
 
     expect(result).toEqual(
-      '0xckedhexvalueckedhexvalue12345678ckedhexvalueabcdef1234567890ckedhexvalueckedhexvalue0102030405060708ckedhexvalue',
-    );
-  });
-
-  test('should return correct value when depositorCheck is false', () => {
-    const executeFunctionSignature = '0x12345678';
-    const executeContractAddress = '0xabcdef1234567890';
-    const maxFee = '0x1000';
-    const depositor = '0x1234abcd5678ef90';
-    const executionData = '0x0102030405060708';
-    const depositorCheck = false;
-
-    toHexSpy.mockReturnValue('mockedHexValue');
-
-    const result = helpers.createPermissionlessGenericDepositData(
-      executeFunctionSignature,
-      executeContractAddress,
-      maxFee,
-      depositor,
-      executionData,
-      depositorCheck,
-    );
-
-    expect(result).toEqual(
-      '0xckedhexvalueckedhexvalue12345678ckedhexvalueabcdef1234567890ckedhexvalueckedhexvalue0102030405060708',
+      '0x000000000000000000000000000000000000000000000000000000000000100000041234567808abcdef1234567890081234abcd5678ef900102030405060708',
     );
   });
 });
