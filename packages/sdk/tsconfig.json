@@ -18,7 +18,7 @@
     "pretty": false,
     "strict": true,
     "sourceMap": true,
-    "target": "ES2016",
+    "target": "ES2020",
     "skipLibCheck": true,
     "baseUrl": "./src"
   },

@@ -5,7 +5,7 @@ import {
   ERC20__factory,
   ERC721MinterBurnerPauser__factory,
 } from '@buildwithsygma/sygma-contracts';
-import { DepositEvent } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge';
+import { DepositEvent } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge.js';
 
 import {
   Erc20TransferParamsType,
