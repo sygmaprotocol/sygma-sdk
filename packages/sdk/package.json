@@ -2,24 +2,20 @@
   "name": "@buildwithsygma/sygma-sdk-core",
   "version": "1.5.0",
   "description": "Core primitives for bridging and message passing",
-  "main": "dist-cjs/index.js",
-  "module": "dist-esm/index.js",
-  "types": "types/src/index.d.ts",
+  "main": "dist-esm/index.js",
+  "types": "types/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist-esm/index.js",
-      "require": "./dist-cjs/index.js",
-      "types": "./types/src/index.d.ts"
+      "require": "./dist-cjs/index.js"
     },
-    "./EVM": {
+    "./evm": {
       "import": "./dist-esm/chains/EVM/index.js",
-      "require": "./dist-cjs/chains/EVM/index.js",
-      "types": "./types/src/chains/EVM/index.d.ts"
+      "require": "./dist-cjs/chains/EVM/index.js"
     },
-    "./Substrate": {
+    "./substrate": {
       "import": "./dist-esm/chains/Substrate/index.js",
-      "require": "./dist-cjs/chains/Substrate/index.js",
-      "types": "./types/src/chains/Substrate/index.d.ts"
+      "require": "./dist-cjs/chains/Substrate/index.js"
     }
   },
   "type": "module",

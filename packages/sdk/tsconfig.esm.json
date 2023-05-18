@@ -5,7 +5,7 @@
   ],
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "module": "es2020",
+    "module": "ES2020",
     "esModuleInterop": true,
     "outDir": "./dist-esm"
   }

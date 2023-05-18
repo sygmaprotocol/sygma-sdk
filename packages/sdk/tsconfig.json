@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
-    "declaration": false,
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "declarationMap": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
@@ -17,7 +19,8 @@
     "strict": true,
     "sourceMap": true,
     "target": "ES2016",
-    "skipLibCheck": true 
+    "skipLibCheck": true,
+    "baseUrl": "./src"
   },
   "exclude": [ 
     "node_modules/**"
