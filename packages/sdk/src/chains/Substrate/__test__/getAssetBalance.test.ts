@@ -4,7 +4,7 @@ import { Option } from '@polkadot/types';
 import type { AssetBalance } from '@polkadot/types/interfaces';
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 
-import { getAssetBalance } from '../utils.js';
+import { getAssetBalance } from '../utils/index.js';
 
 const registry = new TypeRegistry();
 

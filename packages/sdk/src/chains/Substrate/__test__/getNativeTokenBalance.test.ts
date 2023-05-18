@@ -3,7 +3,7 @@ import type { AccountInfoWithTripleRefCount } from '@polkadot/types/interfaces';
 import { TypeRegistry } from '@polkadot/types/create';
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 
-import { getNativeTokenBalance } from '../utils.js';
+import { getNativeTokenBalance } from '../utils/index.js';
 
 const registry = new TypeRegistry();
 
