@@ -1,4 +1,4 @@
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 import type { Bridge } from '@buildwithsygma/sygma-contracts';
 
 import {
@@ -7,7 +7,6 @@ import {
   removeProposalExecutionEventListener,
   createDepositEventListener,
   removeDepositEventListener,
-  getProviderByRpcUrl,
 } from '../utils/eventListeners.js';
 
 describe('createProposalExecutionEventListener', () => {
