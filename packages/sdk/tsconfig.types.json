@@ -1,13 +1,12 @@
 {
   "exclude": [
-    "*/__tests__/**"
+    "src/**/__test__/**",
+    "test/**",
   ],
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "module": "ES2022",
     "declaration": true,
-    "declarationMap": true,
-    "declarationDir": "./types",
+    "outDir": "./types",
     "emitDeclarationOnly": true
   }
 }

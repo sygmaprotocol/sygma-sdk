@@ -9,7 +9,7 @@ import {
   createDepositEventListener,
   removeDepositEventListener,
   getProviderByRpcUrl,
-} from '../utils/eventListeners';
+} from '../utils/eventListeners.js';
 
 describe('createProposalExecutionEventListener', () => {
   it('should create a ProposalExecution event listener', () => {

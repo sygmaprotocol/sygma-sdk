@@ -11,8 +11,8 @@ import {
   addPadding,
   isUint8,
   createPermissionedGenericDepositData,
-} from '../helpers';
-import * as helpers from '../helpers';
+} from '../helpers.js';
+import * as helpers from '../helpers.js';
 
 const registry = new TypeRegistry();
 

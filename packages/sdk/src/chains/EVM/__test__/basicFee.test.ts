@@ -1,6 +1,6 @@
 import { BigNumber, ethers } from 'ethers';
 import { BasicFeeHandler__factory } from '@buildwithsygma/sygma-contracts';
-import { calculateBasicfee } from '../fee/basicFee';
+import { calculateBasicfee } from '../fee/basicFee.js';
 
 jest.mock(
   '@buildwithsygma/sygma-contracts',

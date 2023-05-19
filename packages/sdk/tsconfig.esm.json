@@ -1,39 +1,12 @@
 {
-	"extends": "../../tsconfig.json",
-	"compilerOptions": {
-		"composite": false,
-		"target": "ES2022",
-		"outDir": "dist-esm/",
-		"module": "ES2022",
-		"baseUrl": "./src",
-		"allowJs": true,
-		"declaration": false,
-		"sourceMap": true,
-		"declarationMap": false,
-		"resolveJsonModule": false,
-		"skipLibCheck": true,
-		"moduleResolution": "bundler",
-		"strict": true,
-		"jsx": "react-jsx",
-		"esModuleInterop": true,
-		"downlevelIteration": true,
-		"allowSyntheticDefaultImports": true,
-		"forceConsistentCasingInFileNames": true,
-		"lib": [
-			"es2021",
-			"dom"
-		],
-		"types": ["jest", "node", "@types/jest"],
-	},
-	"ts-node": {
-		"esm": true,
-		"experimentalSpecifierResolution": "node"
-	},
-	"include": [
-		"src"
-		// "integration"
-	],
-	"exclude": [
-		"__test__"
-	]
+  "exclude": [
+    "src/**/__test__/**",
+    "test/**"
+  ],
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "ES2020",
+    "esModuleInterop": true,
+    "outDir": "./dist-esm"
+  }
 }

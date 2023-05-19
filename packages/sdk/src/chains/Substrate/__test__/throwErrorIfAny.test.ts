@@ -1,6 +1,6 @@
 import { ApiPromise, SubmittableResult } from '@polkadot/api';
 
-import { throwErrorIfAny } from '../utils';
+import { throwErrorIfAny } from '../utils/index.js';
 
 describe('throwErrorIfAny', () => {
   let api: ApiPromise;

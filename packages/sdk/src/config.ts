@@ -1,6 +1,13 @@
 import axios from 'axios';
-import { Environment, RawConfig, Domain, EthereumConfig, SubstrateConfig, Resource } from './types';
-import { ConfigUrl } from '.';
+import {
+  Environment,
+  RawConfig,
+  Domain,
+  EthereumConfig,
+  SubstrateConfig,
+  Resource,
+} from './types/index.js';
+import { ConfigUrl } from './index.js';
 
 export class Config {
   public environment!: RawConfig;

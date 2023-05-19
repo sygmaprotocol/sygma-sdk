@@ -1,6 +1,6 @@
 import { ApiPromise } from '@polkadot/api';
 import { BN } from '@polkadot/util';
-import { calculateBigNumber } from '../utils';
+import { calculateBigNumber } from '../utils/index.js';
 
 describe('calculateBigNumber', () => {
   let api: ApiPromise;
