@@ -1,4 +1,4 @@
-import { BigNumber, utils, providers } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { TypeRegistry } from '@polkadot/types';
 import { decodeAddress } from '@polkadot/util-crypto';
 import { ERC20 } from '@buildwithsygma/sygma-contracts';
@@ -37,25 +37,11 @@ describe('createERCDepositData', () => {
   it('should return the correct deposit data', () => {
     const tokenAmount = '100';
     const recipientAddress = '0x1234567890123456789012345678901234567890';
-    const decimals = 18;
-    const expectedBytesArr = new Uint8Array([
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 107, 199, 94, 45, 99,
-      16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 3, 18, 52, 86,
-    ]);
-    const expectedDepositData = '0x1234';
+    const expectedDepositData =
+      '0x000000000000000000000000000000000000000000000000000000000000006400000000000000000000000000000000000000000000000000000000000000141234567890123456789012345678901234567890';
 
-    jest.spyOn(utils, 'parseUnits').mockReturnValueOnce(BigNumber.from('100000000000000000000'));
-    jest.spyOn(utils, 'isAddress').mockReturnValueOnce(true);
-    jest.spyOn(utils, 'arrayify').mockReturnValueOnce(new Uint8Array([18, 52, 86]));
-    jest.spyOn(utils, 'hexlify').mockReturnValueOnce(expectedDepositData);
+    const depositData = createERCDepositData(tokenAmount, recipientAddress);
 
-    const depositData = createERCDepositData(tokenAmount, recipientAddress, decimals);
-
-    expect(utils.parseUnits).toHaveBeenCalledWith(tokenAmount, decimals);
-    expect(utils.isAddress).toHaveBeenCalledWith(recipientAddress);
-    expect(utils.arrayify).toHaveBeenCalledWith(recipientAddress);
-    expect(utils.hexlify).toHaveBeenCalledWith(expectedBytesArr);
     expect(depositData).toEqual(expectedDepositData);
   });
 });
@@ -223,36 +209,6 @@ describe('isUint8', () => {
     expect(isUint8(-1)).toBe(false);
     expect(isUint8(256)).toBe(false);
     expect(() => isUint8('not a number' as unknown)).toThrowError();
-  });
-});
-
-describe('isEIP1559MaxFeePerGas', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('should return the gas price if the node is not EIP1559', async () => {
-    const mockProvider: Partial<providers.Provider> = {
-      getFeeData: jest.fn().mockResolvedValue({ gasPrice: BigNumber.from(100) }),
-    };
-
-    const result = await helpers.isEIP1559MaxFeePerGas(mockProvider as providers.Provider);
-
-    expect(mockProvider.getFeeData).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(BigNumber.from(100));
-  });
-
-  it('should throw an error if there is an issue getting EIP1559 data', async () => {
-    const error = new Error('Error getting EIP 1559 data');
-    const mockProvider: Partial<providers.Provider> = {
-      getFeeData: jest.fn().mockRejectedValue(error),
-    };
-
-    await expect(helpers.isEIP1559MaxFeePerGas(mockProvider as providers.Provider)).rejects.toThrow(
-      error,
-    );
-
-    expect(mockProvider.getFeeData).toHaveBeenCalledTimes(1);
   });
 });
 

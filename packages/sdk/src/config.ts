@@ -1,12 +1,5 @@
 import axios from 'axios';
-import {
-  Environment,
-  RawConfig,
-  Domain,
-  EthereumConfig,
-  SubstrateConfig,
-  Resource,
-} from './types/config';
+import { Environment, RawConfig, Domain, EthereumConfig, SubstrateConfig, Resource } from './types';
 import { ConfigUrl } from '.';
 
 export class Config {
@@ -14,6 +7,8 @@ export class Config {
   public chainId!: number;
 
   public async init(chainId: number, environment?: Environment): Promise<void> {
+    this.chainId = chainId;
+
     let network;
     switch (environment) {
       case Environment.DEVNET: {
@@ -49,7 +44,7 @@ export class Config {
   }
 
   public getDomains(): Array<Domain> {
-    return this.environment.domains.map(({ id, name }) => ({ id, name }));
+    return this.environment.domains.map(({ id, chainId, name }) => ({ id, chainId, name }));
   }
 
   public getDomainResources(): Array<Resource> {

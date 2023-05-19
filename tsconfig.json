@@ -6,7 +6,8 @@
 				"packages/*"
 			]
 		},
-		"allowJs": true
+		"allowJs": true,
+		"esModuleInterop": true,
 	},
 	"references": [
 		{
