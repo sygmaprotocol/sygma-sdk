@@ -2,7 +2,8 @@ import { DynamicERC20FeeHandlerEVM__factory } from '@buildwithsygma/sygma-contra
 import { ethers } from 'ethers';
 import fetch from 'cross-fetch';
 
-import { OracleResource, FeeDataResult } from '../types/index.js';
+import { FeeHandlerType } from 'types/index.js';
+import { EvmFee, OracleResource } from '../types/index.js';
 import { toHex, createERCDepositData } from '../helpers.js';
 
 type OracleResponse = {
@@ -76,7 +77,7 @@ export const createOracleFeeData = (oracleResponse: OracleResource, amount: stri
  *   resourceID: '0x0000000...123',
  *   tokenAmount: '1000',
  *   feeOracleBaseUrl: 'https://fee-oracle.example.com/',
- *   feeOracleHandlerAddress: '0x789...',
+ *   feeHandlerAddress: '0x789...',
  * });
  * console.log(result);
  * // {
@@ -97,7 +98,7 @@ export const createOracleFeeData = (oracleResponse: OracleResource, amount: stri
  * @param {string} options.resourceID - The resourceId of the token/asset
  * @param {string} options.tokenAmount - The amount of tokens being transferred.
  * @param {string} options.feeOracleBaseUrl - The base URL of the Fee Oracle.
- * @param {string} options.dynamicERC20FeeHandlerAddress - The address of dynamic fee handler
+ * @param {string} options.feeHandlerAddress - The address of dynamic fee handler
  * @returns {Promise<FeeDataResult>} The result of the calculation, containing the fee, calculated rate, ERC20 token address, fee data, and type.
  */
 export const calculateDynamicFee = async ({
@@ -109,7 +110,7 @@ export const calculateDynamicFee = async ({
   resourceID,
   tokenAmount,
   feeOracleBaseUrl,
-  dynamicERC20FeeHandlerAddress,
+  feeHandlerAddress,
 }: {
   provider: ethers.providers.Provider;
   sender: string;
@@ -119,24 +120,18 @@ export const calculateDynamicFee = async ({
   resourceID: string;
   tokenAmount: string;
   feeOracleBaseUrl: string;
-  dynamicERC20FeeHandlerAddress: string;
-}): Promise<FeeDataResult> => {
+  feeHandlerAddress: string;
+}): Promise<EvmFee> => {
   const depositData = createERCDepositData(tokenAmount, recipientAddress);
-
-  let oracleResponse;
-  try {
-    oracleResponse = await requestFeeFromFeeOracle({
-      feeOracleBaseUrl,
-      fromDomainID,
-      toDomainID,
-      resourceID,
-    });
-  } catch (e) {
-    return Promise.reject(e);
-  }
+  const oracleResponse = await requestFeeFromFeeOracle({
+    feeOracleBaseUrl,
+    fromDomainID,
+    toDomainID,
+    resourceID,
+  });
   const feeData = createOracleFeeData(oracleResponse, tokenAmount);
   const FeeHandlerWithOracleInstance = DynamicERC20FeeHandlerEVM__factory.connect(
-    dynamicERC20FeeHandlerAddress,
+    feeHandlerAddress,
     provider,
   );
   const res = await FeeHandlerWithOracleInstance.calculateFee(
@@ -147,14 +142,14 @@ export const calculateDynamicFee = async ({
     depositData,
     feeData,
   );
-  const result: FeeDataResult = {
+  const fee: EvmFee = {
     fee: res.fee,
-    calculatedRate: ethers.utils.formatEther(res.fee.toString()),
-    erc20TokenAddress: res.tokenAddress,
+    tokenAddress: res.tokenAddress,
     feeData,
-    type: 'feeOracle',
+    type: FeeHandlerType.DYNAMIC,
+    handlerAddress: feeHandlerAddress,
   };
-  return result;
+  return fee;
 };
 
 /**
@@ -182,30 +177,25 @@ export const requestFeeFromFeeOracle = async ({
   resourceID: string;
   msgGasLimit?: number;
 }): Promise<OracleResource> => {
-  try {
-    const response = await fetch(
-      `${feeOracleBaseUrl}/v1/rate/from/${fromDomainID}/to/${toDomainID}/resourceid/${resourceID}?gasLimit=${msgGasLimit}`,
-      {
-        headers: {
-          'Cache-Control': 'no-cache',
-        },
+  const response = await fetch(
+    `${feeOracleBaseUrl}/v1/rate/from/${fromDomainID}/to/${toDomainID}/resourceid/${resourceID}?gasLimit=${msgGasLimit}`,
+    {
+      headers: {
+        'Cache-Control': 'no-cache',
       },
-    );
-    if (response.status !== 200) {
-      throw new Error(response.statusText);
-    }
-    const data = (await response.json()) as OracleResponse;
-    if (data.error) {
-      throw new Error(data.error);
-    }
-
-    if (!data.response) {
-      throw new Error('Empty response data from fee oracle service');
-    }
-
-    return data.response;
-  } catch (e) {
-    console.error('Request to FeeOracle service failed');
-    return Promise.reject(e);
+    },
+  );
+  if (response.status !== 200) {
+    throw new Error(response.statusText);
   }
+  const data = (await response.json()) as OracleResponse;
+  if (data.error) {
+    throw new Error(data.error);
+  }
+
+  if (!data.response) {
+    throw new Error('Empty response data from fee oracle service');
+  }
+
+  return data.response;
 };

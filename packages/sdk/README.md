@@ -16,7 +16,6 @@ import {
   erc20Transfer,
   approve,
   getDepositEventFromReceipt,
-  isEIP1559MaxFeePerGas,
   // etc
 } from '@buildwithsygma/sygma-sdk-core/EVM';
 
