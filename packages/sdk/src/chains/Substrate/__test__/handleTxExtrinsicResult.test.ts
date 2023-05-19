@@ -1,7 +1,7 @@
 import { ApiPromise, SubmittableResult } from '@polkadot/api';
-import { DepositCallbacksType } from '../utils/depositFns';
+import { DepositCallbacksType } from '../utils/depositFns.js';
 
-import * as Utils from '../utils/depositFns';
+import * as Utils from '../utils/depositFns.js';
 
 describe('handleTxExtrinsicResult', () => {
   let api: ApiPromise;

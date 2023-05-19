@@ -1,3 +1,3 @@
-export { calculateDynamicFee } from './dynamicFee';
-export { calculateBasicfee } from './basicFee';
-export { getFeeHandlerAddress } from './feeHandler';
+export { calculateDynamicFee } from './dynamicFee.js';
+export { calculateBasicfee } from './basicFee.js';
+export { getFeeHandlerAddress } from './feeHandler.js';

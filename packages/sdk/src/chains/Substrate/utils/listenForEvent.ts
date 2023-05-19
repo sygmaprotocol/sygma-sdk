@@ -34,20 +34,13 @@ export const listenForEvent = async (
   api: ApiPromise,
   eventName: string,
   callback: (data: AnyJson) => void,
-): Promise<(() => void) | undefined> => {
-  let unsub: () => void;
-  try {
-    unsub = (await api.query.system.events((events: EventRecord[]) => {
-      // loop through the Vec<EventRecord>
-      events.forEach(({ event: { data, method, section } }) => {
-        if (section === 'sygmaBridge' && method === eventName) {
-          callback(data.toHuman());
-          unsub();
-        }
-      });
-    })) as unknown as () => void;
-    return unsub;
-  } catch (e) {
-    console.error('listenForEvent Error:', e);
-  }
+): Promise<() => void> => {
+  return (await api.query.system.events((events: EventRecord[]) => {
+    // loop through the Vec<EventRecord>
+    events.forEach(({ event: { data, method, section } }) => {
+      if (section === 'sygmaBridge' && method === eventName) {
+        callback(data.toHuman());
+      }
+    });
+  })) as unknown as () => void;
 };

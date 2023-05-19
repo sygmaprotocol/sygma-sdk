@@ -5,9 +5,9 @@ import {
 } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge';
 
 import { ethers, ContractReceipt, BigNumber, PopulatedTransaction } from 'ethers';
-import { FeeHandlerType } from '../../../types';
-import * as EVM from '../utils/depositFns';
-import { EvmFee } from '..';
+import { FeeHandlerType } from '../../../types/index.js';
+import * as EVM from '../utils/depositFns.js';
+import { EvmFee } from '../types/index.js';
 
 jest.mock('../helpers', () => {
   return {
