@@ -1,4 +1,4 @@
-import { BigNumber, utils, ContractReceipt, ethers } from 'ethers';
+import { BigNumber, PopulatedTransaction } from 'ethers';
 import { ERC20, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts';
 
 /**
@@ -20,14 +20,9 @@ export const isApproved = async (
   tokenInstance: ERC721MinterBurnerPauser,
   handlerAddress: string,
 ): Promise<boolean> => {
-  try {
-    const approvedAddress = await tokenInstance.getApproved(tokenId);
-    const isApproved = approvedAddress === handlerAddress;
-    return isApproved;
-  } catch (error) {
-    console.error('Error on isApproved', error);
-    return Promise.reject(error);
-  }
+  const approvedAddress = await tokenInstance.getApproved(tokenId);
+  const isApproved = approvedAddress === handlerAddress;
+  return isApproved;
 };
 
 /**
@@ -48,42 +43,28 @@ export const getERC20Allowance = async (
   senderAddress: string,
   erc20Instance: ERC20,
   erc20HandlerAddress: string,
-): Promise<number> => {
-  try {
-    const currentAllowance = await erc20Instance.allowance(senderAddress, erc20HandlerAddress);
-
-    return Number(utils.formatUnits(currentAllowance, 18));
-  } catch (error) {
-    console.error('Error on getERC20Allowance', error);
-    return Promise.reject(error);
-  }
+): Promise<BigNumber> => {
+  return await erc20Instance.allowance(senderAddress, erc20HandlerAddress);
 };
 
 /**
  * Approves the specified token instance for a given amount or tokenId and the handler address.
  *
  * @category Token iteractions
- * @param {BigNumber} amountOrIdForApproval - The amount or tokenId to be approved.
+ * @param {string} amountOrIdForApproval - The amount or tokenId to be approved.
  * @param {ERC20 | ERC721MinterBurnerPauser} tokenInstance - The ERC20 or ERC721 token instance to be approved.
  * @param {string} handlerAddress - The handler address for which the token is being approved.
  * @param {BigNumber} gasPrice - The gas price for the approval transaction.
- * @param {number} confirmations - The number of confirmations required before the transaction is considered successful.
- * @param {ethers.PayableOverrides} overrides - Optional overrides for the transaction, such as gas price, gas limit,
  * @returns {Promise<ContractReceipt>} A promise that resolves to a contract receipt once the approval transaction is executed.
  */
 export const approve = async (
-  amountOrIdForApproval: BigNumber,
+  amountOrIdForApproval: string,
   tokenInstance: ERC20 | ERC721MinterBurnerPauser,
   handlerAddress: string,
-  confirmations: number,
-  overrides?: ethers.PayableOverrides,
-): Promise<ContractReceipt> => {
-  try {
-    const tx = await tokenInstance.approve(handlerAddress, amountOrIdForApproval, overrides);
-    const approvalAction = await tx.wait(confirmations);
-    return approvalAction;
-  } catch (error) {
-    console.error('Error on approve', error);
-    return Promise.reject(error);
-  }
+): Promise<PopulatedTransaction> => {
+  const unsignedTx = await tokenInstance.populateTransaction.approve(
+    handlerAddress,
+    amountOrIdForApproval,
+  );
+  return unsignedTx;
 };

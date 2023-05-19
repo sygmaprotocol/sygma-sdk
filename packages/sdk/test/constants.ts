@@ -2,6 +2,7 @@ export const testingConfigData = {
   domains: [
     {
       id: 0,
+      chainId: 6,
       name: 'ethereum',
       type: 'evm',
       bridge: '0xb36C801f644908bAAe89b7C28ad57Af18638A6a9',
@@ -72,6 +73,7 @@ export const testingConfigData = {
     {
       id: 1,
       name: 'polygon',
+      chainId: 80001,
       type: 'evm',
       bridge: '0x37313Ab1701fCfC5050E84B4E7f841abB588a1db',
       handlers: [
@@ -141,6 +143,7 @@ export const testingConfigData = {
     {
       id: 2,
       name: 'moonbeam',
+      chainId: 1287,
       type: 'evm',
       bridge: '0x6CAf9103c8cE3c9C347D57Aee39E8e66e43091b8',
       handlers: [
@@ -209,6 +212,7 @@ export const testingConfigData = {
     },
     {
       id: 3,
+      chainId: 11155111,
       name: 'ethereum',
       type: 'evm',
       bridge: '0x59d52E04d4521C0e6C78310f4c4FF9167BA71d01',
@@ -244,6 +248,10 @@ export const testingConfigData = {
           address: '0xe495c86962DcA7208ECcF2020A273395AcE8da3e',
           type: 'oracle',
         },
+        {
+          address: '0xunsupported',
+          type: 'unsupported',
+        },
       ],
       resources: [
         {
@@ -278,6 +286,7 @@ export const testingConfigData = {
     },
     {
       id: 5,
+      chainId: 400,
       name: 'rococo-phala',
       type: 'substrate',
       bridge: '',
