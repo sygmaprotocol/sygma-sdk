@@ -36,6 +36,10 @@ yarn add @buildwithsygma/sygma-sdk-core
 
 For examples of usage go the [`examples`](./examples/) folder
 
+## Contracts
+
+For interacting directly with the contracts use the `@buildwithsygma/sygma-contracts` package.
+
 ## Support
 <a href="https://discord.gg/ykXsJKfhgq">
   <img alt="discord" src="https://img.shields.io/discord/593655374469660673?label=Discord&logo=discord&style=flat" />
