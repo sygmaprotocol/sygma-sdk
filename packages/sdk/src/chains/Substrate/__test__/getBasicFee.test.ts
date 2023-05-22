@@ -1,18 +1,22 @@
 import { ApiPromise } from '@polkadot/api';
 import { u128, Option } from '@polkadot/types';
 import { TypeRegistry } from '@polkadot/types/create';
-
+import { BigNumber } from 'ethers';
 import { getBasicFee } from '../utils/index.js';
+import exp from 'constants';
+import { FeeHandlerType } from 'types/types.js';
 
 const registry = new TypeRegistry();
 
 describe('getBasicFee', () => {
   it('should return the basic fee', async () => {
-    const result = new Option(registry, u128, '0x12345678');
+    const mockFee = "0x12345678"
+    const rawResult = new Option(registry, u128, mockFee);
+
     const api: ApiPromise = {
       query: {
         sygmaBasicFeeHandler: {
-          assetFees: jest.fn().mockResolvedValue(result),
+          assetFees: jest.fn().mockResolvedValue(rawResult),
         },
       },
     } as unknown as ApiPromise;
@@ -22,27 +26,29 @@ describe('getBasicFee', () => {
 
     const feeRes = await getBasicFee(api, domainId, xsmMultiAssetId);
 
-    expect(feeRes).toBeInstanceOf(Option);
-    expect(feeRes.isSome).toBeTruthy();
-    expect(feeRes.unwrap()).toBeInstanceOf(u128);
+    expect(feeRes).toBeDefined();
+    expect(feeRes).toHaveProperty('Fee');
+    expect(feeRes).toHaveProperty('type');
+    expect(feeRes.fee).toBeInstanceOf(BigNumber);
+    expect(feeRes.fee).toBe(BigNumber.from(mockFee));
+    expect(feeRes.type).toBe(FeeHandlerType.BASIC);
   });
 
-  it('should return none if the fee is not found', async () => {
-    const result = new Option(registry, u128, null);
+  it('should throw and error if the fee is not found', () => {
+    const rawResult = new Option(registry, u128, null);
 
     const api: ApiPromise = {
       query: {
         sygmaBasicFeeHandler: {
-          assetFees: jest.fn().mockResolvedValue(result),
+          assetFees: jest.fn().mockResolvedValue(rawResult),
         },
       },
     } as unknown as ApiPromise;
     const domainId = 2; // some non-existent domain id;
     const xsmMultiAssetId = {};
 
-    const feeRes = await getBasicFee(api, domainId, xsmMultiAssetId);
-
-    expect(feeRes).toBeInstanceOf(Option);
-    expect(feeRes.isNone).toBeTruthy();
+    expect(async () => {
+      await getBasicFee(api, domainId, xsmMultiAssetId);
+    }).toThrow();
   });
 });
