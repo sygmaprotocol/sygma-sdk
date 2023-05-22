@@ -15,8 +15,11 @@ export type Resource = {
   resourceId: string;
   type: ResourceType;
   address: string;
+  assetId?: number;
+  assetName?: string;
   symbol?: string;
   decimals?: number;
+  xsmMultiAssetId?: Object;
 };
 
 export enum FeeHandlerType {

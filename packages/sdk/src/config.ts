@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { localConfig } from 'localConfig';
 import {
   Environment,
   RawConfig,
@@ -15,6 +16,10 @@ export class Config {
 
   public async init(chainId: number, environment?: Environment): Promise<void> {
     this.chainId = chainId;
+
+    if (environment === Environment.LOCAL) {
+      this.environment = localConfig;
+    }
 
     let network;
     switch (environment) {
