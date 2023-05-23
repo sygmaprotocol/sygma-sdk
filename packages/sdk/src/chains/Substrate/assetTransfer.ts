@@ -1,5 +1,11 @@
 import { ApiPromise } from '@polkadot/api';
-import { Environment, SubstrateConfig, Transfer, TransferType } from '../../types';
+import {
+  Environment,
+  SubstrateConfig,
+  SubstrateResource,
+  Transfer,
+  TransferType,
+} from '../../types';
 import { Config } from '../..';
 import { SubstrateFee, getBasicFee } from '.';
 
@@ -29,7 +35,7 @@ export class SubstrateAssetTransfer {
     const fee = await getBasicFee(
       this.apiPromise,
       domainConfig.id,
-      domainConfig.resources[0].xsmMultiAssetId || {},
+      (domainConfig.resources[0] as SubstrateResource).xsmMultiAssetId,
     );
 
     return fee;
@@ -47,10 +53,10 @@ export class SubstrateAssetTransfer {
     transfer: Transfer<TransferType>,
     fee: SubstrateFee,
   ): Promise<any /* Fix this type */> {
-    
-
     throw new Error(
-      `Resource type ${transfer.resource.type} with ${fee.fee.toString()} not supported by asset transfer`,
+      `Resource type ${
+        transfer.resource.type
+      } with ${fee.fee.toString()} not supported by asset transfer`,
     );
   }
 }
