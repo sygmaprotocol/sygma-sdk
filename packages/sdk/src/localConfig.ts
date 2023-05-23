@@ -59,7 +59,6 @@ export const localConfig: RawConfig = {
         // so please figure out the best format and what we actually need and then
         // we'll add it to the configurations.
         {
-          address: '0x',
           resourceId: '0x',
           type: ResourceType.FUNGIBLE,
           assetName: 'USDC',

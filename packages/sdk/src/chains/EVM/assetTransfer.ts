@@ -12,6 +12,7 @@ import {
 import {
   Environment,
   EthereumConfig,
+  EvmResource,
   FeeHandlerType,
   Fungible,
   NonFungible,
@@ -145,7 +146,10 @@ export class EVMAssetTransfer {
     const approvals: Array<PopulatedTransaction> = [];
     switch (transfer.resource.type) {
       case ResourceType.FUNGIBLE: {
-        const erc20 = ERC20__factory.connect(transfer.resource.address, this.provider);
+        const erc20 = ERC20__factory.connect(
+          (transfer.resource as EvmResource).address,
+          this.provider,
+        );
         approvals.push(
           ...(await this.getERC20Approvals(
             erc20,
@@ -158,7 +162,7 @@ export class EVMAssetTransfer {
       }
       case ResourceType.NON_FUNGIBLE: {
         const erc721 = ERC721MinterBurnerPauser__factory.connect(
-          transfer.resource.address,
+          (transfer.resource as EvmResource).address,
           this.provider,
         );
         approvals.push(
