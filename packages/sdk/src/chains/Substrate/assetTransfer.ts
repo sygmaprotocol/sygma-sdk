@@ -1,19 +1,7 @@
 import { ApiPromise } from '@polkadot/api';
-import {
-  Environment,
-  EthereumConfig,
-  FeeHandlerType,
-  Fungible,
-  NonFungible,
-  ResourceType,
-  SubstrateConfig,
-  Transfer,
-  TransferType,
-} from '../../types';
+import { Environment, SubstrateConfig, Transfer, TransferType } from '../../types';
 import { Config } from '../..';
-import { getFeeOracleBaseURL } from '../../utils';
 import { SubstrateFee, getBasicFee } from '.';
-import { BigNumber } from 'ethers';
 
 export class SubstrateAssetTransfer {
   private apiPromise!: ApiPromise;
@@ -25,8 +13,7 @@ export class SubstrateAssetTransfer {
     this.apiPromise = apiPromise;
     this.environment = environment ? environment : Environment.MAINNET;
     this.config = new Config();
-    // TODO: Figure out what ChainId to pass in here
-    await this.config.init(1, environment);
+    await this.config.init(5, environment);
   }
 
   /**
@@ -37,15 +24,15 @@ export class SubstrateAssetTransfer {
    * @param transfer instance of transfer
    * @returns fee that needs to payed
    */
-  public async getFee(transfer: Transfer<TransferType>): Promise<SubstrateFee> {
-    // TODO: Wire up this function
+  public async getFee(): Promise<SubstrateFee> {
     const domainConfig = this.config.getDomainConfig() as SubstrateConfig;
     const fee = await getBasicFee(
       this.apiPromise,
       domainConfig.id,
       domainConfig.resources[0].xsmMultiAssetId || {},
     );
-    return fee
+
+    return fee;
   }
 
   /**
@@ -60,7 +47,7 @@ export class SubstrateAssetTransfer {
     transfer: Transfer<TransferType>,
     fee: SubstrateFee,
   ): Promise<any /* Fix this type */> {
-
+    
 
     throw new Error(
       `Resource type ${transfer.resource.type} with ${fee.fee.toString()} not supported by asset transfer`,

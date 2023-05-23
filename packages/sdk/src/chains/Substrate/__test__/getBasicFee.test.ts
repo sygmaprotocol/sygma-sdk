@@ -2,15 +2,14 @@ import { ApiPromise } from '@polkadot/api';
 import { u128, Option } from '@polkadot/types';
 import { TypeRegistry } from '@polkadot/types/create';
 import { BigNumber } from 'ethers';
-import { getBasicFee } from '../utils/index.js';
-import exp from 'constants';
 import { FeeHandlerType } from 'types/types.js';
+import { getBasicFee } from '../utils/index.js';
 
 const registry = new TypeRegistry();
 
-describe('getBasicFee', () => {
+describe('Substrate - getBasicFee', () => {
   it('should return the basic fee', async () => {
-    const mockFee = "0x12345678"
+    const mockFee = '0x12345678';
     const rawResult = new Option(registry, u128, mockFee);
 
     const api: ApiPromise = {

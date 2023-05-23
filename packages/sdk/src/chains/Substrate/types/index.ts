@@ -1,11 +1,12 @@
+import { AccountInfo } from '@polkadot/types/interfaces';
 import { ethers } from 'ethers';
-import { FeeHandlerType } from 'types';
+import { FeeHandlerType } from '../../../types';
 
 export type XcmMultiAssetIdType = {
   concrete: {
     parents: number;
     interior: {
-      x3: Array<{ parachain: number } | { generalKey: string }>;
+      x3: Array<{ parachain: number } | { generalKey: [number, string] }>;
     };
   };
 };
@@ -16,3 +17,5 @@ export type SubstrateFee = {
   tokenAddress?: string;
   feeData?: string;
 };
+
+export type SubstrateAccountInfo = AccountInfo;

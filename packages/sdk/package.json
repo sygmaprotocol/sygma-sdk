@@ -42,7 +42,8 @@
     "lint": "eslint 'src/**/*.ts'",
     "lint:fix": "yarn run lint --fix",
     "run:nodes": "docker-compose -f docker-compose.yml up",
-    "clean": "rm -rf ./dist ./dist-cjs ./dist-esm ./types"
+    "clean": "rm -rf ./dist ./dist-cjs ./dist-esm ./types",
+    "substrate": "ts-node substrate-asset-transfer.ts"
   },
   "keywords": [
     "sygma",
@@ -55,7 +56,7 @@
   "author": "Sygmaprotocol Product Team",
   "license": "LGPL-3.0-or-later",
   "devDependencies": {
-    "@polkadot/types": "^9.9.1",
+    "@polkadot/types": "10.7.2",
     "@types/jest": "^29.4.0",
     "axios-mock-adapter": "^1.21.4",
     "concurrently": "7.0.0",
@@ -68,7 +69,7 @@
     "jest-environment-jsdom": "^29.4.1",
     "jest-extended": "1.2.0",
     "ts-jest": "^29.0.5",
-    "ts-node": "10.7.0",
+    "ts-node": "10.9.1",
     "typedoc": "^0.24.1",
     "typedoc-plugin-markdown": "^3.15.1",
     "typescript": "5.0.4"
@@ -79,14 +80,14 @@
     "@ethersproject/bytes": "^5.7.0",
     "@ethersproject/contracts": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",
-    "@polkadot/api": "^9.9.1",
-    "@polkadot/api-augment": "^9.9.1",
-    "@polkadot/extension-inject": "^0.45.3",
-    "@polkadot/keyring": "^10.1.13",
-    "@polkadot/rpc-provider": "^9.9.1",
-    "@polkadot/ui-keyring": "^2.10.1",
-    "@polkadot/util": "^10.1.13",
-    "@polkadot/util-crypto": "^10.1.13",
+    "@polkadot/api": "10.7.2",
+    "@polkadot/api-augment": "10.7.2",
+    "@polkadot/extension-inject": "0.46.3",
+    "@polkadot/keyring": "12.2.1",
+    "@polkadot/rpc-provider": "10.7.2",
+    "@polkadot/ui-keyring": "3.4.1",
+    "@polkadot/util": "12.2.1",
+    "@polkadot/util-crypto": "12.2.1",
     "axios": "^1.4.0",
     "cross-fetch": "^3.1.5",
     "ethers": "5.6.2"

@@ -1,9 +1,8 @@
 import { ApiPromise } from '@polkadot/api';
 import type { Option, u128 } from '@polkadot/types';
-import { FeeHandlerType } from 'types';
 import { BigNumber } from 'ethers';
-import { SubstrateFee } from '../types';
-
+import { SubstrateFee, XcmMultiAssetIdType } from '../types';
+import { FeeHandlerType } from '../../../types';
 /**
  * Retrieves the basic fee for a given domainId and asset.
  *
@@ -19,26 +18,26 @@ import { SubstrateFee } from '../types';
  * @category Fee
  * @param {ApiPromise} api - The Substrate API instance.
  * @param {number} domainId - The ID of the domain.
- * @param {Object} xcmMultiAssetId - The XCM MultiAsset ID of the asset. {@link https://github.com/sygmaprotocol/sygma-substrate-pallets#multiasset | More details}
+ * @param {XcmMultiAssetIdType} xcmMultiAssetId - The XCM MultiAsset ID of the asset. {@link https://github.com/sygmaprotocol/sygma-substrate-pallets#multiasset | More details}
  * @returns {Promise<SubstrateFee>} A promise that resolves to a SubstrateFee object.
  * @throws {Error} Unable to retrieve fee from pallet
  */
 export const getBasicFee = async (
   api: ApiPromise,
-  domainId: number,
-  xcmMultiAssetId: Object,
+  destinationDomainId: number,
+  xcmMultiAssetId: XcmMultiAssetIdType,
 ): Promise<SubstrateFee> => {
-  const rawFee = (await api.query.sygmaBasicFeeHandler.assetFees([
-    domainId,
+  const rawFee = await api.query.sygmaBasicFeeHandler.assetFees<Option<u128>>([
+    destinationDomainId,
     xcmMultiAssetId,
-  ])) as unknown as Option<u128>;
+  ]);
 
   if (rawFee.isNone) {
-    throw new Error('Error fetching basic fee from pallet');
+    throw new Error('Error retrieving fee');
   }
 
   return {
-    fee: BigNumber.from(rawFee.unwrap.toString()),
+    fee: BigNumber.from(rawFee.unwrap().toString()),
     type: FeeHandlerType.BASIC,
   };
 };

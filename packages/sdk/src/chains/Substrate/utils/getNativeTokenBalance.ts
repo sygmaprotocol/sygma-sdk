@@ -1,21 +1,18 @@
 import { ApiPromise } from '@polkadot/api';
-import type { AccountData, AccountInfoWithTripleRefCount } from '@polkadot/types/interfaces';
-
-import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
-
+import type { AccountData, AccountInfo } from '@polkadot/types/interfaces';
 /**
  * Retrieves balance value in native tokens of the network
  *
  * @category Token iteractions
  * @param {ApiPromise} api - An ApiPromise instance.
- * @param {InjectedAccountWithMeta} currentAccount - The current account.
+ * @param {string} accountAddress - The address of the account for which to retrieve the asset balance.
  * @returns {Promise<AccountData>} A promise that resolves to a AccountData.
  */
 export const getNativeTokenBalance = async (
   api: ApiPromise,
-  currentAccount: InjectedAccountWithMeta,
+  accountAddress: string,
 ): Promise<AccountData> => {
-  const accountInfo: unknown = await api.query.system.account(currentAccount.address);
-  const balanceData = accountInfo as AccountInfoWithTripleRefCount;
-  return balanceData.data;
+  const accountInfo = await api.query.system.account<AccountInfo>(accountAddress);
+  console.log(accountInfo);
+  return accountInfo.data;
 };
