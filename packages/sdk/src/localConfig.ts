@@ -1,4 +1,4 @@
-import { FeeHandlerType, Network, RawConfig, ResourceType } from 'types';
+import { FeeHandlerType, Network, RawConfig, ResourceType } from './types';
 
 export const localConfig: RawConfig = {
   domains: [
@@ -78,7 +78,7 @@ export const localConfig: RawConfig = {
                   {
                     generalKey: [
                       4,
-                      '0x6572633230747374000000000000000000000000000000000000000000000000',
+                      '0x7573646300000000000000000000000000000000000000000000000000000000',
                     ],
                   },
                 ],

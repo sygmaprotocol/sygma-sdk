@@ -53,9 +53,9 @@ export class SubstrateAssetTransfer {
     transfer: Transfer<TransferType>,
     fee: SubstrateFee,
   ): Promise<any /* Fix this type */> {
+    
     throw new Error(
-      `Resource type ${
-        transfer.resource.type
+      `Resource type ${transfer.resource.type
       } with ${fee.fee.toString()} not supported by asset transfer`,
     );
   }
