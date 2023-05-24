@@ -1,13 +1,16 @@
-import { ApiPromise } from '@polkadot/api';
+import { ApiPromise, SubmittableResult } from '@polkadot/api';
+import { SubmittableExtrinsic } from '@polkadot/api/types';
 import {
   Environment,
+  Fungible,
+  ResourceType,
   SubstrateConfig,
   SubstrateResource,
   Transfer,
   TransferType,
 } from '../../types';
 import { Config } from '../..';
-import { SubstrateFee, getBasicFee } from '.';
+import { SubstrateFee, deposit, getBasicFee } from '.';
 
 export class SubstrateAssetTransfer {
   private apiPromise!: ApiPromise;
@@ -45,18 +48,29 @@ export class SubstrateAssetTransfer {
    * Builds unsigned transfer transaction.
    * Should be executed after the approval transactions.
    *
-   * @param transfer
+   * @param transfer instance of transfer
    * @param fee
    * @returns unsigned transfer transaction
    */
-  public async buildTransferTransaction(
+  public buildTransferTransaction(
     transfer: Transfer<TransferType>,
     fee: SubstrateFee,
-  ): Promise<any /* Fix this type */> {
-    
-    throw new Error(
-      `Resource type ${transfer.resource.type
-      } with ${fee.fee.toString()} not supported by asset transfer`,
-    );
+  ): SubmittableExtrinsic<'promise', SubmittableResult> {
+    switch (transfer.resource.type) {
+      case ResourceType.FUNGIBLE: {
+        return deposit(
+          this.apiPromise,
+          (transfer.resource as SubstrateResource).xsmMultiAssetId,
+          (transfer.amount as Fungible).amount,
+          transfer.to.id.toString(),
+          transfer.recipient,
+        );
+      }
+      default:
+        throw new Error(
+          `Resource type ${transfer.resource.type
+          } with ${fee.fee.toString()} not supported by asset transfer`,
+        );
+    }
   }
 }

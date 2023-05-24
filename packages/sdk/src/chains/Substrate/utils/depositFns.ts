@@ -204,7 +204,7 @@ export const createMultiAssetData = (
  * @param {XcmMultiAssetIdType} xcmMultiAssetId - The XCM multi-asset ID type.
  * @param {string} amount - The amount to be deposited.
  * @param {string} domainId - The domain ID of the destination address.
- * @param {string} address - The destination address of the deposit transaction.
+ * @param {string} destinationAddress - The destination address of the deposit transaction.
  * @returns {SubmittableExtrinsic<"promise", SubmittableResult>} - A SubmittableExtrinsic representing the deposit transaction.
  */
 export const deposit = (
@@ -217,7 +217,5 @@ export const deposit = (
   const asset = createMultiAssetData(xcmMultiAssetId, api, amount);
   const destIdMultilocation = createDestIdMultilocationData(destinationAddress, domainId);
 
-  console.log(JSON.stringify(asset));
-  console.log(JSON.stringify(destIdMultilocation));
   return api.tx.sygmaBridge.deposit(asset, destIdMultilocation);
 };
