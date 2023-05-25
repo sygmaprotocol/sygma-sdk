@@ -46,6 +46,8 @@ const submittableTx = deposit(
 console.log(submittableTx);
 
 const keyring = new Keyring({ type: 'sr25519' });
+// Make sure to fund this with both native and asset tokens
+// Account address: 5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS
 const mnemonic = 'zoo slim stable violin scorpion enrich cancel bar shrug warm proof chimney';
 const account = keyring.addFromUri(mnemonic);
 
