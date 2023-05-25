@@ -13,6 +13,5 @@ export const getNativeTokenBalance = async (
   accountAddress: string,
 ): Promise<AccountData> => {
   const accountInfo = await api.query.system.account<AccountInfo>(accountAddress);
-  console.log(accountInfo);
   return accountInfo.data;
 };

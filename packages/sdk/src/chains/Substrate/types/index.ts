@@ -14,8 +14,6 @@ export type XcmMultiAssetIdType = {
 export type SubstrateFee = {
   fee: ethers.BigNumber;
   type: FeeHandlerType;
-  tokenAddress?: string;
-  feeData?: string;
 };
 
 export type SubstrateAccountInfo = AccountInfo;

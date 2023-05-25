@@ -13,6 +13,10 @@ export enum ResourceType {
   PERMISSIONLESS_GENERIC = 'permissionlessGeneric',
 }
 
+export enum SubstrateParachain {
+  LOCAL = 5,
+}
+
 export type Resource = EvmResource | SubstrateResource;
 
 interface BaseResource {

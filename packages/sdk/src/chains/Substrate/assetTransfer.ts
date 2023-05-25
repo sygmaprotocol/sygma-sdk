@@ -5,6 +5,7 @@ import {
   Fungible,
   ResourceType,
   SubstrateConfig,
+  SubstrateParachain,
   SubstrateResource,
   Transfer,
   TransferType,
@@ -20,11 +21,11 @@ export class SubstrateAssetTransfer {
   public async init(
     apiPromise: ApiPromise,
     environment: Environment = Environment.MAINNET,
+    parachainId: SubstrateParachain = SubstrateParachain.LOCAL,
   ): Promise<void> {
     this.apiPromise = apiPromise;
     this.config = new Config();
-    // TODO: Figure out which ChainId to pass in here
-    await this.config.init(5, environment);
+    await this.config.init(parachainId.valueOf(), environment);
   }
 
   /**
@@ -45,12 +46,11 @@ export class SubstrateAssetTransfer {
   }
 
   /**
-   * Builds unsigned transfer transaction.
-   * Should be executed after the approval transactions.
+   * Prepares an unsugned transaction, which can be signed and broadcast.
    *
-   * @param transfer instance of transfer
-   * @param fee
-   * @returns unsigned transfer transaction
+   * @param transfer Instance of transfer
+   * @param fee The fee to be paid for the transfer
+   * @returns {SubmittableExtrinsic<'promise', SubmittableResult>} SubmittableExtrinsic which can be signed and broadcast
    */
   public buildTransferTransaction(
     transfer: Transfer<TransferType>,

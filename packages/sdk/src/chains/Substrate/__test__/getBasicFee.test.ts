@@ -50,7 +50,7 @@ describe('Substrate - getBasicFee', () => {
     expect(feeRes.type).toBe(FeeHandlerType.BASIC);
   });
 
-  it.skip('should throw and error if the fee is not found', () => {
+  it('should throw and error if the fee is not found', async () => {
     const rawResult = new Option(registry, u128, null);
 
     const api: ApiPromise = {
@@ -81,6 +81,9 @@ describe('Substrate - getBasicFee', () => {
     };
 
     const expectedError = new Error('Error retrieving fee');
-    expect(() => getBasicFee(api, domainId, xsmMultiAssetId)).toThrow(expectedError);
+    const actualError = await getBasicFee(api, domainId, xsmMultiAssetId)
+      .then(res => res)
+      .catch((e: Error) => e);
+    expect(expectedError).toMatchObject(actualError);
   });
 });
