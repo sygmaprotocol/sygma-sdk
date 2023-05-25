@@ -14,21 +14,21 @@ import { SubstrateFee, deposit, getBasicFee } from '.';
 
 export class SubstrateAssetTransfer {
   private apiPromise!: ApiPromise;
-  private environment!: Environment;
 
   public config!: Config;
 
-  public async init(apiPromise: ApiPromise, environment?: Environment): Promise<void> {
+  public async init(
+    apiPromise: ApiPromise,
+    environment: Environment = Environment.MAINNET,
+  ): Promise<void> {
     this.apiPromise = apiPromise;
-    this.environment = environment ? environment : Environment.MAINNET;
     this.config = new Config();
+    // TODO: Figure out which ChainId to pass in here
     await this.config.init(5, environment);
   }
 
   /**
    * Calculates fee required for the requested transfer.
-   * Fee can be paid in native currency or ERC20 token if the 'tokenAddress'
-   * is defined.
    *
    * @param transfer instance of transfer
    * @returns fee that needs to payed
