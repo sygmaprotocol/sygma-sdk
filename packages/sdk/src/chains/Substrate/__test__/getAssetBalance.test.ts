@@ -37,7 +37,7 @@ describe('getAssetBalance', () => {
   it('should return the asset balance for the given account', async () => {
     const assetId = 1;
 
-    const actualAssetBalance = await getAssetBalance(api, assetId, currentAccount);
+    const actualAssetBalance = await getAssetBalance(api, assetId, currentAccount.address);
 
     expect(actualAssetBalance.balance.toString()).toBe('123');
   });

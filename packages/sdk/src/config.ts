@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { localConfig } from 'localConfig.js';
+import { localConfig } from './localConfig';
 import {
   Environment,
   RawConfig,
