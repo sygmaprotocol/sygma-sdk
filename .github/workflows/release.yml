@@ -7,12 +7,10 @@ on:
 jobs:
   # publish `next` version of SDK on each merged PR to main
   pre-release:
-    name: pre-release
+    name: Pre-Release
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged && github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@v3
-
       - uses: actions/setup-node@v3
         with:
           cache: 'yarn'
@@ -21,16 +19,23 @@ jobs:
           scope: '@buildwithsygma'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        if: ${{ steps.release.outputs.releases_created }}
 
       - name: Enable corepack
         run: corepack enable
+        if: ${{ steps.release.outputs.releases_created }}
 
-      - name: Install dependencies
-        run: yarn install --immutable
+      - name: Set Package Version
+        run: echo "::set-env name=PACKAGE_VERSION::next-${{ github.sha }}"
 
-      - run: yarn sdk:build
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-      - run: npm publish --workspace=@buildwithsygma/sygma-sdk-core publish --access public --tag next
+      - name: Build and Publish Package
+        run: |
+          yarn install --immutable
+          yarn sdk:build
+          npm publish --workspace=@buildwithsygma/sygma-sdk-core --tag next --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
