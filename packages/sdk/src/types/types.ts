@@ -1,3 +1,5 @@
+import { XcmMultiAssetIdType } from 'chains/Substrate/types';
+
 export type Domain = {
   id: number;
   chainId: number;
@@ -11,12 +13,27 @@ export enum ResourceType {
   PERMISSIONLESS_GENERIC = 'permissionlessGeneric',
 }
 
-export type Resource = {
+export enum SubstrateParachain {
+  LOCAL = 5,
+}
+
+export type Resource = EvmResource | SubstrateResource;
+
+interface BaseResource {
   resourceId: string;
   type: ResourceType;
-  address: string;
   symbol?: string;
   decimals?: number;
+}
+
+export type EvmResource = BaseResource & {
+  address: string;
+};
+
+export type SubstrateResource = BaseResource & {
+  assetId: number;
+  assetName: string;
+  xsmMultiAssetId: XcmMultiAssetIdType;
 };
 
 export enum FeeHandlerType {

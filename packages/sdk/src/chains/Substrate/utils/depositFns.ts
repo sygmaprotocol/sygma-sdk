@@ -162,7 +162,10 @@ export const handleTxExtrinsicResult = (
 export const createDestIdMultilocationData = (address: string, domainId: string): object => ({
   parents: 0,
   interior: {
-    x2: [{ generalKey: address }, { generalKey: numberToHex(Number(domainId)) }],
+    x2: [
+      { generalKey: [20, address.padEnd(66, '0')] },
+      { generalKey: [1, numberToHex(Number(domainId)).padEnd(66, '0')] },
+    ],
   },
 });
 
@@ -172,7 +175,7 @@ export const createDestIdMultilocationData = (address: string, domainId: string)
  * @category Bridge deposit
  * @param {XcmMultiAssetIdType} xcmMultiAssetId - The XCM multi-asset identifier.
  * @param {ApiPromise} api - The Polkadot API promise object.
- * @param {string} amount - The deposit amount.
+ * @param {string} amount - The deposit amount, in human-readable form.
  * @returns {object} - The asset object.
  */
 export const createMultiAssetData = (
@@ -201,7 +204,7 @@ export const createMultiAssetData = (
  * @param {XcmMultiAssetIdType} xcmMultiAssetId - The XCM multi-asset ID type.
  * @param {string} amount - The amount to be deposited.
  * @param {string} domainId - The domain ID of the destination address.
- * @param {string} address - The destination address of the deposit transaction.
+ * @param {string} destinationAddress - The destination address of the deposit transaction.
  * @returns {SubmittableExtrinsic<"promise", SubmittableResult>} - A SubmittableExtrinsic representing the deposit transaction.
  */
 export const deposit = (
@@ -209,10 +212,10 @@ export const deposit = (
   xcmMultiAssetId: XcmMultiAssetIdType,
   amount: string,
   domainId: string,
-  address: string,
+  destinationAddress: string,
 ): SubmittableExtrinsic<'promise', SubmittableResult> => {
   const asset = createMultiAssetData(xcmMultiAssetId, api, amount);
-  const destIdMultilocation = createDestIdMultilocationData(address, domainId);
+  const destIdMultilocation = createDestIdMultilocationData(destinationAddress, domainId);
 
   return api.tx.sygmaBridge.deposit(asset, destIdMultilocation);
 };
