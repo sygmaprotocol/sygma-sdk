@@ -3,13 +3,13 @@ name: Publish Sygma SDK to GitHub Package Registry
 on:
   push:
     branches:
-      - main
+      - mmuftic/fix-release-pipeline
 jobs:
   # publish `next` version of SDK on each merged PR to main
   pre-release:
     name: Pre-Release
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged && github.ref == 'refs/heads/main'
+#   if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged && github.ref == 'refs/heads/main'
     steps:
       - uses: actions/setup-node@v3
         with:
@@ -39,49 +39,49 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-  maybe-release:
-    name: release
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    steps:
-        # you should probably do this after your regular CI checks passes
-      - uses: google-github-actions/release-please-action@v3 # it will analyze commits and create PR with new version and updated CHANGELOG:md file. On merging it will create github release page with changelog
-        id: release
-        with:
-          command: manifest
-          release-type: node
-          token: ${{secrets.RELEASE_TOKEN}}
-          monorepo-tags: true
-          default-branch: main
-          changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false},{"type":"revert","hidden":true}]'
-
-      - uses: actions/checkout@v3
-        # these if statements ensure that a publication only occurs when
-        # a new release is created:
-        if: ${{ steps.release.outputs.releases_created }}
-
-      - uses: actions/setup-node@v3
-        with:
-          cache: 'yarn'
-          node-version: 16
-          registry-url: 'https://registry.npmjs.org'
-          scope: '@buildwithsygma'
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        if: ${{ steps.release.outputs.releases_created }}
-
-      - name: Enable corepack
-        run: corepack enable
-        if: ${{ steps.release.outputs.releases_created }}
-
-      - name: Install dependencies
-        run: yarn install --immutable
-        if: ${{ steps.release.outputs.releases_created }}
-
-      - run: yarn sdk:build
-        if: ${{ steps.release.outputs.releases_created }}
-
-      - run: npm publish --workspace=@buildwithsygma/sygma-sdk-core publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        if: ${{ steps.release.outputs.releases_created }}
+#  maybe-release:
+#    name: release
+#    runs-on: ubuntu-latest
+#    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+#    steps:
+#        # you should probably do this after your regular CI checks passes
+#      - uses: google-github-actions/release-please-action@v3 # it will analyze commits and create PR with new version and updated CHANGELOG:md file. On merging it will create github release page with changelog
+#        id: release
+#        with:
+#          command: manifest
+#          release-type: node
+#          token: ${{secrets.RELEASE_TOKEN}}
+#          monorepo-tags: true
+#          default-branch: main
+#          changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false},{"type":"revert","hidden":true}]'
+#
+#      - uses: actions/checkout@v3
+#        # these if statements ensure that a publication only occurs when
+#        # a new release is created:
+#        if: ${{ steps.release.outputs.releases_created }}
+#
+#      - uses: actions/setup-node@v3
+#        with:
+#          cache: 'yarn'
+#          node-version: 16
+#          registry-url: 'https://registry.npmjs.org'
+#          scope: '@buildwithsygma'
+#        env:
+#          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+#        if: ${{ steps.release.outputs.releases_created }}
+#
+#      - name: Enable corepack
+#        run: corepack enable
+#        if: ${{ steps.release.outputs.releases_created }}
+#
+#      - name: Install dependencies
+#        run: yarn install --immutable
+#        if: ${{ steps.release.outputs.releases_created }}
+#
+#      - run: yarn sdk:build
+#        if: ${{ steps.release.outputs.releases_created }}
+#
+#      - run: npm publish --workspace=@buildwithsygma/sygma-sdk-core publish --access public
+#        env:
+#          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+#        if: ${{ steps.release.outputs.releases_created }}
