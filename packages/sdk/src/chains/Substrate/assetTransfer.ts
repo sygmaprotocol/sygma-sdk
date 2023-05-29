@@ -13,6 +13,34 @@ import {
 import { Config } from '../..';
 import { SubstrateFee, deposit, getBasicFee } from '.';
 
+/**
+ * Class used for sending fungible and non-fungible transfers from Substrate based chains.
+ *
+ * @example
+ * const wsProvider = new WsProvider('wss://rpc.parachain.io');
+ * const api = await ApiPromise.create({ provider: wsProvider });
+ *
+ * const parachainID = 123;
+ *
+ * const assetTransfer = new SubstrateAssetTransfer();
+ * await assetTransfer.init(api, Environment.MAINNET, parachainID);
+ * const domains = assetTransfer.config.getDomains();
+ * const resources = assetTransfer.config.getDomainResources();
+ * const transfer: Transfer<Fungible> = {
+ *  from: domains[1],
+ *  to: domains[0],
+ *  resource: resource[2],
+ *  sender: <sender address>,
+ *  recipient: <recipient address>,
+ *  amount: {
+ *    amount: 200
+ *  }
+ * }
+ * const fee = await assetTransfer.getFee(transfer);
+ * const transferTx = await assetTransfer.buildTransferTransaction(transfer, fee);
+ *
+ * <sign and send transfer>
+ */
 export class SubstrateAssetTransfer {
   private apiPromise!: ApiPromise;
 
@@ -32,25 +60,25 @@ export class SubstrateAssetTransfer {
    * Calculates fee required for the requested transfer.
    *
    * @param transfer instance of transfer
-   * @returns fee that needs to payed
+   * @returns fee that needs to paid
    */
-  public async getFee(): Promise<SubstrateFee> {
+  public async getFee(transfer: Transfer<TransferType>): Promise<SubstrateFee> {
     const domainConfig = this.config.getDomainConfig() as SubstrateConfig;
     const fee = await getBasicFee(
       this.apiPromise,
       domainConfig.id,
-      (domainConfig.resources[0] as SubstrateResource).xsmMultiAssetId,
+      (transfer.resource as SubstrateResource).xsmMultiAssetId,
     );
 
     return fee;
   }
 
   /**
-   * Prepares an unsugned transaction, which can be signed and broadcast.
+   * Builds an unsigned transfer transaction.
    *
    * @param transfer Instance of transfer
    * @param fee The fee to be paid for the transfer
-   * @returns {SubmittableExtrinsic<'promise', SubmittableResult>} SubmittableExtrinsic which can be signed and broadcast
+   * @returns {SubmittableExtrinsic<'promise', SubmittableResult>} SubmittableExtrinsic which can be signed and sent
    */
   public buildTransferTransaction(
     transfer: Transfer<TransferType>,

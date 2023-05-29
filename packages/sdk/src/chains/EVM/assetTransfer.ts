@@ -34,7 +34,7 @@ import {
 } from '.';
 
 /**
- * Class used for sending ERC20 and ERC721 transfers.
+ * Class used for sending ERC20 and ERC721 transfers from EVM based chains.
  *
  *
  * @example
@@ -57,7 +57,7 @@ import {
  *    amount: 200
  *  }
  * }
- * const fee = await assetTransfer(transfer);
+ * const fee = await assetTransfer.getFee(transfer);
  * const approvals = await assetTransfer.buildApprovals(transfer, fee);
  * const transferTx = await assetTransfer.buildTransferTransaction(transfer, fee);
  * for (const approval of approvals) {
@@ -86,7 +86,7 @@ export class EVMAssetTransfer {
    * is defined.
    *
    * @param transfer instance of transfer
-   * @returns fee that needs to payed
+   * @returns fee that needs to paid
    */
   public async getFee(transfer: Transfer<TransferType>): Promise<EvmFee> {
     const domainConfig = this.config.getDomainConfig() as EthereumConfig;
@@ -182,7 +182,7 @@ export class EVMAssetTransfer {
   }
 
   /**
-   * Builds unsigned transfer transaction.
+   * Builds an unsigned transfer transaction.
    * Should be executed after the approval transactions.
    *
    * @param transfer
