@@ -15,6 +15,7 @@ export enum ResourceType {
 
 export enum SubstrateParachain {
   LOCAL = 5,
+  ROCOCO_PHALA = 5231,
 }
 
 export type Resource = EvmResource | SubstrateResource;
