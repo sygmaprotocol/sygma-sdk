@@ -21,7 +21,7 @@ export async function erc20Transfer(): Promise<void> {
     provider
   );
   const assetTransfer = new EVMAssetTransfer();
-  await assetTransfer.init(provider, Environment.DEVNET);
+  await assetTransfer.init(provider, Environment.TESTNET);
 
   const domains: Array<Domain> = assetTransfer.config.getDomains();
   const resources: Array<Resource> = assetTransfer.config.getDomainResources();
