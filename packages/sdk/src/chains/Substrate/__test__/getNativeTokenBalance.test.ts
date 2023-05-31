@@ -31,7 +31,7 @@ describe('getNativeTokenBalance', () => {
       },
     };
 
-    const balance = await getNativeTokenBalance(api, currentAccount);
+    const balance = await getNativeTokenBalance(api, currentAccount.address);
     expect(balance.free.eq(123)).toBe(true);
   });
 });
