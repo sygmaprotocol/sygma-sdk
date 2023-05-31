@@ -23,8 +23,8 @@ export async function erc20Transfer(): Promise<void> {
   const assetTransfer = new EVMAssetTransfer();
   await assetTransfer.init(provider, Environment.TESTNET);
 
-  const domains: Array<Domain> = assetTransfer.config.getDomains();
-  const resources: Array<Resource> = assetTransfer.config.getDomainResources();
+  const domains = assetTransfer.config.getDomains();
+  const resources = assetTransfer.config.getDomainResources();
   const erc20Resource = resources.find(
     (resource) => resource.symbol == ERC20_TOKEN_SYMBOL
   );
