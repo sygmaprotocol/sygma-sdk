@@ -175,7 +175,7 @@ export class EVMAssetTransfer {
         break;
       }
       default:
-        throw new Error(`Resource type ${transfer.resource.type} not supported by asset transfer`);
+        throw new Error(`Resource type not supported by asset transfer`);
     }
 
     return approvals;
@@ -216,7 +216,7 @@ export class EVMAssetTransfer {
         });
       }
       default:
-        throw new Error(`Resource type ${transfer.resource.type} not supported by asset transfer`);
+        throw new Error(`Resource type not supported by asset transfer`);
     }
   }
 

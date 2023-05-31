@@ -1,5 +1,5 @@
 export enum ConfigUrl {
-  DEVNET = 'https://config.develop.buildwithsygma.com/share/',
-  TESTNET = 'https://config-server.test.buildwithsygma.com/share/',
+  DEVNET = 'https://chainbridge-assets-stage.s3.us-east-2.amazonaws.com/shared-config-dev.json',
+  TESTNET = 'https://chainbridge-assets-stage.s3.us-east-2.amazonaws.com/shared-config-test.json',
   MAINNET = '',
 }

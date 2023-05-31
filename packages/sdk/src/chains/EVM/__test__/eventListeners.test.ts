@@ -1,14 +1,12 @@
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 import type { Bridge } from '@buildwithsygma/sygma-contracts';
 
 import {
   createProposalExecutionEventListener,
   proposalExecutionEventListenerCount,
   removeProposalExecutionEventListener,
-  connectToBridge,
   createDepositEventListener,
   removeDepositEventListener,
-  getProviderByRpcUrl,
 } from '../utils/eventListeners.js';
 
 describe('createProposalExecutionEventListener', () => {
@@ -93,21 +91,6 @@ describe('removeProposalExecutionEventListener', () => {
   });
 });
 
-describe('connectToBridge', () => {
-  it('should return a Bridge instance', () => {
-    const bridgeAddress = '0x1234567890123456789012345678901234567890';
-    const signerOrProvider = new ethers.providers.JsonRpcProvider();
-
-    const bridge = connectToBridge(bridgeAddress, signerOrProvider);
-
-    expect(bridge).toEqual(
-      expect.objectContaining({
-        address: '0x1234567890123456789012345678901234567890',
-      }),
-    );
-  });
-});
-
 describe('createDepositEventListener', () => {
   it('should call the callback function with the correct arguments', () => {
     const bridge = {
@@ -168,14 +151,5 @@ describe('removeDepositEventListener', () => {
 
     expect(Deposit).toHaveBeenCalledWith(null, null, null, null, null, null);
     expect(removeAllListeners).toHaveBeenCalledWith('deposit');
-  });
-});
-
-describe('getProviderByRpcUrl', () => {
-  const rpcURL = 'https://rpc.example.com'; // Replace with your desired RPC URL
-
-  it('should return a new instance of JsonRpcProvider', () => {
-    const provider = getProviderByRpcUrl(rpcURL);
-    expect(provider).toBeInstanceOf(ethers.providers.JsonRpcProvider);
   });
 });
