@@ -1,37 +1,16 @@
 import { BigNumber, utils } from 'ethers';
 import { TypeRegistry } from '@polkadot/types';
 import { decodeAddress } from '@polkadot/util-crypto';
-import { ERC20 } from '@buildwithsygma/sygma-contracts';
 
 import {
   getRecipientAddressInBytes,
-  constructMainDepositData,
   createERCDepositData,
   toHex,
-  addPadding,
-  isUint8,
   createPermissionedGenericDepositData,
 } from '../helpers.js';
 import * as helpers from '../helpers.js';
 
 const registry = new TypeRegistry();
-
-describe('constructMainDepositData', () => {
-  it('should return the correct data', () => {
-    const tokenStats = BigNumber.from(123);
-    const destRecipient = Uint8Array.from([1, 2, 3]);
-    const resultArray = Array(67).fill(0);
-    resultArray[31] = 123;
-    resultArray[63] = 3;
-    resultArray[64] = 1;
-    resultArray[65] = 2;
-    resultArray[66] = 3;
-
-    expect(constructMainDepositData(tokenStats, destRecipient)).toEqual(
-      Uint8Array.from(resultArray),
-    );
-  });
-});
 
 describe('createERCDepositData', () => {
   it('should return the correct deposit data', () => {
@@ -104,32 +83,6 @@ describe('toHex', () => {
   });
 });
 
-describe('addPadding', () => {
-  it('should pads a string with zeros', () => {
-    const input = 'abc';
-    const padding = 10;
-    const expectedOutput = '0x00000000000000000abc';
-    const actualOutput = addPadding(input, padding);
-    expect(actualOutput).toEqual(expectedOutput);
-  });
-
-  it('should pads a number with zeros', () => {
-    const input = 123;
-    const padding = 4;
-    const expectedOutput = '0x00000123';
-    const actualOutput = addPadding(input, padding);
-    expect(actualOutput).toEqual(expectedOutput);
-  });
-
-  it('should passes the correct arguments to hexZeroPad', () => {
-    jest.spyOn(utils, 'hexZeroPad');
-    const input = 42;
-    const padding = 4;
-    addPadding(input, padding);
-    expect(utils.hexZeroPad).toHaveBeenCalledWith('0x42', padding);
-  });
-});
-
 describe('createPermissionlessGenericDepositData', () => {
   test('should return correct value', () => {
     const executeFunctionSignature = '0x12345678';
@@ -149,66 +102,6 @@ describe('createPermissionlessGenericDepositData', () => {
     expect(result).toEqual(
       '0x000000000000000000000000000000000000000000000000000000000000100000041234567808abcdef1234567890081234abcd5678ef900102030405060708',
     );
-  });
-});
-
-describe('getTokenDecimals', () => {
-  afterAll(() => {
-    jest.restoreAllMocks();
-  });
-  it('should return the decimal value of the token instance if it is an ERC20 token', async () => {
-    const tokenInstance = {
-      decimals: jest.fn().mockResolvedValue(18),
-    } as unknown as ERC20;
-    jest.spyOn(helpers, 'isERC20').mockReturnValue(true);
-
-    const decimals = await helpers.getTokenDecimals(tokenInstance);
-    expect(decimals).toBe(18);
-  });
-
-  it('should throw an error if the token instance is not an ERC20 token', async () => {
-    const tokenInstance = {} as unknown as ERC20;
-    jest.spyOn(helpers, 'isERC20').mockReturnValue(false);
-
-    await expect(helpers.getTokenDecimals(tokenInstance)).rejects.toThrow(
-      'Token instance is not ERC20',
-    );
-  });
-});
-
-describe('isERC20', () => {
-  it('should return true when given an ERC20 token instance', () => {
-    const tokenInstance = {
-      name: 'MockToken',
-      symbol: 'MT',
-      decimals: 18,
-    } as unknown as ERC20;
-    const result = helpers.isERC20(tokenInstance);
-    expect(result).toBe(true);
-  });
-
-  it('should return false when given a non-ERC20 token instance', () => {
-    const tokenInstance = {
-      id: 123,
-      name: 'MockToken',
-      totalSupply: 100000,
-    } as unknown as ERC20;
-    const result = helpers.isERC20(tokenInstance);
-    expect(result).toBe(false);
-  });
-});
-
-describe('isUint8', () => {
-  it('returns true for values between 0 and 255', () => {
-    expect(isUint8(0)).toBe(true);
-    expect(isUint8(127)).toBe(true);
-    expect(isUint8(255)).toBe(true);
-  });
-
-  it('returns false for values outside the range of 0 to 255', () => {
-    expect(isUint8(-1)).toBe(false);
-    expect(isUint8(256)).toBe(false);
-    expect(() => isUint8('not a number' as unknown)).toThrowError();
   });
 });
 
