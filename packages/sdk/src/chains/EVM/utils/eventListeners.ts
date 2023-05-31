@@ -1,5 +1,5 @@
-import { BigNumber, Event, ethers } from 'ethers';
-import { Bridge, Bridge__factory } from '@buildwithsygma/sygma-contracts';
+import { BigNumber, Event } from 'ethers';
+import { Bridge } from '@buildwithsygma/sygma-contracts';
 
 /**
  * @typedef {Object} Bridge
@@ -83,33 +83,6 @@ export const proposalExecutionEventListenerCount = (bridge: Bridge): number => {
 export const removeProposalExecutionEventListener = (bridge: Bridge): Bridge => {
   const proposalFilter = bridge.filters.ProposalExecution(null, null, null);
   return bridge.removeAllListeners(proposalFilter);
-};
-
-/**
- * Connects to an EVM Bridge contract.
- *
- * @category Event handling
- * @param {string} bridgeAddress - The address of the bridge contract.
- * @param {ethers.providers.Provider | ethers.Signer} signerOrProvider - The signer or provider to use for connecting to the bridge contract.
- * @returns {Bridge} The connected Bridge contract instance.
- */
-export const connectToBridge = (
-  bridgeAddress: string,
-  signerOrProvider: ethers.providers.Provider | ethers.Signer,
-): Bridge => {
-  return Bridge__factory.connect(bridgeAddress, signerOrProvider);
-};
-
-/**
- * Creates a new JsonRpcProvider instance based on the given RPC URL
- *
- * @category Event handling
- * @param {string} rpcURL - The RPC URL to use for the provider
- * @returns {ethers.providers.JsonRpcProvider} A new JsonRpcProvider instance
- */
-export const getProviderByRpcUrl = (rpcURL: string): ethers.providers.JsonRpcProvider => {
-  const provider = new ethers.providers.JsonRpcProvider(rpcURL);
-  return provider;
 };
 
 /**
