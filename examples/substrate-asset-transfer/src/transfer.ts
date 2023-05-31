@@ -65,6 +65,7 @@ export async function substrateTransfer(): Promise<void> {
 
   const fee = await assetTransfer.getFee(transfer);
 
+  console.log(`Transfer fee is ${fee.toString()}`);
   const transferTx = assetTransfer.buildTransferTransaction(transfer, fee);
 
   const unsub = await transferTx.signAndSend(account, ({ status }) => {
@@ -85,4 +86,4 @@ export async function substrateTransfer(): Promise<void> {
 
 substrateTransfer()
   .catch((e) => console.log(e))
-  .finally(() => {});
+  .finally(() => { });
