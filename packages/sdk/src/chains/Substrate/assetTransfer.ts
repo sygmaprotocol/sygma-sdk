@@ -48,8 +48,8 @@ export class SubstrateAssetTransfer {
 
   public async init(
     apiPromise: ApiPromise,
-    environment: Environment,
     parachainId: SubstrateParachain,
+    environment: Environment = Environment.LOCAL,
   ): Promise<void> {
     this.apiPromise = apiPromise;
     this.config = new Config();

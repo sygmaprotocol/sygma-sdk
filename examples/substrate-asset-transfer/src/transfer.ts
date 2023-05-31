@@ -1,5 +1,7 @@
 import { Keyring } from "@polkadot/keyring";
 import { ApiPromise, WsProvider } from "@polkadot/api";
+import { cryptoWaitReady } from "@polkadot/util-crypto";
+
 import {
   Environment,
   Fungible,
@@ -12,14 +14,19 @@ const ROCOCO_CHAIN_ID = 5231;
 const SEPOLIA_CHAIN_ID = 11155111;
 const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000001000";
+const MNEMONIC =
+  "zoo slim stable violin scorpion enrich cancel bar shrug warm proof chimney";
 
-export async function substrateTransfer(): Promise<void> {
+const substrateTransfer = async (): Promise<void> => {
   const keyring = new Keyring({ type: "sr25519" });
-  // Make sure to fund this accoubnt with both native and asset tokens
+  console.log("created keyring");
+  // Make sure to fund this account with both native and asset tokens
   // Account address: 5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS
-  const mnemonic =
-    "zoo slim stable violin scorpion enrich cancel bar shrug warm proof chimney";
-  const account = keyring.addFromUri(mnemonic);
+
+  await cryptoWaitReady();
+
+  const account = keyring.addFromUri(MNEMONIC);
+  console.log("created account from mnemonic");
 
   const wsProvider = new WsProvider(
     "wss://subbridge-test.phala.network/rhala/ws"
@@ -30,8 +37,8 @@ export async function substrateTransfer(): Promise<void> {
 
   await assetTransfer.init(
     api,
-    Environment.TESTNET,
-    SubstrateParachain.ROCOCO_PHALA
+    SubstrateParachain.ROCOCO_PHALA,
+    Environment.TESTNET
   );
 
   const domains = assetTransfer.config.getDomains();
@@ -44,7 +51,7 @@ export async function substrateTransfer(): Promise<void> {
   }
   const rococo = domains.find((domain) => domain.chainId == ROCOCO_CHAIN_ID);
   if (!rococo) {
-    throw new Error("Network goerli not supported");
+    throw new Error("Network Rococo-Phala not supported");
   }
   const sepolia = domains.find((domain) => domain.chainId == SEPOLIA_CHAIN_ID);
   if (!sepolia) {
@@ -82,7 +89,7 @@ export async function substrateTransfer(): Promise<void> {
       unsub();
     }
   });
-}
+};
 
 substrateTransfer()
   .catch((e) => console.log(e))

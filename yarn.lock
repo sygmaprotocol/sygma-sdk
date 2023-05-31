@@ -645,22 +645,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@buildwithsygma/sygma-sdk-@workspace:examples/substrate-asset-transfer":
-  version: 0.0.0-use.local
-  resolution: "@buildwithsygma/sygma-sdk-@workspace:examples/substrate-asset-transfer"
-  dependencies:
-    "@buildwithsygma/sygma-sdk-core": 1.5.0
-    "@polkadot/api": 10.7.3
-    "@polkadot/keyring": 12.2.1
-    eslint: 8
-    eslint-config-prettier: 8.3.0
-    eslint-plugin-only-warn: 1.0.3
-    eslint-plugin-prettier: 4.0.0
-    ts-node: 10.9.1
-    typescript: 5.0.4
-  languageName: unknown
-  linkType: soft
-
 "@buildwithsygma/sygma-sdk-core@1.5.0, @buildwithsygma/sygma-sdk-core@workspace:packages/sdk":
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-core@workspace:packages/sdk"
@@ -697,6 +681,23 @@ __metadata:
     ts-node: 10.9.1
     typedoc: ^0.24.1
     typedoc-plugin-markdown: ^3.15.1
+    typescript: 5.0.4
+  languageName: unknown
+  linkType: soft
+
+"@buildwithsygma/sygma-sdk-substrate-example@workspace:examples/substrate-asset-transfer":
+  version: 0.0.0-use.local
+  resolution: "@buildwithsygma/sygma-sdk-substrate-example@workspace:examples/substrate-asset-transfer"
+  dependencies:
+    "@buildwithsygma/sygma-sdk-core": 1.5.0
+    "@polkadot/api": 10.7.3
+    "@polkadot/keyring": 12.2.1
+    "@polkadot/util-crypto": ^12.2.1
+    eslint: 8
+    eslint-config-prettier: 8.3.0
+    eslint-plugin-only-warn: 1.0.3
+    eslint-plugin-prettier: 4.0.0
+    ts-node: 10.9.1
     typescript: 5.0.4
   languageName: unknown
   linkType: soft
