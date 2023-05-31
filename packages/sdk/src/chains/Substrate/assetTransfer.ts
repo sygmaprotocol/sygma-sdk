@@ -48,8 +48,8 @@ export class SubstrateAssetTransfer {
 
   public async init(
     apiPromise: ApiPromise,
-    environment: Environment = Environment.MAINNET,
-    parachainId: SubstrateParachain = SubstrateParachain.LOCAL,
+    environment: Environment,
+    parachainId: SubstrateParachain,
   ): Promise<void> {
     this.apiPromise = apiPromise;
     this.config = new Config();
@@ -67,7 +67,7 @@ export class SubstrateAssetTransfer {
     const fee = await getBasicFee(
       this.apiPromise,
       domainConfig.id,
-      (transfer.resource as SubstrateResource).xsmMultiAssetId,
+      (transfer.resource as SubstrateResource).xcmMultiAssetId,
     );
 
     return fee;
@@ -88,7 +88,7 @@ export class SubstrateAssetTransfer {
       case ResourceType.FUNGIBLE: {
         return deposit(
           this.apiPromise,
-          (transfer.resource as SubstrateResource).xsmMultiAssetId,
+          (transfer.resource as SubstrateResource).xcmMultiAssetId,
           (transfer.amount as Fungible).amount,
           transfer.to.id.toString(),
           transfer.recipient,
@@ -96,8 +96,7 @@ export class SubstrateAssetTransfer {
       }
       default:
         throw new Error(
-          `Resource type ${
-            transfer.resource.type
+          `Resource type ${transfer.resource.type
           } with ${fee.fee.toString()} not supported by asset transfer`,
         );
     }

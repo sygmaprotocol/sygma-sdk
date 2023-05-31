@@ -1,22 +1,19 @@
 import { Keyring } from "@polkadot/keyring";
-import { ApiPromise, WsProvider } from '@polkadot/api';
+import { ApiPromise, WsProvider } from "@polkadot/api";
 import {
-  Domain,
   Environment,
   Fungible,
-  Resource,
   SubstrateAssetTransfer,
   SubstrateParachain,
   Transfer,
 } from "@buildwithsygma/sygma-sdk-core";
 
-export const ROCOCO_CHAIN_ID = 5231
-export const SEPOLIA_CHAIN_ID = 11155111;
-
+const ROCOCO_CHAIN_ID = 5231;
+const SEPOLIA_CHAIN_ID = 11155111;
+const RESOURCE_ID =
+  "0x0000000000000000000000000000000000000000000000000000000000001000";
 
 export async function substrateTransfer(): Promise<void> {
-
-
   const keyring = new Keyring({ type: "sr25519" });
   // Make sure to fund this accoubnt with both native and asset tokens
   // Account address: 5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS
@@ -24,7 +21,9 @@ export async function substrateTransfer(): Promise<void> {
     "zoo slim stable violin scorpion enrich cancel bar shrug warm proof chimney";
   const account = keyring.addFromUri(mnemonic);
 
-  const wsProvider = new WsProvider('ws://127.0.0.1:9944');
+  const wsProvider = new WsProvider(
+    "wss://subbridge-test.phala.network/rhala/ws"
+  );
   const api = await ApiPromise.create({ provider: wsProvider });
 
   const assetTransfer = new SubstrateAssetTransfer();
@@ -35,14 +34,14 @@ export async function substrateTransfer(): Promise<void> {
     SubstrateParachain.ROCOCO_PHALA
   );
 
-  const domains: Array<Domain> = assetTransfer.config.getDomains();
-  const resources: Array<Resource> = assetTransfer.config.getDomainResources();
-  // const erc20Resource = resources.find(
-  //   (resource) => resource.symbol == ERC20_TOKEN_SYMBOL
-  // );
-  // if (!erc20Resource) {
-  //   throw new Error("Resource not found");
-  // }
+  const domains = assetTransfer.config.getDomains();
+  const resources = assetTransfer.config.getDomainResources();
+  const selectedResource = resources.find(
+    (resource) => resource.resourceId == RESOURCE_ID
+  );
+  if (!selectedResource) {
+    throw new Error("Resource not found");
+  }
   const rococo = domains.find((domain) => domain.chainId == ROCOCO_CHAIN_ID);
   if (!rococo) {
     throw new Error("Network goerli not supported");
@@ -60,27 +59,30 @@ export async function substrateTransfer(): Promise<void> {
     },
     from: rococo,
     to: sepolia,
-    resource: erc20Resource,
-    recipient: account.getAddress(),
+    resource: selectedResource,
+    recipient: account.address,
   };
 
   const fee = await assetTransfer.getFee(transfer);
 
-  const transferTx = await assetTransfer.buildTransferTransaction(
-    transfer,
-    fee
-  );
+  const transferTx = assetTransfer.buildTransferTransaction(transfer, fee);
 
   const unsub = await transferTx.signAndSend(account, ({ status }) => {
     console.log(`Current status is ${status.toString()}`);
 
     if (status.isInBlock) {
-      console.log(`Transaction included at blockHash ${status.asInBlock.toString()}`);
+      console.log(
+        `Transaction included at blockHash ${status.asInBlock.toString()}`
+      );
     } else if (status.isFinalized) {
-      console.log(`Transaction finalized at blockHash ${status.asFinalized.toString()}`);
+      console.log(
+        `Transaction finalized at blockHash ${status.asFinalized.toString()}`
+      );
       unsub();
     }
   });
 }
 
-erc20Transfer().finally(() => { });
+substrateTransfer()
+  .catch((e) => console.log(e))
+  .finally(() => {});

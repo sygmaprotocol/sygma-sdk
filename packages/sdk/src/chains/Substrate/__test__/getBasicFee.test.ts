@@ -21,7 +21,7 @@ describe('Substrate - getBasicFee', () => {
     } as unknown as ApiPromise;
 
     const domainId = 1;
-    const xsmMultiAssetId: XcmMultiAssetIdType = {
+    const xcmMultiAssetId: XcmMultiAssetIdType = {
       concrete: {
         parents: 1,
         interior: {
@@ -40,7 +40,7 @@ describe('Substrate - getBasicFee', () => {
       },
     };
 
-    const feeRes = await getBasicFee(api, domainId, xsmMultiAssetId);
+    const feeRes = await getBasicFee(api, domainId, xcmMultiAssetId);
 
     expect(feeRes).toBeDefined();
     expect(feeRes).toHaveProperty('fee');
@@ -61,7 +61,7 @@ describe('Substrate - getBasicFee', () => {
       },
     } as unknown as ApiPromise;
     const domainId = 2; // some non-existent domain id;
-    const xsmMultiAssetId: XcmMultiAssetIdType = {
+    const xcmMultiAssetId: XcmMultiAssetIdType = {
       concrete: {
         parents: 1,
         interior: {
@@ -81,7 +81,7 @@ describe('Substrate - getBasicFee', () => {
     };
 
     const expectedError = new Error('Error retrieving fee');
-    const actualError = await getBasicFee(api, domainId, xsmMultiAssetId)
+    const actualError = await getBasicFee(api, domainId, xcmMultiAssetId)
       .then(res => res)
       .catch((e: Error) => e);
     expect(expectedError).toMatchObject(actualError);

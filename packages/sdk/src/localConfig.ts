@@ -63,7 +63,7 @@ export const localConfig: RawConfig = {
           type: ResourceType.FUNGIBLE,
           assetName: 'USDC',
           assetId: 2000,
-          xsmMultiAssetId: {
+          xcmMultiAssetId: {
             concrete: {
               parents: 1,
               interior: {

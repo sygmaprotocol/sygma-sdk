@@ -34,7 +34,7 @@ export type EvmResource = BaseResource & {
 export type SubstrateResource = BaseResource & {
   assetId: number;
   assetName: string;
-  xsmMultiAssetId: XcmMultiAssetIdType;
+  xcmMultiAssetId: XcmMultiAssetIdType;
 };
 
 export enum FeeHandlerType {
