@@ -1,9 +1,7 @@
 import {
-  Domain,
   EVMAssetTransfer,
   Environment,
   Fungible,
-  Resource,
   Transfer,
 } from "@buildwithsygma/sygma-sdk-core";
 import { Wallet, providers } from "ethers";
@@ -69,4 +67,4 @@ export async function erc20Transfer(): Promise<void> {
   console.log("Sent transfer with hash: " + response.hash);
 }
 
-erc20Transfer().finally(() => {});
+erc20Transfer().finally(() => { });
