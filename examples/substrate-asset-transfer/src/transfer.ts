@@ -89,4 +89,6 @@ const substrateTransfer = async (): Promise<void> => {
   });
 };
 
-substrateTransfer().catch((e) => console.log(e));
+substrateTransfer()
+  .catch((e) => console.log(e))
+  .finally(() => {});
