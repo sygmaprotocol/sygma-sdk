@@ -4,7 +4,6 @@ import {
   Environment,
   Fungible,
   ResourceType,
-  SubstrateConfig,
   SubstrateParachain,
   SubstrateResource,
   Transfer,
@@ -63,10 +62,9 @@ export class SubstrateAssetTransfer {
    * @returns fee that needs to paid
    */
   public async getFee(transfer: Transfer<TransferType>): Promise<SubstrateFee> {
-    const domainConfig = this.config.getDomainConfig() as SubstrateConfig;
     const fee = await getBasicFee(
       this.apiPromise,
-      domainConfig.id,
+      transfer.to.id,
       (transfer.resource as SubstrateResource).xcmMultiAssetId,
     );
 

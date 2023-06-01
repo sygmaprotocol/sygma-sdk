@@ -16,17 +16,16 @@ const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000001000";
 const MNEMONIC =
   "zoo slim stable violin scorpion enrich cancel bar shrug warm proof chimney";
+const recipient = "0x0da26Cd0578C98b44b9Ff554dd234E2822E6bf11";
 
 const substrateTransfer = async (): Promise<void> => {
   const keyring = new Keyring({ type: "sr25519" });
-  console.log("created keyring");
-  // Make sure to fund this account with both native and asset tokens
+  // Make sure to fund this account with native tokens
   // Account address: 5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS
 
   await cryptoWaitReady();
 
   const account = keyring.addFromUri(MNEMONIC);
-  console.log("created account from mnemonic");
 
   const wsProvider = new WsProvider(
     "wss://subbridge-test.phala.network/rhala/ws"
@@ -67,12 +66,11 @@ const substrateTransfer = async (): Promise<void> => {
     from: rococo,
     to: sepolia,
     resource: selectedResource,
-    recipient: account.address,
+    recipient: recipient,
   };
 
   const fee = await assetTransfer.getFee(transfer);
 
-  console.log(`Transfer fee is ${fee.toString()}`);
   const transferTx = assetTransfer.buildTransferTransaction(transfer, fee);
 
   const unsub = await transferTx.signAndSend(account, ({ status }) => {
@@ -91,6 +89,4 @@ const substrateTransfer = async (): Promise<void> => {
   });
 };
 
-substrateTransfer()
-  .catch((e) => console.log(e))
-  .finally(() => { });
+substrateTransfer().catch((e) => console.log(e));
