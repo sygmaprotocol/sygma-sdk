@@ -54,10 +54,6 @@ export const localConfig: RawConfig = {
       ],
       startBlock: BigInt(1),
       resources: [
-        // I am pretty sure this is mapped to ERC20LRTest token, but
-        // we'll have to change shared config to match all the added fields
-        // so please figure out the best format and what we actually need and then
-        // we'll add it to the configurations.
         {
           resourceId: '0x',
           type: ResourceType.FUNGIBLE,
