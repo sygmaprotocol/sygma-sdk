@@ -1,5 +1,5 @@
 {
-  "name": "@buildwithsygma/sygma-sdk-substrate-example",
+  "name": "@buildwithsygma/sygma-sdk-substrate-to-evm-fungible-transfer-example",
   "version": "0.1.0",
   "license": "LGPL-3.0-or-later",
   "description": "Sygma SDK Substrate Example",

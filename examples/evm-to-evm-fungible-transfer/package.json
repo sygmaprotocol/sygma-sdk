@@ -1,7 +1,7 @@
 {
-  "name": "@buildwithsygma/sygma-sdk-example-evm-to-substrate",
+  "name": "@buildwithsygma/sygma-sdk-evm-to-evm-fungible-transfer-example",
   "version": "0.1.0",
-  "description": "Sygma sdk example - EVM to Substrate Transfer",
+  "description": "Sygma sdk examples",
   "type": "module",
   "sideEffects": false,
   "repository": {
