@@ -463,7 +463,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@buildwithsygma/sygma-sdk-core@1.5.0, @buildwithsygma/sygma-sdk-core@workspace:packages/sdk":
+"@buildwithsygma/sygma-sdk-core@2.0.0, @buildwithsygma/sygma-sdk-core@workspace:packages/sdk":
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-core@workspace:packages/sdk"
   dependencies:
@@ -507,7 +507,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-evm-to-evm-fungible-transfer-example@workspace:examples/evm-to-evm-fungible-transfer"
   dependencies:
-    "@buildwithsygma/sygma-sdk-core": 1.5.0
+    "@buildwithsygma/sygma-sdk-core": 2.0.0
     eslint: 8
     eslint-config-prettier: 8.3.0
     eslint-plugin-only-warn: 1.0.3
@@ -522,7 +522,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-evm-to-substrate-fungible-transfer-example@workspace:examples/evm-to-substrate-fungible-transfer"
   dependencies:
-    "@buildwithsygma/sygma-sdk-core": 1.5.0
+    "@buildwithsygma/sygma-sdk-core": 2.0.0
     eslint: 8
     eslint-config-prettier: 8.3.0
     eslint-plugin-only-warn: 1.0.3
@@ -537,7 +537,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-substrate-to-evm-fungible-transfer-example@workspace:examples/substrate-to-evm-fungible-transfer"
   dependencies:
-    "@buildwithsygma/sygma-sdk-core": 1.5.0
+    "@buildwithsygma/sygma-sdk-core": 2.0.0
     "@polkadot/api": 10.7.3
     "@polkadot/keyring": 12.2.1
     "@polkadot/util-crypto": ^12.2.1
