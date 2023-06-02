@@ -44,7 +44,7 @@ export async function erc20Transfer(): Promise<void> {
     sender: await wallet.getAddress(),
     amount: {
       // amount in wei
-      amount: "50",
+      amount: "500000000",
     },
     from: goerli,
     to: rococo,
@@ -70,4 +70,4 @@ export async function erc20Transfer(): Promise<void> {
   console.log("Sent transfer with hash: " + response.hash);
 }
 
-erc20Transfer().finally(() => {});
+erc20Transfer().finally(() => { });
