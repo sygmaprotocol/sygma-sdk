@@ -1,16 +1,13 @@
 import { BigNumber, utils } from 'ethers';
-import { TypeRegistry } from '@polkadot/types';
-import { decodeAddress } from '@polkadot/util-crypto';
 
 import {
   getRecipientAddressInBytes,
   createERCDepositData,
   toHex,
   createPermissionedGenericDepositData,
+  constructSubstrateRecipient,
 } from '../helpers.js';
 import * as helpers from '../helpers.js';
-
-const registry = new TypeRegistry();
 
 describe('createERCDepositData', () => {
   it('should return the correct deposit data', () => {
@@ -22,6 +19,16 @@ describe('createERCDepositData', () => {
     const depositData = createERCDepositData(tokenAmount, recipientAddress);
 
     expect(depositData).toEqual(expectedDepositData);
+  });
+});
+
+describe('constructSubstrateRecipient', () => {
+  it('should create a valid Substrate Multilocation Object', () => {
+    const substrateAddress = '5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt';
+    const result = constructSubstrateRecipient(substrateAddress);
+    const expectedResult =
+      '{"parents":0,"interior":{"X1":{"AccountId32":{"network":{"any":null},"id":"0x06a220edf5f82b84fc5f9270f8a30a17636bf29c05a5c16279405ca20918aa39"}}}}';
+    expect(result).toEqual(expectedResult);
   });
 });
 
@@ -37,28 +44,16 @@ describe('getRecipientAddressInBytes', () => {
     expect(result).toBeInstanceOf(Uint8Array);
   });
 
-  it('should convert a Substrate multilocation to a Uint8Array of bytes', () => {
-    const addressPublicKeyInBytes = decodeAddress(
-      '5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt',
-    );
-    const addressPublicKeyHexString = utils.hexlify(addressPublicKeyInBytes);
-    const substrateMultilocation = JSON.stringify({
-      parents: 0,
-      interior: {
-        X1: {
-          AccountId32: {
-            network: { any: null },
-            id: addressPublicKeyHexString,
-          },
-        },
-      },
-    });
-    expect(utils.isAddress(substrateMultilocation)).toBeFalsy();
+  it('should convert a Substrate address to a Uint8Array of bytes', () => {
+    const substrateAddress = '5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt';
 
-    const result = getRecipientAddressInBytes(substrateMultilocation);
-    const expectedResult = registry
-      .createType('MultiLocation', JSON.parse(substrateMultilocation))
-      .toU8a();
+    expect(utils.isAddress(substrateAddress)).toBeFalsy();
+
+    const result = getRecipientAddressInBytes(substrateAddress);
+    const expectedResult = Uint8Array.from([
+      0, 1, 1, 0, 6, 162, 32, 237, 245, 248, 43, 132, 252, 95, 146, 112, 248, 163, 10, 23, 99, 107,
+      242, 156, 5, 165, 193, 98, 121, 64, 92, 162, 9, 24, 170, 57,
+    ]);
 
     expect(result).toEqual(expectedResult);
     expect(result).toBeInstanceOf(Uint8Array);

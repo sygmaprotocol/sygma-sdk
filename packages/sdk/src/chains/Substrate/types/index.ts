@@ -5,9 +5,11 @@ import { FeeHandlerType } from '../../../types';
 export type XcmMultiAssetIdType = {
   concrete: {
     parents: number;
-    interior: {
-      x3: Array<{ parachain: number } | { generalKey: [number, string] }>; // This is a tuple of length and value
-    };
+    interior:
+      | 'here'
+      | {
+          x3: Array<{ parachain: number } | { generalKey: [number, string] }>; // This is a tuple of length and value
+        };
   };
 };
 

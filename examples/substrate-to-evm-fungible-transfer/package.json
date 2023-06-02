@@ -1,7 +1,8 @@
 {
-  "name": "@buildwithsygma/sygma-sdk-examples",
+  "name": "@buildwithsygma/sygma-sdk-substrate-to-evm-fungible-transfer-example",
   "version": "0.1.0",
-  "description": "Sygma sdk examples",
+  "license": "LGPL-3.0-or-later",
+  "description": "Sygma SDK Substrate Example",
   "type": "module",
   "sideEffects": false,
   "repository": {
@@ -20,7 +21,6 @@
     "transfer": "ts-node src/transfer.ts"
   },
   "author": "Sygmaprotocol Product Team",
-  "license": "LGPL-3.0-or-later",
   "devDependencies": {
     "eslint": "8",
     "eslint-config-prettier": "8.3.0",
@@ -31,6 +31,8 @@
   },
   "dependencies": {
     "@buildwithsygma/sygma-sdk-core": "1.5.0",
-    "ethers": "5.6.2"
+    "@polkadot/api": "10.7.3",
+    "@polkadot/keyring": "12.2.1",
+    "@polkadot/util-crypto": "^12.2.1"
   }
 }

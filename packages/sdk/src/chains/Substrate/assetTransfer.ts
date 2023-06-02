@@ -4,7 +4,6 @@ import {
   Environment,
   Fungible,
   ResourceType,
-  SubstrateConfig,
   SubstrateParachain,
   SubstrateResource,
   Transfer,
@@ -48,8 +47,8 @@ export class SubstrateAssetTransfer {
 
   public async init(
     apiPromise: ApiPromise,
-    environment: Environment = Environment.MAINNET,
-    parachainId: SubstrateParachain = SubstrateParachain.LOCAL,
+    parachainId: SubstrateParachain,
+    environment: Environment = Environment.LOCAL,
   ): Promise<void> {
     this.apiPromise = apiPromise;
     this.config = new Config();
@@ -63,11 +62,10 @@ export class SubstrateAssetTransfer {
    * @returns fee that needs to paid
    */
   public async getFee(transfer: Transfer<TransferType>): Promise<SubstrateFee> {
-    const domainConfig = this.config.getDomainConfig() as SubstrateConfig;
     const fee = await getBasicFee(
       this.apiPromise,
-      domainConfig.id,
-      (transfer.resource as SubstrateResource).xsmMultiAssetId,
+      transfer.to.id,
+      (transfer.resource as SubstrateResource).xcmMultiAssetId,
     );
 
     return fee;
@@ -88,7 +86,7 @@ export class SubstrateAssetTransfer {
       case ResourceType.FUNGIBLE: {
         return deposit(
           this.apiPromise,
-          (transfer.resource as SubstrateResource).xsmMultiAssetId,
+          (transfer.resource as SubstrateResource).xcmMultiAssetId,
           (transfer.amount as Fungible).amount,
           transfer.to.id.toString(),
           transfer.recipient,

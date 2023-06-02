@@ -15,6 +15,7 @@ export enum ResourceType {
 
 export enum SubstrateParachain {
   LOCAL = 5,
+  ROCOCO_PHALA = 5231,
 }
 
 export type Resource = EvmResource | SubstrateResource;
@@ -33,7 +34,7 @@ export type EvmResource = BaseResource & {
 export type SubstrateResource = BaseResource & {
   assetId: number;
   assetName: string;
-  xsmMultiAssetId: XcmMultiAssetIdType;
+  xcmMultiAssetId: XcmMultiAssetIdType;
 };
 
 export enum FeeHandlerType {
