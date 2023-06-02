@@ -11,12 +11,12 @@ import {
 } from "@buildwithsygma/sygma-sdk-core";
 
 const ROCOCO_CHAIN_ID = 5231;
-const SEPOLIA_CHAIN_ID = 11155111;
+const GOERLI_CHAIN_ID = 5;
 const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000001000";
 const MNEMONIC =
   "zoo slim stable violin scorpion enrich cancel bar shrug warm proof chimney";
-const recipient = "0x0da26Cd0578C98b44b9Ff554dd234E2822E6bf11";
+const recipient = "0xD31E89feccCf6f2DE10EaC92ADffF48D802b695C";
 
 const substrateTransfer = async (): Promise<void> => {
   const keyring = new Keyring({ type: "sr25519" });
@@ -52,8 +52,8 @@ const substrateTransfer = async (): Promise<void> => {
   if (!rococo) {
     throw new Error("Network Rococo-Phala not supported");
   }
-  const sepolia = domains.find((domain) => domain.chainId == SEPOLIA_CHAIN_ID);
-  if (!sepolia) {
+  const goerli = domains.find((domain) => domain.chainId == GOERLI_CHAIN_ID);
+  if (!goerli) {
     throw new Error("Network sepolia not supported");
   }
 
@@ -64,7 +64,7 @@ const substrateTransfer = async (): Promise<void> => {
       amount: "50",
     },
     from: rococo,
-    to: sepolia,
+    to: goerli,
     resource: selectedResource,
     recipient: recipient,
   };

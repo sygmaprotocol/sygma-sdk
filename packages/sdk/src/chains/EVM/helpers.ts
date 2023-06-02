@@ -1,5 +1,6 @@
 import { utils, BigNumber } from 'ethers';
 import { TypeRegistry } from '@polkadot/types/create';
+import { decodeAddress } from '@polkadot/util-crypto';
 
 const registry = new TypeRegistry();
 
@@ -91,9 +92,33 @@ export const createPermissionlessGenericDepositData = (
 };
 
 /**
+ * Converts a Substrate recipient address to a JSON multilocation.
+ *
+ * @param {string} recipientAddress - The recipient address as a string.
+ * @returns {string} The recipient address as a stringified Substrate Multilocation Object
+ */
+export const constructSubstrateRecipient = (recipientAddress: string): string => {
+  const addressPublicKeyBytes = decodeAddress(recipientAddress);
+  const addressPublicKeyHexString = utils.hexlify(addressPublicKeyBytes);
+  const substrateMultilocation = JSON.stringify({
+    parents: 0,
+    interior: {
+      X1: {
+        AccountId32: {
+          network: { any: null },
+          id: addressPublicKeyHexString,
+        },
+      },
+    },
+  });
+
+  return substrateMultilocation;
+};
+
+/**
  * Converts a recipient address to a Uint8Array of bytes.
  *
- * @param {string} recipientAddress - The recipient address, either as a string (EVM address) or a JSON object (Substrate multilocation).
+ * @param {string} recipientAddress - The recipient address, as a string. If the address passed in is not an Ethereum address, a Substrate Multilocation object will be constructed and serialized.
  * @returns {Uint8Array} The recipient address as a Uint8Array of bytes
  */
 export const getRecipientAddressInBytes = (recipientAddress: string): Uint8Array => {
@@ -103,7 +128,9 @@ export const getRecipientAddressInBytes = (recipientAddress: string): Uint8Array
   }
 
   // Substrate multilocation
-  return registry.createType('MultiLocation', JSON.parse(recipientAddress)).toU8a();
+  return registry
+    .createType('MultiLocation', JSON.parse(constructSubstrateRecipient(recipientAddress)))
+    .toU8a();
 };
 
 /**
