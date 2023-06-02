@@ -9,7 +9,7 @@ import { Wallet, providers } from "ethers";
 const GOERLI_CHAIN_ID = 5;
 const ROCOCO_PHALA_CHAIN_ID = 5231;
 const ERC20_TOKEN_SYMBOL = "GPHA";
-const DESTINATION_ADDRESS = "5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS";
+const DESTINATION_ADDRESS = "5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt";
 
 export async function erc20Transfer(): Promise<void> {
   const provider = new providers.JsonRpcProvider(

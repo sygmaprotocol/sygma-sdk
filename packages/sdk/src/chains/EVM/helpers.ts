@@ -127,10 +127,12 @@ export const getRecipientAddressInBytes = (recipientAddress: string): Uint8Array
     return utils.arrayify(recipientAddress);
   }
 
-  // Substrate multilocation
-  return registry
+  const result = registry
     .createType('MultiLocation', JSON.parse(constructSubstrateRecipient(recipientAddress)))
     .toU8a();
+
+  console.log(result);
+  return result;
 };
 
 /**
