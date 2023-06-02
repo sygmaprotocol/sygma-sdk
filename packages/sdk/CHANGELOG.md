@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.0.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.5.0...sygma-sdk-core-v2.0.0) (2023-06-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* evm asset transfer ([#240](https://github.com/sygmaprotocol/sygma-sdk/issues/240))
+
+### Features
+
+* add Config class and types ([#239](https://github.com/sygmaprotocol/sygma-sdk/issues/239)) ([0e2a0ec](https://github.com/sygmaprotocol/sygma-sdk/commit/0e2a0ecd3acc724db5109145516f1d374377f23c))
+* evm asset transfer ([#240](https://github.com/sygmaprotocol/sygma-sdk/issues/240)) ([23cb4eb](https://github.com/sygmaprotocol/sygma-sdk/commit/23cb4eb5d4e15d8eb134b8902a942f47a73dad78))
+* Move deprecated Sygma Class to separate namespace, update main project README and regenerate docs ([#233](https://github.com/sygmaprotocol/sygma-sdk/issues/233)) ([cb3d79f](https://github.com/sygmaprotocol/sygma-sdk/commit/cb3d79f628eb7c4ca7345aec013c077c9afbf0a4))
+* substrate asset transfer ([#250](https://github.com/sygmaprotocol/sygma-sdk/issues/250)) ([7c41037](https://github.com/sygmaprotocol/sygma-sdk/commit/7c410376f015ae9d214d3f47106bef5e140aa353))
+
+
+### Bug Fixes
+
+* fix cjs build not working ([#248](https://github.com/sygmaprotocol/sygma-sdk/issues/248)) ([bb09a5a](https://github.com/sygmaprotocol/sygma-sdk/commit/bb09a5ae9297a10f02ebaac0cacd05665f0fad38))
+* update permissionless generic deposit data ([#246](https://github.com/sygmaprotocol/sygma-sdk/issues/246)) ([2a41749](https://github.com/sygmaprotocol/sygma-sdk/commit/2a41749a591a2ebf6184a888a2d9aa23f9e42d69))
+
 ## [1.5.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.4.0...sygma-sdk-core-v1.5.0) (2023-04-26)
 
 
