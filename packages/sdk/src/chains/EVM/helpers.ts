@@ -131,7 +131,6 @@ export const getRecipientAddressInBytes = (recipientAddress: string): Uint8Array
     .createType('MultiLocation', JSON.parse(constructSubstrateRecipient(recipientAddress)))
     .toU8a();
 
-  console.log(result);
   return result;
 };
 
