@@ -503,9 +503,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@buildwithsygma/sygma-sdk-example-evm-to-substrate@workspace:examples/evm-to-substrate-asset-transfer":
+"@buildwithsygma/sygma-sdk-evm-to-evm-fungible-transfer-example@workspace:examples/evm-to-evm-fungible-transfer":
   version: 0.0.0-use.local
-  resolution: "@buildwithsygma/sygma-sdk-example-evm-to-substrate@workspace:examples/evm-to-substrate-asset-transfer"
+  resolution: "@buildwithsygma/sygma-sdk-evm-to-evm-fungible-transfer-example@workspace:examples/evm-to-evm-fungible-transfer"
   dependencies:
     "@buildwithsygma/sygma-sdk-core": 1.5.0
     eslint: 8
@@ -518,9 +518,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@buildwithsygma/sygma-sdk-examples@workspace:examples/erc20":
+"@buildwithsygma/sygma-sdk-evm-to-substrate-fungible-transfer-example@workspace:examples/evm-to-substrate-fungible-transfer":
   version: 0.0.0-use.local
-  resolution: "@buildwithsygma/sygma-sdk-examples@workspace:examples/erc20"
+  resolution: "@buildwithsygma/sygma-sdk-evm-to-substrate-fungible-transfer-example@workspace:examples/evm-to-substrate-fungible-transfer"
   dependencies:
     "@buildwithsygma/sygma-sdk-core": 1.5.0
     eslint: 8
@@ -533,9 +533,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@buildwithsygma/sygma-sdk-substrate-example@workspace:examples/substrate-asset-transfer":
+"@buildwithsygma/sygma-sdk-substrate-to-evm-fungible-transfer-example@workspace:examples/substrate-to-evm-fungible-transfer":
   version: 0.0.0-use.local
-  resolution: "@buildwithsygma/sygma-sdk-substrate-example@workspace:examples/substrate-asset-transfer"
+  resolution: "@buildwithsygma/sygma-sdk-substrate-to-evm-fungible-transfer-example@workspace:examples/substrate-to-evm-fungible-transfer"
   dependencies:
     "@buildwithsygma/sygma-sdk-core": 1.5.0
     "@polkadot/api": 10.7.3
