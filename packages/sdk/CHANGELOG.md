@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.0.0...sygma-sdk-core-v2.0.1) (2023-06-05)
+
+
+### Bug Fixes
+
+* add license to the sdk package ([#259](https://github.com/sygmaprotocol/sygma-sdk/issues/259)) ([276d278](https://github.com/sygmaprotocol/sygma-sdk/commit/276d278a5d34c7e54aa3549817709b9165a9dd66))
+
 ## [2.0.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v1.5.0...sygma-sdk-core-v2.0.0) (2023-06-02)
 
 
