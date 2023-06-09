@@ -19,6 +19,7 @@ export class Config {
 
     if (environment === Environment.LOCAL) {
       this.environment = localConfig;
+      return;
     }
 
     let network;
