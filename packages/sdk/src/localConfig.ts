@@ -17,7 +17,7 @@ export const localConfig: RawConfig = {
       nativeTokenSymbol: 'eth',
       nativeTokenName: 'ether',
       nativeTokenDecimals: BigInt(18),
-      blockConfirmations: 2,
+      blockConfirmations: 1,
       startBlock: BigInt(3054823),
       feeRouter: '0x1CcB4231f2ff299E1E049De76F0a1D2B415C563A',
       feeHandlers: [
@@ -51,7 +51,7 @@ export const localConfig: RawConfig = {
       nativeTokenSymbol: 'eth',
       nativeTokenName: 'ether',
       nativeTokenDecimals: BigInt(18),
-      blockConfirmations: 2,
+      blockConfirmations: 1,
       startBlock: BigInt(425),
       feeRouter: '0x1CcB4231f2ff299E1E049De76F0a1D2B415C563A',
       feeHandlers: [
@@ -78,7 +78,7 @@ export const localConfig: RawConfig = {
       nativeTokenSymbol: 'pha',
       nativeTokenName: 'pha',
       nativeTokenDecimals: BigInt(18),
-      blockConfirmations: 2,
+      blockConfirmations: 1,
       bridge: '0x',
       handlers: [
         {
