@@ -159,7 +159,16 @@ export async function fungibleTransferFromSubstrate(): Promise<void> {
     }
   });
 }
-fungibleTransferFromEVM().finally(() => { });
 
-// you can also test asset transfer from substrate network
-// fungibleTransferFromSubstrate().finally(() => {});
+// start specific example based on process arg
+switch (process.argv[2]) {
+  case "1":
+    fungibleTransferFromEVM().finally(() => { });
+    break;
+  case "2":
+    fungibleTransferFromSubstrate().finally(() => {});
+    break;
+  default:
+    console.log("example not supported")
+}
+

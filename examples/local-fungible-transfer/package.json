@@ -17,7 +17,8 @@
     "ethereum"
   ],
   "scripts": {
-    "transfer": "ts-node src/transfer.ts"
+    "transfer:evm-substrate": "ts-node src/transfer.ts 1",
+    "transfer:substrate-evm": "ts-node src/transfer.ts 2"
   },
   "author": "Sygmaprotocol Product Team",
   "license": "LGPL-3.0-or-later",

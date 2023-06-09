@@ -533,6 +533,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@buildwithsygma/sygma-sdk-local-fungible-transfer-example@workspace:examples/local-fungible-transfer":
+  version: 0.0.0-use.local
+  resolution: "@buildwithsygma/sygma-sdk-local-fungible-transfer-example@workspace:examples/local-fungible-transfer"
+  dependencies:
+    "@buildwithsygma/sygma-sdk-core": 2.0.1
+    eslint: 8
+    eslint-config-prettier: 8.3.0
+    eslint-plugin-only-warn: 1.0.3
+    eslint-plugin-prettier: 4.0.0
+    ethers: 5.6.2
+    ts-node: 10.9.1
+    typescript: 5.0.4
+  languageName: unknown
+  linkType: soft
+
 "@buildwithsygma/sygma-sdk-substrate-to-evm-fungible-transfer-example@workspace:examples/substrate-to-evm-fungible-transfer":
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-substrate-to-evm-fungible-transfer-example@workspace:examples/substrate-to-evm-fungible-transfer"

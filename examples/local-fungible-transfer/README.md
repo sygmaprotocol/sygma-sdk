@@ -1,6 +1,9 @@
-## Sygma SDK ERC20 Example
+## Sygma SDK Local Example
 
-This is an example script that demonstrates the functionality of the SDK using the Sygma ecosystem. The script showcases an ERC20 token transfer between two networks using the Sygma SDK.
+This is an example script that demonstrates the functionality of the SDK using the Sygma ecosystem.
+The script showcases fungible token transfer between two networks using the Sygma SDK.
+
+This example is prepared to work with [Sygma local setup](https://docs.buildwithsygma.com/sdk/advanced/localsetup) that can be found inside [relayer repository](https://github.com/sygmaprotocol/sygma-relayer).
 
 ## Prerequisites
 
@@ -8,20 +11,37 @@ Before running the script, ensure that you have the following:
 
 - Node.js installed on your machine
 - [Yarn](https://yarnpkg.com/) (version 3.4.1 or higher)
-- Access to an Ethereum provider
 
 ## Getting started
 
-### 1. Clone the repository
+### 1. Run local setup:
 
-To get started, clone this repository to your local machine with:
+#### Clone relayers repository
+
+First, clone the Sygma relayer repository to your local machine with:
+
+```
+git clone https://github.com/sygmaprotocol/sygma-relayer.git
+```
+
+#### Start local setup
+
+This will start the dockerized setup:
+
+```
+make local
+```
+
+### 2. Clone the repository
+
+Clone this repository to your local machine with:
 
 ```bash
 git clone git@github.com:sygmaprotocol/sygma-sdk.git
 cd sygma-sdk/
 ```
 
-### 2. Install dependencies
+### 3. Install dependencies
 
 Install the project dependencies by running:
 
@@ -29,7 +49,7 @@ Install the project dependencies by running:
 yarn install
 ```
 
-### 3. Build the sdk
+### 4. Build the sdk
 
 To start the example you need to build the sdk first with:
 
@@ -37,32 +57,25 @@ To start the example you need to build the sdk first with:
 yarn sdk:build
 ```
 
-## Usage
+## 5. Usage
 
 To send a ERC20 example transfer run:
 
 ```bash
-yarn run transfer
+yarn run transfer:evm-substrate
 ```
 
-The example will use `ethers` in conjuction with the sygma-sdk to
-create a transfer from `Goerli` to `Rococo-Phala` with a GPHA token.
+This example will use `ethers` in conjuction with the sygma-sdk to
+create a transfer from `EVM1` to `Substrate` network.
 
-Replace the placeholder values in the script with your own Ethereum wallet private key and provider URL.
+You can also run:
 
-## Script Functionality
+```bash
+yarn run transfer:substrate-evm
+```
 
-This example script performs the following steps:
+Similarly, this example will use `@polkadot/api` in conjuction with the sygma-sdk to
+create a transfer from `Substrate` to `EVM1` network.
 
-- initializes the SDK and establishes a connection to the Ethereum provider.
-- retrieves the list of supported domains and resources from the SDK configuration.
-- Searches for the ERC20 token resource with the specified symbol
-- Searches for the Goerli and Rococo-Phala domains in the list of supported domains based on their chain IDs
-- Constructs a transfer object that defines the details of the ERC20 token transfer
-- Retrieves the fee required for the transfer from the SDK.
-- Builds the necessary approval transactions for the transfer and sends them using the Ethereum wallet. The approval transactions are required to authorize the transfer of ERC20 tokens.
-- Builds the final transfer transaction and sends it using the Ethereum wallet.
 
-## Faucet
-
-To get the test tokens needed for the transfer go to: `https://faucet-ui-stage.buildwithsygma.com/`.
+For more details check out documentation on [Sygma local setup](https://docs.buildwithsygma.com/sdk/advanced/localsetup).
