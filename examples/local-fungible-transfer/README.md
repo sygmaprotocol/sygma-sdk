@@ -29,7 +29,7 @@ git clone https://github.com/sygmaprotocol/sygma-relayer.git
 This will start the dockerized setup:
 
 ```
-make local
+make example
 ```
 
 ### 2. Clone the repository
