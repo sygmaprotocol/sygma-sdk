@@ -1,4 +1,4 @@
-import {FeeHandlerType, Network, RawConfig, ResourceType} from './types';
+import { FeeHandlerType, Network, RawConfig, ResourceType } from './types';
 
 export const localConfig: RawConfig = {
   domains: [
@@ -15,16 +15,16 @@ export const localConfig: RawConfig = {
         },
         {
           type: ResourceType.NON_FUNGIBLE,
-          address: '0xC2D334e2f27A9dB2Ed8C4561De86C1A00EBf6760'
+          address: '0xC2D334e2f27A9dB2Ed8C4561De86C1A00EBf6760',
         },
         {
           type: ResourceType.PERMISSIONLESS_GENERIC,
-          address: '0xE837D42dd3c685839a418886f418769BDD23546b'
+          address: '0xE837D42dd3c685839a418886f418769BDD23546b',
         },
         {
           type: ResourceType.PERMISSIONED_GENERIC,
-          address: '0xF28c11CB14C6d2B806f99EA8b138F65e74a1Ed66'
-        }
+          address: '0xF28c11CB14C6d2B806f99EA8b138F65e74a1Ed66',
+        },
       ],
       nativeTokenSymbol: 'eth',
       nativeTokenName: 'ether',
@@ -39,8 +39,8 @@ export const localConfig: RawConfig = {
         },
         {
           address: '0x30d704A60037DfE54e7e4D242Ea0cBC6125aE497',
-          type: FeeHandlerType.DYNAMIC
-        }
+          type: FeeHandlerType.DYNAMIC,
+        },
       ],
       resources: [
         {
@@ -63,7 +63,7 @@ export const localConfig: RawConfig = {
           address: '0x78E5b9cEC9aEA29071f070C8cC561F692B3511A6',
           symbol: 'ERC20LRTest',
           decimals: 18,
-        }
+        },
       ],
     },
     {
@@ -79,16 +79,16 @@ export const localConfig: RawConfig = {
         },
         {
           type: ResourceType.NON_FUNGIBLE,
-          address: '0xC2D334e2f27A9dB2Ed8C4561De86C1A00EBf6760'
+          address: '0xC2D334e2f27A9dB2Ed8C4561De86C1A00EBf6760',
         },
         {
           type: ResourceType.PERMISSIONLESS_GENERIC,
-          address: '0xE837D42dd3c685839a418886f418769BDD23546b'
+          address: '0xE837D42dd3c685839a418886f418769BDD23546b',
         },
         {
           type: ResourceType.PERMISSIONED_GENERIC,
-          address: '0xF28c11CB14C6d2B806f99EA8b138F65e74a1Ed66'
-        }
+          address: '0xF28c11CB14C6d2B806f99EA8b138F65e74a1Ed66',
+        },
       ],
       nativeTokenSymbol: 'eth',
       nativeTokenName: 'ether',
@@ -103,8 +103,8 @@ export const localConfig: RawConfig = {
         },
         {
           address: '0x30d704A60037DfE54e7e4D242Ea0cBC6125aE497',
-          type: FeeHandlerType.DYNAMIC
-        }
+          type: FeeHandlerType.DYNAMIC,
+        },
       ],
       resources: [
         {
@@ -127,7 +127,7 @@ export const localConfig: RawConfig = {
           address: '0x78E5b9cEC9aEA29071f070C8cC561F692B3511A6',
           symbol: 'ERC20LRTest',
           decimals: 18,
-        }
+        },
       ],
     },
     {
