@@ -1,15 +1,10 @@
-import {
-  EVMAssetTransfer,
-  Environment,
-  Fungible,
-  Transfer,
-} from "@buildwithsygma/sygma-sdk-core";
+import { EVMAssetTransfer, Environment } from "@buildwithsygma/sygma-sdk-core";
 import { Wallet, providers } from "ethers";
 
-const GOERLI_CHAIN_ID = 5;
 const ROCOCO_PHALA_CHAIN_ID = 5231;
-const ERC20_TOKEN_SYMBOL = "GPHA";
 const DESTINATION_ADDRESS = "5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt";
+const RESOURCE_ID =
+  "0x0000000000000000000000000000000000000000000000000000000000001000";
 
 export async function erc20Transfer(): Promise<void> {
   const provider = new providers.JsonRpcProvider(
@@ -22,35 +17,14 @@ export async function erc20Transfer(): Promise<void> {
   const assetTransfer = new EVMAssetTransfer();
   await assetTransfer.init(provider, Environment.TESTNET);
 
-  const domains = assetTransfer.config.getDomains();
-  const resources = assetTransfer.config.getDomainResources();
-  const erc20Resource = resources.find(
-    (resource) => resource.symbol == ERC20_TOKEN_SYMBOL
+
+  const transfer = assetTransfer.buildFungibleTransferObject(
+    await wallet.getAddress(),
+    ROCOCO_PHALA_CHAIN_ID,
+    DESTINATION_ADDRESS,
+    RESOURCE_ID,
+    500000000
   );
-  if (!erc20Resource) {
-    throw new Error("Resource not found");
-  }
-  const goerli = domains.find((domain) => domain.chainId == GOERLI_CHAIN_ID);
-  if (!goerli) {
-    throw new Error("Network goerli not supported");
-  }
-  const rococo = domains.find(
-    (domain) => domain.chainId == ROCOCO_PHALA_CHAIN_ID
-  );
-  if (!rococo) {
-    throw new Error("Network sepolia not supported");
-  }
-  const transfer: Transfer<Fungible> = {
-    sender: await wallet.getAddress(),
-    amount: {
-      // amount in wei
-      amount: "500000000",
-    },
-    from: goerli,
-    to: rococo,
-    resource: erc20Resource,
-    recipient: DESTINATION_ADDRESS,
-  };
 
   const fee = await assetTransfer.getFee(transfer);
   const approvals = await assetTransfer.buildApprovals(transfer, fee);
@@ -58,7 +32,7 @@ export async function erc20Transfer(): Promise<void> {
     const response = await wallet.sendTransaction(
       approval as providers.TransactionRequest
     );
-    console.log("Sent approval with hash: " + response.hash);
+    console.log("Sent approval with hash: ", response.hash);
   }
   const transferTx = await assetTransfer.buildTransferTransaction(
     transfer,
@@ -67,7 +41,7 @@ export async function erc20Transfer(): Promise<void> {
   const response = await wallet.sendTransaction(
     transferTx as providers.TransactionRequest
   );
-  console.log("Sent transfer with hash: " + response.hash);
+  console.log("Sent transfer with hash: ", response.hash);
 }
 
 erc20Transfer().finally(() => { });

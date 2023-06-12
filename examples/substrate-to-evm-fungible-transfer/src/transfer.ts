@@ -4,13 +4,9 @@ import { cryptoWaitReady } from "@polkadot/util-crypto";
 
 import {
   Environment,
-  Fungible,
   SubstrateAssetTransfer,
-  SubstrateParachain,
-  Transfer,
 } from "@buildwithsygma/sygma-sdk-core";
 
-const ROCOCO_CHAIN_ID = 5231;
 const GOERLI_CHAIN_ID = 5;
 const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000001000";
@@ -34,40 +30,15 @@ const substrateTransfer = async (): Promise<void> => {
 
   const assetTransfer = new SubstrateAssetTransfer();
 
-  await assetTransfer.init(
-    api,
-    SubstrateParachain.ROCOCO_PHALA,
-    Environment.TESTNET
-  );
+  await assetTransfer.init(api, Environment.TESTNET);
 
-  const domains = assetTransfer.config.getDomains();
-  const resources = assetTransfer.config.getDomainResources();
-  const selectedResource = resources.find(
-    (resource) => resource.resourceId == RESOURCE_ID
+  const transfer = assetTransfer.buildFungibleTransferObject(
+    account.address,
+    GOERLI_CHAIN_ID,
+    recipient,
+    RESOURCE_ID,
+    50
   );
-  if (!selectedResource) {
-    throw new Error("Resource not found");
-  }
-  const rococo = domains.find((domain) => domain.chainId == ROCOCO_CHAIN_ID);
-  if (!rococo) {
-    throw new Error("Network Rococo-Phala not supported");
-  }
-  const goerli = domains.find((domain) => domain.chainId == GOERLI_CHAIN_ID);
-  if (!goerli) {
-    throw new Error("Network sepolia not supported");
-  }
-
-  const transfer: Transfer<Fungible> = {
-    sender: account.address,
-    amount: {
-      // amount in wei
-      amount: "50",
-    },
-    from: rococo,
-    to: goerli,
-    resource: selectedResource,
-    recipient: recipient,
-  };
 
   const fee = await assetTransfer.getFee(transfer);
 
@@ -91,4 +62,4 @@ const substrateTransfer = async (): Promise<void> => {
 
 substrateTransfer()
   .catch((e) => console.log(e))
-  .finally(() => {});
+  .finally(() => { });
