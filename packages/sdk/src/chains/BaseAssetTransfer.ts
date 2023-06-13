@@ -4,7 +4,7 @@ import { Config } from '../config';
 export abstract class BaseAssetTransfer {
   public config!: Config;
 
-  public buildFungibleTransferObject(
+  public createFungibleTransfer(
     sourceAddress: string,
     destinationChainId: number,
     destinationAddress: string,

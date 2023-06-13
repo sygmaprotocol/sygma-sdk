@@ -18,7 +18,7 @@ export async function erc20Transfer(): Promise<void> {
   await assetTransfer.init(provider, Environment.TESTNET);
 
 
-  const transfer = assetTransfer.buildFungibleTransferObject(
+  const transfer = assetTransfer.createFungibleTransfer(
     await wallet.getAddress(),
     ROCOCO_PHALA_CHAIN_ID,
     DESTINATION_ADDRESS,

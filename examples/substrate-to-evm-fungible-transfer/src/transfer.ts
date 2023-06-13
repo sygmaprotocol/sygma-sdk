@@ -32,7 +32,7 @@ const substrateTransfer = async (): Promise<void> => {
 
   await assetTransfer.init(api, Environment.TESTNET);
 
-  const transfer = assetTransfer.buildFungibleTransferObject(
+  const transfer = assetTransfer.createFungibleTransfer(
     account.address,
     GOERLI_CHAIN_ID,
     recipient,
