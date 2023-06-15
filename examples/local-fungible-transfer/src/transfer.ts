@@ -2,7 +2,7 @@ import {
   EVMAssetTransfer,
   Environment,
   Fungible,
-  Transfer, SubstrateAssetTransfer, SubstrateParachain,
+  Transfer, SubstrateAssetTransfer, SubstrateParachain, SubstrateResource,
 } from "@buildwithsygma/sygma-sdk-core";
 import { Wallet, providers } from "ethers";
 import {Keyring} from "@polkadot/keyring";
@@ -21,6 +21,8 @@ const SUBSTRATE_CHAIN_ID = 5;
 const EVM1_RPC_URL = "http://127.0.0.1:8545"
 const EVM2_RPC_URL = "http://127.0.0.1:8547"
 const SUBSTRATE_RPC_URL = "ws://127.0.0.1:9944"
+
+const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 
 const ALICE_MNEMONIC =
     "bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice";
@@ -101,6 +103,13 @@ export async function fungibleTransferFromSubstrate(): Promise<void> {
   );
   const api = await ApiPromise.create({ provider: wsProvider });
 
+  const balanceBefore = (
+      await api.query.assets.account(2000, account.address)
+  ).toHuman() as { balance: string };
+  console.log(`Transferring 5 tokens from substrate to evm1.`);
+  console.log(`Sender (Alice): ${account.address}`);
+  console.log(`Alice token balance before:${balanceBefore.balance}`);
+
   const assetTransfer = new SubstrateAssetTransfer();
   await assetTransfer.init(
       api,
@@ -110,7 +119,7 @@ export async function fungibleTransferFromSubstrate(): Promise<void> {
 
   const domains = assetTransfer.config.getDomains();
   const resources = assetTransfer.config.getDomainResources();
-  console.log(resources)
+
   const erc20Resource = resources.find(
       (resource) => resource.resourceId == RESOURCE_ID
   );
@@ -132,7 +141,7 @@ export async function fungibleTransferFromSubstrate(): Promise<void> {
     sender: account.address,
     amount: {
       // amount in wei
-      amount: "500000000",
+      amount: "5",
     },
     from: evm1Network,
     to: substrateNetwork,
@@ -143,6 +152,7 @@ export async function fungibleTransferFromSubstrate(): Promise<void> {
   const fee = await assetTransfer.getFee(transfer);
 
   const transferTx = assetTransfer.buildTransferTransaction(transfer, fee);
+
 
   const unsub = await transferTx.signAndSend(account, ({ status }) => {
     console.log(`Current status is ${status.toString()}`);
@@ -157,7 +167,17 @@ export async function fungibleTransferFromSubstrate(): Promise<void> {
       );
       unsub();
     }
+
+    return
   });
+
+  console.log("Waiting for relayers to bridge transaction...")
+  await sleep(20000)
+  const balanceAfter = (
+      await api.query.assets.account(2000, account.address)
+  ).toHuman() as { balance: string };
+  console.log("Transaction successfully bridged.")
+  console.log(`Alice token balance before:${balanceAfter.balance}`);
 }
 
 // start specific example based on process arg
