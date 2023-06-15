@@ -213,7 +213,7 @@ export const testingConfigData = {
     {
       id: 3,
       chainId: 11155111,
-      name: 'ethereum',
+      name: 'Sepolia',
       type: 'evm',
       bridge: '0x59d52E04d4521C0e6C78310f4c4FF9167BA71d01',
       handlers: [
@@ -299,14 +299,14 @@ export const testingConfigData = {
       resources: [
         {
           resourceId: '0x0000000000000000000000000000000000000000000000000000000000001000',
-          type: 'erc20',
+          type: 'fungible',
           address: '',
           symbol: 'PHA',
           decimals: 18,
         },
         {
           resourceId: '0x0000000000000000000000000000000000000000000000000000000000000000',
-          type: 'erc20',
+          type: 'fungible',
           address: '',
           symbol: 'ERC20TST',
           decimals: 18,
