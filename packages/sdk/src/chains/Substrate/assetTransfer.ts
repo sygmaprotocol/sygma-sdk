@@ -46,7 +46,7 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
 
   public async init(
     apiPromise: ApiPromise,
-    environment: Environment = Environment.LOCAL,
+    environment: Environment = Environment.MAINNET,
   ): Promise<void> {
     this.apiPromise = apiPromise;
     const parachainId = apiPromise.consts.sygmaBridge.eip712ChainID as U256;

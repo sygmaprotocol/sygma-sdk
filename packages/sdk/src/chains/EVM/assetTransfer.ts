@@ -73,7 +73,7 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
 
   public async init(
     provider: providers.BaseProvider,
-    environment: Environment = Environment.LOCAL,
+    environment: Environment = Environment.MAINNET,
   ): Promise<void> {
     this.provider = provider;
     const network = await this.provider.getNetwork();
