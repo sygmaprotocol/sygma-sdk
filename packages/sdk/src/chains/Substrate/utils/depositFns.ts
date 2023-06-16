@@ -139,7 +139,6 @@ export const handleTxExtrinsicResult = (
  * Creates a destination multilocation object for the deposit transaction.
  *
  * @example
- * // Create a destination multilocation object
  * const address = '0x123abc';
  * const domainId = '42';
  * const multilocationData = createDestIdMultilocationData(address, domainId);
@@ -147,9 +146,10 @@ export const handleTxExtrinsicResult = (
  * // Output: {
  * //   parents: 0,
  * //   interior: {
- * //     x2: [
+ * //     x3: [
+ * //       { generalKey: '0x7379676d61000000000000000000000000000000000000000000000000000000'}
+ * //       { generalIndex: '0x2a' }
  * //       { generalKey: '0x123abc' },
- * //       { generalKey: '0x2a' }
  * //     ]
  * //   }
  * // }
@@ -162,9 +162,12 @@ export const handleTxExtrinsicResult = (
 export const createDestIdMultilocationData = (address: string, domainId: string): object => ({
   parents: 0,
   interior: {
-    x2: [
-      { generalKey: [20, address.padEnd(66, '0')] },
-      { generalKey: [1, numberToHex(Number(domainId)).padEnd(66, '0')] },
+    x3: [
+      {
+        generalKey: [5, '0x7379676d61000000000000000000000000000000000000000000000000000000'],
+      },
+      { generalIndex: numberToHex(Number(domainId)) },
+      { generalKey: [(address.length - 2) / 2, address.padEnd(66, '0')] },
     ],
   },
 });
