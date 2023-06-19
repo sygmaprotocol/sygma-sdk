@@ -4,7 +4,8 @@ import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import { BN, numberToHex } from '@polkadot/util';
 import type { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
 
-import { XcmMultiAssetIdType } from '../types/index.js';
+import { Environment } from '../../../types';
+import { XcmMultiAssetIdType } from '../types';
 
 export type DepositEventDataType = {
   depositData: string;
@@ -155,22 +156,40 @@ export const handleTxExtrinsicResult = (
  * // }
  *
  * @category Bridge deposit
+ * @param {Environment} environment - The environment from which the transfer is being made
  * @param {string} address - The recipient address.
  * @param {string} domainId - The domain identifier.
  * @returns {object} - The destination multilocation object.
  */
-export const createDestIdMultilocationData = (address: string, domainId: string): object => ({
-  parents: 0,
-  interior: {
-    x3: [
-      {
-        generalKey: [5, '0x7379676d61000000000000000000000000000000000000000000000000000000'],
-      },
-      { generalIndex: numberToHex(Number(domainId)) },
-      { generalKey: [(address.length - 2) / 2, address.padEnd(66, '0')] },
-    ],
-  },
-});
+export const createDestIdMultilocationData = (
+  environment: Environment,
+  address: string,
+  domainId: string,
+): object => {
+  switch (environment) {
+    case Environment.LOCAL:
+      return {
+        parents: 0,
+        interior: {
+          x2: [{ generalKey: address }, { generalKey: numberToHex(Number(domainId)) }],
+        },
+      };
+    default:
+      return {
+        parents: 0,
+        interior: {
+          x3: [
+            // This is the `sygma` multilocation path
+            {
+              generalKey: [5, '0x7379676d61000000000000000000000000000000000000000000000000000000'],
+            },
+            { generalIndex: numberToHex(Number(domainId)) },
+            { generalKey: [(address.length - 2) / 2, address.padEnd(66, '0')] },
+          ],
+        },
+      };
+  }
+};
 
 /**
  * Creates an MultiAsset data for the deposit transaction.
@@ -206,19 +225,24 @@ export const createMultiAssetData = (
  * @param {ApiPromise} api - The ApiPromise instance.
  * @param {XcmMultiAssetIdType} xcmMultiAssetId - The XCM multi-asset ID type.
  * @param {string} amount - The amount to be deposited.
- * @param {string} domainId - The domain ID of the destination address.
+ * @param {string} destinationDomainId - The domain ID of the destination address.
  * @param {string} destinationAddress - The destination address of the deposit transaction.
  * @returns {SubmittableExtrinsic<"promise", SubmittableResult>} - A SubmittableExtrinsic representing the deposit transaction.
  */
 export const deposit = (
+  environment: Environment,
   api: ApiPromise,
   xcmMultiAssetId: XcmMultiAssetIdType,
   amount: string,
-  domainId: string,
+  destinationDomainId: string,
   destinationAddress: string,
 ): SubmittableExtrinsic<'promise', SubmittableResult> => {
   const asset = createMultiAssetData(xcmMultiAssetId, api, amount);
-  const destIdMultilocation = createDestIdMultilocationData(destinationAddress, domainId);
+  const destIdMultilocation = createDestIdMultilocationData(
+    environment,
+    destinationAddress,
+    destinationDomainId,
+  );
 
   return api.tx.sygmaBridge.deposit(asset, destIdMultilocation);
 };
