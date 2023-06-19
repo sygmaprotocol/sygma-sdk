@@ -42,7 +42,7 @@ import { SubstrateFee, deposit, getBasicFee } from '.';
  */
 export class SubstrateAssetTransfer {
   private apiPromise!: ApiPromise;
-
+  private environment!: Environment;
   public config!: Config;
 
   public async init(
@@ -52,6 +52,7 @@ export class SubstrateAssetTransfer {
   ): Promise<void> {
     this.apiPromise = apiPromise;
     this.config = new Config();
+    this.environment = environment;
     await this.config.init(parachainId.valueOf(), environment);
   }
 
@@ -85,6 +86,7 @@ export class SubstrateAssetTransfer {
     switch (transfer.resource.type) {
       case ResourceType.FUNGIBLE: {
         return deposit(
+          this.environment,
           this.apiPromise,
           (transfer.resource as SubstrateResource).xcmMultiAssetId,
           (transfer.amount as Fungible).amount,
