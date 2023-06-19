@@ -4,10 +4,12 @@ import {
   Fungible,
   Transfer, SubstrateAssetTransfer, SubstrateParachain, SubstrateResource,
 } from "@buildwithsygma/sygma-sdk-core";
-import { Wallet, providers } from "ethers";
+import {Wallet, providers, ethers} from "ethers";
 import {Keyring} from "@polkadot/keyring";
 import {cryptoWaitReady} from "@polkadot/util-crypto";
 import {ApiPromise, WsProvider} from "@polkadot/api";
+import {ERC20PresetMinterPauser__factory} from "@buildwithsygma/sygma-contracts"
+import { NonceManager } from "@ethersproject/experimental";
 
 const ERC20_TOKEN_SYMBOL = "ERC20LRTest";
 const SUBSTRATE_DESTINATION_ADDRESS = "5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt";
@@ -31,10 +33,11 @@ export async function fungibleTransferFromEVM(): Promise<void> {
   const provider = new providers.JsonRpcProvider(
     EVM1_RPC_URL
   );
-  const wallet = new Wallet(
+  const w = new Wallet(
     "cc2c32b154490f09f70c1c8d4b997238448d649e0777495863db231c4ced3616",
     provider
   );
+  const wallet = new NonceManager(w)
 
   const assetTransfer = new EVMAssetTransfer();
   await assetTransfer.init(provider, Environment.LOCAL);
@@ -59,8 +62,20 @@ export async function fungibleTransferFromEVM(): Promise<void> {
     throw new Error("Network substrate not supported");
   }
 
+  const tokenAddress = "0x78E5b9cEC9aEA29071f070C8cC561F692B3511A6";
+  const sender = await wallet.getAddress();
+
+  const sourceErc20LR18Contract = new ERC20PresetMinterPauser__factory(
+      wallet as any
+  ).attach(tokenAddress);
+  const balanceBefore = await sourceErc20LR18Contract.balanceOf(sender)
+
+  console.log(`Transferring 5 tokens from evm1 to substrate.`);
+  console.log(`Sender: ${sender}`);
+  console.log(`Sender token balance before:${balanceBefore}`);
+
   const transfer: Transfer<Fungible> = {
-    sender: await wallet.getAddress(),
+    sender: sender,
     amount: {
       // amount in wei
       amount: "500000000",
@@ -87,6 +102,13 @@ export async function fungibleTransferFromEVM(): Promise<void> {
     transferTx as providers.TransactionRequest
   );
   console.log("Sent transfer with hash: " + response.hash);
+
+  console.log("Waiting for relayers to bridge transaction...")
+  await sleep(20000)
+
+  console.log("Transaction successfully bridged.")
+  const balanceAfter = await sourceErc20LR18Contract.balanceOf(sender)
+  console.log(`Sender token balance after:${balanceAfter}`);
 }
 
 export async function fungibleTransferFromSubstrate(): Promise<void> {
