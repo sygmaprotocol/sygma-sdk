@@ -1,8 +1,9 @@
 import { ApiPromise } from '@polkadot/api';
 import { BN } from '@polkadot/util';
-import { XcmMultiAssetIdType } from '../types/index.js';
+import { XcmMultiAssetIdType } from '../types';
 
 import * as Utils from '../utils/depositFns.js';
+import { Environment } from '../../../types';
 
 jest.mock('@polkadot/api');
 
@@ -35,6 +36,8 @@ describe('deposit', () => {
       },
     });
 
+    jest.spyOn(Utils, 'createDestIdMultilocationData');
+
     api = {
       tx: {
         sygmaBridge: {
@@ -45,8 +48,13 @@ describe('deposit', () => {
       },
     } as unknown as ApiPromise;
 
-    Utils.deposit(api, xcmMultiAssetId, amount, domainId, address);
+    Utils.deposit(Environment.LOCAL, api, xcmMultiAssetId, amount, domainId, address);
     expect(Utils.createMultiAssetData).toHaveBeenCalledWith(xcmMultiAssetId, api, '1000000000000');
+    expect(Utils.createDestIdMultilocationData).toHaveBeenCalledWith(
+      Environment.LOCAL,
+      address,
+      domainId,
+    );
     jest.resetAllMocks();
   });
 });
