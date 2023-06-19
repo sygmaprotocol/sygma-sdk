@@ -4,11 +4,11 @@ import {
   Fungible,
   Transfer, SubstrateAssetTransfer, SubstrateParachain, SubstrateResource,
 } from "@buildwithsygma/sygma-sdk-core";
-import {Wallet, providers, ethers} from "ethers";
-import {Keyring} from "@polkadot/keyring";
-import {cryptoWaitReady} from "@polkadot/util-crypto";
-import {ApiPromise, WsProvider} from "@polkadot/api";
-import {ERC20PresetMinterPauser__factory} from "@buildwithsygma/sygma-contracts"
+import { Wallet, providers, ethers } from "ethers";
+import { Keyring } from "@polkadot/keyring";
+import { cryptoWaitReady } from "@polkadot/util-crypto";
+import { ApiPromise, WsProvider } from "@polkadot/api";
+import { ERC20PresetMinterPauser__factory } from "@buildwithsygma/sygma-contracts"
 import { NonceManager } from "@ethersproject/experimental";
 
 const ERC20_TOKEN_SYMBOL = "ERC20LRTest";
@@ -27,12 +27,10 @@ const SUBSTRATE_RPC_URL = "ws://127.0.0.1:9944"
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 
 const ALICE_MNEMONIC =
-    "bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice";
+  "bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice";
 
 export async function fungibleTransferFromEVM(): Promise<void> {
-  const provider = new providers.JsonRpcProvider(
-    EVM1_RPC_URL
-  );
+  const provider = new providers.JsonRpcProvider(EVM1_RPC_URL);
   const w = new Wallet(
     "cc2c32b154490f09f70c1c8d4b997238448d649e0777495863db231c4ced3616",
     provider
@@ -66,7 +64,7 @@ export async function fungibleTransferFromEVM(): Promise<void> {
   const sender = await wallet.getAddress();
 
   const sourceErc20LR18Contract = new ERC20PresetMinterPauser__factory(
-      wallet as any
+    wallet as any
   ).attach(tokenAddress);
   const balanceBefore = await sourceErc20LR18Contract.balanceOf(sender)
 
@@ -121,12 +119,12 @@ export async function fungibleTransferFromSubstrate(): Promise<void> {
   const account = keyring.addFromUri(ALICE_MNEMONIC);
 
   const wsProvider = new WsProvider(
-      SUBSTRATE_RPC_URL
+    SUBSTRATE_RPC_URL
   );
   const api = await ApiPromise.create({ provider: wsProvider });
 
   const balanceBefore = (
-      await api.query.assets.account(2000, account.address)
+    await api.query.assets.account(2000, account.address)
   ).toHuman() as { balance: string };
   console.log(`Transferring 5 tokens from substrate to evm1.`);
   console.log(`Sender (Alice): ${account.address}`);
@@ -134,16 +132,16 @@ export async function fungibleTransferFromSubstrate(): Promise<void> {
 
   const assetTransfer = new SubstrateAssetTransfer();
   await assetTransfer.init(
-      api,
-      SubstrateParachain.LOCAL,
-      Environment.LOCAL
+    api,
+    SubstrateParachain.LOCAL,
+    Environment.LOCAL
   );
 
   const domains = assetTransfer.config.getDomains();
   const resources = assetTransfer.config.getDomainResources();
 
   const erc20Resource = resources.find(
-      (resource) => resource.resourceId == RESOURCE_ID
+    (resource) => resource.resourceId == RESOURCE_ID
   );
   if (!erc20Resource) {
     throw new Error("Resource not found");
@@ -153,7 +151,7 @@ export async function fungibleTransferFromSubstrate(): Promise<void> {
     throw new Error("Network goerli not supported");
   }
   const substrateNetwork = domains.find(
-      (domain) => domain.chainId == EVM1_CHAIN_ID
+    (domain) => domain.chainId == EVM1_CHAIN_ID
   );
   if (!substrateNetwork) {
     throw new Error("Network sepolia not supported");
@@ -181,11 +179,11 @@ export async function fungibleTransferFromSubstrate(): Promise<void> {
 
     if (status.isInBlock) {
       console.log(
-          `Transaction included at blockHash ${status.asInBlock.toString()}`
+        `Transaction included at blockHash ${status.asInBlock.toString()}`
       );
     } else if (status.isFinalized) {
       console.log(
-          `Transaction finalized at blockHash ${status.asFinalized.toString()}`
+        `Transaction finalized at blockHash ${status.asFinalized.toString()}`
       );
       unsub();
     }
@@ -196,10 +194,10 @@ export async function fungibleTransferFromSubstrate(): Promise<void> {
   console.log("Waiting for relayers to bridge transaction...")
   await sleep(20000)
   const balanceAfter = (
-      await api.query.assets.account(2000, account.address)
+    await api.query.assets.account(2000, account.address)
   ).toHuman() as { balance: string };
   console.log("Transaction successfully bridged.")
-  console.log(`Alice token balance before:${balanceAfter.balance}`);
+  console.log(`Alice token balance after: ${balanceAfter.balance}`);
 }
 
 // start specific example based on process arg
@@ -208,7 +206,7 @@ switch (process.argv[2]) {
     fungibleTransferFromEVM().finally(() => { });
     break;
   case "2":
-    fungibleTransferFromSubstrate().finally(() => {});
+    fungibleTransferFromSubstrate().finally(() => { });
     break;
   default:
     console.log("example not supported")
