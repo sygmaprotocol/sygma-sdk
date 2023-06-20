@@ -43,8 +43,6 @@ import { SubstrateFee, deposit, getBasicFee } from '.';
  */
 export class SubstrateAssetTransfer extends BaseAssetTransfer {
   private apiPromise!: ApiPromise;
-  private environment!: Environment;
-  public config!: Config;
 
   public async init(
     apiPromise: ApiPromise,
@@ -52,6 +50,8 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
   ): Promise<void> {
     this.apiPromise = apiPromise;
     const parachainId = apiPromise.consts.sygmaBridge.eip712ChainID as U256;
+    this.environment = environment;
+
     this.config = new Config();
     // This is probably not too safe and might overflow
     await this.config.init(parachainId.toNumber(), environment);
@@ -97,8 +97,7 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
       }
       default:
         throw new Error(
-          `Resource type ${
-            transfer.resource.type
+          `Resource type ${transfer.resource.type
           } with ${fee.fee.toString()} not supported by asset transfer`,
         );
     }

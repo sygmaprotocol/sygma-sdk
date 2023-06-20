@@ -1,8 +1,9 @@
-import { Fungible, Transfer } from '../types';
+import { Environment, Fungible, Transfer } from '../types';
 import { Config } from '../config';
 
 export abstract class BaseAssetTransfer {
   public config!: Config;
+  public environment!: Environment;
 
   public createFungibleTransfer(
     sourceAddress: string,

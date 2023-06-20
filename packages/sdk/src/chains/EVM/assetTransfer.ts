@@ -69,7 +69,6 @@ import {
  */
 export class EVMAssetTransfer extends BaseAssetTransfer {
   private provider!: providers.BaseProvider;
-  private environment!: Environment;
 
   public async init(
     provider: providers.BaseProvider,

@@ -11,33 +11,32 @@ import {
 import { ConfigUrl } from './index.js';
 
 export class Config {
-  public environment!: RawConfig;
   public chainId!: number;
+  public environment!: RawConfig;
 
-  public async init(chainId: number, environment?: Environment): Promise<void> {
+  public async init(chainId: number, environment: Environment): Promise<void> {
     this.chainId = chainId;
-
     if (environment === Environment.LOCAL) {
       this.environment = localConfig;
       return;
     }
 
-    let network;
+    let configUrl;
     switch (environment) {
       case Environment.DEVNET: {
-        network = ConfigUrl.DEVNET;
+        configUrl = ConfigUrl.DEVNET;
         break;
       }
       case Environment.TESTNET: {
-        network = ConfigUrl.TESTNET;
+        configUrl = ConfigUrl.TESTNET;
         break;
       }
       default:
-        network = ConfigUrl.MAINNET;
+        configUrl = ConfigUrl.MAINNET;
     }
 
     try {
-      const response = await axios.get(network);
+      const response = await axios.get(configUrl);
       this.environment = response.data as unknown as RawConfig;
     } catch (err) {
       if (err instanceof Error) {

@@ -172,7 +172,7 @@ export const createDestIdMultilocationData = (
         parents: 0,
         interior: {
           x2: [
-            { generalKey: [20, address.padEnd(66, '0')] },
+            { generalKey: [(address.length - 2) / 2, address.padEnd(66, '0')] },
             { generalKey: [1, numberToHex(Number(domainId)).padEnd(66, '0')] },
           ],
         },
