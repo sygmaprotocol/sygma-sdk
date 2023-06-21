@@ -80,9 +80,9 @@ export async function fungibleTransferFromEVM(): Promise<void> {
   const transfer = assetTransfer.createFungibleTransfer(
     sender,
     SUBSTRATE_CHAIN_ID,
-    SUBSTRATE_DESTINATION_ADDRESS,
+    account.address,
     RESOURCE_ID,
-    500000000000
+    5000000000000000000
   );
 
   const fee = await assetTransfer.getFee(transfer);
