@@ -97,7 +97,8 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
       }
       default:
         throw new Error(
-          `Resource type ${transfer.resource.type
+          `Resource type ${
+            transfer.resource.type
           } with ${fee.fee.toString()} not supported by asset transfer`,
         );
     }
