@@ -22,6 +22,7 @@ import {
 } from '../../types';
 import { Config } from '../..';
 import { getFeeOracleBaseURL } from '../../utils';
+import { BaseAssetTransfer } from '../BaseAssetTransfer';
 import {
   EvmFee,
   approve,
@@ -66,16 +67,16 @@ import {
  * await wallet.sendTransaction(trasnferTx);
  *
  */
-export class EVMAssetTransfer {
+export class EVMAssetTransfer extends BaseAssetTransfer {
   private provider!: providers.BaseProvider;
-  private environment!: Environment;
 
-  public config!: Config;
-
-  public async init(provider: providers.BaseProvider, environment?: Environment): Promise<void> {
+  public async init(
+    provider: providers.BaseProvider,
+    environment: Environment = Environment.MAINNET,
+  ): Promise<void> {
     this.provider = provider;
     const network = await this.provider.getNetwork();
-    this.environment = environment ? environment : Environment.MAINNET;
+    this.environment = environment;
     this.config = new Config();
     await this.config.init(network.chainId, environment);
   }

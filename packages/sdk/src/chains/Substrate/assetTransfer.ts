@@ -1,15 +1,16 @@
 import { ApiPromise, SubmittableResult } from '@polkadot/api';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { U256 } from '@polkadot/types';
 import {
   Environment,
   Fungible,
   ResourceType,
-  SubstrateParachain,
   SubstrateResource,
   Transfer,
   TransferType,
 } from '../../types';
 import { Config } from '../..';
+import { BaseAssetTransfer } from '../BaseAssetTransfer';
 import { SubstrateFee, deposit, getBasicFee } from '.';
 
 /**
@@ -40,20 +41,20 @@ import { SubstrateFee, deposit, getBasicFee } from '.';
  *
  * <sign and send transfer>
  */
-export class SubstrateAssetTransfer {
+export class SubstrateAssetTransfer extends BaseAssetTransfer {
   private apiPromise!: ApiPromise;
-  private environment!: Environment;
-  public config!: Config;
 
   public async init(
     apiPromise: ApiPromise,
-    parachainId: SubstrateParachain,
-    environment: Environment = Environment.LOCAL,
+    environment: Environment = Environment.MAINNET,
   ): Promise<void> {
     this.apiPromise = apiPromise;
-    this.config = new Config();
+    const parachainId = apiPromise.consts.sygmaBridge.eip712ChainID as U256;
     this.environment = environment;
-    await this.config.init(parachainId.valueOf(), environment);
+
+    this.config = new Config();
+    // This is probably not too safe and might overflow
+    await this.config.init(parachainId.toNumber(), environment);
   }
 
   /**
