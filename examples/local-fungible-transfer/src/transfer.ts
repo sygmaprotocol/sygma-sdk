@@ -89,16 +89,16 @@ export async function fungibleTransferFromEVM(): Promise<void> {
   const approvals = await assetTransfer.buildApprovals(transfer, fee);
   for (const approval of approvals) {
     const response = await wallet.sendTransaction(
-      approval as providers.TransactionRequest
+        approval as providers.TransactionRequest
     );
     console.log("Sent approval with hash: " + response.hash);
   }
   const transferTx = await assetTransfer.buildTransferTransaction(
-    transfer,
-    fee
+      transfer,
+      fee
   );
   const response = await wallet.sendTransaction(
-    transferTx as providers.TransactionRequest
+      transferTx as providers.TransactionRequest
   );
   console.log("Sent transfer with hash: " + response.hash);
 
@@ -150,7 +150,7 @@ export async function fungibleTransferFromSubstrate(): Promise<void> {
   );
 
   const sourceBalanceBefore = (
-    await api.query.assets.account(2000, account.address)
+      await api.query.assets.account(2000, account.address)
   ).toHuman() as { balance: string };
   console.log(`Transferring 5 tokens from substrate to evm1.`);
   console.log(`Sender (Alice): ${account.address}`);
@@ -181,11 +181,11 @@ export async function fungibleTransferFromSubstrate(): Promise<void> {
 
     if (status.isInBlock) {
       console.log(
-        `Transaction included at blockHash ${status.asInBlock.toString()}`
+          `Transaction included at blockHash ${status.asInBlock.toString()}`
       );
     } else if (status.isFinalized) {
       console.log(
-        `Transaction finalized at blockHash ${status.asFinalized.toString()}`
+          `Transaction finalized at blockHash ${status.asFinalized.toString()}`
       );
       unsub();
     }
@@ -215,7 +215,7 @@ export async function fungibleTransferFromSubstrate(): Promise<void> {
   }
 
   const balanceAfter = (
-    await api.query.assets.account(2000, account.address)
+      await api.query.assets.account(2000, account.address)
   ).toHuman() as { balance: string };
 
   console.log(
