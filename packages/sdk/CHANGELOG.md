@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.0.1...sygma-sdk-core-v2.1.0) (2023-06-22)
+
+
+### Features
+
+* add helper to create Transfer object ([#267](https://github.com/sygmaprotocol/sygma-sdk/issues/267)) ([930edb0](https://github.com/sygmaprotocol/sygma-sdk/commit/930edb0fd6bb2ee77c9f18dc32a77bc2683dcfd8))
+
+
+### Bug Fixes
+
+* update createDestinationMultiLocation to use Xcm V3 Multilocation ([#270](https://github.com/sygmaprotocol/sygma-sdk/issues/270)) ([f95efc4](https://github.com/sygmaprotocol/sygma-sdk/commit/f95efc4380bc0cac3aa81feb0d8b74b08c01b928))
+
 ## [2.0.1](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.0.0...sygma-sdk-core-v2.0.1) (2023-06-05)
 
 
