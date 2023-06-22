@@ -475,31 +475,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@buildwithsygma/sygma-sdk-core@npm:2.0.1":
-  version: 2.0.1
-  resolution: "@buildwithsygma/sygma-sdk-core@npm:2.0.1"
-  dependencies:
-    "@buildwithsygma/sygma-contracts": 2.1.2
-    "@ethersproject/abi": ^5.7.0
-    "@ethersproject/bytes": ^5.7.0
-    "@ethersproject/contracts": ^5.7.0
-    "@ethersproject/providers": ^5.7.2
-    "@polkadot/api": 10.7.2
-    "@polkadot/api-augment": 10.7.2
-    "@polkadot/extension-inject": 0.46.3
-    "@polkadot/keyring": 12.2.1
-    "@polkadot/rpc-provider": 10.7.2
-    "@polkadot/ui-keyring": 3.4.1
-    "@polkadot/util": 12.2.1
-    "@polkadot/util-crypto": 12.2.1
-    axios: ^1.4.0
-    cross-fetch: ^3.1.5
-    ethers: 5.6.2
-  checksum: 078dbc391622c7d8c0065bdb87a326f4d9056a272f110ab65f0469a49763230a2080d1144327d78ec5f37c0b362c729bd14136171358b8954cc7bd5dbc860bd0
-  languageName: node
-  linkType: hard
-
-"@buildwithsygma/sygma-sdk-core@workspace:packages/sdk":
+"@buildwithsygma/sygma-sdk-core@2.1.0, @buildwithsygma/sygma-sdk-core@workspace:packages/sdk":
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-core@workspace:packages/sdk"
   dependencies:
@@ -539,11 +515,35 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@buildwithsygma/sygma-sdk-core@npm:2.0.1":
+  version: 2.0.1
+  resolution: "@buildwithsygma/sygma-sdk-core@npm:2.0.1"
+  dependencies:
+    "@buildwithsygma/sygma-contracts": 2.1.2
+    "@ethersproject/abi": ^5.7.0
+    "@ethersproject/bytes": ^5.7.0
+    "@ethersproject/contracts": ^5.7.0
+    "@ethersproject/providers": ^5.7.2
+    "@polkadot/api": 10.7.2
+    "@polkadot/api-augment": 10.7.2
+    "@polkadot/extension-inject": 0.46.3
+    "@polkadot/keyring": 12.2.1
+    "@polkadot/rpc-provider": 10.7.2
+    "@polkadot/ui-keyring": 3.4.1
+    "@polkadot/util": 12.2.1
+    "@polkadot/util-crypto": 12.2.1
+    axios: ^1.4.0
+    cross-fetch: ^3.1.5
+    ethers: 5.6.2
+  checksum: 078dbc391622c7d8c0065bdb87a326f4d9056a272f110ab65f0469a49763230a2080d1144327d78ec5f37c0b362c729bd14136171358b8954cc7bd5dbc860bd0
+  languageName: node
+  linkType: hard
+
 "@buildwithsygma/sygma-sdk-evm-to-evm-fungible-transfer-example@workspace:examples/evm-to-evm-fungible-transfer":
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-evm-to-evm-fungible-transfer-example@workspace:examples/evm-to-evm-fungible-transfer"
   dependencies:
-    "@buildwithsygma/sygma-sdk-core": 2.0.1
+    "@buildwithsygma/sygma-sdk-core": 2.1.0
     eslint: 8
     eslint-config-prettier: 8.3.0
     eslint-plugin-only-warn: 1.0.3
@@ -558,7 +558,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-evm-to-substrate-fungible-transfer-example@workspace:examples/evm-to-substrate-fungible-transfer"
   dependencies:
-    "@buildwithsygma/sygma-sdk-core": 2.0.1
+    "@buildwithsygma/sygma-sdk-core": 2.1.0
     eslint: 8
     eslint-config-prettier: 8.3.0
     eslint-plugin-only-warn: 1.0.3
