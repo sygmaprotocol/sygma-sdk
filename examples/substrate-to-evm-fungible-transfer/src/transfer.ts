@@ -37,7 +37,7 @@ const substrateTransfer = async (): Promise<void> => {
     GOERLI_CHAIN_ID,
     recipient,
     RESOURCE_ID,
-    50
+    "5000000000000"
   );
 
   const fee = await assetTransfer.getFee(transfer);

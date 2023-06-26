@@ -23,7 +23,7 @@ export async function erc20Transfer(): Promise<void> {
     ROCOCO_PHALA_CHAIN_ID,
     DESTINATION_ADDRESS,
     RESOURCE_ID,
-    500000000
+    "5000000000000000000"
   );
 
   const fee = await assetTransfer.getFee(transfer);
