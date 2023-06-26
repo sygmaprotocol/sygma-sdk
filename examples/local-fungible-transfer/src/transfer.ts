@@ -82,7 +82,7 @@ export async function fungibleTransferFromEVM(): Promise<void> {
     SUBSTRATE_CHAIN_ID,
     account.address,
     RESOURCE_ID,
-    "5000000000000000000" // 18 Decimal Places
+    "5000000000000000000" // 18 decimal places
   );
 
   const fee = await assetTransfer.getFee(transfer);
