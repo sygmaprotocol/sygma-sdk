@@ -9,7 +9,7 @@
     <img alt="GitHub" src="https://img.shields.io/github/license/sygmaprotocol/sygma-sdk">
   <a href="https://www.npmjs.com/package/@buildwithsygma/sygma-sdk-core">
   <a href="https://discord.gg/Qdf6GyNB5J">
-    <img alt="discord" src="https://img.shields.io/discord/593655374469660673?label=Discord&logo=discord&style=flat" />
+    <img alt="discord" src="https://img.shields.io/discord/999966147644493824?label=Discord&logo=discord&style=flat" />
   </a>
     <img alt="npm" src="https://img.shields.io/npm/v/@buildwithsygma/sygma-sdk-core">
   </a>
