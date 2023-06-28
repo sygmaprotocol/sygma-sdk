@@ -42,7 +42,7 @@ For interacting directly with the contracts use the `@buildwithsygma/sygma-contr
 
 ## Support
 <a href="https://discord.gg/ykXsJKfhgq">
-  <img alt="discord" src="https://img.shields.io/discord/593655374469660673?label=Discord&logo=discord&style=flat" />
+  <img alt="discord" src="https://img.shields.io/discord/999966147644493824?label=Discord&logo=discord&style=flat" />
 </a>
 
 ## License
