@@ -205,12 +205,11 @@ export const createDestIdMultilocationData = (
  */
 export const createMultiAssetData = (
   xcmMultiAssetId: XcmMultiAssetIdType,
-  api: ApiPromise,
   amount: string,
 ): object => ({
   id: xcmMultiAssetId,
   fun: {
-    fungible: calculateBigNumber(api, amount).toString(),
+    fungible: amount,
   },
 });
 
@@ -240,7 +239,7 @@ export const deposit = (
   destinationDomainId: string,
   destinationAddress: string,
 ): SubmittableExtrinsic<'promise', SubmittableResult> => {
-  const asset = createMultiAssetData(xcmMultiAssetId, api, amount);
+  const asset = createMultiAssetData(xcmMultiAssetId, amount);
   const destIdMultilocation = createDestIdMultilocationData(
     environment,
     destinationAddress,

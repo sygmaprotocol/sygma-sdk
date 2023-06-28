@@ -83,7 +83,7 @@ describe('Substrate asset transfer', () => {
         11155111,
         '0x557abEc0cb31Aa925577441d54C090987c2ED818',
         '0x0000000000000000000000000000000000000000000000000000000000001000',
-        200,
+        "200",
       );
 
       expect(actualVal).toStrictEqual(expectedVal);
@@ -97,7 +97,7 @@ describe('Substrate asset transfer', () => {
         11155111,
         '0x557abEc0cb31Aa925577441d54C090987c2ED818',
         '0x0000000000000000000000000000000000000000000000000000000000001000',
-        200,
+        "200",
       );
 
       const fee = await assetTransfer.getFee(transfer);
@@ -118,7 +118,7 @@ describe('Substrate asset transfer', () => {
         11155111,
         '0x557abEc0cb31Aa925577441d54C090987c2ED818',
         '0x0000000000000000000000000000000000000000000000000000000000001000',
-        200,
+        "200",
       );
 
       const fee = {
