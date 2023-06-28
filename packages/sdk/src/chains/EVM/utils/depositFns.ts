@@ -27,7 +27,7 @@ export const ASSET_TRANSFER_GAS_LIMIT: BigNumber = BigNumber.from(300000);
  * @returns {Promise<ContractTransaction>} - The populated transaction.
  */
 export const erc20Transfer = async ({
-  amount: amount,
+  amount,
   recipientAddress,
   bridgeInstance,
   domainId,
