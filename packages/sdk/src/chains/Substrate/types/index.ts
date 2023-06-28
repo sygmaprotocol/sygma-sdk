@@ -1,20 +1,20 @@
 import { AccountInfo } from '@polkadot/types/interfaces';
-import { ethers } from 'ethers';
+import { BN } from '@polkadot/util';
 import { FeeHandlerType } from '../../../types';
 
 export type XcmMultiAssetIdType = {
   concrete: {
     parents: number;
     interior:
-      | 'here'
-      | {
-          x3: Array<{ parachain: number } | { generalKey: [number, string] }>; // This is a tuple of length and value
-        };
+    | 'here'
+    | {
+      x3: Array<{ parachain: number } | { generalKey: [number, string] }>; // This is a tuple of length and value
+    };
   };
 };
 
 export type SubstrateFee = {
-  fee: ethers.BigNumber;
+  fee: BN;
   type: FeeHandlerType;
 };
 

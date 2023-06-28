@@ -12,6 +12,7 @@ import {
 import { Config } from '../..';
 import { BaseAssetTransfer } from '../BaseAssetTransfer';
 import { SubstrateFee, deposit, getBasicFee } from '.';
+import { BN } from '@polkadot/util';
 
 /**
  * Class used for sending fungible and non-fungible transfers from Substrate based chains.
@@ -79,6 +80,7 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
    * @param transfer Instance of transfer
    * @param fee The fee to be paid for the transfer
    * @returns {SubmittableExtrinsic<'promise', SubmittableResult>} SubmittableExtrinsic which can be signed and sent
+   * @throws {Error} Transfer amount too low
    */
   public buildTransferTransaction(
     transfer: Transfer<TransferType>,
@@ -86,6 +88,10 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
   ): SubmittableExtrinsic<'promise', SubmittableResult> {
     switch (transfer.resource.type) {
       case ResourceType.FUNGIBLE: {
+        if (new BN((transfer.amount as Fungible).amount).lt(fee.fee)) {
+          throw new Error('Transfer amount should be higher than transfer fee');
+        }
+
         return deposit(
           this.environment,
           this.apiPromise,
@@ -97,8 +103,7 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
       }
       default:
         throw new Error(
-          `Resource type ${
-            transfer.resource.type
+          `Resource type ${transfer.resource.type
           } with ${fee.fee.toString()} not supported by asset transfer`,
         );
     }
