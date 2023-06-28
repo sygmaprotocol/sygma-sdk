@@ -1,6 +1,7 @@
 import { ApiPromise, SubmittableResult } from '@polkadot/api';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { U256 } from '@polkadot/types';
+import { BN } from '@polkadot/util';
 import {
   Environment,
   Fungible,
@@ -12,7 +13,6 @@ import {
 import { Config } from '../..';
 import { BaseAssetTransfer } from '../BaseAssetTransfer';
 import { SubstrateFee, deposit, getBasicFee } from '.';
-import { BN } from '@polkadot/util';
 
 /**
  * Class used for sending fungible and non-fungible transfers from Substrate based chains.
@@ -103,7 +103,8 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
       }
       default:
         throw new Error(
-          `Resource type ${transfer.resource.type
+          `Resource type ${
+            transfer.resource.type
           } with ${fee.fee.toString()} not supported by asset transfer`,
         );
     }
