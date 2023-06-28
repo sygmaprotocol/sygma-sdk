@@ -1,7 +1,5 @@
 import axios from 'axios';
-import { BigNumber } from 'ethers';
 import MockAdapter from 'axios-mock-adapter';
-
 import { ApiPromise } from '@polkadot/api';
 import { BN } from '@polkadot/util';
 import { FeeHandlerType, Environment } from '../../../src/types';
@@ -34,7 +32,7 @@ const mockApiPromise = {
 } as unknown as Partial<ApiPromise>;
 
 const calculateBasicFeeMock = jest.spyOn(Substrate, 'getBasicFee').mockResolvedValue({
-  fee: BigNumber.from('100'),
+  fee: new BN('100'),
   type: FeeHandlerType.BASIC,
 });
 
@@ -83,7 +81,7 @@ describe('Substrate asset transfer', () => {
         11155111,
         '0x557abEc0cb31Aa925577441d54C090987c2ED818',
         '0x0000000000000000000000000000000000000000000000000000000000001000',
-        "200",
+        '200',
       );
 
       expect(actualVal).toStrictEqual(expectedVal);
@@ -97,13 +95,13 @@ describe('Substrate asset transfer', () => {
         11155111,
         '0x557abEc0cb31Aa925577441d54C090987c2ED818',
         '0x0000000000000000000000000000000000000000000000000000000000001000',
-        "200",
+        '200',
       );
 
       const fee = await assetTransfer.getFee(transfer);
 
       expect(fee).toEqual({
-        fee: BigNumber.from(100),
+        fee: new BN(100),
         type: FeeHandlerType.BASIC,
       });
 
@@ -118,16 +116,33 @@ describe('Substrate asset transfer', () => {
         11155111,
         '0x557abEc0cb31Aa925577441d54C090987c2ED818',
         '0x0000000000000000000000000000000000000000000000000000000000001000',
-        "200",
+        '200',
       );
 
       const fee = {
-        fee: BigNumber.from('100'),
+        fee: new BN('100'),
         type: FeeHandlerType.BASIC,
       };
       const tx = assetTransfer.buildTransferTransaction(transfer, fee);
 
       expect(tx).toBeDefined();
+    });
+
+    it('Should throw an error if the fee is greater than the amount being transferred', () => {
+      const transfer = assetTransfer.createFungibleTransfer(
+        '5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS',
+        11155111,
+        '0x557abEc0cb31Aa925577441d54C090987c2ED818',
+        '0x0000000000000000000000000000000000000000000000000000000000001000',
+        '200',
+      );
+
+      const fee = {
+        fee: new BN('500'),
+        type: FeeHandlerType.BASIC,
+      };
+
+      expect(() => assetTransfer.buildTransferTransaction(transfer, fee)).toThrow();
     });
   });
 });

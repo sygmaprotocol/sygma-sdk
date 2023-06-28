@@ -1,5 +1,5 @@
 import { AccountInfo } from '@polkadot/types/interfaces';
-import { ethers } from 'ethers';
+import { BN } from '@polkadot/util';
 import { FeeHandlerType } from '../../../types';
 
 export type XcmMultiAssetIdType = {
@@ -14,7 +14,7 @@ export type XcmMultiAssetIdType = {
 };
 
 export type SubstrateFee = {
-  fee: ethers.BigNumber;
+  fee: BN;
   type: FeeHandlerType;
 };
 

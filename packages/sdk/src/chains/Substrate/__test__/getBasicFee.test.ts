@@ -1,7 +1,7 @@
 import { ApiPromise } from '@polkadot/api';
 import { u128, Option } from '@polkadot/types';
 import { TypeRegistry } from '@polkadot/types/create';
-import { BigNumber } from 'ethers';
+import { BN } from '@polkadot/util';
 import { FeeHandlerType } from '../../../types';
 import { XcmMultiAssetIdType, getBasicFee } from '../utils';
 
@@ -9,7 +9,8 @@ const registry = new TypeRegistry();
 
 describe('Substrate - getBasicFee', () => {
   it('should return the basic fee', async () => {
-    const mockFee = '0x12345678';
+    const mockFee = '100000';
+    const mockFeeBN = new BN(mockFee);
     const rawResult = new Option(registry, u128, mockFee);
 
     const api: ApiPromise = {
@@ -45,8 +46,8 @@ describe('Substrate - getBasicFee', () => {
     expect(feeRes).toBeDefined();
     expect(feeRes).toHaveProperty('fee');
     expect(feeRes).toHaveProperty('type');
-    expect(feeRes.fee).toBeInstanceOf(BigNumber);
-    expect(feeRes.fee.eq(BigNumber.from(mockFee))).toBe(true);
+    expect(feeRes.fee).toBeInstanceOf(BN);
+    expect(feeRes.fee.eq(mockFeeBN)).toBe(true);
     expect(feeRes.type).toBe(FeeHandlerType.BASIC);
   });
 

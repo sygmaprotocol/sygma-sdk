@@ -1,6 +1,6 @@
 import { ApiPromise } from '@polkadot/api';
 import type { Option, u128 } from '@polkadot/types';
-import { BigNumber } from 'ethers';
+import { BN } from '@polkadot/util';
 import { SubstrateFee, XcmMultiAssetIdType } from '../types';
 import { FeeHandlerType } from '../../../types';
 /**
@@ -37,7 +37,7 @@ export const getBasicFee = async (
   }
 
   return {
-    fee: BigNumber.from(rawFee.unwrap().toString()),
+    fee: new BN(rawFee.unwrap()),
     type: FeeHandlerType.BASIC,
   };
 };
