@@ -1,6 +1,7 @@
 import { ApiPromise, SubmittableResult } from '@polkadot/api';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { U256 } from '@polkadot/types';
+import { BN } from '@polkadot/util';
 import {
   Environment,
   Fungible,
@@ -79,6 +80,7 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
    * @param transfer Instance of transfer
    * @param fee The fee to be paid for the transfer
    * @returns {SubmittableExtrinsic<'promise', SubmittableResult>} SubmittableExtrinsic which can be signed and sent
+   * @throws {Error} Transfer amount too low
    */
   public buildTransferTransaction(
     transfer: Transfer<TransferType>,
@@ -86,6 +88,10 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
   ): SubmittableExtrinsic<'promise', SubmittableResult> {
     switch (transfer.resource.type) {
       case ResourceType.FUNGIBLE: {
+        if (new BN((transfer.amount as Fungible).amount).lt(fee.fee)) {
+          throw new Error('Transfer amount should be higher than transfer fee');
+        }
+
         return deposit(
           this.environment,
           this.apiPromise,
