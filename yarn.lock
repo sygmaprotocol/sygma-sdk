@@ -530,6 +530,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@buildwithsygma/sygma-sdk-evm-to-evm-generic-message-example@workspace:examples/evm-to-evm-generic-mesage-passing":
+  version: 0.0.0-use.local
+  resolution: "@buildwithsygma/sygma-sdk-evm-to-evm-generic-message-example@workspace:examples/evm-to-evm-generic-mesage-passing"
+  dependencies:
+    "@buildwithsygma/sygma-sdk-core": 2.1.0
+    eslint: 8
+    eslint-config-prettier: 8.3.0
+    eslint-plugin-only-warn: 1.0.3
+    eslint-plugin-prettier: 4.0.0
+    ethers: 5.6.2
+    ts-node: 10.9.1
+    typescript: 5.0.4
+  languageName: unknown
+  linkType: soft
+
 "@buildwithsygma/sygma-sdk-evm-to-substrate-fungible-transfer-example@workspace:examples/evm-to-substrate-fungible-transfer":
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-evm-to-substrate-fungible-transfer-example@workspace:examples/evm-to-substrate-fungible-transfer"

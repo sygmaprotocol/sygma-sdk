@@ -116,7 +116,6 @@ export class EVMGenericMessageTransfer {
   public createGenericMessageTransfer(
     sourceAddress: string,
     destinationChainId: number,
-    destinationAddress: string,
     resourceId: string,
     executeContractAddress: string,
     executeFunctionSignature: string,
@@ -149,7 +148,6 @@ export class EVMGenericMessageTransfer {
       from: sourceDomain,
       to: destinationDomain,
       resource: selectedResource,
-      recipient: destinationAddress,
     };
 
     return transfer;

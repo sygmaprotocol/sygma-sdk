@@ -93,8 +93,8 @@ describe('EVM asset transfer', () => {
       decimals: 18,
     },
     sender: '0x3690601896C289be2d894c3d1213405310D0a25C',
-    recipient: '0x557abEc0cb31Aa925577441d54C090987c2ED818',
     details: {
+      recipient: '0x557abEc0cb31Aa925577441d54C090987c2ED818',
       amount: '200',
     },
   };
@@ -117,9 +117,9 @@ describe('EVM asset transfer', () => {
       decimals: 18,
     },
     sender: '0x3690601896C289be2d894c3d1213405310D0a25C',
-    recipient: '0x557abEc0cb31Aa925577441d54C090987c2ED818',
     details: {
-      id: 'id',
+      recipient: '0x557abEc0cb31Aa925577441d54C090987c2ED818',
+      tokenId: 'id',
     },
   };
 
@@ -175,7 +175,7 @@ describe('EVM asset transfer', () => {
         resourceID: transfer.resource.resourceId,
         sender: transfer.sender,
         tokenAmount: '200',
-        recipientAddress: transfer.recipient,
+        recipientAddress: transfer.details.recipient,
       });
     });
 

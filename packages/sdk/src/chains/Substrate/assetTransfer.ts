@@ -98,7 +98,7 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
           (transfer.resource as SubstrateResource).xcmMultiAssetId,
           (transfer.details as Fungible).amount,
           transfer.to.id.toString(),
-          transfer.recipient,
+          (transfer.details as Fungible).recipient,
         );
       }
       default:

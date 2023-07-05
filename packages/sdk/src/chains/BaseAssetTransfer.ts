@@ -42,11 +42,13 @@ export abstract class BaseAssetTransfer {
 
     const transfer: Transfer<Fungible> = {
       sender: sourceAddress,
-      details: { amount },
+      details: {
+        amount,
+        recipient: destinationAddress,
+      },
       from: sourceDomain,
       to: destinationDomain,
       resource: selectedResource,
-      recipient: destinationAddress,
     };
 
     return transfer;

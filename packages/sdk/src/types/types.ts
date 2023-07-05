@@ -42,12 +42,16 @@ export enum FeeHandlerType {
   BASIC = 'basic',
 }
 
-export type Fungible = {
+type AssetTransfer = {
+  recipient: string;
+};
+
+export type Fungible = AssetTransfer & {
   amount: string;
 };
 
-export type NonFungible = {
-  id: string;
+export type NonFungible = AssetTransfer & {
+  tokenId: string;
 };
 
 export type GenericMessage = {
@@ -65,5 +69,4 @@ export type Transfer<TransferType> = {
   from: Domain;
   resource: Resource;
   sender: string;
-  recipient: string;
 };

@@ -115,7 +115,7 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
         return await calculateDynamicFee({
           provider: this.provider,
           sender: transfer.sender,
-          recipientAddress: transfer.recipient,
+          recipientAddress: (transfer.details as Fungible).recipient,
           fromDomainID: Number(transfer.from.id),
           toDomainID: Number(transfer.to.id),
           resourceID: transfer.resource.resourceId,
@@ -199,7 +199,7 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
       case ResourceType.FUNGIBLE: {
         return await erc20Transfer({
           amount: (transfer.details as Fungible).amount,
-          recipientAddress: transfer.recipient,
+          recipientAddress: (transfer.details as Fungible).recipient,
           bridgeInstance: bridge,
           domainId: transfer.to.id.toString(),
           resourceId: transfer.resource.resourceId,
@@ -208,8 +208,8 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
       }
       case ResourceType.NON_FUNGIBLE: {
         return await erc721Transfer({
-          id: (transfer.details as NonFungible).id,
-          recipientAddress: transfer.recipient,
+          id: (transfer.details as NonFungible).tokenId,
+          recipientAddress: (transfer.details as NonFungible).recipient,
           bridgeInstance: bridge,
           domainId: transfer.to.id.toString(),
           resourceId: transfer.resource.resourceId,
@@ -249,8 +249,8 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
     handlerAddress: string,
   ): Promise<Array<PopulatedTransaction>> {
     const approvals: Array<PopulatedTransaction> = [];
-    if (!(await isApproved(Number(transfer.details.id), erc721, handlerAddress))) {
-      approvals.push(await approve(transfer.details.id, erc721, handlerAddress));
+    if (!(await isApproved(Number(transfer.details.tokenId), erc721, handlerAddress))) {
+      approvals.push(await approve(transfer.details.tokenId, erc721, handlerAddress));
     }
 
     return approvals;
