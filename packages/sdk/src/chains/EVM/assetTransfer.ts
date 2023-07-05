@@ -119,7 +119,7 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
           fromDomainID: Number(transfer.from.id),
           toDomainID: Number(transfer.to.id),
           resourceID: transfer.resource.resourceId,
-          tokenAmount: (transfer.amount as Fungible).amount,
+          tokenAmount: (transfer.details as Fungible).amount,
           feeOracleBaseUrl: getFeeOracleBaseURL(this.environment),
           feeHandlerAddress: feeHandlerAddress,
         });
@@ -198,7 +198,7 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
     switch (transfer.resource.type) {
       case ResourceType.FUNGIBLE: {
         return await erc20Transfer({
-          amount: (transfer.amount as Fungible).amount,
+          amount: (transfer.details as Fungible).amount,
           recipientAddress: transfer.recipient,
           bridgeInstance: bridge,
           domainId: transfer.to.id.toString(),
@@ -208,7 +208,7 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
       }
       case ResourceType.NON_FUNGIBLE: {
         return await erc721Transfer({
-          id: (transfer.amount as NonFungible).id,
+          id: (transfer.details as NonFungible).id,
           recipientAddress: transfer.recipient,
           bridgeInstance: bridge,
           domainId: transfer.to.id.toString(),
@@ -235,7 +235,7 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
       approvals.push(await approve(fee.fee.toString(), erc20, fee.handlerAddress));
     }
 
-    const transferAmount = BigNumber.from(transfer.amount.amount);
+    const transferAmount = BigNumber.from(transfer.details.amount);
     if ((await getERC20Allowance(transfer.sender, erc20, handlerAddress)).lt(transferAmount)) {
       approvals.push(await approve(transferAmount.toString(), erc20, handlerAddress));
     }
@@ -249,8 +249,8 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
     handlerAddress: string,
   ): Promise<Array<PopulatedTransaction>> {
     const approvals: Array<PopulatedTransaction> = [];
-    if (!(await isApproved(Number(transfer.amount.id), erc721, handlerAddress))) {
-      approvals.push(await approve(transfer.amount.id, erc721, handlerAddress));
+    if (!(await isApproved(Number(transfer.details.id), erc721, handlerAddress))) {
+      approvals.push(await approve(transfer.details.id, erc721, handlerAddress));
     }
 
     return approvals;

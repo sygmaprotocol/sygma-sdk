@@ -50,10 +50,17 @@ export type NonFungible = {
   id: string;
 };
 
-export type TransferType = Fungible | NonFungible;
+export type GenericMessage = {
+  executeContractAddress: string;
+  executeFunctionSignature: string;
+  executionData: string;
+  maxFee: string;
+};
+
+export type TransferType = Fungible | NonFungible | GenericMessage;
 
 export type Transfer<TransferType> = {
-  amount: TransferType;
+  details: TransferType;
   to: Domain;
   from: Domain;
   resource: Resource;

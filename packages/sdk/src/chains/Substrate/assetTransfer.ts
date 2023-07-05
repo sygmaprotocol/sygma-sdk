@@ -88,7 +88,7 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
   ): SubmittableExtrinsic<'promise', SubmittableResult> {
     switch (transfer.resource.type) {
       case ResourceType.FUNGIBLE: {
-        if (new BN((transfer.amount as Fungible).amount).lt(fee.fee)) {
+        if (new BN((transfer.details as Fungible).amount).lt(fee.fee)) {
           throw new Error('Transfer amount should be higher than transfer fee');
         }
 
@@ -96,7 +96,7 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
           this.environment,
           this.apiPromise,
           (transfer.resource as SubstrateResource).xcmMultiAssetId,
-          (transfer.amount as Fungible).amount,
+          (transfer.details as Fungible).amount,
           transfer.to.id.toString(),
           transfer.recipient,
         );
