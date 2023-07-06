@@ -1,5 +1,14 @@
 import { EVMAssetTransfer, Environment } from "@buildwithsygma/sygma-sdk-core";
 import { Wallet, providers } from "ethers";
+import * as dotenv from "dotenv";
+
+dotenv.config()
+
+const privateKey = process.env.PRIVATE_KEY;
+
+if (!privateKey) {
+  throw new Error("Missing environment variable");
+}
 
 const SEPOLIA_CHAIN_ID = 11155111;
 const RESOURCE_ID =
@@ -10,7 +19,7 @@ export async function erc20Transfer(): Promise<void> {
     "https://rpc.goerli.eth.gateway.fm/"
   );
   const wallet = new Wallet(
-    "9574830b950b9ce5b66836e77ea18739258682ca08d4e65ca26b03dfe3742cf9",
+    privateKey as string,
     provider
   );
   const assetTransfer = new EVMAssetTransfer();
