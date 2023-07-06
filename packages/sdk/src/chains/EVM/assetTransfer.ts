@@ -28,6 +28,7 @@ import {
   approve,
   calculateBasicfee,
   calculateDynamicFee,
+  createERCDepositData,
   erc20Transfer,
   erc721Transfer,
   getERC20Allowance,
@@ -115,13 +116,16 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
         return await calculateDynamicFee({
           provider: this.provider,
           sender: transfer.sender,
-          recipientAddress: (transfer.details as Fungible).recipient,
           fromDomainID: Number(transfer.from.id),
           toDomainID: Number(transfer.to.id),
           resourceID: transfer.resource.resourceId,
           tokenAmount: (transfer.details as Fungible).amount,
           feeOracleBaseUrl: getFeeOracleBaseURL(this.environment),
           feeHandlerAddress: feeHandlerAddress,
+          depositData: createERCDepositData(
+            (transfer.details as Fungible).amount,
+            (transfer.details as Fungible).recipient,
+          ),
         });
       }
       default:

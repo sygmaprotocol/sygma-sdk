@@ -2,6 +2,7 @@ import { PopulatedTransaction, providers } from 'ethers';
 
 import { Bridge__factory, FeeHandlerRouter__factory } from '@buildwithsygma/sygma-contracts';
 
+import { getFeeOracleBaseURL } from '../../utils';
 import {
   Environment,
   EthereumConfig,
@@ -11,9 +12,16 @@ import {
   Transfer,
   TransferType,
 } from '../../types';
-import { Config } from '../..';
 
-import { EvmFee, calculateBasicfee, genericMessageTransfer } from '.';
+import { Config } from '../../config';
+
+import {
+  EvmFee,
+  calculateBasicfee,
+  calculateDynamicFee,
+  createPermissionlessGenericDepositData,
+  genericMessageTransfer,
+} from '.';
 
 export class EVMGenericMessageTransfer {
   private provider!: providers.BaseProvider;
@@ -59,6 +67,24 @@ export class EVMGenericMessageTransfer {
           toDomainID: transfer.to.id,
           resourceID: transfer.resource.resourceId,
           sender: transfer.sender,
+        });
+      }
+      case FeeHandlerType.DYNAMIC: {
+        return await calculateDynamicFee({
+          provider: this.provider,
+          sender: transfer.sender,
+          fromDomainID: Number(transfer.from.id),
+          toDomainID: Number(transfer.to.id),
+          resourceID: transfer.resource.resourceId,
+          feeOracleBaseUrl: getFeeOracleBaseURL(this.environment),
+          feeHandlerAddress: feeHandlerAddress,
+          depositData: createPermissionlessGenericDepositData(
+            (transfer as Transfer<GenericMessage>).details.executeFunctionSignature,
+            (transfer as Transfer<GenericMessage>).details.executeContractAddress,
+            (transfer as Transfer<GenericMessage>).details.maxFee,
+            transfer.sender,
+            (transfer as Transfer<GenericMessage>).details.executionData,
+          ),
         });
       }
       default:

@@ -46,7 +46,7 @@ yarn run transfer
 ```
 
 The example will use `ethers` in conjuction with the sygma-sdk to 
-create a transfer from `Goerli` to `Sepolia` with a test ERC20 token.
+call a function on a smart contract on `Goerli` by calling the Deposit method on `Sepolia` and passing the details of the function to be called.
 
 Replace the placeholder values in the script with your own Ethereum wallet private key and provider URL.
 
