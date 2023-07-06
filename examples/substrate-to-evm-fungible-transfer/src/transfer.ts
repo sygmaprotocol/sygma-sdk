@@ -1,18 +1,24 @@
 import { Keyring } from "@polkadot/keyring";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { cryptoWaitReady } from "@polkadot/util-crypto";
+import * as dotenv from "dotenv";
 
 import {
   Environment,
   SubstrateAssetTransfer,
 } from "@buildwithsygma/sygma-sdk-core";
 
+dotenv.config();
+
 const GOERLI_CHAIN_ID = 5;
 const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000001000";
-const MNEMONIC =
-  "zoo slim stable violin scorpion enrich cancel bar shrug warm proof chimney";
+  const MNEMONIC = process.env.PRIVATE_MNEMONIC;
 const recipient = "0xD31E89feccCf6f2DE10EaC92ADffF48D802b695C";
+
+if (!MNEMONIC) {
+  throw new Error("Missing environment variable");
+}
 
 const substrateTransfer = async (): Promise<void> => {
   const keyring = new Keyring({ type: "sr25519" });
@@ -21,7 +27,7 @@ const substrateTransfer = async (): Promise<void> => {
 
   await cryptoWaitReady();
 
-  const account = keyring.addFromUri(MNEMONIC);
+  const account = keyring.addFromUri(MNEMONIC as string);
 
   const wsProvider = new WsProvider(
     "wss://subbridge-test.phala.network/rhala/ws"
