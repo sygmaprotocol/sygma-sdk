@@ -15,13 +15,10 @@ import {
 
 import { Config } from '../../config';
 
-import {
-  EvmFee,
-  calculateBasicfee,
-  calculateDynamicFee,
-  createPermissionlessGenericDepositData,
-  genericMessageTransfer,
-} from '.';
+import { EvmFee } from './types';
+import { calculateBasicfee, calculateDynamicFee } from './fee';
+import { createPermissionlessGenericDepositData } from './helpers';
+import { genericMessageTransfer } from './utils';
 
 export class EVMGenericMessageTransfer {
   private provider!: providers.BaseProvider;

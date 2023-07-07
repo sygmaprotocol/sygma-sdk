@@ -189,7 +189,7 @@ export const requestFeeFromFeeOracle = async ({
     },
   );
   if (response.status !== 200) {
-    throw new Error(response.statusText);
+    throw new Error('Error fetching fee from fee oracle');
   }
   const data = (await response.json()) as OracleResponse;
   if (data.error) {
