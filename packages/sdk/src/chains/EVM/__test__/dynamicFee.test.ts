@@ -12,21 +12,21 @@ const { Response } = jest.requireActual<typeof import('cross-fetch')>('cross-fet
 jest.mock(
   '@buildwithsygma/sygma-contracts',
   () =>
-  ({
-    ...jest.requireActual('@buildwithsygma/sygma-contracts'),
-    DynamicERC20FeeHandlerEVM__factory: {
-      connect: () => {
-        return {
-          calculateFee: jest.fn(() =>
-            Promise.resolve({
-              fee: BigNumber.from('10'),
-              tokenAddress: '0x141F8690A87A7E57C2E270ee77Be94935970c035',
-            }),
-          ),
-        };
+    ({
+      ...jest.requireActual('@buildwithsygma/sygma-contracts'),
+      DynamicERC20FeeHandlerEVM__factory: {
+        connect: () => {
+          return {
+            calculateFee: jest.fn(() =>
+              Promise.resolve({
+                fee: BigNumber.from('10'),
+                tokenAddress: '0x141F8690A87A7E57C2E270ee77Be94935970c035',
+              }),
+            ),
+          };
+        },
       },
-    },
-  } as unknown),
+    } as unknown),
 );
 
 const oracleResponse = {
