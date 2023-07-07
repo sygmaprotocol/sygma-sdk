@@ -9,7 +9,7 @@ const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000000500"; // Generic Message Handler
 const EXECUTE_CONTRACT_ADDRESS = "0x94CF8543b705dAB2DA5d2D58C240ECB1e5974781";
 const EXECUTE_FUNCTION_SIGNATURE = "0x131a0680";
-const MAX_FEE = "300000";
+const MAX_FEE = "3000000";
 
 export async function genericMessage(): Promise<void> {
   const provider = new providers.JsonRpcProvider(

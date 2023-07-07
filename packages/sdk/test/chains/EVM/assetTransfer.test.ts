@@ -175,7 +175,8 @@ describe('EVM asset transfer', () => {
         resourceID: transfer.resource.resourceId,
         sender: transfer.sender,
         tokenAmount: '200',
-        recipientAddress: transfer.details.recipient,
+        depositData:
+          '0x00000000000000000000000000000000000000000000000000000000000000c80000000000000000000000000000000000000000000000000000000000000014557abec0cb31aa925577441d54c090987c2ed818',
       });
     });
 

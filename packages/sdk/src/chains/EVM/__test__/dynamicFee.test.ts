@@ -12,21 +12,21 @@ const { Response } = jest.requireActual<typeof import('cross-fetch')>('cross-fet
 jest.mock(
   '@buildwithsygma/sygma-contracts',
   () =>
-    ({
-      ...jest.requireActual('@buildwithsygma/sygma-contracts'),
-      DynamicERC20FeeHandlerEVM__factory: {
-        connect: () => {
-          return {
-            calculateFee: jest.fn(() =>
-              Promise.resolve({
-                fee: BigNumber.from('10'),
-                tokenAddress: '0x141F8690A87A7E57C2E270ee77Be94935970c035',
-              }),
-            ),
-          };
-        },
+  ({
+    ...jest.requireActual('@buildwithsygma/sygma-contracts'),
+    DynamicERC20FeeHandlerEVM__factory: {
+      connect: () => {
+        return {
+          calculateFee: jest.fn(() =>
+            Promise.resolve({
+              fee: BigNumber.from('10'),
+              tokenAddress: '0x141F8690A87A7E57C2E270ee77Be94935970c035',
+            }),
+          ),
+        };
       },
-    } as unknown),
+    },
+  } as unknown),
 );
 
 const oracleResponse = {
@@ -77,7 +77,7 @@ describe('feeOracle', () => {
           toDomainID: 2,
           resourceID: '0x0000000000000000000000000000000000000000000000000000000000000001',
         }),
-      ).rejects.toThrowError('Internal Error');
+      ).rejects.toThrowError('Error fetching fee from fee oracle');
     });
 
     it('return error message from fee oracle server', async () => {
@@ -117,13 +117,13 @@ describe('feeOracle', () => {
       const feeData = await calculateDynamicFee({
         provider,
         sender: ethers.constants.AddressZero,
-        recipientAddress: '0x74d2946319bEEe4A140068eb83F9ee3a90B06F4f',
         fromDomainID: 1,
         toDomainID: 2,
         resourceID: '0x0000000000000000000000000000000000000000000000000000000000000001',
         tokenAmount: '100',
         feeOracleBaseUrl: 'http://localhost:8091',
         feeHandlerAddress: '0xa9ddD97e1762920679f3C20ec779D79a81903c0B',
+        depositData: '0x',
       });
 
       expect(feeData?.feeData).toContain(oracleResponse.response.signature);
@@ -142,13 +142,13 @@ describe('feeOracle', () => {
         await calculateDynamicFee({
           provider,
           sender: ethers.constants.AddressZero,
-          recipientAddress: '0x74d2946319bEEe4A140068eb83F9ee3a90B06F4f',
           fromDomainID: 1,
           toDomainID: 2,
           resourceID: '0x0000000000000000000000000000000000000000000000000000000000000001',
           tokenAmount: '100',
           feeOracleBaseUrl: 'http://localhost:8091',
           feeHandlerAddress: '0xa9ddD97e1762920679f3C20ec779D79a81903c0B',
+          depositData: '0x',
         });
       } catch (e) {
         expect(e).toMatch('Err');
@@ -164,13 +164,13 @@ describe('feeOracle', () => {
         calculateDynamicFee({
           provider,
           sender: ethers.constants.AddressZero,
-          recipientAddress: '0x74d2946319bEEe4A140068eb83F9ee3a90B06F4f',
           fromDomainID: 1,
           toDomainID: 2,
           resourceID: '0x0000000000000000000000000000000000000000000000000000000000000001',
           tokenAmount: '100',
           feeOracleBaseUrl: 'http://localhost:8091',
           feeHandlerAddress: '0xa9ddD97e1762920679f3C20ec779D79a81903c0B',
+          depositData: '0x',
         }),
       ).rejects.toThrowError('Empty response data from fee oracle service');
     });
