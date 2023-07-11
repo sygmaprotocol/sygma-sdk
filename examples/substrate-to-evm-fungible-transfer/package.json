@@ -22,6 +22,7 @@
   },
   "author": "Sygmaprotocol Product Team",
   "devDependencies": {
+    "dotenv": "^16.3.1",
     "eslint": "8",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-only-warn": "1.0.3",
@@ -33,7 +34,6 @@
     "@buildwithsygma/sygma-sdk-core": "2.1.0",
     "@polkadot/api": "10.7.3",
     "@polkadot/keyring": "12.2.1",
-    "@polkadot/util-crypto": "^12.2.1",
-    "dotenv": "^16.3.1"
+    "@polkadot/util-crypto": "^12.2.1"
   }
 }

@@ -1,7 +1,7 @@
 import { Keyring } from "@polkadot/keyring";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { cryptoWaitReady } from "@polkadot/util-crypto";
-import * as dotenv from "dotenv";
+import dotenv from "dotenv";
 
 import {
   Environment,
