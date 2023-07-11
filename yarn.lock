@@ -520,6 +520,7 @@ __metadata:
   resolution: "@buildwithsygma/sygma-sdk-evm-to-evm-fungible-transfer-example@workspace:examples/evm-to-evm-fungible-transfer"
   dependencies:
     "@buildwithsygma/sygma-sdk-core": 2.1.0
+    dotenv: ^16.3.1
     eslint: 8
     eslint-config-prettier: 8.3.0
     eslint-plugin-only-warn: 1.0.3
@@ -535,6 +536,7 @@ __metadata:
   resolution: "@buildwithsygma/sygma-sdk-evm-to-substrate-fungible-transfer-example@workspace:examples/evm-to-substrate-fungible-transfer"
   dependencies:
     "@buildwithsygma/sygma-sdk-core": 2.1.0
+    dotenv: ^16.3.1
     eslint: 8
     eslint-config-prettier: 8.3.0
     eslint-plugin-only-warn: 1.0.3
@@ -570,6 +572,7 @@ __metadata:
     "@polkadot/api": 10.7.3
     "@polkadot/keyring": 12.2.1
     "@polkadot/util-crypto": ^12.2.1
+    dotenv: ^16.3.1
     eslint: 8
     eslint-config-prettier: 8.3.0
     eslint-plugin-only-warn: 1.0.3
@@ -6227,6 +6230,13 @@ __metadata:
   dependencies:
     webidl-conversions: ^7.0.0
   checksum: 774277cd9d4df033f852196e3c0077a34dbd15a96baa4d166e0e47138a80f4c0bdf0d94e4703e6ff5883cec56bb821a6fff84402d8a498e31de7c87eb932a294
+  languageName: node
+  linkType: hard
+
+"dotenv@npm:^16.3.1":
+  version: 16.3.1
+  resolution: "dotenv@npm:16.3.1"
+  checksum: b95ff1bbe624ead85a3cd70dbd827e8e06d5f05f716f2d0cbc476532d54c7c9469c3bc4dd93ea519f6ad711cb522c00ac9a62b6eb340d5affae8008facc3fbd7
   languageName: node
   linkType: hard
 
@@ -14221,11 +14231,11 @@ __metadata:
 
 "typescript@patch:typescript@npm%3A^5.0.4#~builtin<compat/typescript>":
   version: 5.0.4
-  resolution: "typescript@patch:typescript@npm%3A5.0.4#~builtin<compat/typescript>::version=5.0.4&hash=1f5320"
+  resolution: "typescript@patch:typescript@npm%3A5.0.4#~builtin<compat/typescript>::version=5.0.4&hash=b5f058"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: db16dd188048c172051825c7e6eea3e6bf577020625e5635fb8265d22683897d9ed7579b41a3a3e961fba5728c58e324d52041e9ca21d0dfc4bafa8bcf8e7a4b
+  checksum: c3f7b80577bddf6fab202a7925131ac733bfc414aec298c2404afcddc7a6f242cfa8395cf2d48192265052e11a7577c27f6e5fac8d8fe6a6602023c83d6b3292
   languageName: node
   linkType: hard
 
