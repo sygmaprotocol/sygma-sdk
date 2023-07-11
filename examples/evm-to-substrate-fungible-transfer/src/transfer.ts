@@ -1,6 +1,6 @@
 import { EVMAssetTransfer, Environment } from "@buildwithsygma/sygma-sdk-core";
 import { Wallet, providers } from "ethers";
-import * as dotenv from "dotenv";
+import dotenv from "dotenv";
 
 dotenv.config()
 
