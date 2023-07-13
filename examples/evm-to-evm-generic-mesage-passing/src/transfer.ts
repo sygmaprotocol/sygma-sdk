@@ -7,8 +7,8 @@ import { Wallet, providers, utils } from "ethers";
 const DESTINATION_CHAIN_ID = 5; // Goerli
 const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000000500"; // Generic Message Handler
-const EXECUTE_CONTRACT_ADDRESS = "0x94CF8543b705dAB2DA5d2D58C240ECB1e5974781";
-const EXECUTE_FUNCTION_SIGNATURE = "0x131a0680";
+const EXECUTE_CONTRACT_ADDRESS = "0x25ecabb6b4e11a2f3b6c1d41c201954355657059";
+const EXECUTE_FUNCTION_SIGNATURE = "0x845c03c1";
 const MAX_FEE = "3000000";
 
 export async function genericMessage(): Promise<void> {
@@ -22,7 +22,7 @@ export async function genericMessage(): Promise<void> {
   const messageTransfer = new EVMGenericMessageTransfer();
   await messageTransfer.init(provider, Environment.DEVNET);
 
-  const EXECUTION_DATA = utils.solidityPack(
+  const EXECUTION_DATA = utils.defaultAbiCoder.encode(
     ["string"],
     [`Updated value ${Date.now()}`]
   );
