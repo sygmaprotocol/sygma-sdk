@@ -7,7 +7,7 @@ dotenv.config()
 const privateKey = process.env.PRIVATE_KEY;
 
 if (!privateKey) {
-  throw new Error("Missing environment variable");
+  throw new Error("Missing environment variable: PRIVATE_KEY");
 }
 
 const ROCOCO_PHALA_CHAIN_ID = 5231;

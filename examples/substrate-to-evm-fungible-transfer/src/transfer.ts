@@ -17,7 +17,7 @@ const RESOURCE_ID =
 const recipient = "0xD31E89feccCf6f2DE10EaC92ADffF48D802b695C";
 
 if (!MNEMONIC) {
-  throw new Error("Missing environment variable");
+  throw new Error("Missing environment variable: PRIVATE_MNEMONIC");
 }
 
 const substrateTransfer = async (): Promise<void> => {
