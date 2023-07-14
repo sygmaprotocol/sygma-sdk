@@ -39,6 +39,21 @@ yarn sdk:build
 
 ## Usage
 
+This example uses the `dotenv` module to manage private keys. To run the example, you will need to configure your environment variable to include your test development account's [exported private key](https://support.metamask.io/hc/en-us/articles/360015289632-How-to-export-an-account-s-private-key). A `.env.sample` is provided as a template.
+
+**DO NOT COMMIT PRIVATE KEYS WITH REAL FUNDS TO GITHUB. DOING SO COULD RESULT IN COMPLETE LOSS OF YOUR FUNDS.**
+
+Create a `.env` file in the evm-to-substrate example folder:
+
+```bash
+cd examples/evm-to-substrate-fungible-transfer
+touch .env
+```
+
+Replace between the quotation marks your exported private key:
+
+`PRIVATE_KEY="YOUR_PRIVATE_KEY_HERE"`
+
 To send a ERC20 example transfer run:
 
 ```bash
