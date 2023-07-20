@@ -55,8 +55,8 @@ export type NonFungible = AssetTransfer & {
 };
 
 export type GenericMessage = {
-  executeContractAddress: string;
-  executeFunctionSignature: string;
+  destinationContractAddress: string;
+  destinationFunctionSignature: string;
   executionData: string;
   maxFee: string;
 };

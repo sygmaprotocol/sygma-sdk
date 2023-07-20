@@ -67,6 +67,7 @@ export class EVMGenericMessageTransfer {
         });
       }
       case FeeHandlerType.DYNAMIC: {
+        const genericTransfer = transfer as Transfer<GenericMessage>;
         return await calculateDynamicFee({
           provider: this.provider,
           sender: transfer.sender,
@@ -76,11 +77,11 @@ export class EVMGenericMessageTransfer {
           feeOracleBaseUrl: getFeeOracleBaseURL(this.environment),
           feeHandlerAddress: feeHandlerAddress,
           depositData: createPermissionlessGenericDepositData(
-            (transfer as Transfer<GenericMessage>).details.executeFunctionSignature,
-            (transfer as Transfer<GenericMessage>).details.executeContractAddress,
-            (transfer as Transfer<GenericMessage>).details.maxFee,
+            genericTransfer.details.destinationFunctionSignature,
+            genericTransfer.details.destinationContractAddress,
+            genericTransfer.details.maxFee,
             transfer.sender,
-            (transfer as Transfer<GenericMessage>).details.executionData,
+            genericTransfer.details.executionData,
           ),
         });
       }
@@ -111,8 +112,8 @@ export class EVMGenericMessageTransfer {
           domainId: transfer.to.id.toString(),
           resourceId: transfer.resource.resourceId,
           feeData: fee,
-          executeContractAddress: genericTransfer.details.executeContractAddress,
-          executeFunctionSignature: genericTransfer.details.executeFunctionSignature,
+          executeContractAddress: genericTransfer.details.destinationContractAddress,
+          executeFunctionSignature: genericTransfer.details.destinationFunctionSignature,
           executionData: genericTransfer.details.executionData,
           maxFee: genericTransfer.details.maxFee,
         });
@@ -152,8 +153,8 @@ export class EVMGenericMessageTransfer {
     const transfer: Transfer<GenericMessage> = {
       sender: sourceAddress,
       details: {
-        executeContractAddress: destinationContractAddress,
-        executeFunctionSignature: destinationFunctionSignature,
+        destinationContractAddress: destinationContractAddress,
+        destinationFunctionSignature: destinationFunctionSignature,
         executionData: executionData,
         maxFee: maxFee,
       },
