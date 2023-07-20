@@ -68,6 +68,12 @@ export class Config {
     destinationChainId: number,
     resourceId: string,
   ): { sourceDomain: Domain; destinationDomain: Domain; resource: Resource } {
+    const sourceDomain = this.getDomains().find(domain => domain.chainId == this.chainId);
+
+    if (!sourceDomain) {
+      throw new Error('Config for the provided destination domain is not setup');
+    }
+
     const destinationDomain = this.getDomains().find(
       domain => domain.chainId == destinationChainId,
     );
@@ -81,9 +87,9 @@ export class Config {
     }
 
     return {
-      sourceDomain: this.getDomainConfig(),
-      destinationDomain: destinationDomain,
-      resource: resource,
+      sourceDomain,
+      destinationDomain,
+      resource,
     };
   }
 }
