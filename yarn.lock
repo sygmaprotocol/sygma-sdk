@@ -520,6 +520,7 @@ __metadata:
   resolution: "@buildwithsygma/sygma-sdk-evm-to-evm-fungible-transfer-example@workspace:examples/evm-to-evm-fungible-transfer"
   dependencies:
     "@buildwithsygma/sygma-sdk-core": 2.1.0
+    dotenv: ^16.3.1
     eslint: 8
     eslint-config-prettier: 8.3.0
     eslint-plugin-only-warn: 1.0.3
@@ -550,6 +551,7 @@ __metadata:
   resolution: "@buildwithsygma/sygma-sdk-evm-to-substrate-fungible-transfer-example@workspace:examples/evm-to-substrate-fungible-transfer"
   dependencies:
     "@buildwithsygma/sygma-sdk-core": 2.1.0
+    dotenv: ^16.3.1
     eslint: 8
     eslint-config-prettier: 8.3.0
     eslint-plugin-only-warn: 1.0.3
@@ -585,6 +587,7 @@ __metadata:
     "@polkadot/api": 10.7.3
     "@polkadot/keyring": 12.2.1
     "@polkadot/util-crypto": ^12.2.1
+    dotenv: ^16.3.1
     eslint: 8
     eslint-config-prettier: 8.3.0
     eslint-plugin-only-warn: 1.0.3
@@ -6242,6 +6245,13 @@ __metadata:
   dependencies:
     webidl-conversions: ^7.0.0
   checksum: 774277cd9d4df033f852196e3c0077a34dbd15a96baa4d166e0e47138a80f4c0bdf0d94e4703e6ff5883cec56bb821a6fff84402d8a498e31de7c87eb932a294
+  languageName: node
+  linkType: hard
+
+"dotenv@npm:^16.3.1":
+  version: 16.3.1
+  resolution: "dotenv@npm:16.3.1"
+  checksum: b95ff1bbe624ead85a3cd70dbd827e8e06d5f05f716f2d0cbc476532d54c7c9469c3bc4dd93ea519f6ad711cb522c00ac9a62b6eb340d5affae8008facc3fbd7
   languageName: node
   linkType: hard
 

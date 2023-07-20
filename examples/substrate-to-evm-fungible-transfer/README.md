@@ -39,6 +39,21 @@ yarn sdk:build
 
 ## Usage
 
+This example uses the `dotenv` module to import the 12-word private mnemonic. To run the example, you will need to configure your environment variable to include your test development account's [12-word seed](https://support.polkadot.network/support/solutions/articles/65000169731-polkadot-extension-how-can-i-view-my-mnemonic-phrase-). A `.env.sample` is provided as a template.
+
+**DO NOT COMMIT YOUR MENOMONIC WITH REAL FUNDS TO GITHUB. DOING SO COULD RESULT IN COMPLETE LOSS OF YOUR FUNDS.**
+
+Create a `.env` file in the substrate-to-evm example folder:
+
+```bash
+cd examples/substrate-to-evm-fungible-transfer
+touch .env
+```
+
+Replace between the quotation marks your 12-word mnemonic:
+
+`PRIVATE_MNEMONIC="YOUR TWELVE WORD MNEMONIC HERE WITH SPACES"`
+
 To send a Substrate token to an EVM chain example transfer run:
 
 ```bash
