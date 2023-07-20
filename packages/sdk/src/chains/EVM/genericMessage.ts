@@ -144,20 +144,10 @@ export class EVMGenericMessageTransfer {
     executionData: string,
     maxFee: string,
   ): Transfer<GenericMessage> {
-    const domains = this.config.getDomains();
-    const sourceDomain = domains.find(domain => domain.chainId == this.config.chainId);
-    if (!sourceDomain) {
-      throw new Error('Source domain not supported');
-    }
-    const destinationDomain = domains.find(domain => domain.chainId == destinationChainId);
-    if (!destinationDomain) {
-      throw new Error('Destination domain not supported');
-    }
-    const resources = this.config.getDomainResources();
-    const selectedResource = resources.find(resource => resource.resourceId == resourceId);
-    if (!selectedResource) {
-      throw new Error('Resource not supported');
-    }
+    const { sourceDomain, destinationDomain, resource } = this.config.getBaseTransferParams(
+      destinationChainId,
+      resourceId,
+    );
 
     const transfer: Transfer<GenericMessage> = {
       sender: sourceAddress,
@@ -169,7 +159,7 @@ export class EVMGenericMessageTransfer {
       },
       from: sourceDomain,
       to: destinationDomain,
-      resource: selectedResource,
+      resource: resource,
     };
 
     return transfer;
