@@ -1,31 +1,34 @@
+import dotenv from "dotenv";
 import {
   EVMGenericMessageTransfer,
   Environment,
 } from "@buildwithsygma/sygma-sdk-core";
 import { Wallet, providers, utils } from "ethers";
 
+dotenv.config();
+
+const privateKey = process.env.PRIVATE_KEY;
+
+if (!privateKey) {
+  throw new Error("Missing environment variable: PRIVATE_KEY");
+}
+
 const DESTINATION_CHAIN_ID = 5; // Goerli
 const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000000500"; // Generic Message Handler
-const EXECUTE_CONTRACT_ADDRESS = "0x25ecabb6b4e11a2f3b6c1d41c201954355657059";
-const EXECUTE_FUNCTION_SIGNATURE = "0x845c03c1";
+const EXECUTE_CONTRACT_ADDRESS = "0xdFA5621F95675D37248bAc9e536Aab4D86766663";
+const EXECUTE_FUNCTION_SIGNATURE = "0xa271ced2";
 const MAX_FEE = "3000000";
 
 export async function genericMessage(): Promise<void> {
   const provider = new providers.JsonRpcProvider(
     "https://gateway.tenderly.co/public/sepolia"
   );
-  const wallet = new Wallet(
-    "9574830b950b9ce5b66836e77ea18739258682ca08d4e65ca26b03dfe3742cf9",
-    provider
-  );
+  const wallet = new Wallet(privateKey as string, provider);
   const messageTransfer = new EVMGenericMessageTransfer();
   await messageTransfer.init(provider, Environment.DEVNET);
 
-  const EXECUTION_DATA = utils.defaultAbiCoder.encode(
-    ["string"],
-    [`Updated value ${Date.now()}`]
-  );
+  const EXECUTION_DATA = utils.defaultAbiCoder.encode(["uint"], [Date.now()]);
 
   const transfer = messageTransfer.createGenericMessageTransfer(
     await wallet.getAddress(),
