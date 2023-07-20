@@ -113,18 +113,19 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
         });
       }
       case FeeHandlerType.DYNAMIC: {
+        const fungibleTransfer = transfer as Transfer<Fungible>;
         return await calculateDynamicFee({
           provider: this.provider,
           sender: transfer.sender,
           fromDomainID: Number(transfer.from.id),
           toDomainID: Number(transfer.to.id),
           resourceID: transfer.resource.resourceId,
-          tokenAmount: (transfer.details as Fungible).amount,
+          tokenAmount: fungibleTransfer.details.amount,
           feeOracleBaseUrl: getFeeOracleBaseURL(this.environment),
           feeHandlerAddress: feeHandlerAddress,
           depositData: createERCDepositData(
-            (transfer.details as Fungible).amount,
-            (transfer.details as Fungible).recipient,
+            fungibleTransfer.details.amount,
+            fungibleTransfer.details.recipient,
           ),
         });
       }

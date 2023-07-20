@@ -104,18 +104,17 @@ export class EVMGenericMessageTransfer {
     const bridge = Bridge__factory.connect(this.config.getDomainConfig().bridge, this.provider);
     switch (transfer.resource.type) {
       case ResourceType.PERMISSIONLESS_GENERIC: {
+        const genericTransfer = transfer as Transfer<GenericMessage>;
         return await genericMessageTransfer({
           depositor: transfer.sender,
           bridgeInstance: bridge,
           domainId: transfer.to.id.toString(),
           resourceId: transfer.resource.resourceId,
           feeData: fee,
-          executeContractAddress: (transfer as Transfer<GenericMessage>).details
-            .executeContractAddress,
-          executeFunctionSignature: (transfer as Transfer<GenericMessage>).details
-            .executeFunctionSignature,
-          executionData: (transfer as Transfer<GenericMessage>).details.executionData,
-          maxFee: (transfer as Transfer<GenericMessage>).details.maxFee,
+          executeContractAddress: genericTransfer.details.executeContractAddress,
+          executeFunctionSignature: genericTransfer.details.executeFunctionSignature,
+          executionData: genericTransfer.details.executionData,
+          maxFee: genericTransfer.details.maxFee,
         });
       }
       default:
@@ -140,8 +139,8 @@ export class EVMGenericMessageTransfer {
     sourceAddress: string,
     destinationChainId: number,
     resourceId: string,
-    executeContractAddress: string,
-    executeFunctionSignature: string,
+    destinationContractAddress: string,
+    destinationFunctionSignature: string,
     executionData: string,
     maxFee: string,
   ): Transfer<GenericMessage> {
@@ -163,8 +162,8 @@ export class EVMGenericMessageTransfer {
     const transfer: Transfer<GenericMessage> = {
       sender: sourceAddress,
       details: {
-        executeContractAddress: executeContractAddress,
-        executeFunctionSignature: executeFunctionSignature,
+        executeContractAddress: destinationContractAddress,
+        executeFunctionSignature: destinationFunctionSignature,
         executionData: executionData,
         maxFee: maxFee,
       },

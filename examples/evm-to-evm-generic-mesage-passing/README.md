@@ -39,7 +39,7 @@ yarn sdk:build
 
 ## Usage
 
-To send a ERC20 example transfer run:
+To call a function on a destination chain contract:
 
 ```bash
 yarn run transfer
@@ -48,20 +48,14 @@ yarn run transfer
 The example will use `ethers` in conjuction with the sygma-sdk to 
 call a function on a smart contract on `Goerli` by calling the Deposit method on `Sepolia` and passing the details of the function to be called.
 
-Replace the placeholder values in the script with your own Ethereum wallet private key and provider URL.
+Replace the placeholder values in the `.env` file with your own Ethereum wallet private key and provider URL.
 
 ## Script Functionality
 
 This example script performs the following steps:
 - initializes the SDK and establishes a connection to the Ethereum provider.
 - retrieves the list of supported domains and resources from the SDK configuration.
-- Searches for the ERC20 token resource with the specified symbol 
-- Searches for the Goerli and Sepolia domains in the list of supported domains based on their chain IDs
-- Constructs a transfer object that defines the details of the ERC20 token transfer
-- Retrieves the fee required for the transfer from the SDK.
-- Builds the necessary approval transactions for the transfer and sends them using the Ethereum wallet. The approval transactions are required to authorize the transfer of ERC20 tokens.
+- Searches for the Generic Message Passing resource from the list of supported resources registered.  
+- Searches for the Goerli and Sepolia domains in the list of supported domains based on their chain IDs.
+- Constructs a transfer object that defines the details of the destination chain smart contract, function and call-data
 - Builds the final transfer transaction and sends it using the Ethereum wallet.
-
-## Faucet
-
-To get the test tokens needed for the transfer go to: `https://faucet-ui-stage.buildwithsygma.com/`.
