@@ -1,0 +1,37 @@
+{
+  "name": "@buildwithsygma/sygma-sdk-evm-to-evm-generic-message-example",
+  "version": "0.1.0",
+  "description": "Sygma sdk examples",
+  "type": "module",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sygmaprotocol/sygma-sdk"
+  },
+  "keywords": [
+    "sygma",
+    "sygmaprotocol",
+    "buildwithsygma",
+    "web3",
+    "bridge",
+    "ethereum"
+  ],
+  "scripts": {
+    "transfer": "ts-node src/transfer.ts"
+  },
+  "author": "Sygmaprotocol Product Team",
+  "license": "LGPL-3.0-or-later",
+  "devDependencies": {
+    "dotenv": "16.3.1",
+    "eslint": "8",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-only-warn": "1.0.3",
+    "eslint-plugin-prettier": "4.0.0",
+    "ts-node": "10.9.1",
+    "typescript": "5.0.4"
+  },
+  "dependencies": {
+    "@buildwithsygma/sygma-sdk-core": "2.1.0",
+    "ethers": "5.6.2"
+  }
+}

@@ -2,9 +2,9 @@ import { DynamicERC20FeeHandlerEVM__factory } from '@buildwithsygma/sygma-contra
 import { ethers } from 'ethers';
 import fetch from 'cross-fetch';
 
-import { FeeHandlerType } from '../../../types/index.js';
-import { EvmFee, OracleResource } from '../types/index.js';
-import { toHex, createERCDepositData } from '../helpers.js';
+import { FeeHandlerType } from '../../../types';
+import { EvmFee, OracleResource } from '../types';
+import { toHex } from '../helpers';
 
 type OracleResponse = {
   error?: string;
@@ -19,11 +19,11 @@ type OracleResponse = {
  * @param {string} amount - Amount in string format.
  * @returns {string} - Returns the oracleMessage, signature and amount.
  */
-export const createOracleFeeData = (oracleResponse: OracleResource, amount: string): string => {
+export const createOracleFeeData = (oracleResponse: OracleResource, amount?: string): string => {
   /*
         feeData structure:
             ber*10^18:    uint256
-            ter*10^18:    uint2a56
+            ter*10^18:    uint256
             dstGasPrice:  uint256
             timestamp:    uint256
             fromDomainID: uint8 encoded as uint256
@@ -57,7 +57,11 @@ export const createOracleFeeData = (oracleResponse: OracleResource, amount: stri
   );
 
   const signature = oracleResponse.signature;
-  return oracleMessage + signature + toHex(amount, 32).substring(2);
+  if (amount) {
+    return oracleMessage + signature + toHex(amount, 32).substring(2);
+  } else {
+    return oracleMessage + signature;
+  }
 };
 
 /**
@@ -104,25 +108,24 @@ export const createOracleFeeData = (oracleResponse: OracleResource, amount: stri
 export const calculateDynamicFee = async ({
   provider,
   sender,
-  recipientAddress,
   fromDomainID,
   toDomainID,
   resourceID,
-  tokenAmount,
   feeOracleBaseUrl,
   feeHandlerAddress,
+  depositData,
+  tokenAmount,
 }: {
   provider: ethers.providers.Provider;
   sender: string;
-  recipientAddress: string;
   fromDomainID: number;
   toDomainID: number;
   resourceID: string;
-  tokenAmount: string;
   feeOracleBaseUrl: string;
   feeHandlerAddress: string;
+  depositData: string;
+  tokenAmount?: string;
 }): Promise<EvmFee> => {
-  const depositData = createERCDepositData(tokenAmount, recipientAddress);
   const oracleResponse = await requestFeeFromFeeOracle({
     feeOracleBaseUrl,
     fromDomainID,
@@ -186,7 +189,7 @@ export const requestFeeFromFeeOracle = async ({
     },
   );
   if (response.status !== 200) {
-    throw new Error(response.statusText);
+    throw new Error('Error fetching fee from fee oracle');
   }
   const data = (await response.json()) as OracleResponse;
   if (data.error) {

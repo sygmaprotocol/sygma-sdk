@@ -2,7 +2,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { ApiPromise } from '@polkadot/api';
 import { BN } from '@polkadot/util';
-import { FeeHandlerType, Environment } from '../../../src/types';
+import { FeeHandlerType, Environment, Transfer, Fungible, ResourceType } from '../../../src/types';
 import { testingConfigData } from '../../constants';
 import { ConfigUrl } from '../../../src/constants';
 import { SubstrateAssetTransfer } from '../../../src/chains/Substrate';
@@ -51,7 +51,7 @@ describe('Substrate asset transfer', () => {
 
   describe('createFungibleTransfer', () => {
     it('Should return a valid Transfer object', () => {
-      const expectedVal = {
+      const expectedVal: Transfer<Fungible> = {
         to: {
           name: 'Sepolia',
           chainId: 11155111,
@@ -65,13 +65,13 @@ describe('Substrate asset transfer', () => {
         resource: {
           resourceId: '0x0000000000000000000000000000000000000000000000000000000000001000',
           address: '',
-          type: 'fungible',
+          type: ResourceType.FUNGIBLE,
           symbol: 'PHA',
           decimals: 18,
         },
         sender: '5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS',
-        recipient: '0x557abEc0cb31Aa925577441d54C090987c2ED818',
-        amount: {
+        details: {
+          recipient: '0x557abEc0cb31Aa925577441d54C090987c2ED818',
           amount: '200',
         },
       };

@@ -21,33 +21,33 @@ const resourceHandlerFunction = jest.fn();
 jest.mock(
   '@buildwithsygma/sygma-contracts',
   () =>
-    ({
-      ...jest.requireActual('@buildwithsygma/sygma-contracts'),
-      FeeHandlerRouter__factory: {
-        connect: () => {
-          return {
-            _domainResourceIDToFeeHandlerAddress: feeHandlerAddressFunction,
-          };
-        },
+  ({
+    ...jest.requireActual('@buildwithsygma/sygma-contracts'),
+    FeeHandlerRouter__factory: {
+      connect: () => {
+        return {
+          _domainResourceIDToFeeHandlerAddress: feeHandlerAddressFunction,
+        };
       },
-      ERC20__factory: {
-        connect: () => {
-          return {};
-        },
+    },
+    ERC20__factory: {
+      connect: () => {
+        return {};
       },
-      ERC721MinterBurnerPauser__factory: {
-        connect: () => {
-          return {};
-        },
+    },
+    ERC721MinterBurnerPauser__factory: {
+      connect: () => {
+        return {};
       },
-      Bridge__factory: {
-        connect: () => {
-          return {
-            _resourceIDToHandlerAddress: resourceHandlerFunction,
-          };
-        },
+    },
+    Bridge__factory: {
+      connect: () => {
+        return {
+          _resourceIDToHandlerAddress: resourceHandlerFunction,
+        };
       },
-    } as unknown),
+    },
+  } as unknown),
 );
 const axiosMock = new MockAdapter(axios);
 const mockProvider: Partial<providers.Provider> = {
@@ -93,8 +93,8 @@ describe('EVM asset transfer', () => {
       decimals: 18,
     },
     sender: '0x3690601896C289be2d894c3d1213405310D0a25C',
-    recipient: '0x557abEc0cb31Aa925577441d54C090987c2ED818',
-    amount: {
+    details: {
+      recipient: '0x557abEc0cb31Aa925577441d54C090987c2ED818',
       amount: '200',
     },
   };
@@ -117,9 +117,9 @@ describe('EVM asset transfer', () => {
       decimals: 18,
     },
     sender: '0x3690601896C289be2d894c3d1213405310D0a25C',
-    recipient: '0x557abEc0cb31Aa925577441d54C090987c2ED818',
-    amount: {
-      id: 'id',
+    details: {
+      recipient: '0x557abEc0cb31Aa925577441d54C090987c2ED818',
+      tokenId: 'id',
     },
   };
 
@@ -175,7 +175,8 @@ describe('EVM asset transfer', () => {
         resourceID: transfer.resource.resourceId,
         sender: transfer.sender,
         tokenAmount: '200',
-        recipientAddress: transfer.recipient,
+        depositData:
+          '0x00000000000000000000000000000000000000000000000000000000000000c80000000000000000000000000000000000000000000000000000000000000014557abec0cb31aa925577441d54c090987c2ed818',
       });
     });
 

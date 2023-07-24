@@ -28,6 +28,7 @@ import {
   approve,
   calculateBasicfee,
   calculateDynamicFee,
+  createERCDepositData,
   erc20Transfer,
   erc721Transfer,
   getERC20Allowance,
@@ -112,16 +113,20 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
         });
       }
       case FeeHandlerType.DYNAMIC: {
+        const fungibleTransfer = transfer as Transfer<Fungible>;
         return await calculateDynamicFee({
           provider: this.provider,
           sender: transfer.sender,
-          recipientAddress: transfer.recipient,
           fromDomainID: Number(transfer.from.id),
           toDomainID: Number(transfer.to.id),
           resourceID: transfer.resource.resourceId,
-          tokenAmount: (transfer.amount as Fungible).amount,
+          tokenAmount: fungibleTransfer.details.amount,
           feeOracleBaseUrl: getFeeOracleBaseURL(this.environment),
           feeHandlerAddress: feeHandlerAddress,
+          depositData: createERCDepositData(
+            fungibleTransfer.details.amount,
+            fungibleTransfer.details.recipient,
+          ),
         });
       }
       default:
@@ -198,8 +203,8 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
     switch (transfer.resource.type) {
       case ResourceType.FUNGIBLE: {
         return await erc20Transfer({
-          amount: (transfer.amount as Fungible).amount,
-          recipientAddress: transfer.recipient,
+          amount: (transfer.details as Fungible).amount,
+          recipientAddress: (transfer.details as Fungible).recipient,
           bridgeInstance: bridge,
           domainId: transfer.to.id.toString(),
           resourceId: transfer.resource.resourceId,
@@ -208,8 +213,8 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
       }
       case ResourceType.NON_FUNGIBLE: {
         return await erc721Transfer({
-          id: (transfer.amount as NonFungible).id,
-          recipientAddress: transfer.recipient,
+          id: (transfer.details as NonFungible).tokenId,
+          recipientAddress: (transfer.details as NonFungible).recipient,
           bridgeInstance: bridge,
           domainId: transfer.to.id.toString(),
           resourceId: transfer.resource.resourceId,
@@ -235,7 +240,7 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
       approvals.push(await approve(fee.fee.toString(), erc20, fee.handlerAddress));
     }
 
-    const transferAmount = BigNumber.from(transfer.amount.amount);
+    const transferAmount = BigNumber.from(transfer.details.amount);
     if ((await getERC20Allowance(transfer.sender, erc20, handlerAddress)).lt(transferAmount)) {
       approvals.push(await approve(transferAmount.toString(), erc20, handlerAddress));
     }
@@ -249,8 +254,8 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
     handlerAddress: string,
   ): Promise<Array<PopulatedTransaction>> {
     const approvals: Array<PopulatedTransaction> = [];
-    if (!(await isApproved(Number(transfer.amount.id), erc721, handlerAddress))) {
-      approvals.push(await approve(transfer.amount.id, erc721, handlerAddress));
+    if (!(await isApproved(Number(transfer.details.tokenId), erc721, handlerAddress))) {
+      approvals.push(await approve(transfer.details.tokenId, erc721, handlerAddress));
     }
 
     return approvals;

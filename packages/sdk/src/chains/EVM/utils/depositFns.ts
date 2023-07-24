@@ -3,7 +3,7 @@ import { Bridge } from '@buildwithsygma/sygma-contracts';
 import { DepositEvent } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge.js';
 
 import { FeeHandlerType } from '../../../types/index.js';
-import { createERCDepositData } from '../helpers.js';
+import { createERCDepositData, createPermissionlessGenericDepositData } from '../helpers.js';
 import { Erc20TransferParamsType, Erc721TransferParamsType, EvmFee } from '../types/index.js';
 
 export const ASSET_TRANSFER_GAS_LIMIT: BigNumber = BigNumber.from(300000);
@@ -73,6 +73,41 @@ export const erc721Transfer = async ({
   const depositData = createERCDepositData(tokenId, recipientAddress);
 
   // pass data to smartcontract function and create a transaction
+  return executeDeposit(domainId, resourceId, depositData, feeData, bridgeInstance, overrides);
+};
+
+type GenericMessageParams = {
+  executeFunctionSignature: string;
+  executeContractAddress: string;
+  maxFee: string;
+  depositor: string;
+  executionData: string;
+  domainId: string;
+  resourceId: string;
+  bridgeInstance: Bridge;
+  feeData: EvmFee;
+  overrides?: ethers.PayableOverrides;
+};
+
+export const genericMessageTransfer = async ({
+  executeFunctionSignature,
+  executeContractAddress,
+  maxFee,
+  depositor,
+  executionData,
+  bridgeInstance,
+  domainId,
+  resourceId,
+  feeData,
+  overrides,
+}: GenericMessageParams): Promise<PopulatedTransaction> => {
+  const depositData = createPermissionlessGenericDepositData(
+    executeFunctionSignature,
+    executeContractAddress,
+    maxFee,
+    depositor,
+    executionData,
+  );
   return executeDeposit(domainId, resourceId, depositData, feeData, bridgeInstance, overrides);
 };
 

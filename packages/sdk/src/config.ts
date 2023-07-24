@@ -63,4 +63,33 @@ export class Config {
     const domain = this.getDomainConfig();
     return domain.resources;
   }
+
+  public getBaseTransferParams(
+    destinationChainId: number,
+    resourceId: string,
+  ): { sourceDomain: Domain; destinationDomain: Domain; resource: Resource } {
+    const sourceDomain = this.getDomains().find(domain => domain.chainId == this.chainId);
+
+    if (!sourceDomain) {
+      throw new Error('Config for the provided destination domain is not setup');
+    }
+
+    const destinationDomain = this.getDomains().find(
+      domain => domain.chainId == destinationChainId,
+    );
+    if (!destinationDomain) {
+      throw new Error('Config for the provided destination domain is not setup');
+    }
+
+    const resource = this.getDomainResources().find(resource => resource.resourceId == resourceId);
+    if (!resource) {
+      throw new Error('Config for the provided resource is not setup');
+    }
+
+    return {
+      sourceDomain,
+      destinationDomain,
+      resource,
+    };
+  }
 }
