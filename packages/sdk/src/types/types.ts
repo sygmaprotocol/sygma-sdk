@@ -6,6 +6,11 @@ export type Domain = {
   name: string;
 };
 
+export type Recipient = {
+  address: string;
+  parachainId?: number;
+};
+
 export enum ResourceType {
   FUNGIBLE = 'fungible',
   NON_FUNGIBLE = 'nonfungible',
@@ -44,6 +49,7 @@ export enum FeeHandlerType {
 
 type AssetTransfer = {
   recipient: string;
+  parachainId?: number;
 };
 
 export type Fungible = AssetTransfer & {
