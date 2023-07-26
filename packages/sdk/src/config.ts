@@ -47,11 +47,20 @@ export class Config {
     }
   }
 
-  public getDomainConfig(): EthereumConfig | SubstrateConfig {
+  public getSourceDomainConfig(): EthereumConfig | SubstrateConfig {
     const domain = this.environment.domains.find(domain => domain.chainId === this.chainId);
     if (!domain) {
       throw new Error('Config for the provided domain is not setup');
     }
+    return domain;
+  }
+
+  public getDomainConfig(domainId: number): EthereumConfig | SubstrateConfig {
+    const domain = this.environment.domains.find(d => d.id === domainId);
+    if (!domain) {
+      throw new Error('Domain not found');
+    }
+
     return domain;
   }
 
@@ -60,7 +69,7 @@ export class Config {
   }
 
   public getDomainResources(): Array<Resource> {
-    const domain = this.getDomainConfig();
+    const domain = this.getSourceDomainConfig();
     return domain.resources;
   }
 

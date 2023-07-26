@@ -8,7 +8,6 @@ import {
   ERC721MinterBurnerPauser__factory,
   FeeHandlerRouter__factory,
 } from '@buildwithsygma/sygma-contracts';
-
 import {
   Environment,
   EthereumConfig,
@@ -91,7 +90,7 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
    * @returns fee that needs to paid
    */
   public async getFee(transfer: Transfer<TransferType>): Promise<EvmFee> {
-    const domainConfig = this.config.getDomainConfig() as EthereumConfig;
+    const domainConfig = this.config.getSourceDomainConfig() as EthereumConfig;
     const feeRouter = FeeHandlerRouter__factory.connect(domainConfig.feeRouter, this.provider);
     const feeHandlerAddress = await feeRouter._domainResourceIDToFeeHandlerAddress(
       transfer.to.id,
@@ -146,7 +145,10 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
     transfer: Transfer<TransferType>,
     fee: EvmFee,
   ): Promise<Array<UnsignedTransaction>> {
-    const bridge = Bridge__factory.connect(this.config.getDomainConfig().bridge, this.provider);
+    const bridge = Bridge__factory.connect(
+      this.config.getSourceDomainConfig().bridge,
+      this.provider,
+    );
     const handlerAddress = await bridge._resourceIDToHandlerAddress(transfer.resource.resourceId);
 
     const approvals: Array<PopulatedTransaction> = [];
@@ -198,10 +200,30 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
   public async buildTransferTransaction(
     transfer: Transfer<TransferType>,
     fee: EvmFee,
+    skipDestinationBalanceCheck: boolean = false,
+    destinationProviderUrl?: string,
   ): Promise<PopulatedTransaction> {
-    const bridge = Bridge__factory.connect(this.config.getDomainConfig().bridge, this.provider);
+    const bridge = Bridge__factory.connect(
+      this.config.getSourceDomainConfig().bridge,
+      this.provider,
+    );
     switch (transfer.resource.type) {
       case ResourceType.FUNGIBLE: {
+        if (!skipDestinationBalanceCheck) {
+          if (!destinationProviderUrl)
+            throw new Error('Destination Chain Provider URL is required');
+
+          const destinationBalanceSufficient = await this.checkDestinationChainBalance(
+            transfer,
+            destinationProviderUrl,
+          );
+          if (!destinationBalanceSufficient) {
+            throw new Error(
+              'Insufficient destination chain liquidity to proceed with this transfer',
+            );
+          }
+        }
+
         return await erc20Transfer({
           amount: (transfer.details as Fungible).amount,
           recipientAddress: (transfer.details as Fungible).recipient,

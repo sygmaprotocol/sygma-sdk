@@ -1,5 +1,20 @@
-import { Environment, Fungible, Transfer } from '../types';
+import { JsonRpcProvider, Provider } from '@ethersproject/providers';
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import { ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { Config } from '../config';
+import {
+  Environment,
+  EvmResource,
+  Fungible,
+  Network,
+  ResourceType,
+  SubstrateResource,
+  Transfer,
+  TransferType,
+} from '../types';
+import { getAssetBalance } from './Substrate/utils/getAssetBalance';
+import { getNativeTokenBalance } from './Substrate/utils/getNativeTokenBalance';
+import { BigNumber } from 'ethers';
 
 export abstract class BaseAssetTransfer {
   public config!: Config;
@@ -42,5 +57,67 @@ export abstract class BaseAssetTransfer {
     };
 
     return transfer;
+  }
+
+  async checkDestinationChainBalance(
+    transfer: Transfer<TransferType>,
+    destinationProviderUrl: string,
+  ): Promise<boolean> {
+    const destinationDomain = this.config.getDomainConfig(transfer.to.id);
+    const handlerAddress = destinationDomain.handlers.find(
+      h => h.type === ResourceType.FUNGIBLE,
+    )?.address;
+
+    if (!handlerAddress) {
+      throw new Error('No ERC20 handler configured');
+    }
+
+    const destinationResource = destinationDomain.resources.find(
+      r => r.resourceId === transfer.resource.resourceId,
+    );
+
+    if (destinationResource?.burnable) {
+      return true;
+    }
+
+    let handlerBalance;
+    let providerOrApiPromise;
+
+    switch (destinationDomain.type) {
+      case Network.EVM:
+        providerOrApiPromise = new JsonRpcProvider(destinationProviderUrl);
+        if (destinationResource?.native) {
+          handlerBalance = await (providerOrApiPromise as Provider).getBalance(handlerAddress);
+        } else {
+          const tokenAddress = (transfer.resource as EvmResource).address;
+          const erc20Contract = ERC20__factory.connect(
+            tokenAddress,
+            providerOrApiPromise as Provider,
+          );
+          handlerBalance = await erc20Contract.balanceOf(handlerAddress);
+        }
+        break;
+      case Network.SUBSTRATE: {
+        const wsProvider = new WsProvider(destinationProviderUrl);
+        providerOrApiPromise = new ApiPromise({ provider: wsProvider });
+        if (destinationResource?.native) {
+          const accountInfo = await getNativeTokenBalance(providerOrApiPromise, handlerAddress);
+          handlerBalance = BigNumber.from(accountInfo.free.toString());
+        } else {
+          const assetBalance = await getAssetBalance(
+            providerOrApiPromise,
+            (transfer.resource as SubstrateResource).assetId ?? 0,
+            handlerAddress,
+          );
+          handlerBalance = BigNumber.from(assetBalance.balance.toString());
+        }
+        break;
+      }
+    }
+
+    if (handlerBalance.lt((transfer as Transfer<Fungible>).details.amount)) {
+      return false;
+    }
+    return true;
   }
 }

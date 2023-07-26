@@ -17,11 +17,11 @@ export type Handler = {
   address: string;
 };
 
-export interface BaseConfig<Type> {
+export interface BaseConfig<T> {
   id: number;
   chainId: number;
   name: string;
-  type: Type;
+  type: T;
   bridge: string;
   nativeTokenSymbol: string;
   nativeTokenName: string;

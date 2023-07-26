@@ -35,7 +35,7 @@ describe('Config', () => {
   it('Should successfully return all domains from config', async function () {
     await config.init(6, Environment.DEVNET);
 
-    const domainConfig = config.getDomainConfig();
+    const domainConfig = config.getSourceDomainConfig();
 
     expect(domainConfig).toEqual(testingConfigData.domains[0]);
   });
@@ -44,7 +44,7 @@ describe('Config', () => {
     const expectedError = new Error('Config for the provided domain is not setup');
     await config.init(1, Environment.TESTNET);
 
-    expect(() => config.getDomainConfig()).toThrow(expectedError);
+    expect(() => config.getSourceDomainConfig()).toThrow(expectedError);
   });
 
   it('Should successfully return all resources for domain', async function () {

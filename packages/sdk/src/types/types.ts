@@ -23,6 +23,8 @@ export type Resource = EvmResource | SubstrateResource;
 interface BaseResource {
   resourceId: string;
   type: ResourceType;
+  native?: boolean;
+  burnable?: boolean;
   symbol?: string;
   decimals?: number;
 }
@@ -32,7 +34,7 @@ export type EvmResource = BaseResource & {
 };
 
 export type SubstrateResource = BaseResource & {
-  assetId: number;
+  assetId?: number;
   assetName: string;
   xcmMultiAssetId: XcmMultiAssetIdType;
 };
