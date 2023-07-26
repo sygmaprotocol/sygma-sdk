@@ -1,7 +1,8 @@
 import { BigNumber, utils } from 'ethers';
 
 import {
-  getRecipientAddressInBytes,
+  getEVMRecipientAddressInBytes,
+  getSubstrateRecipientAddressInBytes,
   createERCDepositData,
   toHex,
   createPermissionedGenericDepositData,
@@ -32,27 +33,44 @@ describe('constructSubstrateRecipient', () => {
   });
 });
 
-describe('getRecipientAddressInBytes', () => {
+describe('getEVMRecipientAddressInBytes', () => {
   it('should convert an EVM address to a Uint8Array of bytes', () => {
     const evmAddress = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
     expect(utils.isAddress(evmAddress)).toBeTruthy();
 
-    const result = getRecipientAddressInBytes(evmAddress);
+    const result = getEVMRecipientAddressInBytes(evmAddress);
     const expectedResult = utils.arrayify(evmAddress);
 
     expect(result).toEqual(expectedResult);
     expect(result).toBeInstanceOf(Uint8Array);
   });
+});
 
+describe('getSubstrateRecipientAddressInBytes', () => {
   it('should convert a Substrate address to a Uint8Array of bytes', () => {
     const substrateAddress = '5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt';
 
     expect(utils.isAddress(substrateAddress)).toBeFalsy();
 
-    const result = getRecipientAddressInBytes(substrateAddress);
+    const result = getSubstrateRecipientAddressInBytes(substrateAddress);
     const expectedResult = Uint8Array.from([
       0, 1, 1, 0, 6, 162, 32, 237, 245, 248, 43, 132, 252, 95, 146, 112, 248, 163, 10, 23, 99, 107,
       242, 156, 5, 165, 193, 98, 121, 64, 92, 162, 9, 24, 170, 57,
+    ]);
+
+    expect(result).toEqual(expectedResult);
+    expect(result).toBeInstanceOf(Uint8Array);
+  });
+
+  it('should convert a Substrate address on a different parachain to a Uint8Array of bytes', () => {
+    const substrateAddress = '5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt';
+
+    expect(utils.isAddress(substrateAddress)).toBeFalsy();
+
+    const result = getSubstrateRecipientAddressInBytes(substrateAddress, 1001);
+    const expectedResult = Uint8Array.from([
+      1, 2, 0, 89, 31, 1, 0, 6, 162, 32, 237, 245, 248, 43, 132, 252, 95, 146, 112, 248, 163, 10,
+      23, 99, 107, 242, 156, 5, 165, 193, 98, 121, 64, 92, 162, 9, 24, 170, 57,
     ]);
 
     expect(result).toEqual(expectedResult);

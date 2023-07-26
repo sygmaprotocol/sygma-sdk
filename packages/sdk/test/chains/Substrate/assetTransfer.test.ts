@@ -73,6 +73,7 @@ describe('Substrate asset transfer', () => {
         details: {
           recipient: '0x557abEc0cb31Aa925577441d54C090987c2ED818',
           amount: '200',
+          parachainId: undefined,
         },
       };
 
