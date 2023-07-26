@@ -1,5 +1,6 @@
 import { Environment, Fungible, Transfer } from '../types';
 import { Config } from '../config';
+import { ParachainID } from './Substrate';
 
 export abstract class BaseAssetTransfer {
   public config!: Config;
@@ -25,7 +26,7 @@ export abstract class BaseAssetTransfer {
     destinationAddress: string,
     resourceId: string,
     amount: string,
-    parachainId?: number,
+    parachainId?: ParachainID,
   ): Transfer<Fungible> {
     const { sourceDomain, destinationDomain, resource } = this.config.getBaseTransferParams(
       destinationChainId,
