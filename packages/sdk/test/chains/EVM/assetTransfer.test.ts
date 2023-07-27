@@ -275,7 +275,7 @@ describe('EVM asset transfer', () => {
         type: FeeHandlerType.BASIC,
         handlerAddress: '0xe495c86962DcA7208ECcF2020A273395AcE8da3e',
       };
-      const tx = await assetTransfer.buildTransferTransaction(transfer, fee);
+      const tx = await assetTransfer.buildTransferTransaction(transfer, fee, true);
 
       expect(tx).toBeDefined();
       expect(erc20TransferMock).toBeCalled();
