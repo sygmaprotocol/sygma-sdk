@@ -35,6 +35,7 @@ export enum KusamaParachain {
 
 export enum PolkadotParachain {
   STATEMINT = 1000,
+  ASTAR = 2006,
   MOONBEAM = 2004,
   BIFROST = 2030,
   PARALLEL = 2012,
