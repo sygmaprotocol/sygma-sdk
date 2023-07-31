@@ -137,8 +137,8 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
    * Builds approval transactions that are required before executing
    * deposit. Returns multiple approvals if fee is payed in ERC20 token.
    *
-   * @param transfer requested transfer
-   * @param fee Fee calculated by 'getFee' function
+   * @param {Transfer} transfer Transfer
+   * @param {Fee} fee Fee calculated by 'getFee' function
    * @returns array of unsigned approval transaction
    */
   public async buildApprovals(
@@ -193,9 +193,13 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
    * Builds an unsigned transfer transaction.
    * Should be executed after the approval transactions.
    *
-   * @param transfer
-   * @param fee
+   * @param {Transfer} transfer requested transfer
+   * @param {Fee} fee Fee calculated by 'getFee' function
+   * @param {Boolean} skipDestinationBalanceCheck Flag to disable destination chain balance check
+   * @param {String} destinationProviderUrl URL for destination chain provider
    * @returns unsigned transfer transaction
+   * @throws {Error} Destination Chain URL is required
+   * @throws {Error} Insufficient destination chain liquidity to proceed with transfer
    */
   public async buildTransferTransaction(
     transfer: Transfer<TransferType>,
@@ -218,9 +222,7 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
             destinationProviderUrl,
           );
           if (!destinationBalanceSufficient) {
-            throw new Error(
-              'Insufficient destination chain liquidity to proceed with this transfer',
-            );
+            throw new Error('Insufficient destination chain liquidity to proceed with transfer');
           }
         }
 

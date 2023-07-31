@@ -110,7 +110,7 @@ describe('Substrate asset transfer', () => {
   });
 
   describe('buildTransferTransaction', () => {
-    it('Should build fungible transfer tx if resource type FUNGIBLE', function () {
+    it('Should build fungible transfer tx if resource type FUNGIBLE', async () => {
       const transfer = assetTransfer.createFungibleTransfer(
         '5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS',
         11155111,
@@ -123,12 +123,12 @@ describe('Substrate asset transfer', () => {
         fee: new BN('100'),
         type: FeeHandlerType.BASIC,
       };
-      const tx = assetTransfer.buildTransferTransaction(transfer, fee);
+      const tx = await assetTransfer.buildTransferTransaction(transfer, fee, true);
 
       expect(tx).toBeDefined();
     });
 
-    it('Should throw an error if the fee is greater than the amount being transferred', () => {
+    it('Should throw an error if the fee is greater than the amount being transferred', async () => {
       const transfer = assetTransfer.createFungibleTransfer(
         '5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS',
         11155111,
@@ -142,7 +142,10 @@ describe('Substrate asset transfer', () => {
         type: FeeHandlerType.BASIC,
       };
 
-      expect(() => assetTransfer.buildTransferTransaction(transfer, fee)).toThrow();
+      await expect(
+        async () =>
+          await assetTransfer.buildTransferTransaction(transfer, fee, true, 'http://myrpc.test'),
+      ).rejects.toThrowError('Transfer amount should be higher than transfer fee');
     });
   });
 });

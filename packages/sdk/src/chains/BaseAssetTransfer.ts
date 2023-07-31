@@ -1,6 +1,7 @@
 import { JsonRpcProvider, Provider } from '@ethersproject/providers';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { ERC20__factory } from '@buildwithsygma/sygma-contracts';
+import { BigNumber } from 'ethers';
 import { Config } from '../config';
 import {
   Environment,
@@ -14,7 +15,6 @@ import {
 } from '../types';
 import { getAssetBalance } from './Substrate/utils/getAssetBalance';
 import { getNativeTokenBalance } from './Substrate/utils/getNativeTokenBalance';
-import { BigNumber } from 'ethers';
 
 export abstract class BaseAssetTransfer {
   public config!: Config;
@@ -59,6 +59,11 @@ export abstract class BaseAssetTransfer {
     return transfer;
   }
 
+  /**
+   * @param {Transfer} transfer Transfer to check
+   * @param {String} destinationProviderUrl URL of the destination chain provider
+   * @returns {Promise<Boolean>} Flag indicating whether there is sufficient balance to execute the transfer on the destination chain
+   */
   async checkDestinationChainBalance(
     transfer: Transfer<TransferType>,
     destinationProviderUrl: string,
@@ -69,7 +74,7 @@ export abstract class BaseAssetTransfer {
     )?.address;
 
     if (!handlerAddress) {
-      throw new Error('No ERC20 handler configured');
+      throw new Error('No Funglible handler configured on destination domain');
     }
 
     const destinationResource = destinationDomain.resources.find(
