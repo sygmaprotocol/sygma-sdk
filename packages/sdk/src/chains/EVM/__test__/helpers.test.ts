@@ -24,6 +24,14 @@ describe('createERCDepositData', () => {
 });
 
 describe('constructSubstrateRecipient', () => {
+  it('should create a valid Substrate Multilocation Object with parachain id', () => {
+    const substrateAddress = '5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt';
+    const result = constructSubstrateRecipient(substrateAddress, 2004);
+    const expectedResult =
+      '{"parents":1,"interior":{"X2":[{"parachain":2004},{"AccountId32":{"network":{"any":null},"id":"0x06a220edf5f82b84fc5f9270f8a30a17636bf29c05a5c16279405ca20918aa39"}}]}}';
+    expect(result).toEqual(expectedResult);
+  });
+
   it('should create a valid Substrate Multilocation Object', () => {
     const substrateAddress = '5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt';
     const result = constructSubstrateRecipient(substrateAddress);
@@ -69,7 +77,7 @@ describe('getSubstrateRecipientAddressInBytes', () => {
 
     const result = getSubstrateRecipientAddressInBytes(substrateAddress, 1001);
     const expectedResult = Uint8Array.from([
-      1, 2, 0, 89, 31, 1, 0, 6, 162, 32, 237, 245, 248, 43, 132, 252, 95, 146, 112, 248, 163, 10,
+      1, 2, 0, 165, 15, 1, 0, 6, 162, 32, 237, 245, 248, 43, 132, 252, 95, 146, 112, 248, 163, 10,
       23, 99, 107, 242, 156, 5, 165, 193, 98, 121, 64, 92, 162, 9, 24, 170, 57,
     ]);
 

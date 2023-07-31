@@ -117,9 +117,9 @@ export const constructSubstrateRecipient = (
     return JSON.stringify({
       parents: 1,
       interior: {
-        x2: [
+        X2: [
           {
-            parachain: 2006,
+            parachain: parachainId,
           },
           {
             AccountId32: {
