@@ -28,6 +28,7 @@ export async function erc20Transfer(): Promise<void> {
     DESTINATION_ADDRESS,
     RESOURCE_ID,
     "5000000000000000000" // 18 decimal places
+    // optional parachainID (e.g. KusamaParachain.SHIDEN)
   );
 
   const fee = await assetTransfer.getFee(transfer);
