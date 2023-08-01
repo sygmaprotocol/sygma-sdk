@@ -143,9 +143,31 @@ describe('Substrate asset transfer', () => {
       };
 
       await expect(
-        async () =>
-          await assetTransfer.buildTransferTransaction(transfer, fee, true, 'http://myrpc.test'),
+        async () => await assetTransfer.buildTransferTransaction(transfer, fee, true),
       ).rejects.toThrowError('Transfer amount should be higher than transfer fee');
+    });
+
+    it('Should throw an error if the destintation chain liquidity is too low', async () => {
+      const transfer = assetTransfer.createFungibleTransfer(
+        '5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS',
+        11155111,
+        '0x557abEc0cb31Aa925577441d54C090987c2ED818',
+        '0x0000000000000000000000000000000000000000000000000000000000001000',
+        '200',
+      );
+
+      const mock = jest
+        .spyOn(assetTransfer, 'checkDestinationChainBalance')
+        .mockResolvedValueOnce(false);
+
+      const fee = await assetTransfer.getFee(transfer);
+
+      await expect(
+        async () =>
+          await assetTransfer.buildTransferTransaction(transfer, fee, false, 'http://myrpc.test'),
+      ).rejects.toThrowError('Insufficient destination chain liquidity to proceed with transfer');
+
+      expect(mock).toBeCalledWith(transfer, 'http://myrpc.test');
     });
   });
 });

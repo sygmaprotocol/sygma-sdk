@@ -281,6 +281,25 @@ describe('EVM asset transfer', () => {
       expect(erc20TransferMock).toBeCalled();
     });
 
+    it('Should throw an error if the destintation chain liquidity is too low', async () => {
+      const mock = jest
+        .spyOn(assetTransfer, 'checkDestinationChainBalance')
+        .mockResolvedValueOnce(false);
+
+      const fee = {
+        fee: BigNumber.from('100'),
+        type: FeeHandlerType.BASIC,
+        handlerAddress: '0xe495c86962DcA7208ECcF2020A273395AcE8da3e',
+      };
+
+      await expect(
+        async () =>
+          await assetTransfer.buildTransferTransaction(transfer, fee, false, 'http://myrpc.test'),
+      ).rejects.toThrowError('Insufficient destination chain liquidity to proceed with transfer');
+
+      expect(mock).toBeCalledWith(transfer, 'http://myrpc.test');
+    });
+
     it('Should build erc721 transfer tx if resource type NONFUNGIBLE', async function () {
       erc721TransferMock.mockResolvedValue({});
 

@@ -103,9 +103,7 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
             destinationProviderUrl,
           );
           if (!destinationBalanceSufficient) {
-            throw new Error(
-              'Insufficient destination chain liquidity to proceed with this transfer',
-            );
+            throw new Error('Insufficient destination chain liquidity to proceed with transfer');
           }
         }
         const fungibleTransfer = transfer as Transfer<Fungible>;
