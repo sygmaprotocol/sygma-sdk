@@ -102,7 +102,10 @@ export class EVMGenericMessageTransfer {
     transfer: Transfer<TransferType>,
     fee: EvmFee,
   ): Promise<PopulatedTransaction> {
-    const bridge = Bridge__factory.connect(this.config.getSourceDomainConfig().bridge, this.provider);
+    const bridge = Bridge__factory.connect(
+      this.config.getSourceDomainConfig().bridge,
+      this.provider,
+    );
     switch (transfer.resource.type) {
       case ResourceType.PERMISSIONLESS_GENERIC: {
         const genericTransfer = transfer as Transfer<GenericMessage>;
