@@ -475,7 +475,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@buildwithsygma/sygma-sdk-core@2.1.0, @buildwithsygma/sygma-sdk-core@workspace:packages/sdk":
+"@buildwithsygma/sygma-sdk-core@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@buildwithsygma/sygma-sdk-core@npm:2.1.0"
+  dependencies:
+    "@buildwithsygma/sygma-contracts": 2.1.2
+    "@ethersproject/abi": ^5.7.0
+    "@ethersproject/bytes": ^5.7.0
+    "@ethersproject/contracts": ^5.7.0
+    "@ethersproject/providers": ^5.7.2
+    "@polkadot/api": 10.7.2
+    "@polkadot/api-augment": 10.7.2
+    "@polkadot/extension-inject": 0.46.3
+    "@polkadot/keyring": 12.2.1
+    "@polkadot/rpc-provider": 10.7.2
+    "@polkadot/ui-keyring": 3.4.1
+    "@polkadot/util": 12.2.1
+    "@polkadot/util-crypto": 12.2.1
+    axios: ^1.4.0
+    cross-fetch: ^3.1.5
+    ethers: 5.6.2
+  checksum: 01409edf55ee475ec3c9a230dbeb7597aafae997c0270250b2a2439a50677fdddc8fb7497262222b33add6defb6196b8f3882e06329eae3114973064e808b242
+  languageName: node
+  linkType: hard
+
+"@buildwithsygma/sygma-sdk-core@workspace:packages/sdk":
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-core@workspace:packages/sdk"
   dependencies:
