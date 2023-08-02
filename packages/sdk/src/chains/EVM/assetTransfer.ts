@@ -202,9 +202,11 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
     const bridge = Bridge__factory.connect(this.config.getDomainConfig().bridge, this.provider);
     switch (transfer.resource.type) {
       case ResourceType.FUNGIBLE: {
+        const fungibleTransfer = transfer as Transfer<Fungible>;
         return await erc20Transfer({
-          amount: (transfer.details as Fungible).amount,
-          recipientAddress: (transfer.details as Fungible).recipient,
+          amount: fungibleTransfer.details.amount,
+          recipientAddress: fungibleTransfer.details.recipient,
+          parachainId: fungibleTransfer.details.parachainId,
           bridgeInstance: bridge,
           domainId: transfer.to.id.toString(),
           resourceId: transfer.resource.resourceId,
@@ -212,9 +214,11 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
         });
       }
       case ResourceType.NON_FUNGIBLE: {
+        const nonfungibleTransfer = transfer as Transfer<NonFungible>;
         return await erc721Transfer({
-          id: (transfer.details as NonFungible).tokenId,
-          recipientAddress: (transfer.details as NonFungible).recipient,
+          id: nonfungibleTransfer.details.tokenId,
+          recipientAddress: nonfungibleTransfer.details.recipient,
+          parachainId: nonfungibleTransfer.details.parachainId,
           bridgeInstance: bridge,
           domainId: transfer.to.id.toString(),
           resourceId: transfer.resource.resourceId,

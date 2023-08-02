@@ -73,6 +73,7 @@ describe('Substrate asset transfer', () => {
         details: {
           recipient: '0x557abEc0cb31Aa925577441d54C090987c2ED818',
           amount: '200',
+          parachainId: 1001,
         },
       };
 
@@ -82,6 +83,7 @@ describe('Substrate asset transfer', () => {
         '0x557abEc0cb31Aa925577441d54C090987c2ED818',
         '0x0000000000000000000000000000000000000000000000000000000000001000',
         '200',
+        1001,
       );
 
       expect(actualVal).toStrictEqual(expectedVal);

@@ -27,6 +27,8 @@ export type OracleResource = {
 export type Erc20TransferParamsType = {
   /** The unique identifier for the destination network on the bridge. */
   domainId: string;
+  /** Identifier of the substrate destination parachain */
+  parachainId?: number;
   /** The unique identifier for the resource being transferred. */
   resourceId: string;
   /** The amount of tokens to transfer */
@@ -44,6 +46,8 @@ export type Erc20TransferParamsType = {
 export type Erc721TransferParamsType = {
   /** The unique identifier for the destination network on the bridge. */
   domainId: string;
+  /** Identifier of the substrate destination parachain */
+  parachainId?: number;
   /** The unique identifier for the resource being transferred. */
   resourceId: string;
   /** The tokenId for a specific ERC721 token being transferred. */

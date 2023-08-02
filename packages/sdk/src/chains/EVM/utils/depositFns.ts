@@ -29,6 +29,7 @@ export const ASSET_TRANSFER_GAS_LIMIT: BigNumber = BigNumber.from(300000);
 export const erc20Transfer = async ({
   amount,
   recipientAddress,
+  parachainId,
   bridgeInstance,
   domainId,
   resourceId,
@@ -36,7 +37,7 @@ export const erc20Transfer = async ({
   overrides,
 }: Erc20TransferParamsType): Promise<PopulatedTransaction> => {
   // construct the deposit data
-  const depositData = createERCDepositData(amount, recipientAddress);
+  const depositData = createERCDepositData(amount, recipientAddress, parachainId);
 
   // pass data to smartcontract function and create a transaction
   return executeDeposit(domainId, resourceId, depositData, feeData, bridgeInstance, overrides);
@@ -63,6 +64,7 @@ export const erc20Transfer = async ({
 export const erc721Transfer = async ({
   id: tokenId,
   recipientAddress,
+  parachainId,
   bridgeInstance,
   domainId,
   resourceId,
@@ -70,7 +72,7 @@ export const erc721Transfer = async ({
   overrides,
 }: Erc721TransferParamsType): Promise<PopulatedTransaction> => {
   // construct the deposit data
-  const depositData = createERCDepositData(tokenId, recipientAddress);
+  const depositData = createERCDepositData(tokenId, recipientAddress, parachainId);
 
   // pass data to smartcontract function and create a transaction
   return executeDeposit(domainId, resourceId, depositData, feeData, bridgeInstance, overrides);

@@ -1,9 +1,14 @@
-import { XcmMultiAssetIdType } from 'chains/Substrate/types';
+import { ParachainID, XcmMultiAssetIdType } from 'chains/Substrate/types';
 
 export type Domain = {
   id: number;
   chainId: number;
   name: string;
+};
+
+export type Recipient = {
+  address: string;
+  parachainId?: number;
 };
 
 export enum ResourceType {
@@ -44,6 +49,7 @@ export enum FeeHandlerType {
 
 type AssetTransfer = {
   recipient: string;
+  parachainId?: ParachainID;
 };
 
 export type Fungible = AssetTransfer & {
