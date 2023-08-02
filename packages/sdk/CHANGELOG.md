@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.2.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.1.0...sygma-sdk-core-v2.2.0) (2023-08-02)
+
+
+### Features
+
+* Generic Message passing ([#285](https://github.com/sygmaprotocol/sygma-sdk/issues/285)) ([5cc18ee](https://github.com/sygmaprotocol/sygma-sdk/commit/5cc18ee238ac3a1b0ab60188f4c2341d1f478a05))
+* parachain support ([#289](https://github.com/sygmaprotocol/sygma-sdk/issues/289)) ([5f829e8](https://github.com/sygmaprotocol/sygma-sdk/commit/5f829e8ef48cfa51cc11b4abd861fab5904dba98))
+
+
+### Bug Fixes
+
+* Ensure transfer amount greater than fee ([#280](https://github.com/sygmaprotocol/sygma-sdk/issues/280)) ([9950015](https://github.com/sygmaprotocol/sygma-sdk/commit/9950015a6f28580360cd4b92e7a205c967e7634f))
+* Token decimals ([#276](https://github.com/sygmaprotocol/sygma-sdk/issues/276)) ([badb201](https://github.com/sygmaprotocol/sygma-sdk/commit/badb2019f1e5b0f768cd1cabc47378b9736805d7))
+
 ## [2.1.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.0.1...sygma-sdk-core-v2.1.0) (2023-06-22)
 
 
