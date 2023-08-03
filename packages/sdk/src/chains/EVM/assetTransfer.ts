@@ -195,14 +195,14 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
    *
    * @param {Transfer} transfer requested transfer
    * @param {Fee} fee Fee calculated by 'getFee' function
-   * @param {Boolean} skipDestinationBalanceCheck Flag to disable destination chain balance check
-   * @param {String} destinationProviderUrl URL for destination chain provider
+   * @param {Boolean} ignoreInsufficientDestinationLiquidity Flag to disable destination chain balance check
    * @returns unsigned transfer transaction
    * @throws {Error} Insufficient destination chain liquidity to proceed with transfer
    */
   public async buildTransferTransaction(
     transfer: Transfer<TransferType>,
     fee: EvmFee,
+    ignoreInsufficientDestinationLiquidity: Boolean = false,
   ): Promise<PopulatedTransaction> {
     const bridge = Bridge__factory.connect(
       this.config.getSourceDomainConfig().bridge,
@@ -211,6 +211,14 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
     switch (transfer.resource.type) {
       case ResourceType.FUNGIBLE: {
         const fungibleTransfer = transfer as Transfer<Fungible>;
+        if (
+          !ignoreInsufficientDestinationLiquidity &&
+          fungibleTransfer.details.destinationHandlerBalance &&
+          fungibleTransfer.details.destinationHandlerBalance <
+            BigInt(fungibleTransfer.details.amount)
+        )
+          throw new Error('Insufficient destination chain liquidity to proceed with transfer');
+
         return await erc20Transfer({
           amount: fungibleTransfer.details.amount,
           recipientAddress: fungibleTransfer.details.recipient,

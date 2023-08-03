@@ -56,7 +56,7 @@ type AssetTransfer = {
 
 export type Fungible = AssetTransfer & {
   amount: string;
-  destinationHandlerBalance?: BigInt;
+  destinationHandlerBalance?: bigint;
 };
 
 export type NonFungible = AssetTransfer & {
