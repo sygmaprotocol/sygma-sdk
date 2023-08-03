@@ -86,26 +86,12 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
    * @throws {Error} Destination Chain URL is required
    * @throws {Error} Insufficient destination chain liquidity to proceed with transfer
    */
-  public async buildTransferTransaction(
+  public buildTransferTransaction(
     transfer: Transfer<TransferType>,
     fee: SubstrateFee,
-    skipDestinationBalanceCheck: boolean = false,
-    destinationProviderUrl?: string,
-  ): Promise<SubmittableExtrinsic<'promise', SubmittableResult>> {
+  ): SubmittableExtrinsic<'promise', SubmittableResult> {
     switch (transfer.resource.type) {
       case ResourceType.FUNGIBLE: {
-        if (!skipDestinationBalanceCheck) {
-          if (!destinationProviderUrl)
-            throw new Error('Destination Chain Provider URL is required');
-
-          const destinationBalanceSufficient = await this.checkDestinationChainBalance(
-            transfer,
-            destinationProviderUrl,
-          );
-          if (!destinationBalanceSufficient) {
-            throw new Error('Insufficient destination chain liquidity to proceed with transfer');
-          }
-        }
         const fungibleTransfer = transfer as Transfer<Fungible>;
 
         if (new BN(fungibleTransfer.details.amount).lt(fee.fee)) {

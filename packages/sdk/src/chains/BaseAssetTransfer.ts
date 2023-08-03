@@ -1,7 +1,7 @@
 import { JsonRpcProvider, Provider } from '@ethersproject/providers';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { ERC20__factory } from '@buildwithsygma/sygma-contracts';
-import { BigNumber } from 'ethers';
+import { BigNumber, constants } from 'ethers';
 import { Config } from '../config';
 import {
   Environment,
@@ -30,16 +30,18 @@ export abstract class BaseAssetTransfer {
    * @param {string} destinationAddress - The address of the recipient on the destination chain
    * @param {string} resourceId - The ID of the resource being transferred
    * @param {string} amount - The amount of tokens to be transferred. The amount should be in the lowest denomination possible on the source chain. If the token on source chain is configured to use 12 decimals and the amount to be transferred is 1 ETH, then amount should be passed in as 1000000000000
+   * @param {string} [destinationProviderUrl] Destination Chain RPC URL - If passed in, this will perform a liquidity check on the destination chain handler.
    * @returns {Transfer<Fungible>} - The populated transfer object
    * @throws {Error} - Source domain not supported, Destination domain not supported, Resource not supported
    */
-  public createFungibleTransfer(
+  public async createFungibleTransfer(
     sourceAddress: string,
     destinationChainId: number,
     destinationAddress: string,
     resourceId: string,
     amount: string,
-  ): Transfer<Fungible> {
+    destinationProviderUrl?: string,
+  ): Promise<Transfer<Fungible>> {
     const { sourceDomain, destinationDomain, resource } = this.config.getBaseTransferParams(
       destinationChainId,
       resourceId,
@@ -56,18 +58,27 @@ export abstract class BaseAssetTransfer {
       resource: resource,
     };
 
+    if (destinationProviderUrl) {
+      const destinationHandlerBalance = await this.fetchDestinationHandlerBalance(
+        destinationProviderUrl,
+        transfer,
+      );
+      transfer.details.destinationHandlerBalance = BigInt(destinationHandlerBalance.toString());
+    }
+
     return transfer;
   }
 
   /**
    * @param {Transfer} transfer Transfer to check
    * @param {String} destinationProviderUrl URL of the destination chain provider
-   * @returns {Promise<Boolean>} Flag indicating whether there is sufficient balance to execute the transfer on the destination chain
+   * @returns {Promise<string>} Flag indicating whether there is sufficient balance to execute the transfer on the destination chain
+   * @throws {Error} No Funglible handler configured on destination domain
    */
-  async checkDestinationChainBalance(
-    transfer: Transfer<TransferType>,
+  async fetchDestinationHandlerBalance(
     destinationProviderUrl: string,
-  ): Promise<boolean> {
+    transfer: Transfer<TransferType>,
+  ): Promise<BigInt> {
     const destinationDomain = this.config.getDomainConfig(transfer.to.id);
     const handlerAddress = destinationDomain.handlers.find(
       h => h.type === ResourceType.FUNGIBLE,
@@ -82,7 +93,7 @@ export abstract class BaseAssetTransfer {
     );
 
     if (destinationResource?.burnable) {
-      return true;
+      return BigInt(constants.MaxUint256.toString());
     }
 
     let handlerBalance;
@@ -120,9 +131,6 @@ export abstract class BaseAssetTransfer {
       }
     }
 
-    if (handlerBalance.lt((transfer as Transfer<Fungible>).details.amount)) {
-      return false;
-    }
-    return true;
+    return BigInt(handlerBalance.toString());
   }
 }

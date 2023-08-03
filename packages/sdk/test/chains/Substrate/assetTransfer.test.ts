@@ -50,7 +50,7 @@ describe('Substrate asset transfer', () => {
   });
 
   describe('createFungibleTransfer', () => {
-    it('Should return a valid Transfer object', () => {
+    it('Should return a valid Transfer object', async () => {
       const expectedVal: Transfer<Fungible> = {
         to: {
           name: 'Sepolia',
@@ -76,7 +76,7 @@ describe('Substrate asset transfer', () => {
         },
       };
 
-      const actualVal = assetTransfer.createFungibleTransfer(
+      const actualVal = await assetTransfer.createFungibleTransfer(
         '5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS',
         11155111,
         '0x557abEc0cb31Aa925577441d54C090987c2ED818',
@@ -90,7 +90,7 @@ describe('Substrate asset transfer', () => {
 
   describe('getFee', () => {
     it('Should successfully get basic fee', async function () {
-      const transfer = assetTransfer.createFungibleTransfer(
+      const transfer = await assetTransfer.createFungibleTransfer(
         '0x3690601896C289be2d894c3d1213405310D0a25C',
         11155111,
         '0x557abEc0cb31Aa925577441d54C090987c2ED818',
@@ -111,7 +111,7 @@ describe('Substrate asset transfer', () => {
 
   describe('buildTransferTransaction', () => {
     it('Should build fungible transfer tx if resource type FUNGIBLE', async () => {
-      const transfer = assetTransfer.createFungibleTransfer(
+      const transfer = await assetTransfer.createFungibleTransfer(
         '5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS',
         11155111,
         '0x557abEc0cb31Aa925577441d54C090987c2ED818',
@@ -123,13 +123,13 @@ describe('Substrate asset transfer', () => {
         fee: new BN('100'),
         type: FeeHandlerType.BASIC,
       };
-      const tx = await assetTransfer.buildTransferTransaction(transfer, fee, true);
+      const tx = await assetTransfer.buildTransferTransaction(transfer, fee);
 
       expect(tx).toBeDefined();
     });
 
     it('Should throw an error if the fee is greater than the amount being transferred', async () => {
-      const transfer = assetTransfer.createFungibleTransfer(
+      const transfer = await assetTransfer.createFungibleTransfer(
         '5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS',
         11155111,
         '0x557abEc0cb31Aa925577441d54C090987c2ED818',
@@ -143,31 +143,31 @@ describe('Substrate asset transfer', () => {
       };
 
       await expect(
-        async () => await assetTransfer.buildTransferTransaction(transfer, fee, true),
+        async () => await assetTransfer.buildTransferTransaction(transfer, fee),
       ).rejects.toThrowError('Transfer amount should be higher than transfer fee');
     });
 
-    it('Should throw an error if the destintation chain liquidity is too low', async () => {
-      const transfer = assetTransfer.createFungibleTransfer(
-        '5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS',
-        11155111,
-        '0x557abEc0cb31Aa925577441d54C090987c2ED818',
-        '0x0000000000000000000000000000000000000000000000000000000000001000',
-        '200',
-      );
+    // it('Should throw an error if the destintation chain liquidity is too low', async () => {
+    //   const transfer = await assetTransfer.createFungibleTransfer(
+    //     '5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS',
+    //     11155111,
+    //     '0x557abEc0cb31Aa925577441d54C090987c2ED818',
+    //     '0x0000000000000000000000000000000000000000000000000000000000001000',
+    //     '200',
+    //   );
 
-      const mock = jest
-        .spyOn(assetTransfer, 'checkDestinationChainBalance')
-        .mockResolvedValueOnce(false);
+    //   const mock = jest
+    //     .spyOn(assetTransfer, 'fetchDestinationHandlerBalance')
+    //     .mockResolvedValueOnce('1234');
 
-      const fee = await assetTransfer.getFee(transfer);
+    //   const fee = await assetTransfer.getFee(transfer);
 
-      await expect(
-        async () =>
-          await assetTransfer.buildTransferTransaction(transfer, fee, false, 'http://myrpc.test'),
-      ).rejects.toThrowError('Insufficient destination chain liquidity to proceed with transfer');
+    //   await expect(
+    //     async () =>
+    //       await assetTransfer.buildTransferTransaction(transfer, fee, false, 'http://myrpc.test'),
+    //   ).rejects.toThrowError('Insufficient destination chain liquidity to proceed with transfer');
 
-      expect(mock).toBeCalledWith(transfer, 'http://myrpc.test');
-    });
+    //   expect(mock).toBeCalledWith(transfer, 'http://myrpc.test');
+    // });
   });
 });

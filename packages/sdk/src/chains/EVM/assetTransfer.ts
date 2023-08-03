@@ -204,8 +204,6 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
   public async buildTransferTransaction(
     transfer: Transfer<TransferType>,
     fee: EvmFee,
-    skipDestinationBalanceCheck: boolean = false,
-    destinationProviderUrl?: string,
   ): Promise<PopulatedTransaction> {
     const bridge = Bridge__factory.connect(
       this.config.getSourceDomainConfig().bridge,
@@ -213,19 +211,6 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
     );
     switch (transfer.resource.type) {
       case ResourceType.FUNGIBLE: {
-        if (!skipDestinationBalanceCheck) {
-          if (!destinationProviderUrl)
-            throw new Error('Destination Chain Provider URL is required');
-
-          const destinationBalanceSufficient = await this.checkDestinationChainBalance(
-            transfer,
-            destinationProviderUrl,
-          );
-          if (!destinationBalanceSufficient) {
-            throw new Error('Insufficient destination chain liquidity to proceed with transfer');
-          }
-        }
-
         return await erc20Transfer({
           amount: (transfer.details as Fungible).amount,
           recipientAddress: (transfer.details as Fungible).recipient,

@@ -40,8 +40,7 @@ export async function erc20Transfer(): Promise<void> {
   }
   const transferTx = await assetTransfer.buildTransferTransaction(
     transfer,
-    fee,
-    true
+    fee
   );
   const response = await wallet.sendTransaction(
     transferTx as providers.TransactionRequest
