@@ -96,41 +96,32 @@ export abstract class BaseAssetTransfer {
       return BigInt(constants.MaxUint256.toString());
     }
 
-    let handlerBalance;
-    let providerOrApiPromise;
-
     switch (destinationDomain.type) {
-      case Network.EVM:
-        providerOrApiPromise = new JsonRpcProvider(destinationProviderUrl);
+      case Network.EVM: {
+        const provider = new JsonRpcProvider(destinationProviderUrl);
         if (destinationResource?.native) {
-          handlerBalance = await (providerOrApiPromise as Provider).getBalance(handlerAddress);
+          return BigInt((await provider.getBalance(handlerAddress)).toString());
         } else {
           const tokenAddress = (transfer.resource as EvmResource).address;
-          const erc20Contract = ERC20__factory.connect(
-            tokenAddress,
-            providerOrApiPromise as Provider,
-          );
-          handlerBalance = await erc20Contract.balanceOf(handlerAddress);
+          const erc20Contract = ERC20__factory.connect(tokenAddress, provider);
+          return BigInt((await erc20Contract.balanceOf(handlerAddress)).toString());
         }
-        break;
+      }
       case Network.SUBSTRATE: {
         const wsProvider = new WsProvider(destinationProviderUrl);
-        providerOrApiPromise = new ApiPromise({ provider: wsProvider });
+        const apiPromise = new ApiPromise({ provider: wsProvider });
         if (destinationResource?.native) {
-          const accountInfo = await getNativeTokenBalance(providerOrApiPromise, handlerAddress);
-          handlerBalance = BigNumber.from(accountInfo.free.toString());
+          const accountInfo = await getNativeTokenBalance(apiPromise, handlerAddress);
+          return BigInt(accountInfo.free.toString());
         } else {
           const assetBalance = await getAssetBalance(
-            providerOrApiPromise,
+            apiPromise,
             (transfer.resource as SubstrateResource).assetId ?? 0,
             handlerAddress,
           );
-          handlerBalance = BigNumber.from(assetBalance.balance.toString());
+          return BigInt(assetBalance.balance.toString());
         }
-        break;
       }
     }
-
-    return BigInt(handlerBalance.toString());
   }
 }

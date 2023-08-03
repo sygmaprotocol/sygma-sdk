@@ -198,7 +198,6 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
    * @param {Boolean} skipDestinationBalanceCheck Flag to disable destination chain balance check
    * @param {String} destinationProviderUrl URL for destination chain provider
    * @returns unsigned transfer transaction
-   * @throws {Error} Destination Chain URL is required
    * @throws {Error} Insufficient destination chain liquidity to proceed with transfer
    */
   public async buildTransferTransaction(
