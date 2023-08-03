@@ -2,10 +2,9 @@ import { EVMAssetTransfer, Environment } from "@buildwithsygma/sygma-sdk-core";
 import { Wallet, providers } from "ethers";
 import dotenv from "dotenv";
 
-dotenv.config()
+dotenv.config();
 
 const privateKey = process.env.PRIVATE_KEY;
-
 if (!privateKey) {
   throw new Error("Missing environment variable: PRIVATE_KEY");
 }
@@ -19,13 +18,9 @@ export async function erc20Transfer(): Promise<void> {
   const provider = new providers.JsonRpcProvider(
     "https://rpc.goerli.eth.gateway.fm/"
   );
-  const wallet = new Wallet(
-    privateKey as string,
-    provider
-  );
+  const wallet = new Wallet(privateKey, provider);
   const assetTransfer = new EVMAssetTransfer();
   await assetTransfer.init(provider, Environment.TESTNET);
-
 
   const transfer = assetTransfer.createFungibleTransfer(
     await wallet.getAddress(),
@@ -33,6 +28,7 @@ export async function erc20Transfer(): Promise<void> {
     DESTINATION_ADDRESS,
     RESOURCE_ID,
     "5000000000000000000" // 18 decimal places
+    // optional parachainID (e.g. KusamaParachain.SHIDEN)
   );
 
   const fee = await assetTransfer.getFee(transfer);
@@ -53,4 +49,4 @@ export async function erc20Transfer(): Promise<void> {
   console.log("Sent transfer with hash: ", response.hash);
 }
 
-erc20Transfer().finally(() => { });
+erc20Transfer().finally(() => {});

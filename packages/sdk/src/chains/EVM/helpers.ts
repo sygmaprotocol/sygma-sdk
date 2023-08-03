@@ -17,10 +17,20 @@ const registry = new TypeRegistry();
  *
  * @param {string} tokenAmount - The amount of tokens to be transferred.
  * @param {string} recipientAddress - The address of the recipient.
+ * @param {number} parachainId - Optional parachain id if the substrate destination targets another parachain.
  * @returns {string} The deposit data as hex string
  */
-export const createERCDepositData = (tokenAmount: string, recipientAddress: string): string => {
-  const recipientAddressInBytes = getRecipientAddressInBytes(recipientAddress);
+export const createERCDepositData = (
+  tokenAmount: string,
+  recipientAddress: string,
+  parachainId?: number,
+): string => {
+  let recipientAddressInBytes;
+  if (utils.isAddress(recipientAddress)) {
+    recipientAddressInBytes = getEVMRecipientAddressInBytes(recipientAddress);
+  } else {
+    recipientAddressInBytes = getSubstrateRecipientAddressInBytes(recipientAddress, parachainId);
+  }
   const depositDataBytes = constructMainDepositData(
     BigNumber.from(tokenAmount),
     recipientAddressInBytes,
@@ -97,10 +107,32 @@ export const createPermissionlessGenericDepositData = (
  * @param {string} recipientAddress - The recipient address as a string.
  * @returns {string} The recipient address as a stringified Substrate Multilocation Object
  */
-export const constructSubstrateRecipient = (recipientAddress: string): string => {
+export const constructSubstrateRecipient = (
+  recipientAddress: string,
+  parachainId?: number,
+): string => {
   const addressPublicKeyBytes = decodeAddress(recipientAddress);
   const addressPublicKeyHexString = utils.hexlify(addressPublicKeyBytes);
-  const substrateMultilocation = JSON.stringify({
+  if (parachainId) {
+    return JSON.stringify({
+      parents: 1,
+      interior: {
+        X2: [
+          {
+            parachain: parachainId,
+          },
+          {
+            AccountId32: {
+              network: { any: null },
+              id: addressPublicKeyHexString,
+            },
+          },
+        ],
+      },
+    });
+  }
+
+  return JSON.stringify({
     parents: 0,
     interior: {
       X1: {
@@ -111,24 +143,33 @@ export const constructSubstrateRecipient = (recipientAddress: string): string =>
       },
     },
   });
-
-  return substrateMultilocation;
 };
 
 /**
- * Converts a recipient address to a Uint8Array of bytes.
+ * Converts a EVM recipient address to a Uint8Array of bytes.
  *
- * @param {string} recipientAddress - The recipient address, as a string. If the address passed in is not an Ethereum address, a Substrate Multilocation object will be constructed and serialized.
+ * @param {string} recipientAddress - The recipient address, as a string.
  * @returns {Uint8Array} The recipient address as a Uint8Array of bytes
  */
-export const getRecipientAddressInBytes = (recipientAddress: string): Uint8Array => {
-  if (utils.isAddress(recipientAddress)) {
-    // EVM address
-    return utils.arrayify(recipientAddress);
-  }
+export const getEVMRecipientAddressInBytes = (recipientAddress: string): Uint8Array => {
+  return utils.arrayify(recipientAddress);
+};
 
+/**
+ * Converts a Substrate recipient multilocation to a Uint8Array of bytes.
+ *
+ * @param {string} recipientAddress - The recipient address, as a string
+ * @returns {Uint8Array} The recipient address as a Uint8Array of bytes
+ */
+export const getSubstrateRecipientAddressInBytes = (
+  recipientAddress: string,
+  parachainId?: number,
+): Uint8Array => {
   const result = registry
-    .createType('MultiLocation', JSON.parse(constructSubstrateRecipient(recipientAddress)))
+    .createType(
+      'MultiLocation',
+      JSON.parse(constructSubstrateRecipient(recipientAddress, parachainId)),
+    )
     .toU8a();
 
   return result;
