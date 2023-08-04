@@ -98,6 +98,7 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
         if (new BN(fungibleTransfer.details.amount).lt(fee.fee)) {
           throw new Error('Transfer amount should be higher than transfer fee');
         }
+
         if (
           !ignoreInsufficientDestinationLiquidity &&
           fungibleTransfer.details.destinationHandlerBalance &&
