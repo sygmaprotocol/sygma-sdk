@@ -1,6 +1,3 @@
-import { JsonRpcProvider } from '@ethersproject/providers';
-import { ApiPromise, WsProvider } from '@polkadot/api';
-import { ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { constants } from 'ethers';
 import { Config } from '../config';
 import {
@@ -13,9 +10,10 @@ import {
   Transfer,
   TransferType,
 } from '../types';
-import { getAssetBalance } from './Substrate/utils/getAssetBalance';
-import { getNativeTokenBalance } from './Substrate/utils/getNativeTokenBalance';
+import { LiquidityError } from '../errors/customErrors';
 import { ParachainID } from './Substrate';
+import { getEvmHandlerBalance } from './EVM/utils/getEvmHandlerBalance';
+import { getSubstrateHandlerBalance } from './Substrate/utils/getSubstrateHandlerBalance';
 
 export abstract class BaseAssetTransfer {
   public config!: Config;
@@ -34,7 +32,7 @@ export abstract class BaseAssetTransfer {
    * @param {string} [destinationProviderUrl] Destination Chain RPC URL - If passed in, this will perform a liquidity check on the destination chain handler.
    * @param {string} parachainId - Optional parachain id if the substrate destination parachain differs from the target domain.
    * @returns {Transfer<Fungible>} - The populated transfer object
-   * @throws {Error} - Source domain not supported, Destination domain not supported, Resource not supported
+   * @throws {Error} - Source domain not supported, Destination domain not supported, Resource not supported, destination liquiditry top low
    */
   public async createFungibleTransfer(
     sourceAddress: string,
@@ -67,7 +65,9 @@ export abstract class BaseAssetTransfer {
         destinationProviderUrl,
         transfer,
       );
-      transfer.details.destinationHandlerBalance = BigInt(destinationHandlerBalance.toString());
+      if (destinationHandlerBalance < BigInt(amount)) {
+        throw new LiquidityError(destinationHandlerBalance);
+      }
     }
 
     return transfer;
@@ -82,7 +82,7 @@ export abstract class BaseAssetTransfer {
   async fetchDestinationHandlerBalance(
     destinationProviderUrl: string,
     transfer: Transfer<TransferType>,
-  ): Promise<BigInt> {
+  ): Promise<bigint> {
     const destinationDomain = this.config.getDomainConfig(transfer.to.id);
     const handlerAddress = destinationDomain.handlers.find(
       h => h.type === ResourceType.FUNGIBLE,
@@ -102,29 +102,18 @@ export abstract class BaseAssetTransfer {
 
     switch (destinationDomain.type) {
       case Network.EVM: {
-        const provider = new JsonRpcProvider(destinationProviderUrl);
-        if (destinationResource?.native) {
-          return BigInt((await provider.getBalance(handlerAddress)).toString());
-        } else {
-          const tokenAddress = (transfer.resource as EvmResource).address;
-          const erc20Contract = ERC20__factory.connect(tokenAddress, provider);
-          return BigInt((await erc20Contract.balanceOf(handlerAddress)).toString());
-        }
+        return getEvmHandlerBalance(
+          destinationProviderUrl,
+          destinationResource as EvmResource,
+          handlerAddress,
+        );
       }
       case Network.SUBSTRATE: {
-        const wsProvider = new WsProvider(destinationProviderUrl);
-        const apiPromise = new ApiPromise({ provider: wsProvider });
-        if (destinationResource?.native) {
-          const accountInfo = await getNativeTokenBalance(apiPromise, handlerAddress);
-          return BigInt(accountInfo.free.toString());
-        } else {
-          const assetBalance = await getAssetBalance(
-            apiPromise,
-            (transfer.resource as SubstrateResource).assetId ?? 0,
-            handlerAddress,
-          );
-          return BigInt(assetBalance.balance.toString());
-        }
+        return getSubstrateHandlerBalance(
+          destinationProviderUrl,
+          destinationResource as SubstrateResource,
+          handlerAddress,
+        );
       }
     }
   }

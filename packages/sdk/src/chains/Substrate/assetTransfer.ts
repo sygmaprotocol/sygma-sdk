@@ -89,7 +89,6 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
   public buildTransferTransaction(
     transfer: Transfer<TransferType>,
     fee: SubstrateFee,
-    ignoreInsufficientDestinationLiquidity: Boolean = false,
   ): SubmittableExtrinsic<'promise', SubmittableResult> {
     switch (transfer.resource.type) {
       case ResourceType.FUNGIBLE: {
@@ -98,14 +97,6 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
         if (new BN(fungibleTransfer.details.amount).lt(fee.fee)) {
           throw new Error('Transfer amount should be higher than transfer fee');
         }
-
-        if (
-          !ignoreInsufficientDestinationLiquidity &&
-          fungibleTransfer.details.destinationHandlerBalance &&
-          fungibleTransfer.details.destinationHandlerBalance <
-            BigInt(fungibleTransfer.details.amount)
-        )
-          throw new Error('Insufficient destination chain liquidity to proceed with transfer');
 
         return deposit(
           this.environment,
@@ -118,8 +109,7 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
       }
       default:
         throw new Error(
-          `Resource type ${
-            transfer.resource.type
+          `Resource type ${transfer.resource.type
           } with ${fee.fee.toString()} not supported by asset transfer`,
         );
     }

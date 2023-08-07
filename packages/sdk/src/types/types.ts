@@ -56,7 +56,6 @@ type AssetTransfer = {
 
 export type Fungible = AssetTransfer & {
   amount: string;
-  destinationHandlerBalance?: bigint;
 };
 
 export type NonFungible = AssetTransfer & {
@@ -79,3 +78,5 @@ export type Transfer<TransferType> = {
   resource: Resource;
   sender: string;
 };
+
+export type LiquidityError = Error & { maximumTransferAmount: bigint };
