@@ -32,7 +32,7 @@ export abstract class BaseAssetTransfer {
    * @param {string} [parachainId] - Optional parachain id if the substrate destination parachain differs from the target domain.
    * @param {string} [destinationProviderUrl] Destination Chain RPC URL - If passed in, this will perform a liquidity check on the destination chain handler.
    * @returns {Transfer<Fungible>} - The populated transfer object
-   * @throws {Error} - Source domain not supported, Destination domain not supported, Resource not supported, destination liquiditry top low
+   * @throws {Error} - Source domain not supported, Destination domain not supported, Resource not supported, destination liquiditry too low
    */
   public async createFungibleTransfer(
     sourceAddress: string,
