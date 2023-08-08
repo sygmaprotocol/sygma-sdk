@@ -75,8 +75,8 @@ export abstract class BaseAssetTransfer {
 
   /**
    * @param {Transfer} transfer Transfer to check
-   * @param {String} destinationProviderUrl URL of the destination chain provider
-   * @returns {Promise<BigInt>} Handler balance on the destination chain
+   * @param {string} destinationProviderUrl URL of the destination chain provider
+   * @returns {Promise<bigint>} Handler balance on the destination chain
    * @throws {Error} No Fungible handler configured on destination domain
    */
   async fetchDestinationHandlerBalance(

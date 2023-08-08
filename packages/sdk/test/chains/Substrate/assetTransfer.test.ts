@@ -89,50 +89,72 @@ describe('Substrate asset transfer', () => {
       expect(actualVal).toStrictEqual(expectedVal);
     });
 
-    // it('should fetch the destination handler liquidity when a rp url is provided', async () => {
-    //   const mockFetchDestinationHandlerBalance = jest
-    //     .spyOn(assetTransfer, 'fetchDestinationHandlerBalance')
-    //     .mockReturnValueOnce(Promise.resolve(BigInt(400)));
+    it('should fetch the destination handler liquidity when a rpc url is provided', async () => {
+      const mockFetchDestinationHandlerBalance = jest
+        .spyOn(assetTransfer, 'fetchDestinationHandlerBalance')
+        .mockReturnValueOnce(Promise.resolve(BigInt(400)));
 
-    //   const expectedVal: Transfer<Fungible> = {
-    //     to: {
-    //       name: 'Sepolia',
-    //       chainId: 11155111,
-    //       id: 3,
-    //     },
-    //     from: {
-    //       name: 'rococo-phala',
-    //       chainId: 400,
-    //       id: 5,
-    //     },
-    //     resource: {
-    //       resourceId: '0x0000000000000000000000000000000000000000000000000000000000001000',
-    //       address: '',
-    //       type: ResourceType.FUNGIBLE,
-    //       symbol: 'PHA',
-    //       decimals: 18,
-    //     },
-    //     sender: '5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS',
-    //     details: {
-    //       recipient: '0x557abEc0cb31Aa925577441d54C090987c2ED818',
-    //       amount: '200',
-    //       parachainId: 1001,
-    //     },
-    //   };
+      const expectedVal: Transfer<Fungible> = {
+        to: {
+          name: 'Sepolia',
+          chainId: 11155111,
+          id: 3,
+        },
+        from: {
+          name: 'rococo-phala',
+          chainId: 400,
+          id: 5,
+        },
+        resource: {
+          resourceId: '0x0000000000000000000000000000000000000000000000000000000000001000',
+          address: '',
+          type: ResourceType.FUNGIBLE,
+          symbol: 'PHA',
+          decimals: 18,
+        },
+        sender: '5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS',
+        details: {
+          recipient: '0x557abEc0cb31Aa925577441d54C090987c2ED818',
+          amount: '200',
+          parachainId: 1001,
+        },
+      };
 
-    //   const actualVal = await assetTransfer.createFungibleTransfer(
-    //     '5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS',
-    //     11155111,
-    //     '0x557abEc0cb31Aa925577441d54C090987c2ED818',
-    //     '0x0000000000000000000000000000000000000000000000000000000000001000',
-    //     '200',
-    //     1001,
-    //     'http://destination.chain.rpc',
-    //   );
+      const actualVal = await assetTransfer.createFungibleTransfer(
+        '5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS',
+        11155111,
+        '0x557abEc0cb31Aa925577441d54C090987c2ED818',
+        '0x0000000000000000000000000000000000000000000000000000000000001000',
+        '200',
+        1001,
+        'http://destination.chain.rpc',
+      );
 
-    //   expect(actualVal).toStrictEqual(expectedVal);
-    //   expect(mockFetchDestinationHandlerBalance).toHaveBeenCalled();
-    // });
+      expect(actualVal).toStrictEqual(expectedVal);
+      expect(mockFetchDestinationHandlerBalance).toHaveBeenCalled();
+    });
+
+    it('should throw a LiquidityError if destination chain liquidity is too low', async () => {
+      const mockFetchDestinationHandlerBalance = jest
+        .spyOn(assetTransfer, 'fetchDestinationHandlerBalance')
+        .mockReturnValueOnce(Promise.resolve(BigInt(100)));
+
+      await expect(
+        async () =>
+          await assetTransfer.createFungibleTransfer(
+            '5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS',
+            11155111,
+            '0x557abEc0cb31Aa925577441d54C090987c2ED818',
+            '0x0000000000000000000000000000000000000000000000000000000000001000',
+            '200',
+            undefined,
+            'http://destination.chain.rpc',
+          ),
+      ).rejects.toThrowError(
+        'Destination chain liquidity is too low to perform this transfer. Transfer is limited to 100',
+      );
+      expect(mockFetchDestinationHandlerBalance).toHaveBeenCalled();
+    });
   });
 
   describe('getFee', () => {
