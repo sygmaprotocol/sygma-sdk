@@ -30,7 +30,7 @@ export abstract class BaseAssetTransfer {
    * @param {string} resourceId - The ID of the resource being transferred
    * @param {string} amount - The amount of tokens to be transferred. The amount should be in the lowest denomination possible on the source chain. If the token on source chain is configured to use 12 decimals and the amount to be transferred is 1 ETH, then amount should be passed in as 1000000000000
    * @param {string} [destinationProviderUrl] Destination Chain RPC URL - If passed in, this will perform a liquidity check on the destination chain handler.
-   * @param {string} parachainId - Optional parachain id if the substrate destination parachain differs from the target domain.
+   * @param {string} [parachainId] - Optional parachain id if the substrate destination parachain differs from the target domain.
    * @returns {Transfer<Fungible>} - The populated transfer object
    * @throws {Error} - Source domain not supported, Destination domain not supported, Resource not supported, destination liquiditry top low
    */
