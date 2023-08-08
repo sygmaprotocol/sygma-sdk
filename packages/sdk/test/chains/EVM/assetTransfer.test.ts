@@ -21,33 +21,33 @@ const resourceHandlerFunction = jest.fn();
 jest.mock(
   '@buildwithsygma/sygma-contracts',
   () =>
-    ({
-      ...jest.requireActual('@buildwithsygma/sygma-contracts'),
-      FeeHandlerRouter__factory: {
-        connect: () => {
-          return {
-            _domainResourceIDToFeeHandlerAddress: feeHandlerAddressFunction,
-          };
-        },
+  ({
+    ...jest.requireActual('@buildwithsygma/sygma-contracts'),
+    FeeHandlerRouter__factory: {
+      connect: () => {
+        return {
+          _domainResourceIDToFeeHandlerAddress: feeHandlerAddressFunction,
+        };
       },
-      ERC20__factory: {
-        connect: () => {
-          return {};
-        },
+    },
+    ERC20__factory: {
+      connect: () => {
+        return {};
       },
-      ERC721MinterBurnerPauser__factory: {
-        connect: () => {
-          return {};
-        },
+    },
+    ERC721MinterBurnerPauser__factory: {
+      connect: () => {
+        return {};
       },
-      Bridge__factory: {
-        connect: () => {
-          return {
-            _resourceIDToHandlerAddress: resourceHandlerFunction,
-          };
-        },
+    },
+    Bridge__factory: {
+      connect: () => {
+        return {
+          _resourceIDToHandlerAddress: resourceHandlerFunction,
+        };
       },
-    } as unknown),
+    },
+  } as unknown),
 );
 const axiosMock = new MockAdapter(axios);
 const mockProvider: Partial<providers.Provider> = {
@@ -280,24 +280,6 @@ describe('EVM asset transfer', () => {
       expect(tx).toBeDefined();
       expect(erc20TransferMock).toBeCalled();
     });
-
-    // it('Should throw an error if the destintation chain liquidity is too low', async () => {
-    //   const mock = jest
-    //     .spyOn(assetTransfer, 'fetchDestinationHandlerBalance')
-    //     .mockResolvedValueOnce('1234');
-
-    //   const fee = {
-    //     fee: BigNumber.from('100'),
-    //     type: FeeHandlerType.BASIC,
-    //     handlerAddress: '0xe495c86962DcA7208ECcF2020A273395AcE8da3e',
-    //   };
-
-    //   await expect(
-    //     async () => await assetTransfer.buildTransferTransaction(transfer, fee),
-    //   ).rejects.toThrowError('Insufficient destination chain liquidity to proceed with transfer');
-
-    //   expect(mock).toBeCalledWith(transfer, 'http://myrpc.test');
-    // });
 
     it('Should build erc721 transfer tx if resource type NONFUNGIBLE', async function () {
       erc721TransferMock.mockResolvedValue({});
