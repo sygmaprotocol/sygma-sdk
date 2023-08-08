@@ -18,7 +18,7 @@ export async function erc20Transfer(): Promise<void> {
   const provider = new providers.JsonRpcProvider(
     "https://rpc.goerli.eth.gateway.fm/"
   );
-  const wallet = new Wallet(privateKey as string, provider);
+  const wallet = new Wallet(privateKey ?? "", provider);
   const assetTransfer = new EVMAssetTransfer();
   await assetTransfer.init(provider, Environment.TESTNET);
 

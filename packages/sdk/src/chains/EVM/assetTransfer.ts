@@ -8,7 +8,6 @@ import {
   ERC721MinterBurnerPauser__factory,
   FeeHandlerRouter__factory,
 } from '@buildwithsygma/sygma-contracts';
-
 import {
   Environment,
   EthereumConfig,
@@ -91,7 +90,7 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
    * @returns fee that needs to paid
    */
   public async getFee(transfer: Transfer<TransferType>): Promise<EvmFee> {
-    const domainConfig = this.config.getDomainConfig() as EthereumConfig;
+    const domainConfig = this.config.getSourceDomainConfig() as EthereumConfig;
     const feeRouter = FeeHandlerRouter__factory.connect(domainConfig.feeRouter, this.provider);
     const feeHandlerAddress = await feeRouter._domainResourceIDToFeeHandlerAddress(
       transfer.to.id,
@@ -138,15 +137,18 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
    * Builds approval transactions that are required before executing
    * deposit. Returns multiple approvals if fee is payed in ERC20 token.
    *
-   * @param transfer requested transfer
-   * @param fee Fee calculated by 'getFee' function
+   * @param {Transfer} transfer Transfer
+   * @param {Fee} fee Fee calculated by 'getFee' function
    * @returns array of unsigned approval transaction
    */
   public async buildApprovals(
     transfer: Transfer<TransferType>,
     fee: EvmFee,
   ): Promise<Array<UnsignedTransaction>> {
-    const bridge = Bridge__factory.connect(this.config.getDomainConfig().bridge, this.provider);
+    const bridge = Bridge__factory.connect(
+      this.config.getSourceDomainConfig().bridge,
+      this.provider,
+    );
     const handlerAddress = await bridge._resourceIDToHandlerAddress(transfer.resource.resourceId);
 
     const approvals: Array<PopulatedTransaction> = [];
@@ -191,15 +193,20 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
    * Builds an unsigned transfer transaction.
    * Should be executed after the approval transactions.
    *
-   * @param transfer
-   * @param fee
+   * @param {Transfer} transfer requested transfer
+   * @param {Fee} fee Fee calculated by 'getFee' function
+   * @param {Boolean} ignoreInsufficientDestinationLiquidity Flag to disable destination chain balance check
    * @returns unsigned transfer transaction
+   * @throws {Error} Insufficient destination chain liquidity to proceed with transfer
    */
   public async buildTransferTransaction(
     transfer: Transfer<TransferType>,
     fee: EvmFee,
   ): Promise<PopulatedTransaction> {
-    const bridge = Bridge__factory.connect(this.config.getDomainConfig().bridge, this.provider);
+    const bridge = Bridge__factory.connect(
+      this.config.getSourceDomainConfig().bridge,
+      this.provider,
+    );
     switch (transfer.resource.type) {
       case ResourceType.FUNGIBLE: {
         const fungibleTransfer = transfer as Transfer<Fungible>;

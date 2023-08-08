@@ -21,33 +21,33 @@ const resourceHandlerFunction = jest.fn();
 jest.mock(
   '@buildwithsygma/sygma-contracts',
   () =>
-    ({
-      ...jest.requireActual('@buildwithsygma/sygma-contracts'),
-      FeeHandlerRouter__factory: {
-        connect: () => {
-          return {
-            _domainResourceIDToFeeHandlerAddress: feeHandlerAddressFunction,
-          };
-        },
+  ({
+    ...jest.requireActual('@buildwithsygma/sygma-contracts'),
+    FeeHandlerRouter__factory: {
+      connect: () => {
+        return {
+          _domainResourceIDToFeeHandlerAddress: feeHandlerAddressFunction,
+        };
       },
-      ERC20__factory: {
-        connect: () => {
-          return {};
-        },
+    },
+    ERC20__factory: {
+      connect: () => {
+        return {};
       },
-      ERC721MinterBurnerPauser__factory: {
-        connect: () => {
-          return {};
-        },
+    },
+    ERC721MinterBurnerPauser__factory: {
+      connect: () => {
+        return {};
       },
-      Bridge__factory: {
-        connect: () => {
-          return {
-            _resourceIDToHandlerAddress: resourceHandlerFunction,
-          };
-        },
+    },
+    Bridge__factory: {
+      connect: () => {
+        return {
+          _resourceIDToHandlerAddress: resourceHandlerFunction,
+        };
       },
-    } as unknown),
+    },
+  } as unknown),
 );
 const axiosMock = new MockAdapter(axios);
 const mockProvider: Partial<providers.Provider> = {

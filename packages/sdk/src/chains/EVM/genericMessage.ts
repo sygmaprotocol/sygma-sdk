@@ -45,7 +45,7 @@ export class EVMGenericMessageTransfer {
    * @returns fee that needs to paid
    */
   public async getFee(transfer: Transfer<TransferType>): Promise<EvmFee> {
-    const domainConfig = this.config.getDomainConfig() as EthereumConfig;
+    const domainConfig = this.config.getSourceDomainConfig() as EthereumConfig;
     const feeRouter = FeeHandlerRouter__factory.connect(domainConfig.feeRouter, this.provider);
     const feeHandlerAddress = await feeRouter._domainResourceIDToFeeHandlerAddress(
       transfer.to.id,
@@ -102,7 +102,10 @@ export class EVMGenericMessageTransfer {
     transfer: Transfer<TransferType>,
     fee: EvmFee,
   ): Promise<PopulatedTransaction> {
-    const bridge = Bridge__factory.connect(this.config.getDomainConfig().bridge, this.provider);
+    const bridge = Bridge__factory.connect(
+      this.config.getSourceDomainConfig().bridge,
+      this.provider,
+    );
     switch (transfer.resource.type) {
       case ResourceType.PERMISSIONLESS_GENERIC: {
         const genericTransfer = transfer as Transfer<GenericMessage>;

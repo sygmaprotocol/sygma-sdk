@@ -77,10 +77,14 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
   /**
    * Builds an unsigned transfer transaction.
    *
-   * @param transfer Instance of transfer
-   * @param fee The fee to be paid for the transfer
-   * @returns {SubmittableExtrinsic<'promise', SubmittableResult>} SubmittableExtrinsic which can be signed and sent
+   * @param {Transfer} transfer Instance of transfer
+   * @param {Fee} fee The fee to be paid for the transfer
+   * @param {Boolean} skipDestinationBalanceCheck Flag to disable destination chain balance check
+   * @param {String} destinationProviderUrl URL for destination chain provider
+   * @returns {Promise<SubmittableExtrinsic<'promise', SubmittableResult>>} SubmittableExtrinsic which can be signed and sent
    * @throws {Error} Transfer amount too low
+   * @throws {Error} Destination Chain URL is required
+   * @throws {Error} Insufficient destination chain liquidity to proceed with transfer
    */
   public buildTransferTransaction(
     transfer: Transfer<TransferType>,
