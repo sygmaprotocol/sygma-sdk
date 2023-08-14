@@ -197,7 +197,7 @@ export async function fungibleTransferFromSubstrate(): Promise<void> {
 
   let i = 0;
   let destinationBalanceAfter: BigNumber;
-  for (; ;) {
+  for (;;) {
     await sleep(7000);
     destinationBalanceAfter = await destinationErc20LRContract.balanceOf(
       EVM_DESTINATION_ADDRESS
@@ -242,3 +242,4 @@ switch (process.argv[2]) {
   default:
     console.log("example not supported");
 }
+

@@ -3,7 +3,8 @@ import {
   EVMGenericMessageTransfer,
   Environment,
 } from "@buildwithsygma/sygma-sdk-core";
-import { Wallet, providers, utils } from "ethers";
+import { BigNumber, Wallet, providers, utils } from "ethers";
+import { Storage__factory } from "./Contracts";
 
 dotenv.config();
 
@@ -20,13 +21,35 @@ const EXECUTE_CONTRACT_ADDRESS = "0xdFA5621F95675D37248bAc9e536Aab4D86766663";
 const EXECUTE_FUNCTION_SIGNATURE = "0xa271ced2";
 const MAX_FEE = "3000000";
 
+const sleep = (ms: number): Promise<void> =>
+  new Promise((r) => setTimeout(r, ms));
+
 export async function genericMessage(): Promise<void> {
-  const provider = new providers.JsonRpcProvider(
+  const sourceProvider = new providers.JsonRpcProvider(
     "https://gateway.tenderly.co/public/sepolia"
   );
-  const wallet = new Wallet(privateKey as string, provider);
+
+  const destinationProvider = new providers.JsonRpcProvider(
+    "https://rpc.goerli.eth.gateway.fm/"
+  );
+
+  const wallet = new Wallet(privateKey ?? "", sourceProvider);
+
+  const storageContract = Storage__factory.connect(
+    EXECUTE_CONTRACT_ADDRESS,
+    destinationProvider
+  );
+
+  const contractValueBefore = await storageContract.retrieve(
+    await wallet.getAddress()
+  );
+  console.log(
+    `Value before update: ${new Date(
+      contractValueBefore.toNumber()
+    ).toString()}`
+  );
   const messageTransfer = new EVMGenericMessageTransfer();
-  await messageTransfer.init(provider, Environment.DEVNET);
+  await messageTransfer.init(sourceProvider, Environment.DEVNET);
 
   const EXECUTION_DATA = utils.defaultAbiCoder.encode(["uint"], [Date.now()]);
 
@@ -50,6 +73,30 @@ export async function genericMessage(): Promise<void> {
     transferTx as providers.TransactionRequest
   );
   console.log("Sent transfer with hash: ", response.hash);
+
+  console.log("Waiting for relayers to bridge transaction...");
+
+  let i = 0;
+  let contractValueAfter: BigNumber;
+  for (; ;) {
+    await sleep(15000);
+    contractValueAfter = await storageContract.retrieve(
+      await wallet.getAddress()
+    );
+    if (!contractValueAfter.eq(contractValueBefore)) {
+      console.log("Transaction successfully bridged.");
+      break;
+    }
+    i++;
+    if (i > 8) {
+      // transaction should have been bridged already
+      console.log("transaction is taking too much time to bridge!");
+      break;
+    }
+  }
+  console.log(
+    `Value after update: ${new Date(contractValueAfter.toNumber()).toString()}`
+  );
 }
 
 genericMessage().finally(() => { });
