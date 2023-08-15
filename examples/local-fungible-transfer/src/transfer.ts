@@ -77,7 +77,7 @@ export async function fungibleTransferFromEVM(): Promise<void> {
     `Sender token balance on substrate network before:${destinationBalanceBefore}`
   );
 
-  const transfer = assetTransfer.createFungibleTransfer(
+  const transfer = await assetTransfer.createFungibleTransfer(
     sender,
     SUBSTRATE_CHAIN_ID,
     account.address,
@@ -164,7 +164,7 @@ export async function fungibleTransferFromSubstrate(): Promise<void> {
   const assetTransfer = new SubstrateAssetTransfer();
   await assetTransfer.init(api, Environment.LOCAL);
 
-  const transfer = assetTransfer.createFungibleTransfer(
+  const transfer = await assetTransfer.createFungibleTransfer(
     account.address,
     EVM1_CHAIN_ID,
     EVM_DESTINATION_ADDRESS,
@@ -197,7 +197,7 @@ export async function fungibleTransferFromSubstrate(): Promise<void> {
 
   let i = 0;
   let destinationBalanceAfter: BigNumber;
-  for (;;) {
+  for (; ;) {
     await sleep(7000);
     destinationBalanceAfter = await destinationErc20LRContract.balanceOf(
       EVM_DESTINATION_ADDRESS

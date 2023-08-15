@@ -13,7 +13,7 @@ dotenv.config();
 const GOERLI_CHAIN_ID = 5;
 const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000001000";
-  const MNEMONIC = process.env.PRIVATE_MNEMONIC;
+const MNEMONIC = process.env.PRIVATE_MNEMONIC;
 const recipient = "0xD31E89feccCf6f2DE10EaC92ADffF48D802b695C";
 
 if (!MNEMONIC) {
@@ -27,7 +27,7 @@ const substrateTransfer = async (): Promise<void> => {
 
   await cryptoWaitReady();
 
-  const account = keyring.addFromUri(MNEMONIC as string);
+  const account = keyring.addFromUri(MNEMONIC);
 
   const wsProvider = new WsProvider(
     "wss://subbridge-test.phala.network/rhala/ws"
@@ -38,7 +38,7 @@ const substrateTransfer = async (): Promise<void> => {
 
   await assetTransfer.init(api, Environment.TESTNET);
 
-  const transfer = assetTransfer.createFungibleTransfer(
+  const transfer = await assetTransfer.createFungibleTransfer(
     account.address,
     GOERLI_CHAIN_ID,
     recipient,
