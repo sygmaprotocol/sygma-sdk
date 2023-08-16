@@ -77,7 +77,7 @@ export async function fungibleTransferFromEVM(): Promise<void> {
     `Sender token balance on substrate network before:${destinationBalanceBefore}`
   );
 
-  const transfer = assetTransfer.createFungibleTransfer(
+  const transfer = await assetTransfer.createFungibleTransfer(
     sender,
     SUBSTRATE_CHAIN_ID,
     account.address,
@@ -164,7 +164,7 @@ export async function fungibleTransferFromSubstrate(): Promise<void> {
   const assetTransfer = new SubstrateAssetTransfer();
   await assetTransfer.init(api, Environment.LOCAL);
 
-  const transfer = assetTransfer.createFungibleTransfer(
+  const transfer = await assetTransfer.createFungibleTransfer(
     account.address,
     EVM1_CHAIN_ID,
     EVM_DESTINATION_ADDRESS,
@@ -242,3 +242,4 @@ switch (process.argv[2]) {
   default:
     console.log("example not supported");
 }
+

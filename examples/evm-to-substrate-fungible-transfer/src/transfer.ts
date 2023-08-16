@@ -18,11 +18,11 @@ export async function erc20Transfer(): Promise<void> {
   const provider = new providers.JsonRpcProvider(
     "https://rpc.goerli.eth.gateway.fm/"
   );
-  const wallet = new Wallet(privateKey, provider);
+  const wallet = new Wallet(privateKey ?? "", provider);
   const assetTransfer = new EVMAssetTransfer();
   await assetTransfer.init(provider, Environment.TESTNET);
 
-  const transfer = assetTransfer.createFungibleTransfer(
+  const transfer = await assetTransfer.createFungibleTransfer(
     await wallet.getAddress(),
     ROCOCO_PHALA_CHAIN_ID,
     DESTINATION_ADDRESS,
@@ -49,4 +49,4 @@ export async function erc20Transfer(): Promise<void> {
   console.log("Sent transfer with hash: ", response.hash);
 }
 
-erc20Transfer().finally(() => {});
+erc20Transfer().finally(() => { });

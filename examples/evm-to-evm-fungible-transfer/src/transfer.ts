@@ -2,7 +2,7 @@ import { EVMAssetTransfer, Environment } from "@buildwithsygma/sygma-sdk-core";
 import { Wallet, providers } from "ethers";
 import dotenv from "dotenv";
 
-dotenv.config()
+dotenv.config();
 
 const privateKey = process.env.PRIVATE_KEY;
 
@@ -22,7 +22,7 @@ export async function erc20Transfer(): Promise<void> {
   const assetTransfer = new EVMAssetTransfer();
   await assetTransfer.init(provider, Environment.TESTNET);
 
-  const transfer = assetTransfer.createFungibleTransfer(
+  const transfer = await assetTransfer.createFungibleTransfer(
     await wallet.getAddress(),
     SEPOLIA_CHAIN_ID,
     await wallet.getAddress(), // Sending to the same address on a different chain
