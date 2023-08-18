@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.2.0...sygma-sdk-core-v2.3.0) (2023-08-18)
+
+
+### Features
+
+* Destination network liquidity check ([#290](https://github.com/sygmaprotocol/sygma-sdk/issues/290)) ([ede1479](https://github.com/sygmaprotocol/sygma-sdk/commit/ede147982bc1f978a216b2904340ca60027fc402))
+
 ## [2.2.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.1.0...sygma-sdk-core-v2.2.0) (2023-08-02)
 
 
