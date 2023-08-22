@@ -54,8 +54,6 @@ export const getPercentageFee = async (
     fee = calculatedFee;
   }
 
-  console.log(fee.toString());
-
   return {
     fee: fee,
     type: FeeHandlerType.PERCENTAGE,
