@@ -31,6 +31,7 @@ import {
   erc20Transfer,
   erc721Transfer,
   getERC20Allowance,
+  getPercentageFee,
   isApproved,
 } from '.';
 
@@ -125,6 +126,22 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
           depositData: createERCDepositData(
             fungibleTransfer.details.amount,
             fungibleTransfer.details.recipient,
+          ),
+        });
+      }
+      case FeeHandlerType.PERCENTAGE: {
+        const fungibleTransfer = transfer as Transfer<Fungible>;
+        return await getPercentageFee({
+          precentageFeeHandlerAddress: feeHandlerAddress,
+          provider: this.provider,
+          sender: transfer.sender,
+          fromDomainID: Number(transfer.from.id),
+          toDomainID: Number(transfer.to.id),
+          resourceID: transfer.resource.resourceId,
+          depositData: createERCDepositData(
+            fungibleTransfer.details.amount,
+            fungibleTransfer.details.recipient,
+            fungibleTransfer.details.parachainId,
           ),
         });
       }

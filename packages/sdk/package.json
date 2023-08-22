@@ -74,11 +74,12 @@
     "typescript": "5.0.4"
   },
   "dependencies": {
-    "@buildwithsygma/sygma-contracts": "2.1.2",
+    "@buildwithsygma/sygma-contracts": "2.3.0",
     "@ethersproject/abi": "^5.7.0",
     "@ethersproject/bytes": "^5.7.0",
     "@ethersproject/contracts": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",
+    "@panterazar/sygma-contracts": "2.4.0-rc1",
     "@polkadot/api": "10.7.2",
     "@polkadot/api-augment": "10.7.2",
     "@polkadot/extension-inject": "0.46.3",
