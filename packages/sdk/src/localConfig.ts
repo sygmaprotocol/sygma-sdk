@@ -176,6 +176,19 @@ export const localConfig: RawConfig = {
             },
           },
         },
+        {
+          resourceId: '0x0000000000000000000000000000000000000000000000000000000000000000',
+          type: ResourceType.FUNGIBLE,
+          native: true,
+          decimals: 18,
+          assetName: 'PHA',
+          xcmMultiAssetId: {
+            concrete: {
+              parents: 0,
+              interior: 'here',
+            },
+          },
+        },
       ],
     },
   ],
