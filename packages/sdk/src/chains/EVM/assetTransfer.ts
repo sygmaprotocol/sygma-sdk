@@ -126,6 +126,7 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
           depositData: createERCDepositData(
             fungibleTransfer.details.amount,
             fungibleTransfer.details.recipient,
+            fungibleTransfer.details.parachainId,
           ),
         });
       }
