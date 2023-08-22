@@ -59,4 +59,3 @@ export const getPercentageFee = async (
     type: FeeHandlerType.PERCENTAGE,
   };
 };
-
