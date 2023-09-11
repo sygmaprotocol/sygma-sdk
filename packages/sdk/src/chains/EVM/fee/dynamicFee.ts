@@ -43,7 +43,7 @@ export const createOracleFeeData = (oracleResponse: OracleResource, amount: stri
     */
 
   const oracleMessage = ethers.utils.solidityPack(
-    ['uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'bytes', 'uint256'],
+    ['uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'bytes32', 'uint256'],
     [
       ethers.utils.parseEther(oracleResponse.baseEffectiveRate),
       ethers.utils.parseEther(oracleResponse.tokenEffectiveRate),
