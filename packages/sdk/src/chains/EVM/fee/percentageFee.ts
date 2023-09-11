@@ -3,7 +3,6 @@ import { ethers } from 'ethers';
 import { formatBytes32String } from 'ethers/lib/utils';
 import { FeeHandlerType } from '../../../types/index.js';
 import { EvmFee } from '../types/index.js';
-import { createERCDepositData } from '../helpers';
 
 /**
  * Calculates and returns the fee in native currency.
