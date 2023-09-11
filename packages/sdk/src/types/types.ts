@@ -67,6 +67,7 @@ export type GenericMessage = {
   destinationFunctionSignature: string;
   executionData: string;
   maxFee: string;
+  tokenAmount: string
 };
 
 export type TransferType = Fungible | NonFungible | GenericMessage;

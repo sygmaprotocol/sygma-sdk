@@ -1,4 +1,4 @@
-import { DynamicERC20FeeHandlerEVM__factory } from '@buildwithsygma/sygma-contracts';
+import { FeeHandlerRouter__factory } from '@buildwithsygma/sygma-contracts';
 import { ethers } from 'ethers';
 import fetch from 'cross-fetch';
 
@@ -19,7 +19,7 @@ type OracleResponse = {
  * @param {string} amount - Amount in string format.
  * @returns {string} - Returns the oracleMessage, signature and amount.
  */
-export const createOracleFeeData = (oracleResponse: OracleResource, amount?: string): string => {
+export const createOracleFeeData = (oracleResponse: OracleResource, amount: string): string => {
   /*
         feeData structure:
             ber*10^18:    uint256
@@ -43,7 +43,7 @@ export const createOracleFeeData = (oracleResponse: OracleResource, amount?: str
     */
 
   const oracleMessage = ethers.utils.solidityPack(
-    ['uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'bytes32', 'uint256'],
+    ['uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'bytes', 'uint256'],
     [
       ethers.utils.parseEther(oracleResponse.baseEffectiveRate),
       ethers.utils.parseEther(oracleResponse.tokenEffectiveRate),
@@ -57,11 +57,8 @@ export const createOracleFeeData = (oracleResponse: OracleResource, amount?: str
   );
 
   const signature = oracleResponse.signature;
-  if (amount) {
+
     return oracleMessage + signature + toHex(amount, 32).substring(2);
-  } else {
-    return oracleMessage + signature;
-  }
 };
 
 /**
@@ -115,6 +112,7 @@ export const calculateDynamicFee = async ({
   feeHandlerAddress,
   depositData,
   tokenAmount,
+  maxFee
 }: {
   provider: ethers.providers.Provider;
   sender: string;
@@ -124,16 +122,18 @@ export const calculateDynamicFee = async ({
   feeOracleBaseUrl: string;
   feeHandlerAddress: string;
   depositData: string;
-  tokenAmount?: string;
+  tokenAmount: string;
+  maxFee?: string
 }): Promise<EvmFee> => {
   const oracleResponse = await requestFeeFromFeeOracle({
     feeOracleBaseUrl,
     fromDomainID,
     toDomainID,
     resourceID,
+    msgGasLimit: maxFee
   });
   const feeData = createOracleFeeData(oracleResponse, tokenAmount);
-  const FeeHandlerWithOracleInstance = DynamicERC20FeeHandlerEVM__factory.connect(
+  const FeeHandlerWithOracleInstance = FeeHandlerRouter__factory.connect(
     feeHandlerAddress,
     provider,
   );
@@ -172,16 +172,16 @@ export const requestFeeFromFeeOracle = async ({
   fromDomainID,
   toDomainID,
   resourceID,
-  msgGasLimit = 0,
+  msgGasLimit = "0",
 }: {
   feeOracleBaseUrl: string;
   fromDomainID: number;
   toDomainID: number;
   resourceID: string;
-  msgGasLimit?: number;
+  msgGasLimit?: string;
 }): Promise<OracleResource> => {
   const response = await fetch(
-    `${feeOracleBaseUrl}/v1/rate/from/${fromDomainID}/to/${toDomainID}/resourceid/${resourceID}?gasLimit=${msgGasLimit}`,
+    `${feeOracleBaseUrl}/v1/rate/from/${fromDomainID}/to/${toDomainID}/resourceid/${resourceID}?msgGasLimit=${msgGasLimit}`,
     {
       headers: {
         'Cache-Control': 'no-cache',
