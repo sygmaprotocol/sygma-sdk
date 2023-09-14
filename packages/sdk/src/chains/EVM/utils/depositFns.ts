@@ -133,7 +133,7 @@ export const executeDeposit = async (
   overrides?: ethers.PayableOverrides,
 ): Promise<PopulatedTransaction> => {
   const transactionSettings = {
-    value:  feeData.fee,
+    value: feeData.fee,
     gasLimit: ASSET_TRANSFER_GAS_LIMIT,
   };
 
