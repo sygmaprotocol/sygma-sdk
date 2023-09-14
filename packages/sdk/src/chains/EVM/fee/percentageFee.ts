@@ -1,4 +1,4 @@
-import { PercentageFeeHandler__factory } from '@panterazar/sygma-contracts';
+import { PercentageERC20FeeHandlerEVM__factory } from '@buildwithsygma/sygma-contracts';
 import { ethers } from 'ethers';
 import { formatBytes32String } from 'ethers/lib/utils';
 import { FeeHandlerType } from '../../../types/index.js';
@@ -28,7 +28,7 @@ export const getPercentageFee = async ({
   resourceID: string;
   depositData: string;
 }): Promise<EvmFee> => {
-  const percentageFeeHandlerContract = PercentageFeeHandler__factory.connect(
+  const percentageFeeHandlerContract = PercentageERC20FeeHandlerEVM__factory.connect(
     precentageFeeHandlerAddress,
     provider,
   );

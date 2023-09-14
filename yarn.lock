@@ -455,7 +455,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@buildwithsygma/sygma-contracts@npm:2.3.0, @buildwithsygma/sygma-contracts@npm:^2.3.0":
+"@buildwithsygma/sygma-contracts@npm:2.4.1":
+  version: 2.4.1
+  resolution: "@buildwithsygma/sygma-contracts@npm:2.4.1"
+  dependencies:
+    "@openzeppelin/contracts": ^4.5.0
+    "@truffle/hdwallet-provider": ^2.0.14
+  peerDependencies:
+    ethers: ">= 5.0.0"
+  checksum: f563fef4ec1e2e991974fef87f404d69eb6d7935741c4db7a23b598c183dd38a0af149bd4b984c8367c9e3adc1f44b1b04e4d5a93a4b8c2187bd0d4994b888c6
+  languageName: node
+  linkType: hard
+
+"@buildwithsygma/sygma-contracts@npm:^2.3.0":
   version: 2.3.0
   resolution: "@buildwithsygma/sygma-contracts@npm:2.3.0"
   dependencies:
@@ -471,12 +483,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-core@workspace:packages/sdk"
   dependencies:
-    "@buildwithsygma/sygma-contracts": 2.3.0
+    "@buildwithsygma/sygma-contracts": 2.4.1
     "@ethersproject/abi": ^5.7.0
     "@ethersproject/bytes": ^5.7.0
     "@ethersproject/contracts": ^5.7.0
     "@ethersproject/providers": ^5.7.2
-    "@panterazar/sygma-contracts": 2.4.0-rc1
     "@polkadot/api": 10.7.2
     "@polkadot/api-augment": 10.7.2
     "@polkadot/extension-inject": 0.46.3
@@ -2903,18 +2914,6 @@ __metadata:
   version: 4.9.3
   resolution: "@openzeppelin/contracts@npm:4.9.3"
   checksum: 3d22eca3a13314f1950bde5738b12a56ebb0a2538a07769ea68a1130bbb21e28a46961130d1acce6e9bd3c40ff81cddd88b6644e10e12c2efec31b37ed6afc81
-  languageName: node
-  linkType: hard
-
-"@panterazar/sygma-contracts@npm:2.4.0-rc1":
-  version: 2.4.0-rc1
-  resolution: "@panterazar/sygma-contracts@npm:2.4.0-rc1"
-  dependencies:
-    "@openzeppelin/contracts": ^4.5.0
-    "@truffle/hdwallet-provider": ^2.0.14
-  peerDependencies:
-    ethers: ">= 5.0.0"
-  checksum: 64badbe512cd02b1100a5b7b97ed6fcc185c9a87a6c9c3db4046707f56a456a09e2a7ec14b825004adf90fcf4f45048888c1507f4823de5af344fccb8c421d72
   languageName: node
   linkType: hard
 
