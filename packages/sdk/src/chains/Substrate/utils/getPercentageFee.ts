@@ -42,7 +42,6 @@ export const getPercentageFee = async (
     .toArray()
     .map(val => new BN(val.toString()));
 
-  // const fee = new BN(transfer.details.amount).
   const calculatedFee = new BN(transfer.details.amount).mul(feeRate).div(new BN(10000));
 
   let fee: BN;
