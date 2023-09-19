@@ -139,7 +139,7 @@ describe('deposit functions', () => {
         'resourceId',
         'depositData',
         'feeData',
-        { gasLimit: EVM.ASSET_TRANSFER_GAS_LIMIT },
+        { gasLimit: EVM.ASSET_TRANSFER_GAS_LIMIT, value: BigNumber.from(100) },
       );
     });
 

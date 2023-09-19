@@ -14,7 +14,7 @@ jest.mock(
   () =>
     ({
       ...jest.requireActual('@buildwithsygma/sygma-contracts'),
-      DynamicERC20FeeHandlerEVM__factory: {
+      FeeHandlerRouter__factory: {
         connect: () => {
           return {
             calculateFee: jest.fn(() =>
