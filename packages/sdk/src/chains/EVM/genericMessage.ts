@@ -83,6 +83,8 @@ export class EVMGenericMessageTransfer {
             transfer.sender,
             genericTransfer.details.executionData,
           ),
+          tokenAmount: genericTransfer.details.tokenAmount,
+          maxFee: genericTransfer.details.maxFee,
         });
       }
       default:
@@ -147,6 +149,7 @@ export class EVMGenericMessageTransfer {
     destinationFunctionSignature: string,
     executionData: string,
     maxFee: string,
+    tokenAmount?: string,
   ): Transfer<GenericMessage> {
     const { sourceDomain, destinationDomain, resource } = this.config.getBaseTransferParams(
       destinationChainId,
@@ -160,6 +163,7 @@ export class EVMGenericMessageTransfer {
         destinationFunctionSignature: destinationFunctionSignature,
         executionData: executionData,
         maxFee: maxFee,
+        tokenAmount: tokenAmount || '0',
       },
       from: sourceDomain,
       to: destinationDomain,
