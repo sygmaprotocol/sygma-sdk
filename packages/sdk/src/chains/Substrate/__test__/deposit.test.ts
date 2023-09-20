@@ -1,7 +1,7 @@
 import { ApiPromise } from '@polkadot/api';
 import { XcmMultiAssetIdType } from '../types';
 
-import * as Utils from '../utils/depositFns.js';
+import * as Utils from '../utils/depositFns';
 import { Environment } from '../../../types';
 
 jest.mock('@polkadot/api');
@@ -23,6 +23,19 @@ describe('deposit', () => {
     domainId = '1';
 
     address = 'testaddress';
+  });
+
+  it('should return a multi-asset data object', () => {
+    const result = Utils.createMultiAssetData(
+      { id: 1 } as unknown as XcmMultiAssetIdType,
+      '1000000000000',
+    );
+    expect(result).toEqual({
+      id: { id: 1 },
+      fun: {
+        fungible: '1000000000000',
+      },
+    });
   });
 
   it('should call calculateBigNumber with correct params', () => {
@@ -54,25 +67,5 @@ describe('deposit', () => {
       domainId,
     );
     jest.resetAllMocks();
-  });
-});
-
-describe('createMultiAssetData', () => {
-  let xcmMultiAssetId: XcmMultiAssetIdType;
-  let amount: string;
-
-  beforeEach(() => {
-    xcmMultiAssetId = { id: 1 } as unknown as XcmMultiAssetIdType;
-    amount = '1000000000000';
-  });
-  it('should return a multi-asset data object', () => {
-    const result = Utils.createMultiAssetData(xcmMultiAssetId, amount);
-
-    expect(result).toEqual({
-      id: xcmMultiAssetId,
-      fun: {
-        fungible: '1000000000000',
-      },
-    });
   });
 });
