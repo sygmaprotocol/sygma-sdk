@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>createDestIdMultilocationData | Sygma SDK</title><meta name="description" content="Documentation for Sygma SDK"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/search.js" id="tsd-search-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>SygmaFeeHandlerRouterFeeHandlerType | Sygma SDK</title><meta name="description" content="Documentation for Sygma SDK"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/search.js" id="tsd-search-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -14,42 +14,11 @@
 <ul class="tsd-breadcrumb">
 <li><a href="../modules.html">Sygma SDK</a></li>
 <li><a href="../modules/Substrate.html">Substrate</a></li>
-<li><a href="Substrate.createDestIdMultilocationData.html">createDestIdMultilocationData</a></li></ul>
-<h1>Function createDestIdMultilocationData</h1></div>
-<section class="tsd-panel">
-<ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="createDestIdMultilocationData"><span class="tsd-kind-call-signature">create<wbr/>Dest<wbr/>Id<wbr/>Multilocation<wbr/>Data</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">environment</span>, <span class="tsd-kind-parameter">address</span>, <span class="tsd-kind-parameter">domainId</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><a href="#createDestIdMultilocationData" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><g stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" id="icon-anchor"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5"></path><path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5"></path></g></svg></a></li>
-<li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Creates a destination multilocation object for the deposit transaction.</p>
-</div>
-<div class="tsd-parameters">
-<h4 class="tsd-parameters-title">Parameters</h4>
-<ul class="tsd-parameter-list">
-<li>
-<h5><span class="tsd-kind-parameter">environment</span>: <a href="../enums/Environment.html" class="tsd-signature-type tsd-kind-enum">Environment</a></h5>
-<div class="tsd-comment tsd-typography"><p>The environment from which the transfer is being made</p>
-</div>
-<div class="tsd-comment tsd-typography"></div></li>
-<li>
-<h5><span class="tsd-kind-parameter">address</span>: <span class="tsd-signature-type">string</span></h5>
-<div class="tsd-comment tsd-typography"><p>The recipient address.</p>
-</div>
-<div class="tsd-comment tsd-typography"></div></li>
-<li>
-<h5><span class="tsd-kind-parameter">domainId</span>: <span class="tsd-signature-type">string</span></h5>
-<div class="tsd-comment tsd-typography"><p>The domain identifier.</p>
-</div>
-<div class="tsd-comment tsd-typography"></div></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span></h4><ul>
-<li>The destination multilocation object.</li>
-</ul>
-
-<div class="tsd-comment tsd-typography">
-<h4>Example</h4><pre><code class="language-ts"><span class="hl-3">const</span><span class="hl-1"> </span><span class="hl-4">address</span><span class="hl-1"> = </span><span class="hl-2">&#39;0x123abc&#39;</span><span class="hl-1">;</span><br/><span class="hl-3">const</span><span class="hl-1"> </span><span class="hl-4">domainId</span><span class="hl-1"> = </span><span class="hl-2">&#39;42&#39;</span><span class="hl-1">;</span><br/><span class="hl-3">const</span><span class="hl-1"> </span><span class="hl-4">multilocationData</span><span class="hl-1"> = </span><span class="hl-0">createDestIdMultilocationData</span><span class="hl-1">(</span><span class="hl-5">address</span><span class="hl-1">, </span><span class="hl-5">domainId</span><span class="hl-1">);</span><br/><span class="hl-5">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-5">multilocationData</span><span class="hl-1">);</span><br/><span class="hl-9">// Output: {</span><br/><span class="hl-9">//   parents: 0,</span><br/><span class="hl-9">//   interior: {</span><br/><span class="hl-9">//     x3: [</span><br/><span class="hl-9">//       { generalKey: &#39;0x7379676d61000000000000000000000000000000000000000000000000000000&#39;}</span><br/><span class="hl-9">//       { generalIndex: &#39;0x2a&#39; }</span><br/><span class="hl-9">//       { generalKey: &#39;0x123abc&#39; },</span><br/><span class="hl-9">//     ]</span><br/><span class="hl-9">//   }</span><br/><span class="hl-9">// }</span>
-</code><button>Copy</button></pre>
-</div><aside class="tsd-sources">
+<li><a href="Substrate.SygmaFeeHandlerRouterFeeHandlerType.html">SygmaFeeHandlerRouterFeeHandlerType</a></li></ul>
+<h1>Type alias SygmaFeeHandlerRouterFeeHandlerType</h1></div>
+<div class="tsd-signature"><span class="tsd-kind-type-alias">Sygma<wbr/>Fee<wbr/>Handler<wbr/>Router<wbr/>Fee<wbr/>Handler<wbr/>Type</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;BasicFeeHandler&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;PercentageFeeHandler&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;DynamicFeeHandler&quot;</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/sygmaprotocol/sygma-sdk/blob/97eadc5/packages/sdk/src/chains/Substrate/utils/depositFns.ts#L164">chains/Substrate/utils/depositFns.ts:164</a></li></ul></aside></li></ul></section></div>
+<li>Defined in <a href="https://github.com/sygmaprotocol/sygma-sdk/blob/97eadc5/packages/sdk/src/chains/Substrate/types/index.ts#L5">chains/Substrate/types/index.ts:5</a></li></ul></aside></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
@@ -107,27 +76,27 @@
 <li><a href="../enums/Substrate.KusamaParachain.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-8"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-enum)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6"></rect><path d="M9.45 16V7.24H14.49V8.224H10.518V10.936H14.07V11.908H10.518V15.016H14.49V16H9.45Z" fill="var(--color-text)"></path></g></svg><span>Kusama<wbr/>Parachain</span></a></li>
 <li><a href="../enums/Substrate.PolkadotParachain.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-8"></use></svg><span>Polkadot<wbr/>Parachain</span></a></li>
 <li><a href="../classes/Substrate.SubstrateAssetTransfer.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-128"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-class)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6"></rect><path d="M11.898 16.1201C11.098 16.1201 10.466 15.8961 10.002 15.4481C9.53803 15.0001 9.30603 14.3841 9.30603 13.6001V9.64012C9.30603 8.85612 9.53803 8.24012 10.002 7.79212C10.466 7.34412 11.098 7.12012 11.898 7.12012C12.682 7.12012 13.306 7.34812 13.77 7.80412C14.234 8.25212 14.466 8.86412 14.466 9.64012H13.386C13.386 9.14412 13.254 8.76412 12.99 8.50012C12.734 8.22812 12.37 8.09212 11.898 8.09212C11.426 8.09212 11.054 8.22412 10.782 8.48812C10.518 8.75212 10.386 9.13212 10.386 9.62812V13.6001C10.386 14.0961 10.518 14.4801 10.782 14.7521C11.054 15.0161 11.426 15.1481 11.898 15.1481C12.37 15.1481 12.734 15.0161 12.99 14.7521C13.254 14.4801 13.386 14.0961 13.386 13.6001H14.466C14.466 14.3761 14.234 14.9921 13.77 15.4481C13.306 15.8961 12.682 16.1201 11.898 16.1201Z" fill="var(--color-text)"></path></g></svg><span>Substrate<wbr/>Asset<wbr/>Transfer</span></a></li>
-<li><a href="../types/Substrate.DepositCallbacksType.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-4194304"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-type-alias)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6"></rect><path d="M11.31 16V8.224H8.91V7.24H14.79V8.224H12.39V16H11.31Z" fill="var(--color-text)"></path></g></svg><span>Deposit<wbr/>Callbacks<wbr/>Type</span></a></li>
-<li><a href="../types/Substrate.DepositEventDataType.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Deposit<wbr/>Event<wbr/>Data<wbr/>Type</span></a></li>
-<li><a href="../types/Substrate.ParachainID.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>ParachainID</span></a></li>
-<li><a href="../types/Substrate.SubstrateAccountInfo.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Substrate<wbr/>Account<wbr/>Info</span></a></li>
-<li><a href="../types/Substrate.SubstrateFee.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Substrate<wbr/>Fee</span></a></li>
-<li><a href="../types/Substrate.SubstrateSocketConnectionCallbacksType.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Substrate<wbr/>Socket<wbr/>Connection<wbr/>Callbacks<wbr/>Type</span></a></li>
-<li><a href="../types/Substrate.SygmaFeeHandlerRouterFeeHandlerType.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Sygma<wbr/>Fee<wbr/>Handler<wbr/>Router<wbr/>Fee<wbr/>Handler<wbr/>Type</span></a></li>
-<li><a href="../types/Substrate.XcmMultiAssetIdType.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Xcm<wbr/>Multi<wbr/>Asset<wbr/>Id<wbr/>Type</span></a></li>
-<li><a href="Substrate.calculateBigNumber.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-64"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-function)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6"></rect><path d="M9.39 16V7.24H14.55V8.224H10.446V11.128H14.238V12.112H10.47V16H9.39Z" fill="var(--color-text)"></path></g></svg><span>calculate<wbr/>Big<wbr/>Number</span></a></li>
-<li><a href="Substrate.createDestIdMultilocationData.html" class="current"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>create<wbr/>Dest<wbr/>Id<wbr/>Multilocation<wbr/>Data</span></a></li>
-<li><a href="Substrate.createMultiAssetData.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>create<wbr/>Multi<wbr/>Asset<wbr/>Data</span></a></li>
-<li><a href="Substrate.deposit.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>deposit</span></a></li>
-<li><a href="Substrate.getAssetBalance.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>get<wbr/>Asset<wbr/>Balance</span></a></li>
-<li><a href="Substrate.getBasicFee.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>get<wbr/>Basic<wbr/>Fee</span></a></li>
-<li><a href="Substrate.getFeeHandler.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>get<wbr/>Fee<wbr/>Handler</span></a></li>
-<li><a href="Substrate.getNativeTokenBalance.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>get<wbr/>Native<wbr/>Token<wbr/>Balance</span></a></li>
-<li><a href="Substrate.getPercentageFee.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>get<wbr/>Percentage<wbr/>Fee</span></a></li>
-<li><a href="Substrate.handleTxExtrinsicResult.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>handle<wbr/>Tx<wbr/>Extrinsic<wbr/>Result</span></a></li>
-<li><a href="Substrate.listenForEvent.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>listen<wbr/>For<wbr/>Event</span></a></li>
-<li><a href="Substrate.substrateSocketConnect.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>substrate<wbr/>Socket<wbr/>Connect</span></a></li>
-<li><a href="Substrate.throwErrorIfAny.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>throw<wbr/>Error<wbr/>If<wbr/>Any</span></a></li></ul></div></details></li>
+<li><a href="Substrate.DepositCallbacksType.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-4194304"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-type-alias)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6"></rect><path d="M11.31 16V8.224H8.91V7.24H14.79V8.224H12.39V16H11.31Z" fill="var(--color-text)"></path></g></svg><span>Deposit<wbr/>Callbacks<wbr/>Type</span></a></li>
+<li><a href="Substrate.DepositEventDataType.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Deposit<wbr/>Event<wbr/>Data<wbr/>Type</span></a></li>
+<li><a href="Substrate.ParachainID.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>ParachainID</span></a></li>
+<li><a href="Substrate.SubstrateAccountInfo.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Substrate<wbr/>Account<wbr/>Info</span></a></li>
+<li><a href="Substrate.SubstrateFee.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Substrate<wbr/>Fee</span></a></li>
+<li><a href="Substrate.SubstrateSocketConnectionCallbacksType.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Substrate<wbr/>Socket<wbr/>Connection<wbr/>Callbacks<wbr/>Type</span></a></li>
+<li><a href="Substrate.SygmaFeeHandlerRouterFeeHandlerType.html" class="current"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Sygma<wbr/>Fee<wbr/>Handler<wbr/>Router<wbr/>Fee<wbr/>Handler<wbr/>Type</span></a></li>
+<li><a href="Substrate.XcmMultiAssetIdType.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Xcm<wbr/>Multi<wbr/>Asset<wbr/>Id<wbr/>Type</span></a></li>
+<li><a href="../functions/Substrate.calculateBigNumber.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-64"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-function)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6"></rect><path d="M9.39 16V7.24H14.55V8.224H10.446V11.128H14.238V12.112H10.47V16H9.39Z" fill="var(--color-text)"></path></g></svg><span>calculate<wbr/>Big<wbr/>Number</span></a></li>
+<li><a href="../functions/Substrate.createDestIdMultilocationData.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>create<wbr/>Dest<wbr/>Id<wbr/>Multilocation<wbr/>Data</span></a></li>
+<li><a href="../functions/Substrate.createMultiAssetData.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>create<wbr/>Multi<wbr/>Asset<wbr/>Data</span></a></li>
+<li><a href="../functions/Substrate.deposit.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>deposit</span></a></li>
+<li><a href="../functions/Substrate.getAssetBalance.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>get<wbr/>Asset<wbr/>Balance</span></a></li>
+<li><a href="../functions/Substrate.getBasicFee.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>get<wbr/>Basic<wbr/>Fee</span></a></li>
+<li><a href="../functions/Substrate.getFeeHandler.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>get<wbr/>Fee<wbr/>Handler</span></a></li>
+<li><a href="../functions/Substrate.getNativeTokenBalance.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>get<wbr/>Native<wbr/>Token<wbr/>Balance</span></a></li>
+<li><a href="../functions/Substrate.getPercentageFee.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>get<wbr/>Percentage<wbr/>Fee</span></a></li>
+<li><a href="../functions/Substrate.handleTxExtrinsicResult.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>handle<wbr/>Tx<wbr/>Extrinsic<wbr/>Result</span></a></li>
+<li><a href="../functions/Substrate.listenForEvent.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>listen<wbr/>For<wbr/>Event</span></a></li>
+<li><a href="../functions/Substrate.substrateSocketConnect.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>substrate<wbr/>Socket<wbr/>Connect</span></a></li>
+<li><a href="../functions/Substrate.throwErrorIfAny.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>throw<wbr/>Error<wbr/>If<wbr/>Any</span></a></li></ul></div></details></li>
 <li><a href="../enums/ConfigUrl.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-8"></use></svg><span>Config<wbr/>Url</span></a></li>
 <li><a href="../enums/Environment.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-8"></use></svg><span>Environment</span></a></li>
 <li><a href="../enums/FeeHandlerType.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-8"></use></svg><span>Fee<wbr/>Handler<wbr/>Type</span></a></li>
@@ -139,19 +108,19 @@
 <li><a href="../interfaces/EthereumConfig.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Ethereum<wbr/>Config</span></a></li>
 <li><a href="../interfaces/RawConfig.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Raw<wbr/>Config</span></a></li>
 <li><a href="../interfaces/SubstrateConfig.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Substrate<wbr/>Config</span></a></li>
-<li><a href="../types/Domain.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Domain</span></a></li>
-<li><a href="../types/EvmResource.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Evm<wbr/>Resource</span></a></li>
-<li><a href="../types/FeeHandler.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Fee<wbr/>Handler</span></a></li>
-<li><a href="../types/Fungible.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Fungible</span></a></li>
-<li><a href="../types/GenericMessage.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Generic<wbr/>Message</span></a></li>
-<li><a href="../types/Handler.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Handler</span></a></li>
-<li><a href="../types/LiquidityError.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Liquidity<wbr/>Error</span></a></li>
-<li><a href="../types/NonFungible.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Non<wbr/>Fungible</span></a></li>
-<li><a href="../types/Recipient.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Recipient</span></a></li>
-<li><a href="../types/Resource.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Resource</span></a></li>
-<li><a href="../types/SubstrateResource.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Substrate<wbr/>Resource</span></a></li>
-<li><a href="../types/Transfer.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Transfer</span></a></li>
-<li><a href="../types/TransferType.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Transfer<wbr/>Type</span></a></li></ul></nav></div></div></div>
+<li><a href="Domain.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Domain</span></a></li>
+<li><a href="EvmResource.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Evm<wbr/>Resource</span></a></li>
+<li><a href="FeeHandler.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Fee<wbr/>Handler</span></a></li>
+<li><a href="Fungible.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Fungible</span></a></li>
+<li><a href="GenericMessage.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Generic<wbr/>Message</span></a></li>
+<li><a href="Handler.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Handler</span></a></li>
+<li><a href="LiquidityError.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Liquidity<wbr/>Error</span></a></li>
+<li><a href="NonFungible.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Non<wbr/>Fungible</span></a></li>
+<li><a href="Recipient.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Recipient</span></a></li>
+<li><a href="Resource.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Resource</span></a></li>
+<li><a href="SubstrateResource.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Substrate<wbr/>Resource</span></a></li>
+<li><a href="Transfer.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Transfer</span></a></li>
+<li><a href="TransferType.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Transfer<wbr/>Type</span></a></li></ul></nav></div></div></div>
 <div class="tsd-generator">
 <p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div>
 <div class="overlay"></div></body></html>
