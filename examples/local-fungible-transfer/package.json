@@ -31,7 +31,7 @@
     "typescript": "5.0.4"
   },
   "dependencies": {
-    "@buildwithsygma/sygma-contracts": "^2.3.0",
+    "@buildwithsygma/sygma-contracts": "2.4.1",
     "@buildwithsygma/sygma-sdk-core": "workspace:*",
     "@ethersproject/experimental": "^5.7.0",
     "ethers": "5.6.2"
