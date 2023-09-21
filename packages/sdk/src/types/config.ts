@@ -24,7 +24,7 @@ export interface BaseConfig<T> {
   type: T;
   bridge: string;
   nativeTokenSymbol: string;
-  nativeTokenName: string;
+  nativeTokenFullName: string;
   nativeTokenDecimals: BigInt;
   startBlock: BigInt;
   blockConfirmations: number;
