@@ -11,6 +11,7 @@
 
 ### Bug Fixes
 
+* fix url concatenation ([#302](https://github.com/sygmaprotocol/sygma-sdk/issues/302)) ([63ee346](https://github.com/sygmaprotocol/sygma-sdk/commit/63ee346cf2812ab1e52ffd28259ed1d1302e9430))
 * fixing GMP  ([#298](https://github.com/sygmaprotocol/sygma-sdk/issues/298)) ([41ea37a](https://github.com/sygmaprotocol/sygma-sdk/commit/41ea37a7b7fdf24d33c1dd0863e8daccf51eb87f))
 * property name in base config typing ([#300](https://github.com/sygmaprotocol/sygma-sdk/issues/300)) ([17ff329](https://github.com/sygmaprotocol/sygma-sdk/commit/17ff3296ed54ff1cdce25747f2672a97cbb83df3))
 
