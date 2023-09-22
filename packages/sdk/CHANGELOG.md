@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.3.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.2.0...sygma-sdk-core-v2.3.0) (2023-09-22)
+
+
+### Features
+
+* Destination network liquidity check ([#290](https://github.com/sygmaprotocol/sygma-sdk/issues/290)) ([ede1479](https://github.com/sygmaprotocol/sygma-sdk/commit/ede147982bc1f978a216b2904340ca60027fc402))
+* Substrate Percentage Fee ([#297](https://github.com/sygmaprotocol/sygma-sdk/issues/297)) ([97eadc5](https://github.com/sygmaprotocol/sygma-sdk/commit/97eadc51747e7f77817b227725cec07c8c9eaed4))
+
+
+### Bug Fixes
+
+* fix url concatenation ([#302](https://github.com/sygmaprotocol/sygma-sdk/issues/302)) ([63ee346](https://github.com/sygmaprotocol/sygma-sdk/commit/63ee346cf2812ab1e52ffd28259ed1d1302e9430))
+* fixing GMP  ([#298](https://github.com/sygmaprotocol/sygma-sdk/issues/298)) ([41ea37a](https://github.com/sygmaprotocol/sygma-sdk/commit/41ea37a7b7fdf24d33c1dd0863e8daccf51eb87f))
+* property name in base config typing ([#300](https://github.com/sygmaprotocol/sygma-sdk/issues/300)) ([17ff329](https://github.com/sygmaprotocol/sygma-sdk/commit/17ff3296ed54ff1cdce25747f2672a97cbb83df3))
+
 ## [2.2.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.1.0...sygma-sdk-core-v2.2.0) (2023-08-02)
 
 
