@@ -8,5 +8,4 @@ export * as EVM from './EVM/index.js';
  *  Functions for interacting with substrate pallet.
  *
  */
-export * from './Substrate/index.js';
 export * as Substrate from './Substrate/index.js';

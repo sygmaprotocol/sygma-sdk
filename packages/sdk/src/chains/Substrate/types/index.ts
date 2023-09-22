@@ -2,6 +2,11 @@ import { AccountInfo } from '@polkadot/types/interfaces';
 import { BN } from '@polkadot/util';
 import { FeeHandlerType } from '../../../types';
 
+export type SygmaFeeHandlerRouterFeeHandlerType =
+  | 'BasicFeeHandler'
+  | 'PercentageFeeHandler'
+  | 'DynamicFeeHandler';
+
 export type XcmMultiAssetIdType = {
   concrete: {
     parents: number;

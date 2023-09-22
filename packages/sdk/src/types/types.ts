@@ -47,6 +47,7 @@ export type SubstrateResource = BaseResource & {
 export enum FeeHandlerType {
   DYNAMIC = 'oracle',
   BASIC = 'basic',
+  PERCENTAGE = 'percentage',
 }
 
 type AssetTransfer = {

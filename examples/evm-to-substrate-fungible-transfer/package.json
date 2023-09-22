@@ -31,7 +31,7 @@
     "typescript": "5.0.4"
   },
   "dependencies": {
-    "@buildwithsygma/sygma-sdk-core": "2.2.0",
+    "@buildwithsygma/sygma-sdk-core": "workspace:*",
     "ethers": "5.6.2"
   }
 }

@@ -20,6 +20,12 @@ const mockApiPromise = {
     sygmaBasicFeeHandler: {
       assetFees: jest.fn(),
     },
+    sygmaFeeHandlerRouter: {
+      handlerType: jest.fn(),
+    },
+    sygmaPercentageFeeHandler: {
+      assetFeeRate: jest.fn(),
+    },
   },
   registry: {
     chainDecimals: [new BN(10)],
@@ -34,6 +40,11 @@ const mockApiPromise = {
 const calculateBasicFeeMock = jest.spyOn(Substrate, 'getBasicFee').mockResolvedValue({
   fee: new BN('100'),
   type: FeeHandlerType.BASIC,
+});
+
+const calculatePercentageFeeMock = jest.spyOn(Substrate, 'getPercentageFee').mockResolvedValue({
+  fee: new BN(100),
+  type: FeeHandlerType.PERCENTAGE,
 });
 
 describe('Substrate asset transfer', () => {
@@ -159,6 +170,8 @@ describe('Substrate asset transfer', () => {
 
   describe('getFee', () => {
     it('Should successfully get basic fee', async function () {
+      jest.spyOn(Substrate, 'getFeeHandler').mockResolvedValueOnce(FeeHandlerType.BASIC);
+
       const transfer = await assetTransfer.createFungibleTransfer(
         '0x3690601896C289be2d894c3d1213405310D0a25C',
         11155111,
@@ -175,6 +188,26 @@ describe('Substrate asset transfer', () => {
       });
 
       expect(calculateBasicFeeMock).toBeCalled();
+    });
+    it('Should successfully get Percentage fee', async function () {
+      jest.spyOn(Substrate, 'getFeeHandler').mockResolvedValueOnce(FeeHandlerType.PERCENTAGE);
+
+      const transfer = await assetTransfer.createFungibleTransfer(
+        '0x3690601896C289be2d894c3d1213405310D0a25C',
+        11155111,
+        '0x557abEc0cb31Aa925577441d54C090987c2ED818',
+        '0x0000000000000000000000000000000000000000000000000000000000001000',
+        '200',
+      );
+
+      const fee = await assetTransfer.getFee(transfer);
+
+      expect(fee).toEqual({
+        fee: new BN(100),
+        type: FeeHandlerType.PERCENTAGE,
+      });
+
+      expect(calculatePercentageFeeMock).toBeCalled();
     });
   });
 
