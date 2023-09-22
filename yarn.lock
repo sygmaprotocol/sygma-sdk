@@ -467,19 +467,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@buildwithsygma/sygma-contracts@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "@buildwithsygma/sygma-contracts@npm:2.3.0"
-  dependencies:
-    "@openzeppelin/contracts": ^4.5.0
-    "@truffle/hdwallet-provider": ^2.0.14
-  peerDependencies:
-    ethers: ">= 5.0.0"
-  checksum: f2d294c4d2e20151f41bb63c682319d9f201f7057cf1e149fb8bf7a4dc4ad307782cacf61e098e043117573363d9268847f53af015bd73c07302667967950d35
-  languageName: node
-  linkType: hard
-
-"@buildwithsygma/sygma-sdk-core@2.2.0, @buildwithsygma/sygma-sdk-core@workspace:packages/sdk":
+"@buildwithsygma/sygma-sdk-core@workspace:*, @buildwithsygma/sygma-sdk-core@workspace:packages/sdk":
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-core@workspace:packages/sdk"
   dependencies:
@@ -523,7 +511,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-evm-to-evm-fungible-transfer-example@workspace:examples/evm-to-evm-fungible-transfer"
   dependencies:
-    "@buildwithsygma/sygma-sdk-core": 2.2.0
+    "@buildwithsygma/sygma-sdk-core": "workspace:*"
     dotenv: ^16.3.1
     eslint: 8
     eslint-config-prettier: 8.3.0
@@ -539,7 +527,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-evm-to-evm-generic-message-example@workspace:examples/evm-to-evm-generic-mesage-passing"
   dependencies:
-    "@buildwithsygma/sygma-sdk-core": 2.2.0
+    "@buildwithsygma/sygma-sdk-core": "workspace:*"
     dotenv: 16.3.1
     eslint: 8
     eslint-config-prettier: 8.3.0
@@ -555,7 +543,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-evm-to-substrate-fungible-transfer-example@workspace:examples/evm-to-substrate-fungible-transfer"
   dependencies:
-    "@buildwithsygma/sygma-sdk-core": 2.2.0
+    "@buildwithsygma/sygma-sdk-core": "workspace:*"
     dotenv: ^16.3.1
     eslint: 8
     eslint-config-prettier: 8.3.0
@@ -571,8 +559,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-local-fungible-transfer-example@workspace:examples/local-fungible-transfer"
   dependencies:
-    "@buildwithsygma/sygma-contracts": ^2.3.0
-    "@buildwithsygma/sygma-sdk-core": 2.2.0
+    "@buildwithsygma/sygma-contracts": 2.4.1
+    "@buildwithsygma/sygma-sdk-core": "workspace:*"
     "@ethersproject/experimental": ^5.7.0
     eslint: 8
     eslint-config-prettier: 8.3.0
@@ -588,7 +576,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-substrate-to-evm-fungible-transfer-example@workspace:examples/substrate-to-evm-fungible-transfer"
   dependencies:
-    "@buildwithsygma/sygma-sdk-core": 2.2.0
+    "@buildwithsygma/sygma-sdk-core": "workspace:*"
     "@polkadot/api": 10.7.2
     "@polkadot/keyring": 12.2.1
     "@polkadot/util-crypto": ^12.2.1
