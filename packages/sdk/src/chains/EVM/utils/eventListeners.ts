@@ -44,7 +44,7 @@ export const createProposalExecutionEventListener = (
     originDomainId: number,
     depositNonce: BigNumber,
     dataHash: string,
-    tx: Event,
+    tx: string,
   ) => void,
 ): Bridge => {
   const proposalFilter = bridge.filters.ProposalExecution(null, null, null);

@@ -4,6 +4,7 @@ import { U256 } from '@polkadot/types';
 import { BN } from '@polkadot/util';
 import {
   Environment,
+  FeeHandlerType,
   Fungible,
   ResourceType,
   SubstrateResource,
@@ -12,7 +13,7 @@ import {
 } from '../../types';
 import { Config } from '../..';
 import { BaseAssetTransfer } from '../BaseAssetTransfer';
-import { SubstrateFee, deposit, getBasicFee } from '.';
+import { SubstrateFee, deposit, getBasicFee, getFeeHandler, getPercentageFee } from '.';
 
 /**
  * Class used for sending fungible and non-fungible transfers from Substrate based chains.
@@ -65,13 +66,26 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
    * @returns fee that needs to paid
    */
   public async getFee(transfer: Transfer<TransferType>): Promise<SubstrateFee> {
-    const fee = await getBasicFee(
+    const substrateResource = transfer.resource as SubstrateResource;
+
+    const feeHandlerType = await getFeeHandler(
       this.apiPromise,
       transfer.to.id,
-      (transfer.resource as SubstrateResource).xcmMultiAssetId,
+      substrateResource.xcmMultiAssetId,
     );
 
-    return fee;
+    switch (feeHandlerType) {
+      case FeeHandlerType.BASIC:
+        return await getBasicFee(
+          this.apiPromise,
+          transfer.to.id,
+          substrateResource.xcmMultiAssetId,
+        );
+      case FeeHandlerType.PERCENTAGE:
+        return await getPercentageFee(this.apiPromise, transfer as Transfer<Fungible>);
+      default:
+        throw new Error('Unable to retrieve fee');
+    }
   }
 
   /**

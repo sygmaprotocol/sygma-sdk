@@ -74,7 +74,7 @@
     "typescript": "5.0.4"
   },
   "dependencies": {
-    "@buildwithsygma/sygma-contracts": "2.1.2",
+    "@buildwithsygma/sygma-contracts": "2.4.1",
     "@ethersproject/abi": "^5.7.0",
     "@ethersproject/bytes": "^5.7.0",
     "@ethersproject/contracts": "^5.7.0",
