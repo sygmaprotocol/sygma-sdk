@@ -467,47 +467,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-"@buildwithsygma/sygma-contracts@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "@buildwithsygma/sygma-contracts@npm:2.3.0"
-  dependencies:
-    "@openzeppelin/contracts": ^4.5.0
-    "@truffle/hdwallet-provider": ^2.0.14
-  peerDependencies:
-    ethers: ">= 5.0.0"
-  checksum: f2d294c4d2e20151f41bb63c682319d9f201f7057cf1e149fb8bf7a4dc4ad307782cacf61e098e043117573363d9268847f53af015bd73c07302667967950d35
-  languageName: node
-  linkType: hard
-
-"@buildwithsygma/sygma-sdk-core@npm:2.2.0":
-  version: 2.2.0
-  resolution: "@buildwithsygma/sygma-sdk-core@npm:2.2.0"
-  dependencies:
-    "@buildwithsygma/sygma-contracts": 2.1.2
-    "@ethersproject/abi": ^5.7.0
-    "@ethersproject/bytes": ^5.7.0
-    "@ethersproject/contracts": ^5.7.0
-    "@ethersproject/providers": ^5.7.2
-    "@polkadot/api": 10.7.2
-    "@polkadot/api-augment": 10.7.2
-    "@polkadot/extension-inject": 0.46.3
-    "@polkadot/keyring": 12.2.1
-    "@polkadot/rpc-provider": 10.7.2
-    "@polkadot/ui-keyring": 3.4.1
-    "@polkadot/util": 12.2.1
-    "@polkadot/util-crypto": 12.2.1
-    axios: ^1.4.0
-    cross-fetch: ^3.1.5
-    ethers: 5.6.2
-  checksum: f97badae36f697a083ea049ec385e9cf5ef1de17cf18d6332b6d2f92251b1d1890f796987b311fb3d525682f482b1e68b62fd4a157e1443e39e6c7fce7dc06c9
-  languageName: node
-  linkType: hard
-
-"@buildwithsygma/sygma-sdk-core@workspace:packages/sdk":
-=======
 "@buildwithsygma/sygma-sdk-core@workspace:*, @buildwithsygma/sygma-sdk-core@workspace:packages/sdk":
->>>>>>> 0e88f61f8453844cc6ca93e81a45ed991d30a289
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-core@workspace:packages/sdk"
   dependencies:

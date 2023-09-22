@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.3.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.2.0...sygma-sdk-core-v2.3.0) (2023-09-21)
+## [2.3.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.2.0...sygma-sdk-core-v2.3.0) (2023-09-22)
 
 
 ### Features
