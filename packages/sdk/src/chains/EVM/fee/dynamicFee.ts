@@ -1,7 +1,7 @@
+import url from 'url';
 import { FeeHandlerRouter__factory } from '@buildwithsygma/sygma-contracts';
 import { ethers } from 'ethers';
 import fetch from 'cross-fetch';
-
 import { FeeHandlerType } from '../../../types';
 import { EvmFee, OracleResource } from '../types';
 import { toHex } from '../helpers';
@@ -181,7 +181,10 @@ export const requestFeeFromFeeOracle = async ({
   msgGasLimit?: string;
 }): Promise<OracleResource> => {
   const response = await fetch(
-    `${feeOracleBaseUrl}/v1/rate/from/${fromDomainID}/to/${toDomainID}/resourceid/${resourceID}?msgGasLimit=${msgGasLimit}`,
+    url.resolve(
+      feeOracleBaseUrl,
+      `/v1/rate/from/${fromDomainID}/to/${toDomainID}/resourceid/${resourceID}?msgGasLimit=${msgGasLimit}`,
+    ),
     {
       headers: {
         'Cache-Control': 'no-cache',
