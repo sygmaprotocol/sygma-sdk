@@ -31,7 +31,7 @@ export async function getTransferStatus(
     throw new Error('Invalid environment');
   }
 
-  const response = await fetch(`${url}/transfers/txHash/${txHash}`);
+  const response = await fetch(`${url}/api/transfers/txHash/${txHash}`);
   const data = (await response.json()) as Record<string, unknown> & { status: TransferStatus };
   return data.status;
 }
