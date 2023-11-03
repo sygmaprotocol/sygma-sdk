@@ -3,3 +3,8 @@ export enum ConfigUrl {
   TESTNET = 'https://chainbridge-assets-stage.s3.us-east-2.amazonaws.com/shared-config-test.json',
   MAINNET = 'https://sygma-assets-mainnet.s3.us-east-2.amazonaws.com/shared-config-mainnet.json',
 }
+
+export enum IndexerUrl {
+  MAINNET = 'https://api.buildwithsygma.com',
+  TESTNET = 'https://api.test.buildwithsygma.com',
+}
