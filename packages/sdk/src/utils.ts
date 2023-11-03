@@ -17,9 +17,13 @@ export function getFeeOracleBaseURL(environment?: Environment): string {
   }
 }
 
+/**
+ * @@description Get the status of a transfer using transaction hash and optionally domain id 
+ */
 export async function getTransferStatus(
-  txHash: string,
   environment: Environment,
+  txHash: string,
+  domainId?: string,
 ): Promise<TransferStatus> {
   let url: string;
 
@@ -31,7 +35,9 @@ export async function getTransferStatus(
     throw new Error('Invalid environment');
   }
 
-  const response = await fetch(`${url}/api/transfers/txHash/${txHash}`);
+  const response = await fetch(
+    `${url}/api/transfers/txHash/${txHash}?${domainId ? `domainId=${domainId}` : ''}}`,
+  );
   const data = (await response.json()) as Record<string, unknown> & { status: TransferStatus };
   return data.status;
 }
