@@ -8,3 +8,8 @@ export enum IndexerUrl {
   MAINNET = 'https://api.buildwithsygma.com',
   TESTNET = 'https://api.test.buildwithsygma.com',
 }
+
+export enum ExplorerUrl {
+  MAINNET = 'https://scan.buildwithsygma.com',
+  TESTNET = 'https://scan.test.buildwithsygma.com',
+}

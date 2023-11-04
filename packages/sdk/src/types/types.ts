@@ -84,3 +84,8 @@ export type Transfer<TransferType> = {
 export type LiquidityError = Error & { maximumTransferAmount: bigint };
 
 export type TransferStatus = 'pending' | 'executed' | 'failed';
+
+export type TransferStatusResponse = {
+  status: TransferStatus;
+  explorerUrl: string;
+};
