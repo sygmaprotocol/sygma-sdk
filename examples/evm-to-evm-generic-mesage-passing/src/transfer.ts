@@ -91,7 +91,7 @@ export async function genericMessage(): Promise<void> {
     ).toString()}`
   );
   const messageTransfer = new EVMGenericMessageTransfer();
-  await messageTransfer.init(sourceProvider, Environment.DEVNET);
+  await messageTransfer.init(sourceProvider, Environment.TESTNET);
 
   const EXECUTION_DATA = utils.defaultAbiCoder.encode(["uint"], [Date.now()]);
 
