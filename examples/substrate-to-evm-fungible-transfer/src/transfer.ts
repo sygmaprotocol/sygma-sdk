@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import {
   Environment,
   SubstrateAssetTransfer,
+  getTransferStatusData,
 } from "@buildwithsygma/sygma-sdk-core";
 
 dotenv.config();
@@ -19,6 +20,20 @@ const recipient = "0xD31E89feccCf6f2DE10EaC92ADffF48D802b695C";
 if (!MNEMONIC) {
   throw new Error("Missing environment variable: PRIVATE_MNEMONIC");
 }
+
+const getStatus = async (
+  txHash: string
+): Promise<{ status: string; explorerUrl: string } | void> => {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    const data = await getTransferStatusData(Environment.TESTNET, txHash);
+
+    return data as { status: string; explorerUrl: string };
+  } catch (e) {
+    console.log("error", e);
+    console.log("indexing and retrying");
+  }
+};
 
 const substrateTransfer = async (): Promise<void> => {
   const keyring = new Keyring({ type: "sr25519" });
@@ -63,9 +78,30 @@ const substrateTransfer = async (): Promise<void> => {
       );
       unsub();
     }
+
+    let dataResponse: undefined | { status: string; explorerUrl: string };
+
+    const id = setInterval(() => {
+      getStatus(transferTx)
+        .then((data) => {
+          if (data) {
+            dataResponse = data;
+            console.log(data);
+          }
+        })
+        .catch(() => {
+          console.log("Transfer still not indexed, retrying...");
+        });
+    }, 5000);
+
+    if (dataResponse && dataResponse.status === "executed") {
+      console.log("Transfer executed successfully");
+      clearInterval(id);
+      process.exit(0);
+    }
   });
 };
 
 substrateTransfer()
   .catch((e) => console.log(e))
-  .finally(() => { });
+  .finally(() => {});
