@@ -127,19 +127,19 @@ export async function genericMessage(): Promise<void> {
       .then((data) => {
         if (data) {
           dataResponse = data;
-          console.log(data);
+          console.log("Status of the transfer", data.status);
         }
       })
       .catch(() => {
         console.log("Transfer still not indexed, retrying...");
       });
-  }, 5000);
 
-  if (dataResponse && dataResponse.status === "executed") {
-    console.log("Transfer executed successfully");
-    clearInterval(id);
-    process.exit(0);
-  }
+    if (dataResponse && dataResponse.status === "executed") {
+      console.log("Transfer executed successfully");
+      clearInterval(id);
+      process.exit(0);
+    }
+  }, 5000);
 }
 
 genericMessage().finally(() => {});
