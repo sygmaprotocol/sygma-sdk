@@ -2,14 +2,15 @@ import { Keyring } from "@polkadot/keyring";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { cryptoWaitReady } from "@polkadot/util-crypto";
 import dotenv from "dotenv";
-
 import {
   Environment,
-  SubstrateAssetTransfer,
+  Substrate,
   getTransferStatusData,
 } from "@buildwithsygma/sygma-sdk-core";
 
 dotenv.config();
+
+const { SubstrateAssetTransfer } = Substrate;
 
 const GOERLI_CHAIN_ID = 5;
 const RESOURCE_ID =
