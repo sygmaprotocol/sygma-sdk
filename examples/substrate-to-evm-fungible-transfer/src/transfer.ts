@@ -2,13 +2,11 @@ import { Keyring } from "@polkadot/keyring";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { cryptoWaitReady } from "@polkadot/util-crypto";
 import dotenv from "dotenv";
-
-import {
-  Environment,
-  SubstrateAssetTransfer,
-} from "@buildwithsygma/sygma-sdk-core";
+import { Environment, Substrate } from "@buildwithsygma/sygma-sdk-core";
 
 dotenv.config();
+
+const { SubstrateAssetTransfer } = Substrate;
 
 const GOERLI_CHAIN_ID = 5;
 const RESOURCE_ID =
@@ -68,4 +66,4 @@ const substrateTransfer = async (): Promise<void> => {
 
 substrateTransfer()
   .catch((e) => console.log(e))
-  .finally(() => { });
+  .finally(() => {});

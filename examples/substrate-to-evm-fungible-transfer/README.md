@@ -61,7 +61,7 @@ yarn run transfer
 ```
 
 The example will use `@polkadot/keyring` in conjuction with the sygma-sdk to
-create a transfer from `Roccoco Phala` to `Sepolia`.
+create a transfer from `Roccoco Phala` to `Goerli`.
 
 Replace the placeholder values in the script with your own Substrate wallet mnemonic and destination EVM address.
 
