@@ -26,7 +26,6 @@ const getStatus = async (
   txHash: string
 ): Promise<{ status: string; explorerUrl: string } | void> => {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const data = await getTransferStatusData(Environment.TESTNET, txHash);
 
     return data as { status: string; explorerUrl: string };
