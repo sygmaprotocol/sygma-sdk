@@ -72,20 +72,20 @@ export async function erc20Transfer(): Promise<void> {
       .then((data) => {
         if (data) {
           dataResponse = data;
-          console.log(data);
+          console.log("Status of the transfer", data.status);
         }
       })
       .catch((e) => {
         console.log(e);
         console.log("Transfer still not indexed, retrying...");
       });
-  }, 5000);
 
-  if (dataResponse && dataResponse.status === "executed") {
-    console.log("Transfer executed successfully");
-    clearInterval(id);
-    process.exit(0);
-  }
+    if (dataResponse && dataResponse.status === "executed") {
+      console.log("Transfer executed successfully");
+      clearInterval(id);
+      process.exit(0);
+    }
+  }, 5000);
 }
 
 erc20Transfer().finally(() => {});

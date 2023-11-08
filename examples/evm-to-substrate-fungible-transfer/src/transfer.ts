@@ -78,13 +78,13 @@ export async function erc20Transfer(): Promise<void> {
       .catch(() => {
         console.log("Transfer still not indexed, retrying...");
       });
-  }, 5000);
 
-  if (dataResponse && dataResponse.status === "executed") {
-    console.log("Transfer executed successfully");
-    clearInterval(id);
-    process.exit(0);
-  }
+    if (dataResponse && dataResponse.status === "executed") {
+      console.log("Transfer executed successfully");
+      clearInterval(id);
+      process.exit(0);
+    }
+  }, 5000);
 }
 
 erc20Transfer().finally(() => {});
