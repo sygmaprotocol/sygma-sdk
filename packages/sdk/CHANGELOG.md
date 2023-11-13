@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.4.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.3.0...sygma-sdk-core-v2.4.0) (2023-11-13)
+
+
+### Features
+
+* get transfer status function ([#309](https://github.com/sygmaprotocol/sygma-sdk/issues/309)) ([7ac2946](https://github.com/sygmaprotocol/sygma-sdk/commit/7ac294637848c3a2b36e467ecd1dbc044bb1069b))
+
+
+### Bug Fixes
+
+* fix approvals ([#314](https://github.com/sygmaprotocol/sygma-sdk/issues/314)) ([5d42049](https://github.com/sygmaprotocol/sygma-sdk/commit/5d42049c23c80262fc61afda154d88d95ab70d60))
+* fix erc20Approvals ([#311](https://github.com/sygmaprotocol/sygma-sdk/issues/311)) ([68ac851](https://github.com/sygmaprotocol/sygma-sdk/commit/68ac8510bbd0537f4138d81b243988dbbd889bb3))
+* revert fix erc20Approvals ([#313](https://github.com/sygmaprotocol/sygma-sdk/issues/313)) ([bbe0116](https://github.com/sygmaprotocol/sygma-sdk/commit/bbe011691c350a2224197fabea60fc7351b12832))
+
 ## [2.3.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.2.0...sygma-sdk-core-v2.3.0) (2023-09-22)
 
 
