@@ -262,15 +262,20 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
     handlerAddress: string,
   ): Promise<Array<PopulatedTransaction>> {
     const approvals: Array<PopulatedTransaction> = [];
-    if (
-      fee.type == FeeHandlerType.DYNAMIC &&
-      (await getERC20Allowance(transfer.sender, erc20, fee.handlerAddress)).lt(fee.fee)
-    ) {
-      approvals.push(await approve(fee.fee.toString(), erc20, fee.handlerAddress));
-    }
-
     const transferAmount = BigNumber.from(transfer.details.amount);
-    if ((await getERC20Allowance(transfer.sender, erc20, handlerAddress)).lt(transferAmount)) {
+    if (
+      fee.type == FeeHandlerType.PERCENTAGE &&
+      (await getERC20Allowance(transfer.sender, erc20, fee.handlerAddress)).lt(
+        fee.fee.add(transferAmount),
+      )
+    ) {
+      approvals.push(
+        await approve(fee.fee.add(transferAmount).toString(), erc20, fee.handlerAddress),
+      );
+    } else if (
+      fee.type == FeeHandlerType.BASIC &&
+      (await getERC20Allowance(transfer.sender, erc20, handlerAddress)).lt(transferAmount)
+    ) {
       approvals.push(await approve(transferAmount.toString(), erc20, handlerAddress));
     }
 
