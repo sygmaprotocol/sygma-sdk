@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import {
   EVMGenericMessageTransfer,
   Environment,
+  getTransferStatusData,
 } from "@buildwithsygma/sygma-sdk-core";
 import { BigNumber, Wallet, providers, utils } from "ethers";
 import { Storage__factory } from "./Contracts";
@@ -13,6 +14,18 @@ const privateKey = process.env.PRIVATE_KEY;
 if (!privateKey) {
   throw new Error("Missing environment variable: PRIVATE_KEY");
 }
+
+const getStatus = async (
+  txHash: string
+): Promise<{ status: string; explorerUrl: string } | void> => {
+  try {
+    const data = await getTransferStatusData(Environment.TESTNET, txHash);
+
+    return data as { status: string; explorerUrl: string };
+  } catch (e) {
+    console.log("error: ", e);
+  }
+};
 
 const DESTINATION_CHAIN_ID = 5; // Goerli
 const RESOURCE_ID =
@@ -41,11 +54,11 @@ const sleep = (ms: number): Promise<void> =>
 const waitUntilBridged = async (
   valueBefore: BigNumber,
   intervalDuration: number = 15000,
-  attempts: number = 8,
+  attempts: number = 8
 ): Promise<void> => {
   let i = 0;
   let contractValueAfter: BigNumber;
-  for (; ;) {
+  for (;;) {
     await sleep(intervalDuration);
     contractValueAfter = await fetchAfterValue();
     if (!contractValueAfter.eq(valueBefore)) {
@@ -76,7 +89,7 @@ export async function genericMessage(): Promise<void> {
     ).toString()}`
   );
   const messageTransfer = new EVMGenericMessageTransfer();
-  await messageTransfer.init(sourceProvider, Environment.DEVNET);
+  await messageTransfer.init(sourceProvider, Environment.TESTNET);
 
   const EXECUTION_DATA = utils.defaultAbiCoder.encode(["uint"], [Date.now()]);
 
@@ -104,6 +117,27 @@ export async function genericMessage(): Promise<void> {
   console.log("Waiting for relayers to bridge transaction...");
 
   await waitUntilBridged(contractValueBefore);
+
+  let dataResponse: undefined | { status: string; explorerUrl: string };
+
+  const id = setInterval(() => {
+    getStatus(response.hash)
+      .then((data) => {
+        if (data) {
+          dataResponse = data;
+          console.log("Status of the transfer", data.status);
+        }
+      })
+      .catch(() => {
+        console.log("Transfer still not indexed, retrying...");
+      });
+
+    if (dataResponse && dataResponse.status === "executed") {
+      console.log("Transfer executed successfully");
+      clearInterval(id);
+      process.exit(0);
+    }
+  }, 5000);
 }
 
-genericMessage().finally(() => { });
+genericMessage().finally(() => {});

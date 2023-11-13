@@ -2,7 +2,11 @@ import { Keyring } from "@polkadot/keyring";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { cryptoWaitReady } from "@polkadot/util-crypto";
 import dotenv from "dotenv";
-import { Environment, Substrate } from "@buildwithsygma/sygma-sdk-core";
+import {
+  Environment,
+  Substrate,
+  getTransferStatusData,
+} from "@buildwithsygma/sygma-sdk-core";
 
 dotenv.config();
 
@@ -17,6 +21,18 @@ const recipient = "0xD31E89feccCf6f2DE10EaC92ADffF48D802b695C";
 if (!MNEMONIC) {
   throw new Error("Missing environment variable: PRIVATE_MNEMONIC");
 }
+
+const getStatus = async (
+  txHash: string
+): Promise<{ status: string; explorerUrl: string } | void> => {
+  try {
+    const data = await getTransferStatusData(Environment.TESTNET, txHash);
+
+    return data as { status: string; explorerUrl: string };
+  } catch (e) {
+    console.log("error: ", e);
+  }
+};
 
 const substrateTransfer = async (): Promise<void> => {
   const keyring = new Keyring({ type: "sr25519" });
@@ -60,6 +76,27 @@ const substrateTransfer = async (): Promise<void> => {
         `Transaction finalized at blockHash ${status.asFinalized.toString()}`
       );
       unsub();
+    }
+
+    let dataResponse: undefined | { status: string; explorerUrl: string };
+
+    const id = setInterval(() => {
+      getStatus(status.asInBlock.toString())
+        .then((data) => {
+          if (data) {
+            dataResponse = data;
+            console.log(data);
+          }
+        })
+        .catch(() => {
+          console.log("Transfer still not indexed, retrying...");
+        });
+    }, 5000);
+
+    if (dataResponse && dataResponse.status === "executed") {
+      console.log("Transfer executed successfully");
+      clearInterval(id);
+      process.exit(0);
     }
   });
 };

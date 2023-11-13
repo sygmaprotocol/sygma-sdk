@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [16, 18]
+        node: [18, 20]
       fail-fast: true
     steps:
       - uses: actions/checkout@v3
@@ -22,6 +22,7 @@ jobs:
           cache: 'yarn' # cache node modules
           node-version: ${{ matrix.node }}
       - run: corepack enable
+      - run: yarn set version stable
       - run: yarn
       - run: yarn run sdk:lint # lint code
       - run: yarn run sdk:build # compile typescript into javascript
