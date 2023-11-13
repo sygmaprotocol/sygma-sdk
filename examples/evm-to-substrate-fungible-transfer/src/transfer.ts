@@ -26,8 +26,7 @@ const getStatus = async (
 
     return data as { status: string; explorerUrl: string };
   } catch (e) {
-    console.log("error", e);
-    console.log("indexing and retrying");
+    console.log("error: ", e);
   }
 };
 

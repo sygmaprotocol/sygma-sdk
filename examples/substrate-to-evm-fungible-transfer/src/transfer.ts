@@ -30,8 +30,7 @@ const getStatus = async (
 
     return data as { status: string; explorerUrl: string };
   } catch (e) {
-    console.log("error", e);
-    console.log("indexing and retrying");
+    console.log("error: ", e);
   }
 };
 
@@ -82,7 +81,7 @@ const substrateTransfer = async (): Promise<void> => {
     let dataResponse: undefined | { status: string; explorerUrl: string };
 
     const id = setInterval(() => {
-      getStatus(transferTx)
+      getStatus(status.asInBlock.toString())
         .then((data) => {
           if (data) {
             dataResponse = data;
