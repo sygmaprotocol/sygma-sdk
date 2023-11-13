@@ -4,6 +4,7 @@ import { DepositEvent } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge
 
 import { createERCDepositData, createPermissionlessGenericDepositData } from '../helpers.js';
 import { Erc20TransferParamsType, Erc721TransferParamsType, EvmFee } from '../types/index.js';
+import { FeeHandlerType } from 'types/types.js';
 
 export const ASSET_TRANSFER_GAS_LIMIT: BigNumber = BigNumber.from(300000);
 
@@ -133,7 +134,7 @@ export const executeDeposit = async (
   overrides?: ethers.PayableOverrides,
 ): Promise<PopulatedTransaction> => {
   const transactionSettings = {
-    value: feeData.fee,
+    value: feeData.type == FeeHandlerType.PERCENTAGE ? 0 : feeData.fee,
     gasLimit: ASSET_TRANSFER_GAS_LIMIT,
   };
 
