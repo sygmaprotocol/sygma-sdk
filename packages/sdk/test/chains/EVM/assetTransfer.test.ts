@@ -222,14 +222,14 @@ describe('EVM asset transfer', () => {
       expect(approvals.length).toBe(1);
     });
 
-    it('Should return 2 approval txs if ERC20 token not approved and dynamic fee used', async function () {
+    it('Should return 2 approval txs if ERC20 token not approved and percentage fee used', async function () {
       resourceHandlerFunction.mockResolvedValue('0x03896BaeA3A8CD98E46C576AF6Ceaffb69a51AFB');
       getAllowanceMock.mockResolvedValue(BigNumber.from('0'));
       approveMock.mockResolvedValue({});
 
       const fee = {
         fee: BigNumber.from('100'),
-        type: FeeHandlerType.DYNAMIC,
+        type: FeeHandlerType.PERCENTAGE,
         handlerAddress: '0xe495c86962DcA7208ECcF2020A273395AcE8da3e',
       };
       const approvals = await assetTransfer.buildApprovals(transfer, fee);
