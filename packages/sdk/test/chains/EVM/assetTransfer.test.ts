@@ -222,7 +222,7 @@ describe('EVM asset transfer', () => {
       expect(approvals.length).toBe(1);
     });
 
-    it('Should return 2 approval txs if ERC20 token not approved and dynamic fee used', async function () {
+    it('Should return 1 approval txs if ERC20 token not approved and percentage fee used', async function () {
       resourceHandlerFunction.mockResolvedValue('0x03896BaeA3A8CD98E46C576AF6Ceaffb69a51AFB');
       getAllowanceMock.mockResolvedValue(BigNumber.from('0'));
       approveMock.mockResolvedValue({});
@@ -234,7 +234,7 @@ describe('EVM asset transfer', () => {
       };
       const approvals = await assetTransfer.buildApprovals(transfer, fee);
 
-      expect(approvals.length).toBe(2);
+      expect(approvals.length).toBe(1);
     });
 
     it('Should return empty array if ERC721 token already approved', async function () {
