@@ -43,7 +43,7 @@ export async function erc20Transfer(): Promise<void> {
     ROCOCO_PHALA_CHAIN_ID,
     DESTINATION_ADDRESS,
     RESOURCE_ID,
-    "5000000000000000000" // 18 decimal places
+    "500000000000000000" // 18 decimal places
     // optional parachainID (e.g. KusamaParachain.SHIDEN)
   );
 
