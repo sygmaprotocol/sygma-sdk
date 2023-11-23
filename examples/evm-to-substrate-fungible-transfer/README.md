@@ -81,3 +81,4 @@ This example script performs the following steps:
 ## Faucet
 
 To get the test tokens needed for the transfer go to: `https://faucet-ui-stage.buildwithsygma.com/`.
+Get the  `GPHA` test token from the faucet.
