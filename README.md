@@ -20,12 +20,13 @@
   <a href="https://sygmaprotocol.github.io/sygma-sdk/">SygmaSDK typedocs</a>
 </p>
 
-A Typescript SDK allowing users to easily add cross-chain capabilities such as bridging tokens and sending messages to their dApp projects.
+The Sygma SDK is written in TypeScript and allows developers to easily add cross-chain capabilities such as bridging tokens and sending messages to their dApp projects. For complete documentation, please see our [docs site](https://docs.buildwithsygma.com).
 
 ## Features
 
 Currently supported:
 - Transfering fungible assets between **Substrate** and **EVM** chains
+- Generic message passing between **EVM** chains
 
 ## Installation
 ```bash
@@ -34,11 +35,11 @@ yarn add @buildwithsygma/sygma-sdk-core
 
 ## Example 
 
-For examples of usage go the [`examples`](./examples/) folder
+For examples of usage, go to the [`examples`](./examples/) folder
 
 ## Contracts
 
-For interacting directly with the contracts use the `@buildwithsygma/sygma-contracts` package.
+For interacting directly with the contracts, use the `@buildwithsygma/sygma-contracts` package.
 
 ## Support
 <a href="https://discord.gg/ykXsJKfhgq">

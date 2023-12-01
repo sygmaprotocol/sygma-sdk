@@ -1,14 +1,16 @@
 ## Sygma SDK Substrate Asset Transfer Example
 
-This is an example script that demonstrates the functionality of the SDK using the Sygma ecosystem. The script showcases a Substrate Asset transfer between Substrate and EVM using the Sygma SDK.
+This is an example script that demonstrates the functionality of the SDK using the Sygma ecosystem. The script showcases a Substrate Asset transfer between a Substrate network and an EVM network using the Sygma SDK.
 
 ## Prerequisites
 
 Before running the script, ensure that you have the following:
 
 - Node.js installed on your machine
-- [Yarn](https://yarnpkg.com/) (version 3.4.1 or higher)
-- Access to a Substrate node
+- Yarn (version 3.4.1 or higher)
+- A Substrate development wallet funded with `PHA` tokens; you may wish to run the [EVM-to-Substrate example](../evm-to-substrate-fungible-transfer/) first to preload `PHA` tokens into a Substrate wallet
+- The 12-word mnemonic for your Substrate development wallet
+- An Ethereum wallet to receive tokens into (the example presets an existing wallet address already)
 
 ## Getting started
 
@@ -63,7 +65,7 @@ yarn run transfer
 The example will use `@polkadot/keyring` in conjuction with the sygma-sdk to
 create a transfer from `Roccoco Phala` to `Goerli`.
 
-Replace the placeholder values in the script with your own Substrate wallet mnemonic and destination EVM address.
+Replace the placeholder values in the `.env` file with your own Substrate wallet mnemonic, and your own destination EVM address within the script.
 
 ## Script Functionality
 

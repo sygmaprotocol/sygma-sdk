@@ -1,14 +1,16 @@
 ## Sygma SDK ERC20 Example
 
-This is an example script that demonstrates the functionality of the SDK using the Sygma ecosystem. The script showcases an ERC20 token transfer between two networks using the Sygma SDK.
+This is an example script that demonstrates the functionality of the SDK using the Sygma ecosystem. The script showcases an ERC20 token transfer between the same account on two different testnets using the Sygma SDK. 
 
 ## Prerequisites
 
 Before running the script, ensure that you have the following:
 
 - Node.js installed on your machine
-- [Yarn](https://yarnpkg.com/) (version 3.4.1 or higher)
-- Access to an Ethereum provider
+- Yarn (version 3.4.1 or higher)
+- A development wallet funded with `ERC20LRTest` tokens from the [Sygma faucet](https://faucet-ui-stage.buildwithsygma.com/)
+- The [exported private key](https://support.metamask.io/hc/en-us/articles/360015289632-How-to-export-an-account-s-private-key) of your development wallet
+- [Goerli ETH](https://goerlifaucet.com/) for gas 
 
 ## Getting started
 
@@ -63,7 +65,7 @@ yarn run transfer
 The example will use `ethers` in conjuction with the sygma-sdk to 
 create a transfer from `Goerli` to `Sepolia` with a test ERC20 token.
 
-Replace the placeholder values in the script with your own Ethereum wallet private key and provider URL.
+Replace the placeholder values in the `.env` file with your own Ethereum wallet private key.
 
 ## Script Functionality
 
@@ -76,7 +78,3 @@ This example script performs the following steps:
 - Retrieves the fee required for the transfer from the SDK.
 - Builds the necessary approval transactions for the transfer and sends them using the Ethereum wallet. The approval transactions are required to authorize the transfer of ERC20 tokens.
 - Builds the final transfer transaction and sends it using the Ethereum wallet.
-
-## Faucet
-
-To get the test tokens needed for the transfer go to: `https://faucet-ui-stage.buildwithsygma.com/`.
