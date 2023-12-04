@@ -7,8 +7,10 @@ This is an example script that demonstrates the functionality of the SDK using t
 Before running the script, ensure that you have the following:
 
 - Node.js installed on your machine
-- [Yarn](https://yarnpkg.com/) (version 3.4.1 or higher)
-- Access to an Ethereum provider
+- Yarn (version 3.4.1 or higher)
+- A development wallet funded with [Sepolia ETH](https://sepolia-faucet.pk910.de/) for gas 
+- The [exported private key](https://support.metamask.io/hc/en-us/articles/360015289632-How-to-export-an-account-s-private-key) of your development wallet
+- An Ethereum [provider](https://www.infura.io/) (in case the hardcoded RPC within the script does not work)
 
 ## Getting started
 
@@ -39,7 +41,22 @@ yarn sdk:build
 
 ## Usage
 
-To call a function on a destination chain contract:
+This example uses the `dotenv` module to manage private keys. To run the example, you will need to configure your environment variable to include your test development account's [exported private key](https://support.metamask.io/hc/en-us/articles/360015289632-How-to-export-an-account-s-private-key). A `.env.sample` is provided as a template.
+
+**DO NOT COMMIT PRIVATE KEYS WITH REAL FUNDS TO GITHUB. DOING SO COULD RESULT IN COMPLETE LOSS OF YOUR FUNDS.**
+
+Create a `.env` file in the evm-to-evm GMP example folder:
+
+```bash
+cd examples/evm-to-evm-generic-mesage-passing
+touch .env
+```
+
+Replace between the quotation marks your exported private key:
+
+`PRIVATE_KEY="YOUR_PRIVATE_KEY_HERE"`
+
+To call the function on the destination chain contract, `cd` into the example folder `examples/evm-to-evm-generic-mesage-passing` and run:
 
 ```bash
 yarn run transfer
@@ -48,7 +65,7 @@ yarn run transfer
 The example will use `ethers` in conjuction with the sygma-sdk to 
 call a function on a smart contract on `Goerli` by calling the Deposit method on `Sepolia` and passing the details of the function to be called.
 
-Replace the placeholder values in the `.env` file with your own Ethereum wallet private key and provider URL.
+Replace the placeholder values in the `.env` file with your own Ethereum wallet private key.
 
 ## Script Functionality
 
