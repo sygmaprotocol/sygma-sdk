@@ -10,6 +10,7 @@ Before running the script, ensure that you have the following:
 - Yarn (version 3.4.1 or higher)
 - A development wallet funded with [Sepolia ETH](https://sepolia-faucet.pk910.de/) for gas 
 - The [exported private key](https://support.metamask.io/hc/en-us/articles/360015289632-How-to-export-an-account-s-private-key) of your development wallet
+- An Ethereum [provider](https://www.infura.io/) (in case the hardcoded RPC within the script does not work)
 
 ## Getting started
 

@@ -11,6 +11,7 @@ Before running the script, ensure that you have the following:
 - A Substrate development wallet funded with `PHA` tokens; **you may wish** to run the [EVM-to-Substrate example](../evm-to-substrate-fungible-transfer/) first to preload `PHA` tokens into a Substrate wallet
 - The 12-word mnemonic for your Substrate development wallet
 - An Ethereum wallet to receive tokens into (the example presets an existing wallet address already)
+- A Substrate provider (in case the hardcoded WSS within the script does not work)
 
 ## Getting started
 

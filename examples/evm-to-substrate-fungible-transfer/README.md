@@ -12,6 +12,7 @@ Before running the script, ensure that you have the following:
 - The [exported private key](https://support.metamask.io/hc/en-us/articles/360015289632-How-to-export-an-account-s-private-key) of your development wallet
 - A Substrate wallet to receive tokens into (the example presets an existing wallet address already)
 - [Goerli ETH](https://goerlifaucet.com/) for gas 
+- An Ethereum [provider](https://www.infura.io/) (in case the hardcoded RPC within the script does not work)
 
 ## Getting started
 
