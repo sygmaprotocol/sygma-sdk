@@ -61,7 +61,7 @@ describe('Config', () => {
     const domains = config.getDomains();
 
     expect(domains).toEqual(
-      testingConfigData.domains.map(({ id, chainId, name }) => ({ id, chainId, name })),
+      testingConfigData.domains.map(({ id, chainId, name, type }) => ({ id, chainId, name, type })),
     );
   });
 });
