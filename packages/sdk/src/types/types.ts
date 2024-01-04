@@ -1,9 +1,11 @@
 import { ParachainID, XcmMultiAssetIdType } from 'chains/Substrate/types';
+import { Network } from './config';
 
 export type Domain = {
   id: number;
   chainId: number;
   name: string;
+  type: Network;
 };
 
 export type Recipient = {

@@ -65,7 +65,12 @@ export class Config {
   }
 
   public getDomains(): Array<Domain> {
-    return this.environment.domains.map(({ id, chainId, name }) => ({ id, chainId, name }));
+    return this.environment.domains.map(({ id, chainId, name, type }) => ({
+      id,
+      chainId,
+      name,
+      type,
+    }));
   }
 
   public getDomainResources(): Array<Resource> {

@@ -2,7 +2,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { ApiPromise } from '@polkadot/api';
 import { BN } from '@polkadot/util';
-import { FeeHandlerType, Environment, Transfer, Fungible, ResourceType } from '../../../src/types';
+import { FeeHandlerType, Environment, Transfer, Fungible, ResourceType, Network } from '../../../src/types';
 import { testingConfigData } from '../../constants';
 import { ConfigUrl } from '../../../src/constants';
 import { SubstrateAssetTransfer } from '../../../src/chains/Substrate';
@@ -67,11 +67,13 @@ describe('Substrate asset transfer', () => {
           name: 'Sepolia',
           chainId: 11155111,
           id: 3,
+          type: Network.EVM,
         },
         from: {
           name: 'rococo-phala',
           chainId: 400,
           id: 5,
+          type: Network.SUBSTRATE,
         },
         resource: {
           resourceId: '0x0000000000000000000000000000000000000000000000000000000000001000',
@@ -110,11 +112,13 @@ describe('Substrate asset transfer', () => {
           name: 'Sepolia',
           chainId: 11155111,
           id: 3,
+          type: Network.EVM,
         },
         from: {
           name: 'rococo-phala',
           chainId: 400,
           id: 5,
+          type: Network.SUBSTRATE,
         },
         resource: {
           resourceId: '0x0000000000000000000000000000000000000000000000000000000000001000',

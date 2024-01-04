@@ -9,6 +9,7 @@ import {
   Environment,
   NonFungible,
   Fungible,
+  Network,
 } from '../../../src/types';
 import { testingConfigData } from '../../constants';
 import { ConfigUrl } from '../../../src/constants';
@@ -79,11 +80,13 @@ describe('EVM asset transfer', () => {
       name: 'Sepolia',
       chainId: 11155111,
       id: 3,
+      type: Network.EVM,
     },
     from: {
       name: 'Mumbai',
       chainId: 80001,
       id: 2,
+      type: Network.EVM,
     },
     resource: {
       resourceId: '0x0000000000000000000000000000000000000000000000000000000000000300',
@@ -103,11 +106,13 @@ describe('EVM asset transfer', () => {
       name: 'Sepolia',
       chainId: 11155111,
       id: 3,
+      type: Network.EVM,
     },
     from: {
       name: 'Mumbai',
       chainId: 80001,
       id: 2,
+      type: Network.EVM,
     },
     resource: {
       resourceId: '0x0000000000000000000000000000000000000000000000000000000000000300',
