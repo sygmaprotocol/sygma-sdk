@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.4.0...sygma-sdk-core-v2.5.0) (2024-01-04)
+
+
+### Features
+
+* Add network type to domain object ([#321](https://github.com/sygmaprotocol/sygma-sdk/issues/321)) ([187dc78](https://github.com/sygmaprotocol/sygma-sdk/commit/187dc78f25419a2010416493be90ecc7a90b8083))
+
 ## [2.4.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.3.0...sygma-sdk-core-v2.4.0) (2023-11-13)
 
 
