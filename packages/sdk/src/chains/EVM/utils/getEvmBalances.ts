@@ -12,11 +12,11 @@ export const getEvmHandlerBalance = async (
     return BigInt((await provider.getBalance(handlerAddress)).toString());
   } else {
     const tokenAddress = resource.address;
-    return await getEvmErcBalance(handlerAddress, tokenAddress, provider);
+    return await getEvmErc20Balance(handlerAddress, tokenAddress, provider);
   }
 };
 
-export const getEvmErcBalance = async (
+export const getEvmErc20Balance = async (
   address: string,
   tokenAddress: string,
   provider: JsonRpcProvider,
