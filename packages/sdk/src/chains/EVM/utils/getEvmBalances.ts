@@ -7,7 +7,6 @@ export const getEvmHandlerBalance = async (
   resource: EvmResource,
   handlerAddress: string,
 ): Promise<bigint> => {
-  console.log('getEvmHandlerBalance', destinationProviderUrl, resource, handlerAddress)
   const provider = new JsonRpcProvider(destinationProviderUrl);
   if (resource.native) {
     return BigInt((await provider.getBalance(handlerAddress)).toString());
