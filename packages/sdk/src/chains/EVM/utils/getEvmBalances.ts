@@ -7,12 +7,21 @@ export const getEvmHandlerBalance = async (
   resource: EvmResource,
   handlerAddress: string,
 ): Promise<bigint> => {
+  console.log('getEvmHandlerBalance', destinationProviderUrl, resource, handlerAddress)
   const provider = new JsonRpcProvider(destinationProviderUrl);
   if (resource.native) {
     return BigInt((await provider.getBalance(handlerAddress)).toString());
   } else {
     const tokenAddress = resource.address;
-    const erc20Contract = ERC20__factory.connect(tokenAddress, provider);
-    return BigInt((await erc20Contract.balanceOf(handlerAddress)).toString());
+    return await getEvmErcBalance(handlerAddress, tokenAddress, provider);
   }
+};
+
+export const getEvmErcBalance = async (
+  address: string,
+  tokenAddress: string,
+  provider: JsonRpcProvider,
+): Promise<bigint> => {
+  const erc20Contract = ERC20__factory.connect(tokenAddress, provider);
+  return BigInt((await erc20Contract.balanceOf(address)).toString());
 };

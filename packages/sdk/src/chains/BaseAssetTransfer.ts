@@ -12,7 +12,7 @@ import {
 } from '../types';
 import { LiquidityError } from '../errors/customErrors';
 import { ParachainID } from './Substrate';
-import { getEvmHandlerBalance } from './EVM/utils/getEvmHandlerBalance';
+import { getEvmHandlerBalance } from './EVM/utils/getEvmBalances';
 import { getSubstrateHandlerBalance } from './Substrate/utils/getSubstrateHandlerBalance';
 
 export abstract class BaseAssetTransfer {
