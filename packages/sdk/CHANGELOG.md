@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.5.0...sygma-sdk-core-v2.6.0) (2024-01-16)
+
+
+### Features
+
+* small refactor to get balances on Evm context ([#324](https://github.com/sygmaprotocol/sygma-sdk/issues/324)) ([58a75a0](https://github.com/sygmaprotocol/sygma-sdk/commit/58a75a05aafd66b4e7a2e8ce07d418720e177cf6))
+
 ## [2.5.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.4.0...sygma-sdk-core-v2.5.0) (2024-01-04)
 
 
