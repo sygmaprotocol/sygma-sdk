@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.1](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.6.0...sygma-sdk-core-v2.6.1) (2024-01-23)
+
+
+### Bug Fixes
+
+* missing import extensions ([#327](https://github.com/sygmaprotocol/sygma-sdk/issues/327)) ([06358f0](https://github.com/sygmaprotocol/sygma-sdk/commit/06358f05fa16fe907e12896cff38f1c99c8b0deb))
+
 ## [2.6.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.5.0...sygma-sdk-core-v2.6.0) (2024-01-16)
 
 
