@@ -1,19 +1,18 @@
 import { constants } from 'ethers';
-import { Config } from '../config';
-import {
+import type { Config } from '../config.js';
+import type {
   Environment,
   EvmResource,
   Fungible,
-  Network,
-  ResourceType,
   SubstrateResource,
   Transfer,
   TransferType,
-} from '../types';
-import { LiquidityError } from '../errors/customErrors';
-import { ParachainID } from './Substrate';
-import { getEvmHandlerBalance } from './EVM/utils/getEvmBalances';
-import { getSubstrateHandlerBalance } from './Substrate/utils/getSubstrateHandlerBalance';
+} from '../types/index.js';
+import { Network, ResourceType } from '../types/index.js';
+import { LiquidityError } from '../errors/customErrors.js';
+import type { ParachainID } from './Substrate/index.js';
+import { getEvmHandlerBalance } from './EVM/utils/getEvmBalances.js';
+import { getSubstrateHandlerBalance } from './Substrate/utils/getSubstrateHandlerBalance.js';
 
 export abstract class BaseAssetTransfer {
   public config!: Config;

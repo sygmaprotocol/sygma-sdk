@@ -1,6 +1,10 @@
-require("@rushstack/eslint-patch/modern-module-resolution");
-
 module.exports = {
   root: true,
-  extends: "@chainsafe",
+  extends: [
+    "@chainsafe",
+    "plugin:require-extensions/recommended"
+  ],
+  plugins: [
+    "require-extensions"
+  ]
 }

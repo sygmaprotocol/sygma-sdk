@@ -1,5 +1,5 @@
-import { ParachainID, XcmMultiAssetIdType } from 'chains/Substrate/types';
-import { Network } from './config';
+import type { ParachainID, XcmMultiAssetIdType } from 'chains/Substrate/types';
+import type { Network } from './config.js';
 
 export type Domain = {
   id: number;

@@ -1,9 +1,10 @@
-import { ApiPromise } from '@polkadot/api';
+import type { ApiPromise } from '@polkadot/api';
 import { u128, Option } from '@polkadot/types';
 import { TypeRegistry } from '@polkadot/types/create';
 import { BN } from '@polkadot/util';
-import { FeeHandlerType } from '../../../types';
-import { XcmMultiAssetIdType, getBasicFee } from '../utils';
+import { FeeHandlerType } from '../../../types/index.js';
+import type { XcmMultiAssetIdType } from '../utils/index.js';
+import { getBasicFee } from '../utils/index.js';
 
 const registry = new TypeRegistry();
 

@@ -7,6 +7,7 @@ import {
 } from '../fee/dynamicFee.js';
 
 jest.mock('cross-fetch');
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 const { Response } = jest.requireActual<typeof import('cross-fetch')>('cross-fetch');
 
 jest.mock(
@@ -26,7 +27,7 @@ jest.mock(
           };
         },
       },
-    } as unknown),
+    }) as unknown,
 );
 
 const oracleResponse = {
@@ -60,7 +61,7 @@ describe('feeOracle', () => {
         toDomainID: 2,
         resourceID: '0x0000000000000000000000000000000000000000000000000000000000000300',
       });
-      expect(Object.keys(resp as Object)).toEqual(expectedKeys);
+      expect(Object.keys(resp as object)).toEqual(expectedKeys);
     });
 
     it('return undefined if server error', async () => {

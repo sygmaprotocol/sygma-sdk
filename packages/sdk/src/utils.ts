@@ -1,5 +1,6 @@
-import { IndexerUrl, ExplorerUrl } from './constants';
-import { Environment, TransferStatus, TransferStatusResponse } from './types';
+import { IndexerUrl, ExplorerUrl } from './constants.js';
+import type { TransferStatus, TransferStatusResponse } from './types/index.js';
+import { Environment } from './types/index.js';
 
 export const DEVNET_FEE_ORACLE_BASE_URL: string = 'https://fee-oracle.develop.buildwithsygma.com/';
 export const TESTNET_FEE_ORACLE_BASE_URL: string = 'https://fee-oracle.test.buildwithsygma.com/';

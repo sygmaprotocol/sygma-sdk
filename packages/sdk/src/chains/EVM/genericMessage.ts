@@ -1,24 +1,17 @@
-import { PopulatedTransaction, providers } from 'ethers';
+import type { PopulatedTransaction, providers } from 'ethers';
 
 import { Bridge__factory, FeeHandlerRouter__factory } from '@buildwithsygma/sygma-contracts';
 
-import { getFeeOracleBaseURL } from '../../utils';
-import {
-  Environment,
-  EthereumConfig,
-  FeeHandlerType,
-  GenericMessage,
-  ResourceType,
-  Transfer,
-  TransferType,
-} from '../../types';
+import { getFeeOracleBaseURL } from '../../utils.js';
+import type { EthereumConfig, GenericMessage, Transfer, TransferType } from '../../types/index.js';
+import { Environment, FeeHandlerType, ResourceType } from '../../types/index.js';
 
-import { Config } from '../../config';
+import { Config } from '../../config.js';
 
-import { EvmFee } from './types';
-import { calculateBasicfee, calculateDynamicFee } from './fee';
-import { createPermissionlessGenericDepositData } from './helpers';
-import { genericMessageTransfer } from './utils';
+import type { EvmFee } from './types/index.js';
+import { calculateBasicfee, calculateDynamicFee } from './fee/index.js';
+import { createPermissionlessGenericDepositData } from './helpers.js';
+import { genericMessageTransfer } from './utils/index.js';
 
 export class EVMGenericMessageTransfer {
   private provider!: providers.BaseProvider;

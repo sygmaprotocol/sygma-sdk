@@ -1,9 +1,9 @@
-import { ApiPromise } from '@polkadot/api';
+import type { ApiPromise } from '@polkadot/api';
 import type { AnyJson } from '@polkadot/types-codec/types';
 
 import { listenForEvent } from '../utils/index.js';
 
-type MockCB = (v: { event: { data: string | Object; method: string; section: string } }[]) => void;
+type MockCB = (v: { event: { data: string | object; method: string; section: string } }[]) => void;
 describe('listenForEvent', () => {
   let api: ApiPromise;
   let eventName: string;
@@ -16,7 +16,7 @@ describe('listenForEvent', () => {
   });
 
   it('should call the callback when the correct event is received', async () => {
-    const data = { testData: 'testData', toHuman: () => ({ testData: 'testData' } as AnyJson) };
+    const data = { testData: 'testData', toHuman: () => ({ testData: 'testData' }) as AnyJson };
 
     (api.query.system.events as unknown as jest.Mock).mockImplementationOnce((cb: MockCB) =>
       cb([{ event: { data, method: eventName, section: 'sygmaBridge' } }]),

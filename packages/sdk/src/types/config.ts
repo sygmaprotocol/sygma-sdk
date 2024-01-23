@@ -1,4 +1,4 @@
-import { FeeHandlerType, Resource, ResourceType } from './types';
+import type { FeeHandlerType, Resource, ResourceType } from './types.js';
 
 export enum Environment {
   LOCAL = 'local',
@@ -25,8 +25,8 @@ export interface BaseConfig<T> {
   bridge: string;
   nativeTokenSymbol: string;
   nativeTokenFullName: string;
-  nativeTokenDecimals: BigInt;
-  startBlock: BigInt;
+  nativeTokenDecimals: bigint;
+  startBlock: bigint;
   blockConfirmations: number;
   resources: Array<Resource>;
 }

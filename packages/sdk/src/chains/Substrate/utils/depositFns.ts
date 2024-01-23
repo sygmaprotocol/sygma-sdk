@@ -1,11 +1,11 @@
-import { ApiPromise, SubmittableResult } from '@polkadot/api';
+import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
 
 import { BN, numberToHex } from '@polkadot/util';
 import type { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
 
-import { Environment } from '../../../types';
-import { XcmMultiAssetIdType } from '../types';
+import { Environment } from '../../../types/index.js';
+import type { XcmMultiAssetIdType } from '../types/index.js';
 
 export type DepositEventDataType = {
   depositData: string;

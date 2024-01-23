@@ -1,5 +1,5 @@
-import { BigNumber, Event } from 'ethers';
-import { Bridge } from '@buildwithsygma/sygma-contracts';
+import type { BigNumber, Event } from 'ethers';
+import type { Bridge } from '@buildwithsygma/sygma-contracts';
 
 /**
  * @typedef {Object} Bridge

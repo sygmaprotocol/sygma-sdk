@@ -1,6 +1,6 @@
 import { ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { EvmResource } from 'types';
+import type { EvmResource } from 'types';
 
 export const getEvmHandlerBalance = async (
   destinationProviderUrl: string,

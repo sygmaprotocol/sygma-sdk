@@ -1,6 +1,6 @@
-import { ApiPromise } from '@polkadot/api';
+import type { ApiPromise } from '@polkadot/api';
 import type { AssetBalance } from '@polkadot/types/interfaces';
-import { Option } from '@polkadot/types';
+import type { Option } from '@polkadot/types';
 
 /**
  * Retrieves the asset balance of a given account.

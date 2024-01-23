@@ -1,5 +1,5 @@
-import { ApiPromise, SubmittableResult } from '@polkadot/api';
-import { DepositCallbacksType } from '../utils/depositFns.js';
+import type { ApiPromise, SubmittableResult } from '@polkadot/api';
+import type { DepositCallbacksType } from '../utils/depositFns.js';
 
 import * as Utils from '../utils/depositFns.js';
 

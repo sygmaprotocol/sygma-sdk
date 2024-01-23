@@ -1,6 +1,6 @@
-import { ApiPromise } from '@polkadot/api';
+import type { ApiPromise } from '@polkadot/api';
 import { TypeRegistry } from '@polkadot/types/create';
-import { Option } from '@polkadot/types';
+import type { Option } from '@polkadot/types';
 import type { AssetBalance } from '@polkadot/types/interfaces';
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 
