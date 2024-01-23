@@ -1,5 +1,5 @@
-import { BigNumber, PopulatedTransaction } from 'ethers';
-import { ERC20, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts';
+import type { BigNumber, PopulatedTransaction } from 'ethers';
+import type { ERC20, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts';
 
 /**
  * Determines whether the specified token is approved for the provided handler address.

@@ -1,29 +1,27 @@
-import { BigNumber, PopulatedTransaction, UnsignedTransaction, providers } from 'ethers';
+import type { PopulatedTransaction, UnsignedTransaction, providers } from 'ethers';
+import { BigNumber } from 'ethers';
 
+import type { ERC20, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts';
 import {
   Bridge__factory,
-  ERC20,
   ERC20__factory,
-  ERC721MinterBurnerPauser,
   ERC721MinterBurnerPauser__factory,
   FeeHandlerRouter__factory,
 } from '@buildwithsygma/sygma-contracts';
-import {
-  Environment,
+import type {
   EthereumConfig,
   EvmResource,
-  FeeHandlerType,
   Fungible,
   NonFungible,
-  ResourceType,
   Transfer,
   TransferType,
-} from '../../types';
-import { Config } from '../..';
-import { getFeeOracleBaseURL } from '../../utils';
-import { BaseAssetTransfer } from '../BaseAssetTransfer';
+} from '../../types/index.js';
+import { Environment, FeeHandlerType, ResourceType } from '../../types/index.js';
+import { Config } from '../../index.js';
+import { getFeeOracleBaseURL } from '../../utils.js';
+import { BaseAssetTransfer } from '../BaseAssetTransfer.js';
+import type { EvmFee } from './index.js';
 import {
-  EvmFee,
   approve,
   calculateBasicfee,
   calculateDynamicFee,
@@ -33,7 +31,7 @@ import {
   getERC20Allowance,
   getPercentageFee,
   isApproved,
-} from '.';
+} from './index.js';
 
 /**
  * Class used for sending ERC20 and ERC721 transfers from EVM based chains.

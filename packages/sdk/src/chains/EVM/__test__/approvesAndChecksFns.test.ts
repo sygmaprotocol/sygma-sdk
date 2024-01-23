@@ -1,5 +1,6 @@
-import { ERC721MinterBurnerPauser, ERC20 } from '@buildwithsygma/sygma-contracts';
-import { ethers, BigNumber } from 'ethers';
+import type { ERC721MinterBurnerPauser, ERC20 } from '@buildwithsygma/sygma-contracts';
+import type { ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 import { isApproved, getERC20Allowance, approve } from '../utils/approvesAndChecksFns.js';
 
 describe('getApproved Function Tests', () => {

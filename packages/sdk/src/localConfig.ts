@@ -1,4 +1,5 @@
-import { FeeHandlerType, Network, RawConfig, ResourceType } from './types';
+import type { RawConfig } from './types/index.js';
+import { FeeHandlerType, Network, ResourceType } from './types/index.js';
 
 export const localConfig: RawConfig = {
   domains: [

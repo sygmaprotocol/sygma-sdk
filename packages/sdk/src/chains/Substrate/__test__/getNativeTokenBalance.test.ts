@@ -1,4 +1,4 @@
-import { ApiPromise } from '@polkadot/api';
+import type { ApiPromise } from '@polkadot/api';
 import type { AccountInfoWithTripleRefCount } from '@polkadot/types/interfaces';
 import { TypeRegistry } from '@polkadot/types/create';
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';

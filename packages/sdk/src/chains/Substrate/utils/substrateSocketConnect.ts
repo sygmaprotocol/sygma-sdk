@@ -1,4 +1,4 @@
-import { DefinitionRpcExt } from '@polkadot/types/types';
+import type { DefinitionRpcExt } from '@polkadot/types/types';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 
 export type SubstrateSocketConnectionCallbacksType = {

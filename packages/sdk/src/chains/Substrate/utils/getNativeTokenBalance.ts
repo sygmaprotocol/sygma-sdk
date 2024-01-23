@@ -1,4 +1,4 @@
-import { ApiPromise } from '@polkadot/api';
+import type { ApiPromise } from '@polkadot/api';
 import type { AccountData, AccountInfo } from '@polkadot/types/interfaces';
 /**
  * Retrieves balance value in native tokens of the network

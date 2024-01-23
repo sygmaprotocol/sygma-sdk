@@ -1,7 +1,7 @@
-import { ApiPromise } from '@polkadot/api';
-import { Enum, Option } from '@polkadot/types';
-import { FeeHandlerType } from '../../../types';
-import { XcmMultiAssetIdType } from '../types';
+import type { ApiPromise } from '@polkadot/api';
+import type { Enum, Option } from '@polkadot/types';
+import { FeeHandlerType } from '../../../types/index.js';
+import type { XcmMultiAssetIdType } from '../types/index.js';
 /**
  * Retrieves the fee handler for a given domainId and asset.
  *

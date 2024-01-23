@@ -1,6 +1,6 @@
-import { AccountInfo } from '@polkadot/types/interfaces';
-import { BN } from '@polkadot/util';
-import { FeeHandlerType } from '../../../types';
+import type { AccountInfo } from '@polkadot/types/interfaces';
+import type { BN } from '@polkadot/util';
+import type { FeeHandlerType } from '../../../types/index.js';
 
 export type SygmaFeeHandlerRouterFeeHandlerType =
   | 'BasicFeeHandler'

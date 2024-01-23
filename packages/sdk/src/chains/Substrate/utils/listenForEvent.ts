@@ -1,4 +1,4 @@
-import { ApiPromise } from '@polkadot/api';
+import type { ApiPromise } from '@polkadot/api';
 import type { EventRecord } from '@polkadot/types/interfaces';
 import type { AnyJson } from '@polkadot/types-codec/types';
 

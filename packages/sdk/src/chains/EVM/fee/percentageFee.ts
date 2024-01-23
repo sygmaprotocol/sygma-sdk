@@ -1,7 +1,8 @@
 import { PercentageERC20FeeHandlerEVM__factory } from '@buildwithsygma/sygma-contracts';
-import { ethers, utils } from 'ethers';
-import { FeeHandlerType } from '../../../types';
-import { EvmFee } from '../types';
+import type { ethers } from 'ethers';
+import { utils } from 'ethers';
+import { FeeHandlerType } from '../../../types/index.js';
+import type { EvmFee } from '../types/index.js';
 
 /**
  * Calculates and returns the fee in native currency.

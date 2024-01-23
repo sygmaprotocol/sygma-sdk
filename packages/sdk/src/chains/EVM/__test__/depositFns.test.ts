@@ -1,13 +1,14 @@
-import { Bridge, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts';
-import {
+import type { Bridge, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts';
+import type {
   DepositEventFilter,
   DepositEvent,
 } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge';
 
-import { ethers, ContractReceipt, BigNumber, PopulatedTransaction } from 'ethers';
-import { FeeHandlerType } from '../../../types';
+import type { ethers, ContractReceipt, PopulatedTransaction } from 'ethers';
+import { BigNumber } from 'ethers';
+import { FeeHandlerType } from '../../../types/index.js';
 import * as EVM from '../utils/depositFns.js';
-import { EvmFee } from '../types/index.js';
+import type { EvmFee } from '../types/index.js';
 
 jest.mock('../helpers', () => {
   return {
@@ -31,7 +32,7 @@ jest.mock(
       ERC721MinterBurnerPauser__factory: {
         connect: jest.fn() as unknown as ERC721MinterBurnerPauser,
       },
-    } as unknown),
+    }) as unknown,
 );
 
 // Define a test suite

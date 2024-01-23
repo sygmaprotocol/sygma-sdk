@@ -1,8 +1,8 @@
 import { ApiPromise } from '@polkadot/api';
 import { WsProvider } from '@polkadot/rpc-provider';
-import { SubstrateResource } from 'types';
-import { getNativeTokenBalance } from './getNativeTokenBalance';
-import { getAssetBalance } from './getAssetBalance';
+import type { SubstrateResource } from 'types';
+import { getNativeTokenBalance } from './getNativeTokenBalance.js';
+import { getAssetBalance } from './getAssetBalance.js';
 
 export const getSubstrateHandlerBalance = async (
   destinationProviderUrl: string,

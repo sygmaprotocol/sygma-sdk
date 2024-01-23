@@ -2,9 +2,9 @@ import url from 'url';
 import { FeeHandlerRouter__factory } from '@buildwithsygma/sygma-contracts';
 import { ethers } from 'ethers';
 import fetch from 'cross-fetch';
-import { FeeHandlerType } from '../../../types';
-import { EvmFee, OracleResource } from '../types';
-import { toHex } from '../helpers';
+import { FeeHandlerType } from '../../../types/index.js';
+import type { EvmFee, OracleResource } from '../types/index.js';
+import { toHex } from '../helpers.js';
 
 type OracleResponse = {
   error?: string;

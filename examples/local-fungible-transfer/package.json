@@ -24,9 +24,6 @@
   "license": "LGPL-3.0-or-later",
   "devDependencies": {
     "eslint": "8",
-    "eslint-config-prettier": "8.3.0",
-    "eslint-plugin-only-warn": "1.0.3",
-    "eslint-plugin-prettier": "4.0.0",
     "ts-node": "10.9.1",
     "typescript": "5.0.4"
   },

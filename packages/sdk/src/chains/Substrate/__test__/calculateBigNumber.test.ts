@@ -1,4 +1,4 @@
-import { ApiPromise } from '@polkadot/api';
+import type { ApiPromise } from '@polkadot/api';
 import { BN } from '@polkadot/util';
 import { calculateBigNumber } from '../utils/index.js';
 

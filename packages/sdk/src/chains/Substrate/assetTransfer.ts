@@ -1,19 +1,13 @@
-import { ApiPromise, SubmittableResult } from '@polkadot/api';
-import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { U256 } from '@polkadot/types';
+import type { ApiPromise, SubmittableResult } from '@polkadot/api';
+import type { SubmittableExtrinsic } from '@polkadot/api/types';
+import type { U256 } from '@polkadot/types';
 import { BN } from '@polkadot/util';
-import {
-  Environment,
-  FeeHandlerType,
-  Fungible,
-  ResourceType,
-  SubstrateResource,
-  Transfer,
-  TransferType,
-} from '../../types';
-import { Config } from '../..';
-import { BaseAssetTransfer } from '../BaseAssetTransfer';
-import { SubstrateFee, deposit, getBasicFee, getFeeHandler, getPercentageFee } from '.';
+import type { Fungible, SubstrateResource, Transfer, TransferType } from '../../types/index.js';
+import { Environment, FeeHandlerType, ResourceType } from '../../types/index.js';
+import { Config } from '../../index.js';
+import { BaseAssetTransfer } from '../BaseAssetTransfer.js';
+import type { SubstrateFee } from './index.js';
+import { deposit, getBasicFee, getFeeHandler, getPercentageFee } from './index.js';
 
 /**
  * Class used for sending fungible and non-fungible transfers from Substrate based chains.

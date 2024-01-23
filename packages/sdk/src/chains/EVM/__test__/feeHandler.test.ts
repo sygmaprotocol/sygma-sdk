@@ -18,7 +18,7 @@ jest.mock(
           };
         },
       },
-    } as unknown),
+    }) as unknown,
 );
 
 describe('feeHandler', () => {

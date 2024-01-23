@@ -1,5 +1,5 @@
 import { FeeHandlerRouter__factory } from '@buildwithsygma/sygma-contracts';
-import { ethers } from 'ethers';
+import type { ethers } from 'ethers';
 
 /**
  * Retrieves the fee handler address for the given domain ID and resource ID from the FeeHandlerRouter contract.

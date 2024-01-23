@@ -1,8 +1,8 @@
 import { ApiPromise } from '@polkadot/api';
-import { XcmMultiAssetIdType } from '../types';
+import type { XcmMultiAssetIdType } from '../types/index.js';
 
-import * as Utils from '../utils/depositFns';
-import { Environment } from '../../../types';
+import * as Utils from '../utils/depositFns.js';
+import { Environment } from '../../../types/index.js';
 
 jest.mock('@polkadot/api');
 

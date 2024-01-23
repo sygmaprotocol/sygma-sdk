@@ -1,13 +1,13 @@
 import axios from 'axios';
-import { localConfig } from './localConfig';
-import {
-  Environment,
+import { localConfig } from './localConfig.js';
+import type {
   RawConfig,
   Domain,
   EthereumConfig,
   SubstrateConfig,
   Resource,
 } from './types/index.js';
+import { Environment } from './types/index.js';
 import { ConfigUrl } from './index.js';
 
 export class Config {

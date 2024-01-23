@@ -1,10 +1,11 @@
-import { BigNumber, ContractReceipt, PopulatedTransaction, ethers } from 'ethers';
-import { Bridge } from '@buildwithsygma/sygma-contracts';
-import { DepositEvent } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge.js';
+import type { ContractReceipt, PopulatedTransaction, ethers } from 'ethers';
+import { BigNumber } from 'ethers';
+import type { Bridge } from '@buildwithsygma/sygma-contracts';
+import type { DepositEvent } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge.js';
 
 import { createERCDepositData, createPermissionlessGenericDepositData } from '../helpers.js';
-import { Erc20TransferParamsType, Erc721TransferParamsType, EvmFee } from '../types/index.js';
-import { FeeHandlerType } from '../../../types';
+import type { Erc20TransferParamsType, Erc721TransferParamsType, EvmFee } from '../types/index.js';
+import { FeeHandlerType } from '../../../types/index.js';
 
 export const ASSET_TRANSFER_GAS_LIMIT: BigNumber = BigNumber.from(300000);
 
