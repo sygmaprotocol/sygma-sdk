@@ -1,6 +1,6 @@
 import { BasicFeeHandler__factory as BasicFeeHandler } from '@buildwithsygma/sygma-contracts';
 import type { ethers } from 'ethers';
-import { formatBytes32String } from 'ethers/lib/utils';
+import { utils } from 'ethers';
 import { FeeHandlerType } from '../../../types/index.js';
 import type { EvmFee } from '../types/index.js';
 
@@ -54,8 +54,8 @@ export const calculateBasicfee = async ({
     fromDomainID,
     toDomainID,
     resourceID,
-    formatBytes32String(''),
-    formatBytes32String(''),
+    utils.formatBytes32String(''),
+    utils.formatBytes32String(''),
   );
 
   const [fee] = calculatedFee;
