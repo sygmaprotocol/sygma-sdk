@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.6.2](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.6.1...sygma-sdk-core-v2.6.2) (2024-01-24)
+
+
+### Bug Fixes
+
+* ethers util import in basicFee ([#329](https://github.com/sygmaprotocol/sygma-sdk/issues/329)) ([304118b](https://github.com/sygmaprotocol/sygma-sdk/commit/304118b22be900f4ea3c72aa1eb802ee45755e6a))
+* small fix on import for basiFee file ([304118b](https://github.com/sygmaprotocol/sygma-sdk/commit/304118b22be900f4ea3c72aa1eb802ee45755e6a))
+
 ## [2.6.1](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.6.0...sygma-sdk-core-v2.6.1) (2024-01-23)
 
 
