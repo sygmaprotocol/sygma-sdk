@@ -50,6 +50,7 @@ export enum FeeHandlerType {
   DYNAMIC = 'oracle',
   BASIC = 'basic',
   PERCENTAGE = 'percentage',
+  UNDEFINED = 'undefined',
 }
 
 type AssetTransfer = {

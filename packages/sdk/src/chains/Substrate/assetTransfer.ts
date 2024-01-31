@@ -6,6 +6,7 @@ import type { Fungible, SubstrateResource, Transfer, TransferType } from '../../
 import { Environment, FeeHandlerType, ResourceType } from '../../types/index.js';
 import { Config } from '../../index.js';
 import { BaseAssetTransfer } from '../BaseAssetTransfer.js';
+import type { Resource } from '../../../types/index.js';
 import type { SubstrateFee } from './index.js';
 import { deposit, getBasicFee, getFeeHandler, getPercentageFee } from './index.js';
 
@@ -122,5 +123,17 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
           } with ${fee.fee.toString()} not supported by asset transfer`,
         );
     }
+  }
+
+  override async isRouteRegistered(
+    destinationDomainID: string,
+    resource: Resource,
+  ): Promise<boolean> {
+    const fh = await getFeeHandler(
+      this.apiPromise,
+      Number(destinationDomainID),
+      (resource as SubstrateResource).xcmMultiAssetId,
+    );
+    return fh != FeeHandlerType.UNDEFINED;
   }
 }

@@ -1,12 +1,13 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { ApiPromise } from '@polkadot/api';
+import type { ApiPromise } from '@polkadot/api';
 import { BN } from '@polkadot/util';
-import { FeeHandlerType, Environment, Transfer, Fungible, ResourceType, Network } from '../../../src/types';
-import { testingConfigData } from '../../constants';
-import { ConfigUrl } from '../../../src/constants';
-import { SubstrateAssetTransfer } from '../../../src/chains/Substrate';
-import * as Substrate from '../../../src/chains/Substrate';
+import type { Transfer, Fungible } from '../../../src/types/index.js';
+import { FeeHandlerType, Environment, ResourceType, Network } from '../../../src/types/index.js';
+import { testingConfigData } from '../../constants.js';
+import { ConfigUrl } from '../../../src/constants.js';
+import { SubstrateAssetTransfer } from '../../../src/chains/Substrate/index.js';
+import * as Substrate from '../../../src/chains/Substrate/index.js';
 
 const axiosMock = new MockAdapter(axios);
 
@@ -251,6 +252,37 @@ describe('Substrate asset transfer', () => {
       expect(() => assetTransfer.buildTransferTransaction(transfer, fee)).toThrowError(
         'Transfer amount should be higher than transfer fee',
       );
+    });
+  });
+
+  describe('getRegisteredResourcesTo', () => {
+    it('should throw error if source domain provided', async () => {
+      try {
+        await assetTransfer.getRegisteredResourcesTo('5');
+      } catch (e) {
+        expect(e).toEqual(new Error('Provided destination domain same as source domain'));
+      }
+    });
+
+    it('should return registered resources', async () => {
+      jest.spyOn(Substrate, 'getFeeHandler').mockResolvedValue(FeeHandlerType.BASIC);
+      const r = await assetTransfer.getRegisteredResourcesTo('0');
+      expect(r.length).toEqual(2);
+    });
+
+    it('should return only one registered resource', async () => {
+      jest
+        .spyOn(Substrate, 'getFeeHandler')
+        .mockResolvedValueOnce(FeeHandlerType.BASIC)
+        .mockResolvedValue(FeeHandlerType.UNDEFINED);
+      const r = await assetTransfer.getRegisteredResourcesTo('0');
+      expect(r.length).toEqual(1);
+    });
+
+    it('should return no resources', async () => {
+      jest.spyOn(Substrate, 'getFeeHandler').mockResolvedValue(FeeHandlerType.UNDEFINED);
+      const r = await assetTransfer.getRegisteredResourcesTo('0');
+      expect(r.length).toEqual(0);
     });
   });
 });

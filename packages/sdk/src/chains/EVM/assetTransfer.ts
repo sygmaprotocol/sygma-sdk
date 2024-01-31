@@ -1,5 +1,5 @@
 import type { PopulatedTransaction, UnsignedTransaction, providers } from 'ethers';
-import { BigNumber } from 'ethers';
+import { BigNumber, utils, constants } from 'ethers';
 
 import type { ERC20, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts';
 import {
@@ -17,9 +17,10 @@ import type {
   TransferType,
 } from '../../types/index.js';
 import { Environment, FeeHandlerType, ResourceType } from '../../types/index.js';
-import { Config } from '../../index.js';
+import { Config, getFeeHandlerAddress } from '../../index.js';
 import { getFeeOracleBaseURL } from '../../utils.js';
 import { BaseAssetTransfer } from '../BaseAssetTransfer.js';
+import type { Resource } from '../../../types/index.js';
 import type { EvmFee } from './index.js';
 import {
   approve,
@@ -251,6 +252,20 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
       default:
         throw new Error(`Resource type not supported by asset transfer`);
     }
+  }
+
+  override async isRouteRegistered(
+    destinationDomainID: string,
+    resource: Resource,
+  ): Promise<boolean> {
+    const registeredHandler = await getFeeHandlerAddress(
+      this.provider,
+      (this.config.getSourceDomainConfig() as EthereumConfig).feeRouter,
+      destinationDomainID,
+      resource.resourceId,
+    );
+    // route exists if registered fee handler is valid address
+    return utils.isAddress(registeredHandler) && registeredHandler != constants.AddressZero;
   }
 
   private async getERC20Approvals(

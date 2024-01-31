@@ -1,54 +1,48 @@
 import axios from 'axios';
-import { BigNumber, providers } from 'ethers';
+import type { providers } from 'ethers';
+import { BigNumber } from 'ethers';
 import MockAdapter from 'axios-mock-adapter';
 
-import {
-  Transfer,
-  ResourceType,
-  FeeHandlerType,
-  Environment,
-  NonFungible,
-  Fungible,
-  Network,
-} from '../../../src/types';
-import { testingConfigData } from '../../constants';
-import { ConfigUrl } from '../../../src/constants';
-import { EVMAssetTransfer } from '../../../src/chains/EVM';
-import * as EVM from '../../../src/chains/EVM';
-import { DEVNET_FEE_ORACLE_BASE_URL } from '../../../src/utils';
+import type { Transfer, NonFungible, Fungible } from '../../../src/types/index.js';
+import { ResourceType, FeeHandlerType, Environment, Network } from '../../../src/types/index.js';
+import { testingConfigData } from '../../constants.js';
+import { ConfigUrl } from '../../../src/constants.js';
+import { EVMAssetTransfer } from '../../../src/chains/EVM/index.js';
+import * as EVM from '../../../src/chains/EVM/index.js';
+import { DEVNET_FEE_ORACLE_BASE_URL } from '../../../src/utils.js';
 
 const feeHandlerAddressFunction = jest.fn();
 const resourceHandlerFunction = jest.fn();
 jest.mock(
   '@buildwithsygma/sygma-contracts',
   () =>
-  ({
-    ...jest.requireActual('@buildwithsygma/sygma-contracts'),
-    FeeHandlerRouter__factory: {
-      connect: () => {
-        return {
-          _domainResourceIDToFeeHandlerAddress: feeHandlerAddressFunction,
-        };
+    ({
+      ...jest.requireActual('@buildwithsygma/sygma-contracts'),
+      FeeHandlerRouter__factory: {
+        connect: () => {
+          return {
+            _domainResourceIDToFeeHandlerAddress: feeHandlerAddressFunction,
+          };
+        },
       },
-    },
-    ERC20__factory: {
-      connect: () => {
-        return {};
+      ERC20__factory: {
+        connect: () => {
+          return {};
+        },
       },
-    },
-    ERC721MinterBurnerPauser__factory: {
-      connect: () => {
-        return {};
+      ERC721MinterBurnerPauser__factory: {
+        connect: () => {
+          return {};
+        },
       },
-    },
-    Bridge__factory: {
-      connect: () => {
-        return {
-          _resourceIDToHandlerAddress: resourceHandlerFunction,
-        };
+      Bridge__factory: {
+        connect: () => {
+          return {
+            _resourceIDToHandlerAddress: resourceHandlerFunction,
+          };
+        },
       },
-    },
-  } as unknown),
+    }) as unknown,
 );
 const axiosMock = new MockAdapter(axios);
 const mockProvider: Partial<providers.Provider> = {
@@ -298,6 +292,39 @@ describe('EVM asset transfer', () => {
 
       expect(tx).toBeDefined();
       expect(erc721TransferMock).toBeCalled();
+    });
+  });
+
+  describe('getRegisteredResourcesTo', () => {
+    it('should throw error if source domain provided', async () => {
+      try {
+        await assetTransfer.getRegisteredResourcesTo('0');
+      } catch (e) {
+        expect(e).toEqual(new Error('Provided destination domain same as source domain'));
+      }
+    });
+
+    it('should return registered resources', async () => {
+      feeHandlerAddressFunction.mockResolvedValue('0x0000000000000000000000000000000000000001');
+
+      const r = await assetTransfer.getRegisteredResourcesTo('1');
+      expect(r.length).toEqual(4);
+    });
+
+    it('should return only one registered resource', async () => {
+      feeHandlerAddressFunction
+        .mockResolvedValue('0x0000000000000000000000000000000000000000')
+        .mockResolvedValueOnce('0x0000000000000000000000000000000000000001');
+
+      const r = await assetTransfer.getRegisteredResourcesTo('1');
+      expect(r.length).toEqual(1);
+    });
+
+    it('should return no resources', async () => {
+      feeHandlerAddressFunction.mockResolvedValue('0x0000000000000000000000000000000000000000');
+
+      const r = await assetTransfer.getRegisteredResourcesTo('1');
+      expect(r.length).toEqual(0);
     });
   });
 });

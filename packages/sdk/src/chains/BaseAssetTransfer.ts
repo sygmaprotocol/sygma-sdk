@@ -4,6 +4,7 @@ import type {
   Environment,
   EvmResource,
   Fungible,
+  Resource,
   SubstrateResource,
   Transfer,
   TransferType,
@@ -71,6 +72,21 @@ export abstract class BaseAssetTransfer {
 
     return transfer;
   }
+
+  public async getRegisteredResourcesTo(destinationDomainID: string): Promise<Resource[]> {
+    const registeredResources: Resource[] = [];
+    if (this.config.getSourceDomainConfig().id.toString() == destinationDomainID) {
+      throw new Error('Provided destination domain same as source domain');
+    }
+    for (const resource of this.config.getSourceDomainConfig().resources) {
+      if (await this.isRouteRegistered(destinationDomainID, resource)) {
+        registeredResources.push(resource);
+      }
+    }
+    return registeredResources;
+  }
+
+  abstract isRouteRegistered(destinationDomainID: string, resource: Resource): Promise<boolean>;
 
   /**
    * @param {Transfer} transfer Transfer to check
