@@ -264,7 +264,6 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
       destinationDomainID,
       resource.resourceId,
     );
-    // route exists if registered fee handler is valid address
     return utils.isAddress(registeredHandler) && registeredHandler != constants.AddressZero;
   }
 

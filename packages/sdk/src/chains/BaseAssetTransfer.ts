@@ -73,9 +73,14 @@ export abstract class BaseAssetTransfer {
     return transfer;
   }
 
+  /**
+   * Returns all registered resources between source domain of asset transfer and provided destination domain (on-chain check).
+   *
+   * @param {string} destinationDomainID - Destination domain ID
+   */
   public async getRegisteredResourcesTo(destinationDomainID: string): Promise<Resource[]> {
     const registeredResources: Resource[] = [];
-    if (this.config.getSourceDomainConfig().id.toString() == destinationDomainID) {
+    if (this.config.getSourceDomainConfig().id.toString() === destinationDomainID) {
       throw new Error('Provided destination domain same as source domain');
     }
     for (const resource of this.config.getSourceDomainConfig().resources) {
