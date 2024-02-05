@@ -294,37 +294,4 @@ describe('EVM asset transfer', () => {
       expect(erc721TransferMock).toBeCalled();
     });
   });
-
-  describe('getRegisteredResourcesTo', () => {
-    it('should throw error if source domain provided', async () => {
-      try {
-        await assetTransfer.getRegisteredResourcesTo('0');
-      } catch (e) {
-        expect(e).toEqual(new Error('Provided destination domain same as source domain'));
-      }
-    });
-
-    it('should return registered resources', async () => {
-      feeHandlerAddressFunction.mockResolvedValue('0x0000000000000000000000000000000000000001');
-
-      const r = await assetTransfer.getRegisteredResourcesTo('1');
-      expect(r.length).toEqual(4);
-    });
-
-    it('should return only one registered resource', async () => {
-      feeHandlerAddressFunction
-        .mockResolvedValue('0x0000000000000000000000000000000000000000')
-        .mockResolvedValueOnce('0x0000000000000000000000000000000000000001');
-
-      const r = await assetTransfer.getRegisteredResourcesTo('1');
-      expect(r.length).toEqual(1);
-    });
-
-    it('should return no resources', async () => {
-      feeHandlerAddressFunction.mockResolvedValue('0x0000000000000000000000000000000000000000');
-
-      const r = await assetTransfer.getRegisteredResourcesTo('1');
-      expect(r.length).toEqual(0);
-    });
-  });
 });

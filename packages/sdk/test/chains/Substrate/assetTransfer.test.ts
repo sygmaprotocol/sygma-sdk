@@ -254,35 +254,4 @@ describe('Substrate asset transfer', () => {
       );
     });
   });
-
-  describe('getRegisteredResourcesTo', () => {
-    it('should throw error if source domain provided', async () => {
-      try {
-        await assetTransfer.getRegisteredResourcesTo('5');
-      } catch (e) {
-        expect(e).toEqual(new Error('Provided destination domain same as source domain'));
-      }
-    });
-
-    it('should return registered resources', async () => {
-      jest.spyOn(Substrate, 'getFeeHandler').mockResolvedValue(FeeHandlerType.BASIC);
-      const r = await assetTransfer.getRegisteredResourcesTo('0');
-      expect(r.length).toEqual(2);
-    });
-
-    it('should return only one registered resource', async () => {
-      jest
-        .spyOn(Substrate, 'getFeeHandler')
-        .mockResolvedValueOnce(FeeHandlerType.BASIC)
-        .mockResolvedValue(FeeHandlerType.UNDEFINED);
-      const r = await assetTransfer.getRegisteredResourcesTo('0');
-      expect(r.length).toEqual(1);
-    });
-
-    it('should return no resources', async () => {
-      jest.spyOn(Substrate, 'getFeeHandler').mockResolvedValue(FeeHandlerType.UNDEFINED);
-      const r = await assetTransfer.getRegisteredResourcesTo('0');
-      expect(r.length).toEqual(0);
-    });
-  });
 });

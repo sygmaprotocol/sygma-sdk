@@ -129,11 +129,11 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
     destinationDomainID: string,
     resource: Resource,
   ): Promise<boolean> {
-    const fh = await getFeeHandler(
+    const feeHandler = await getFeeHandler(
       this.apiPromise,
       Number(destinationDomainID),
       (resource as SubstrateResource).xcmMultiAssetId,
     );
-    return fh != FeeHandlerType.UNDEFINED;
+    return feeHandler != FeeHandlerType.UNDEFINED;
   }
 }

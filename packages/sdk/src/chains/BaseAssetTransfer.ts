@@ -74,23 +74,11 @@ export abstract class BaseAssetTransfer {
   }
 
   /**
-   * Returns all registered resources between source domain of asset transfer and provided destination domain (on-chain check).
+   * Returns if route is registered for resource between source domain of asset transfer and provided destination domain (on-chain check).
    *
    * @param {string} destinationDomainID - Destination domain ID
+   * @param resource - Resource for which we want to check if route is opened
    */
-  public async getRegisteredResourcesTo(destinationDomainID: string): Promise<Resource[]> {
-    const registeredResources: Resource[] = [];
-    if (this.config.getSourceDomainConfig().id.toString() === destinationDomainID) {
-      throw new Error('Provided destination domain same as source domain');
-    }
-    for (const resource of this.config.getSourceDomainConfig().resources) {
-      if (await this.isRouteRegistered(destinationDomainID, resource)) {
-        registeredResources.push(resource);
-      }
-    }
-    return registeredResources;
-  }
-
   abstract isRouteRegistered(destinationDomainID: string, resource: Resource): Promise<boolean>;
 
   /**
