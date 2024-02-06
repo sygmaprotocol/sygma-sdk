@@ -467,11 +467,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@buildwithsygma/sygma-contracts@npm:2.5.1":
+  version: 2.5.1
+  resolution: "@buildwithsygma/sygma-contracts@npm:2.5.1"
+  dependencies:
+    "@openzeppelin/contracts": "npm:4.5.0"
+  peerDependencies:
+    ethers: ">= 5.0.0"
+  checksum: 015b25f91654a61395137ac0b04ffcf83e30f1e49fe206ee241508a93061b60604ac2a0b4f654d2bca0916bdc7bb4db10aa001852fabf4e3c612b8e03d28d947
+  languageName: node
+  linkType: hard
+
 "@buildwithsygma/sygma-sdk-core@workspace:*, @buildwithsygma/sygma-sdk-core@workspace:packages/sdk":
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-core@workspace:packages/sdk"
   dependencies:
-    "@buildwithsygma/sygma-contracts": "npm:2.4.1"
+    "@buildwithsygma/sygma-contracts": "npm:2.5.1"
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/bytes": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
@@ -2501,6 +2512,13 @@ __metadata:
   dependencies:
     semver: "npm:^7.3.5"
   checksum: 162b4a0b8705cd6f5c2470b851d1dc6cd228c86d2170e1769d738c1fbb69a87160901411c3c035331e9e99db72f1f1099a8b734bf1637cc32b9a5be1660e4e1e
+  languageName: node
+  linkType: hard
+
+"@openzeppelin/contracts@npm:4.5.0":
+  version: 4.5.0
+  resolution: "@openzeppelin/contracts@npm:4.5.0"
+  checksum: b2aeb1fe6fd2a9151657199b9d17c66e87a16836d27d220b0522cefcdba695214e580a208d351a2c77172e6cfa9f2e48a7675855cdc5b535f9ef5df76dcbcf02
   languageName: node
   linkType: hard
 
