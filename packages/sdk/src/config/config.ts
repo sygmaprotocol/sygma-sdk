@@ -1,14 +1,14 @@
 import axios from 'axios';
-import { localConfig } from './localConfig.js';
 import type {
   RawConfig,
   Domain,
   EthereumConfig,
   SubstrateConfig,
   Resource,
-} from './types/index.js';
-import { Environment } from './types/index.js';
-import { ConfigUrl } from './index.js';
+} from '../types/index.js';
+import { Environment } from '../types/index.js';
+import { ConfigUrl } from '../index.js';
+import { localConfig } from './localConfig.js';
 
 export class Config {
   public chainId!: number;
