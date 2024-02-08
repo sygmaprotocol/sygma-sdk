@@ -6,7 +6,7 @@ import { getFeeOracleBaseURL } from '../../utils.js';
 import type { EthereumConfig, GenericMessage, Transfer, TransferType } from '../../types/index.js';
 import { Environment, FeeHandlerType, ResourceType } from '../../types/index.js';
 
-import { Config } from '../../config.js';
+import { Config } from '../../config/config.js';
 
 import type { EvmFee } from './types/index.js';
 import { calculateBasicfee, calculateDynamicFee } from './fee/index.js';

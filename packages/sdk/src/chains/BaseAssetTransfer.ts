@@ -1,5 +1,5 @@
 import { constants } from 'ethers';
-import type { Config } from '../config.js';
+import type { Config } from '../config/config.js';
 import type {
   Environment,
   EvmResource,

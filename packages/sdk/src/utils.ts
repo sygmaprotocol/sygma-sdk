@@ -1,4 +1,4 @@
-import { IndexerUrl, ExplorerUrl } from './constants.js';
+import {IndexerUrl, ExplorerUrl, EnvironmentMetadata, DomainMetadataConfig} from './constants.js';
 import type { TransferStatus, TransferStatusResponse } from './types/index.js';
 import { Environment } from './types/index.js';
 
@@ -49,4 +49,32 @@ export async function getTransferStatusData(
     status: data.status,
     explorerUrl,
   };
+}
+
+/**
+ * Retrieves the environment metadata
+ *
+ * This function accepts an environment from the `Environment` enum as its parameter and returns the corresponding environment metadata.
+ * If the specified environment does not have associated metadata in `EnvironmentMetadataConfig`, the function throws an error.
+ *
+ * @param environment - The environment key from the `Environment` enum.
+ *
+ * @returns {EnvironmentMetadata} An object mapping domain IDs to {DomainMetadata}.
+ *
+ * @throws {Error} Throws an error if the environment does not have defined metadata.
+ *
+ * @example
+ * try {
+ *   // Get domain metadata for the MAINNET environment and fetch the URL for domain ID 2
+ *   const domainID = 1;
+ *   const metadata = getDomainMetadata(Environment.MAINNET);
+ *   console.log(`URL for domain ID 1 in MAINNET: ${metadata[domainID].url}`);
+ * } catch (error) {
+ *   console.error(error.message);
+ * }
+ */
+export function getEnvironmentMetadata(environment: Environment): EnvironmentMetadata {
+  const domainMetadata = DomainMetadataConfig[environment];
+  if (!domainMetadata) throw new Error('Provided environment does not have defined metadata');
+  return domainMetadata;
 }
