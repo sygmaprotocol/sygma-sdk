@@ -238,9 +238,10 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
     destinationDomainID: string,
     resource: Resource,
   ): Promise<boolean> {
+    const config = this.config.getSourceDomainConfig() as EthereumConfig;
     const registeredHandler = await getFeeHandlerAddress(
       this.provider,
-      (this.config.getSourceDomainConfig() as EthereumConfig).feeRouter,
+      config.feeRouter,
       destinationDomainID,
       resource.resourceId,
     );
