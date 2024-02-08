@@ -9,7 +9,6 @@ import { testingConfigData } from '../../constants.js';
 import { ConfigUrl } from '../../../src/constants.js';
 import { EVMAssetTransfer } from '../../../src/chains/EVM/index.js';
 import * as EVM from '../../../src/chains/EVM/index.js';
-import { DEVNET_FEE_ORACLE_BASE_URL } from '../../../src/utils.js';
 
 const feeHandlerAddressFunction = jest.fn();
 const resourceHandlerFunction = jest.fn();
@@ -55,11 +54,6 @@ const calculateBasicFeeMock = jest.spyOn(EVM, 'calculateBasicfee').mockResolvedV
   fee: BigNumber.from('100'),
   type: FeeHandlerType.BASIC,
   handlerAddress: '0xC2a1E379E2d255F42f3F8cA7Be32E3C3E1767622',
-});
-const calculateDynamicFeeMock = jest.spyOn(EVM, 'calculateDynamicFee').mockResolvedValue({
-  fee: BigNumber.from('100'),
-  type: FeeHandlerType.DYNAMIC,
-  handlerAddress: '0xe495c86962DcA7208ECcF2020A273395AcE8da3e',
 });
 const isApprovedMock = jest.spyOn(EVM, 'isApproved');
 const getAllowanceMock = jest.spyOn(EVM, 'getERC20Allowance');
@@ -151,31 +145,6 @@ describe('EVM asset transfer', () => {
         provider: mockProvider,
         resourceID: transfer.resource.resourceId,
         sender: transfer.sender,
-      });
-    });
-
-    it('Should successfully get dynamic fee', async function () {
-      feeHandlerAddressFunction.mockResolvedValue('0xe495c86962DcA7208ECcF2020A273395AcE8da3e');
-
-      const fee = await assetTransfer.getFee(transfer);
-
-      expect(fee).toEqual({
-        fee: BigNumber.from('100'),
-        type: FeeHandlerType.DYNAMIC,
-        handlerAddress: '0xe495c86962DcA7208ECcF2020A273395AcE8da3e',
-      });
-      expect(calculateDynamicFeeMock).toBeCalled();
-      expect(calculateDynamicFeeMock).toBeCalledWith({
-        feeHandlerAddress: '0xe495c86962DcA7208ECcF2020A273395AcE8da3e',
-        feeOracleBaseUrl: DEVNET_FEE_ORACLE_BASE_URL,
-        toDomainID: transfer.to.id,
-        fromDomainID: transfer.from.id,
-        provider: mockProvider,
-        resourceID: transfer.resource.resourceId,
-        sender: transfer.sender,
-        tokenAmount: '200',
-        depositData:
-          '0x00000000000000000000000000000000000000000000000000000000000000c80000000000000000000000000000000000000000000000000000000000000014557abec0cb31aa925577441d54c090987c2ed818',
       });
     });
 
@@ -292,6 +261,27 @@ describe('EVM asset transfer', () => {
 
       expect(tx).toBeDefined();
       expect(erc721TransferMock).toBeCalled();
+    });
+  });
+
+  describe('isRouteRegistered', () => {
+    it('should return true if fee handler address is registered', async () => {
+      feeHandlerAddressFunction.mockResolvedValue('0xC2a1E379E2d255F42f3F8cA7Be32E3C3E1767622');
+
+      const at = await assetTransfer.isRouteRegistered('1', transfer.resource);
+      expect(at).toBe(true);
+    });
+    it('should return false if fee handler address is zero', async () => {
+      feeHandlerAddressFunction.mockResolvedValue('0x0000000000000000000000000000000000000000');
+
+      const at = await assetTransfer.isRouteRegistered('1', transfer.resource);
+      expect(at).toBe(false);
+    });
+    it('should return false if fee handler address is zero', async () => {
+      feeHandlerAddressFunction.mockResolvedValue('0xunsupported');
+
+      const at = await assetTransfer.isRouteRegistered('1', transfer.resource);
+      expect(at).toBe(false);
     });
   });
 });

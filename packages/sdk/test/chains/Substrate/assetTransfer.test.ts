@@ -254,4 +254,40 @@ describe('Substrate asset transfer', () => {
       );
     });
   });
+
+  describe('isRouteRegistered', () => {
+    let transfer: Transfer<Fungible>;
+
+    beforeAll(async () => {
+      transfer = await assetTransfer.createFungibleTransfer(
+        '5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS',
+        11155111,
+        '0x557abEc0cb31Aa925577441d54C090987c2ED818',
+        '0x0000000000000000000000000000000000000000000000000000000000001000',
+        '200',
+        1001,
+      );
+    });
+
+    it('should return true if fee handler address is basic', async () => {
+      jest.spyOn(Substrate, 'getFeeHandler').mockResolvedValueOnce(FeeHandlerType.BASIC);
+
+      const at = await assetTransfer.isRouteRegistered('1', transfer.resource);
+      expect(at).toBe(true);
+    });
+
+    it('should return true if fee handler address is percentage', async () => {
+      jest.spyOn(Substrate, 'getFeeHandler').mockResolvedValueOnce(FeeHandlerType.PERCENTAGE);
+
+      const at = await assetTransfer.isRouteRegistered('1', transfer.resource);
+      expect(at).toBe(true);
+    });
+
+    it('should return true if fee handler address is basic', async () => {
+      jest.spyOn(Substrate, 'getFeeHandler').mockResolvedValueOnce(FeeHandlerType.UNDEFINED);
+
+      const at = await assetTransfer.isRouteRegistered('1', transfer.resource);
+      expect(at).toBe(false);
+    });
+  });
 });
