@@ -18,14 +18,12 @@ import type {
 } from '../../types/index.js';
 import { Environment, FeeHandlerType, ResourceType } from '../../types/index.js';
 import { Config, getFeeHandlerAddress } from '../../index.js';
-import { getFeeOracleBaseURL } from '../../utils.js';
 import { BaseAssetTransfer } from '../BaseAssetTransfer.js';
 import type { Resource } from '../../../types/index.js';
 import type { EvmFee } from './index.js';
 import {
   approve,
   calculateBasicfee,
-  calculateDynamicFee,
   createERCDepositData,
   erc20Transfer,
   erc721Transfer,
@@ -109,24 +107,6 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
           toDomainID: transfer.to.id,
           resourceID: transfer.resource.resourceId,
           sender: transfer.sender,
-        });
-      }
-      case FeeHandlerType.DYNAMIC: {
-        const fungibleTransfer = transfer as Transfer<Fungible>;
-        return await calculateDynamicFee({
-          provider: this.provider,
-          sender: transfer.sender,
-          fromDomainID: Number(transfer.from.id),
-          toDomainID: Number(transfer.to.id),
-          resourceID: transfer.resource.resourceId,
-          tokenAmount: fungibleTransfer.details.amount,
-          feeOracleBaseUrl: getFeeOracleBaseURL(this.environment),
-          feeHandlerAddress: feeHandlerAddress,
-          depositData: createERCDepositData(
-            fungibleTransfer.details.amount,
-            fungibleTransfer.details.recipient,
-            fungibleTransfer.details.parachainId,
-          ),
         });
       }
       case FeeHandlerType.PERCENTAGE: {

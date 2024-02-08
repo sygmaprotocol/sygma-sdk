@@ -2,15 +2,13 @@ import type { PopulatedTransaction, providers } from 'ethers';
 
 import { Bridge__factory, FeeHandlerRouter__factory } from '@buildwithsygma/sygma-contracts';
 
-import { getFeeOracleBaseURL } from '../../utils.js';
 import type { EthereumConfig, GenericMessage, Transfer, TransferType } from '../../types/index.js';
 import { Environment, FeeHandlerType, ResourceType } from '../../types/index.js';
 
 import { Config } from '../../config.js';
 
 import type { EvmFee } from './types/index.js';
-import { calculateBasicfee, calculateDynamicFee } from './fee/index.js';
-import { createPermissionlessGenericDepositData } from './helpers.js';
+import { calculateBasicfee } from './fee/index.js';
 import { genericMessageTransfer } from './utils/index.js';
 
 export class EVMGenericMessageTransfer {
@@ -57,27 +55,6 @@ export class EVMGenericMessageTransfer {
           toDomainID: transfer.to.id,
           resourceID: transfer.resource.resourceId,
           sender: transfer.sender,
-        });
-      }
-      case FeeHandlerType.DYNAMIC: {
-        const genericTransfer = transfer as Transfer<GenericMessage>;
-        return await calculateDynamicFee({
-          provider: this.provider,
-          sender: transfer.sender,
-          fromDomainID: Number(transfer.from.id),
-          toDomainID: Number(transfer.to.id),
-          resourceID: transfer.resource.resourceId,
-          feeOracleBaseUrl: getFeeOracleBaseURL(this.environment),
-          feeHandlerAddress: feeHandlerAddress,
-          depositData: createPermissionlessGenericDepositData(
-            genericTransfer.details.destinationFunctionSignature,
-            genericTransfer.details.destinationContractAddress,
-            genericTransfer.details.maxFee,
-            transfer.sender,
-            genericTransfer.details.executionData,
-          ),
-          tokenAmount: genericTransfer.details.tokenAmount,
-          maxFee: genericTransfer.details.maxFee,
         });
       }
       default:
