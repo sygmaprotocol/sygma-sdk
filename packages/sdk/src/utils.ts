@@ -63,15 +63,6 @@ export async function getTransferStatusData(
  *
  * @throws {Error} Throws an error if the environment does not have defined metadata.
  *
- * @example
- * try {
- *   // Get domain metadata for the MAINNET environment and fetch the URL for domain ID 2
- *   const domainID = 1;
- *   const metadata = getDomainMetadata(Environment.MAINNET);
- *   console.log(`URL for domain ID 1 in MAINNET: ${metadata[domainID].url}`);
- * } catch (error) {
- *   console.error(error.message);
- * }
  */
 export function getEnvironmentMetadata(environment: Environment): EnvironmentMetadata {
   const domainMetadata = DomainMetadataConfig[environment];
