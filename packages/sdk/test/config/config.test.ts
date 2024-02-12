@@ -1,7 +1,7 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { Environment } from '../../src/types/config.js';
-import { Config } from '../../src/config/config';
+import { Config } from '../../src/config/config.js';
 import { testingConfigData } from '../constants.js';
 import { ConfigUrl } from '../../src/constants.js';
 
