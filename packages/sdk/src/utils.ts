@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Config } from './config/config.js';
 import { ExplorerUrl, IndexerUrl } from './constants.js';
 import type {
   EnvironmentMetadata,
@@ -9,6 +8,7 @@ import type {
   TransferStatusResponse,
 } from './types/index.js';
 import { Environment } from './types/index.js';
+import { Config } from './index.js';
 
 export const DEVNET_FEE_ORACLE_BASE_URL: string = 'https://fee-oracle.develop.buildwithsygma.com/';
 export const TESTNET_FEE_ORACLE_BASE_URL: string = 'https://fee-oracle.test.buildwithsygma.com/';
