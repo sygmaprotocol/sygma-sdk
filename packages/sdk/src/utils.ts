@@ -62,10 +62,22 @@ export function getEnvironmentMetadata(environment: Environment): EnvironmentMet
   return domainMetadata;
 }
 
+/**
+ * Fetches route information based on the source chain ID and resource type.
+ *
+ * This function queries the configured indexer URL based on the specified environment (TESTNET or MAINNET)
+ * to retrieve route data.
+ *
+ * @param {Environment} environment - The Sygma environment to use (TESTNET or MAINNET).
+ * @param {number} sourceChainId - The ID of the source chain from which routes are being fetched.
+ * @param {'fungible' | 'gmp' | 'all'} type - The type of the resource for which routes are being fetched. Can be 'fungible', 'gmp', or 'all'.
+ * @returns {Promise<Route[]>} A promise that resolves to an array of Route objects, each representing a route from the source domain to a target domain for a specific resource.
+ * @throws {Error} Throws an error if an invalid environment is specified, if there's a network or server issue during the fetch operation, or if the fetched data cannot be processed correctly.
+ */
 export async function getRoutes(
   environment: Environment,
   sourceChainId: number,
-  type: string,
+  type: 'fungible' | 'gmp' | 'all',
 ): Promise<Route[]> {
   let indexerUrl: string;
   if (environment === Environment.TESTNET) {
@@ -82,7 +94,14 @@ export async function getRoutes(
 
   try {
     const response = await axios.get<{ routes: RouteIndexerType[] }>(url);
-    return response.data.routes.map(value => mapToRoute(value, config));
+    return response.data.routes.map(route => {
+      const resource = config.getDomainResources().find(r => r.resourceId === route.resourceId)!;
+      return {
+        fromDomain: config.getSourceDomainConfig(),
+        toDomain: config.getDomainConfig(Number(route.toDomainId)),
+        resource: resource,
+      };
+    });
   } catch (err) {
     if (err instanceof Error) {
       throw new Error(`Failed to fetch shared config because of: ${err.message}`);
@@ -90,13 +109,4 @@ export async function getRoutes(
       throw new Error('Something went wrong while fetching config file');
     }
   }
-}
-
-function mapToRoute(route: RouteIndexerType, config: Config): Route {
-  const resource = config.getDomainResources().find(r => r.resourceId === route.resourceId)!;
-  return {
-    fromDomain: config.getSourceDomainConfig(),
-    toDomain: config.getDomainConfig(Number(route.toDomainId)),
-    resource: resource,
-  };
 }
