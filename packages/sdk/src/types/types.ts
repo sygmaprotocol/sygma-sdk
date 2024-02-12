@@ -92,3 +92,16 @@ export type TransferStatusResponse = {
   status: TransferStatus;
   explorerUrl: string;
 };
+
+export type RouteIndexerType = {
+  fromDomainId: string;
+  toDomainId: string;
+  resourceId: string;
+  type: string;
+};
+
+export type Route = {
+  fromDomain: Domain;
+  toDomain: Domain;
+  resource: Resource;
+};
