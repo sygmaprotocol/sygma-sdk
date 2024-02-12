@@ -99,6 +99,15 @@ export type RouteIndexerType = {
   type: string;
 };
 
+export type DomainMetadata = {
+  url: string; // icon url
+};
+
+export type EnvironmentMetadata = {
+  // domainID -> DomainMetadata
+  [key: number]: DomainMetadata;
+};
+
 export type Route = {
   fromDomain: Domain;
   toDomain: Domain;

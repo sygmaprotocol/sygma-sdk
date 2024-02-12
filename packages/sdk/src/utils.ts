@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { Config } from '../types/index.js';
-import type { EnvironmentMetadata } from './constants.js';
-import { DomainMetadataConfig, ExplorerUrl, IndexerUrl } from './constants.js';
+import { ExplorerUrl, IndexerUrl } from './constants.js';
 import type {
+  EnvironmentMetadata,
   Route,
   RouteIndexerType,
   TransferStatus,
@@ -72,10 +72,20 @@ export async function getTransferStatusData(
  * @throws {Error} Throws an error if the environment does not have defined metadata.
  *
  */
-export function getEnvironmentMetadata(environment: Environment): EnvironmentMetadata {
-  const domainMetadata = DomainMetadataConfig[environment];
-  if (!domainMetadata) throw new Error('Provided environment does not have defined metadata');
-  return domainMetadata;
+export async function getEnvironmentMetadata(
+  environment: Environment,
+): Promise<EnvironmentMetadata> {
+  try {
+    const url = `${getIndexerURL(environment)}/api/domains/metadata`;
+    const response = await axios.get<EnvironmentMetadata>(url);
+    return response.data;
+  } catch (err) {
+    if (err instanceof Error) {
+      throw new Error(`Failed to fetch env metadata because of: ${err.message}`);
+    } else {
+      throw new Error('Something went wrong while fetching env metadata');
+    }
+  }
 }
 
 /**
@@ -95,20 +105,13 @@ export async function getRoutes(
   sourceChainId: number,
   type: 'fungible' | 'gmp' | 'all',
 ): Promise<Route[]> {
-  let indexerUrl: string;
-  if (environment === Environment.TESTNET) {
-    indexerUrl = IndexerUrl.TESTNET;
-  } else if (environment === Environment.MAINNET) {
-    indexerUrl = IndexerUrl.MAINNET;
-  } else {
-    throw new Error('Invalid environment');
-  }
-
-  const config = new Config();
-  await config.init(sourceChainId, environment);
-  const url = `${indexerUrl}/api/routes/from/${config.getSourceDomainConfig().id}?resourceType=${type}`;
-
   try {
+    const config = new Config();
+    await config.init(sourceChainId, environment);
+
+    const indexerUrl = getIndexerURL(environment);
+    const url = `${indexerUrl}/api/routes/from/${config.getSourceDomainConfig().id}?resourceType=${type}`;
+
     const response = await axios.get<{ routes: RouteIndexerType[] }>(url);
     return response.data.routes.map(route => {
       const resource = config.getDomainResources().find(r => r.resourceId === route.resourceId)!;
@@ -124,5 +127,15 @@ export async function getRoutes(
     } else {
       throw new Error('Something went wrong while fetching config file');
     }
+  }
+}
+
+function getIndexerURL(environment: Environment): string {
+  if (environment === Environment.TESTNET) {
+    return IndexerUrl.TESTNET;
+  } else if (environment === Environment.MAINNET) {
+    return IndexerUrl.MAINNET;
+  } else {
+    throw new Error('Invalid environment');
   }
 }
