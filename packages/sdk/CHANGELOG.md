@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.3](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.6.2...sygma-sdk-core-v2.6.3) (2024-02-06)
+
+
+### Bug Fixes
+
+* update sygma contracts dep ([#336](https://github.com/sygmaprotocol/sygma-sdk/issues/336)) ([104ad7b](https://github.com/sygmaprotocol/sygma-sdk/commit/104ad7b10e800737ea18d2294c1334dbc755e74e))
+
 ## [2.6.2](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.6.1...sygma-sdk-core-v2.6.2) (2024-01-24)
 
 
