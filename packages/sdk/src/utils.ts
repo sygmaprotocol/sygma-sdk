@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Config } from '../types/index.js';
+import { Config } from './config/config.js';
 import { ExplorerUrl, IndexerUrl } from './constants.js';
 import type {
   EnvironmentMetadata,
