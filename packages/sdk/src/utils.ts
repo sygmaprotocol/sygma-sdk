@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Config } from './config/config.js';
 import { ExplorerUrl, IndexerUrl } from './constants.js';
 import type {
   EnvironmentMetadata,
@@ -9,6 +8,7 @@ import type {
   TransferStatusResponse,
 } from './types/index.js';
 import { Environment } from './types/index.js';
+import { Config } from './index.js';
 
 /**
  * @@description Get the status of a transfer using transaction hash and optionally domain id
