@@ -283,7 +283,7 @@ describe('Substrate asset transfer', () => {
       expect(at).toBe(true);
     });
 
-    it('should return true if fee handler address is basic', async () => {
+    it('should return false if fee handler address is not defined', async () => {
       jest.spyOn(Substrate, 'getFeeHandler').mockResolvedValueOnce(FeeHandlerType.UNDEFINED);
 
       const at = await assetTransfer.isRouteRegistered('1', transfer.resource);
