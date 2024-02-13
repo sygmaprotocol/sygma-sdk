@@ -13,13 +13,13 @@ import type {
   EvmResource,
   Fungible,
   NonFungible,
+  Resource,
   Transfer,
   TransferType,
 } from '../../types/index.js';
 import { Environment, FeeHandlerType, ResourceType } from '../../types/index.js';
 import { Config, getFeeHandlerAddress } from '../../index.js';
 import { BaseAssetTransfer } from '../BaseAssetTransfer.js';
-import type { Resource } from '../../../types/index.js';
 import type { EvmFee } from './index.js';
 import {
   approve,
