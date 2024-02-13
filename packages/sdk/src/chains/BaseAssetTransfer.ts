@@ -4,6 +4,7 @@ import type {
   Environment,
   EvmResource,
   Fungible,
+  Resource,
   SubstrateResource,
   Transfer,
   TransferType,
@@ -71,6 +72,14 @@ export abstract class BaseAssetTransfer {
 
     return transfer;
   }
+
+  /**
+   * Returns if route is registered for resource between source domain of asset transfer and provided destination domain (on-chain check).
+   *
+   * @param {string} destinationDomainID - Destination domain ID
+   * @param resource - Resource for which we want to check if route is opened
+   */
+  abstract isRouteRegistered(destinationDomainID: string, resource: Resource): Promise<boolean>;
 
   /**
    * @param {Transfer} transfer Transfer to check

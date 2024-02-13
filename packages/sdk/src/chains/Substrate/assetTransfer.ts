@@ -2,7 +2,13 @@ import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { U256 } from '@polkadot/types';
 import { BN } from '@polkadot/util';
-import type { Fungible, SubstrateResource, Transfer, TransferType } from '../../types/index.js';
+import type {
+  Fungible,
+  SubstrateResource,
+  Transfer,
+  TransferType,
+  Resource,
+} from '../../types/index.js';
 import { Environment, FeeHandlerType, ResourceType } from '../../types/index.js';
 import { Config } from '../../index.js';
 import { BaseAssetTransfer } from '../BaseAssetTransfer.js';
@@ -122,5 +128,17 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
           } with ${fee.fee.toString()} not supported by asset transfer`,
         );
     }
+  }
+
+  override async isRouteRegistered(
+    destinationDomainID: string,
+    resource: Resource,
+  ): Promise<boolean> {
+    const feeHandler = await getFeeHandler(
+      this.apiPromise,
+      Number(destinationDomainID),
+      (resource as SubstrateResource).xcmMultiAssetId,
+    );
+    return feeHandler != FeeHandlerType.UNDEFINED;
   }
 }

@@ -26,7 +26,7 @@ import type { ethers } from 'ethers';
  * @returns {Promise<string>} A promise that resolves to the fee handler address.
  */
 export const getFeeHandlerAddress = async (
-  signerOrProvider: ethers.providers.JsonRpcProvider | ethers.Signer,
+  signerOrProvider: ethers.providers.BaseProvider,
   feeRouterAddress: string,
   domainId: string,
   resourceId: string,

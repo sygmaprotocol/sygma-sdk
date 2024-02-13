@@ -1,12 +1,13 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { ApiPromise } from '@polkadot/api';
+import type { ApiPromise } from '@polkadot/api';
 import { BN } from '@polkadot/util';
-import { FeeHandlerType, Environment, Transfer, Fungible, ResourceType, Network } from '../../../src/types';
-import { testingConfigData } from '../../constants';
-import { ConfigUrl } from '../../../src/constants';
-import { SubstrateAssetTransfer } from '../../../src/chains/Substrate';
-import * as Substrate from '../../../src/chains/Substrate';
+import type { Transfer, Fungible } from '../../../src/types/index.js';
+import { FeeHandlerType, Environment, ResourceType, Network } from '../../../src/types/index.js';
+import { testingConfigData } from '../../constants.js';
+import { ConfigUrl } from '../../../src/constants.js';
+import { SubstrateAssetTransfer } from '../../../src/chains/Substrate/index.js';
+import * as Substrate from '../../../src/chains/Substrate/index.js';
 
 const axiosMock = new MockAdapter(axios);
 
@@ -251,6 +252,42 @@ describe('Substrate asset transfer', () => {
       expect(() => assetTransfer.buildTransferTransaction(transfer, fee)).toThrowError(
         'Transfer amount should be higher than transfer fee',
       );
+    });
+  });
+
+  describe('isRouteRegistered', () => {
+    let transfer: Transfer<Fungible>;
+
+    beforeAll(async () => {
+      transfer = await assetTransfer.createFungibleTransfer(
+        '5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS',
+        11155111,
+        '0x557abEc0cb31Aa925577441d54C090987c2ED818',
+        '0x0000000000000000000000000000000000000000000000000000000000001000',
+        '200',
+        1001,
+      );
+    });
+
+    it('should return true if fee handler address is basic', async () => {
+      jest.spyOn(Substrate, 'getFeeHandler').mockResolvedValueOnce(FeeHandlerType.BASIC);
+
+      const at = await assetTransfer.isRouteRegistered('1', transfer.resource);
+      expect(at).toBe(true);
+    });
+
+    it('should return true if fee handler address is percentage', async () => {
+      jest.spyOn(Substrate, 'getFeeHandler').mockResolvedValueOnce(FeeHandlerType.PERCENTAGE);
+
+      const at = await assetTransfer.isRouteRegistered('1', transfer.resource);
+      expect(at).toBe(true);
+    });
+
+    it('should return false if fee handler address is not defined', async () => {
+      jest.spyOn(Substrate, 'getFeeHandler').mockResolvedValueOnce(FeeHandlerType.UNDEFINED);
+
+      const at = await assetTransfer.isRouteRegistered('1', transfer.resource);
+      expect(at).toBe(false);
     });
   });
 });

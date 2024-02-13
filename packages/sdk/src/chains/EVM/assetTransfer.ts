@@ -1,5 +1,5 @@
 import type { PopulatedTransaction, UnsignedTransaction, providers } from 'ethers';
-import { BigNumber } from 'ethers';
+import { BigNumber, utils, constants } from 'ethers';
 
 import type { ERC20, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts';
 import {
@@ -13,18 +13,17 @@ import type {
   EvmResource,
   Fungible,
   NonFungible,
+  Resource,
   Transfer,
   TransferType,
 } from '../../types/index.js';
 import { Environment, FeeHandlerType, ResourceType } from '../../types/index.js';
-import { Config } from '../../index.js';
-import { getFeeOracleBaseURL } from '../../utils.js';
+import { Config, getFeeHandlerAddress } from '../../index.js';
 import { BaseAssetTransfer } from '../BaseAssetTransfer.js';
 import type { EvmFee } from './index.js';
 import {
   approve,
   calculateBasicfee,
-  calculateDynamicFee,
   createERCDepositData,
   erc20Transfer,
   erc721Transfer,
@@ -108,24 +107,6 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
           toDomainID: transfer.to.id,
           resourceID: transfer.resource.resourceId,
           sender: transfer.sender,
-        });
-      }
-      case FeeHandlerType.DYNAMIC: {
-        const fungibleTransfer = transfer as Transfer<Fungible>;
-        return await calculateDynamicFee({
-          provider: this.provider,
-          sender: transfer.sender,
-          fromDomainID: Number(transfer.from.id),
-          toDomainID: Number(transfer.to.id),
-          resourceID: transfer.resource.resourceId,
-          tokenAmount: fungibleTransfer.details.amount,
-          feeOracleBaseUrl: getFeeOracleBaseURL(this.environment),
-          feeHandlerAddress: feeHandlerAddress,
-          depositData: createERCDepositData(
-            fungibleTransfer.details.amount,
-            fungibleTransfer.details.recipient,
-            fungibleTransfer.details.parachainId,
-          ),
         });
       }
       case FeeHandlerType.PERCENTAGE: {
@@ -251,6 +232,20 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
       default:
         throw new Error(`Resource type not supported by asset transfer`);
     }
+  }
+
+  override async isRouteRegistered(
+    destinationDomainID: string,
+    resource: Resource,
+  ): Promise<boolean> {
+    const config = this.config.getSourceDomainConfig() as EthereumConfig;
+    const registeredHandler = await getFeeHandlerAddress(
+      this.provider,
+      config.feeRouter,
+      destinationDomainID,
+      resource.resourceId,
+    );
+    return utils.isAddress(registeredHandler) && registeredHandler != constants.AddressZero;
   }
 
   private async getERC20Approvals(
