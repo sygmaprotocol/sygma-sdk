@@ -1,5 +1,5 @@
 import type { PopulatedTransaction, UnsignedTransaction, providers } from 'ethers';
-import { BigNumber } from 'ethers';
+import { utils, constants, BigNumber } from 'ethers';
 
 import type { ERC20, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts';
 import {
@@ -95,9 +95,17 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
       transfer.to.id,
       transfer.resource.resourceId,
     );
+
+    if (!utils.isAddress(feeHandlerAddress) || feeHandlerAddress === constants.AddressZero) {
+      throw new Error(`Not able to get fee: route not registered on fee handler`);
+    }
+
     const feeHandlerConfig = domainConfig.feeHandlers.find(
       feeHandler => feeHandler.address == feeHandlerAddress,
     )!;
+    if (!feeHandlerConfig) {
+      throw new Error(`Not able to get fee: fee handler not registered on environment`);
+    }
 
     switch (feeHandlerConfig.type) {
       case FeeHandlerType.BASIC: {
@@ -145,7 +153,7 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
         });
       }
       default:
-        throw new Error(`Unsupported fee handler type`);
+        throw new Error(`Not able to get fee: unsupported fee handler type`);
     }
   }
 
