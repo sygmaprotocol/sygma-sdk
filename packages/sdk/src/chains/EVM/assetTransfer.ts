@@ -88,25 +88,8 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
    * @returns fee that needs to paid
    */
   public async getFee(transfer: Transfer<TransferType>): Promise<EvmFee> {
-    const domainConfig = this.config.getSourceDomainConfig() as EthereumConfig;
-    const feeRouter = FeeHandlerRouter__factory.connect(domainConfig.feeRouter, this.provider);
-    const feeHandlerAddress = await feeRouter._domainResourceIDToFeeHandlerAddress(
-      transfer.to.id,
-      transfer.resource.resourceId,
-    );
-
-    if (!utils.isAddress(feeHandlerAddress) || feeHandlerAddress === constants.AddressZero) {
-      throw new Error(`Not able to get fee: route not registered on fee handler`);
-    }
-
-    const feeHandlerConfig = domainConfig.feeHandlers.find(
-      feeHandler => feeHandler.address == feeHandlerAddress,
-    )!;
-    if (!feeHandlerConfig) {
-      throw new Error(`Not able to get fee: fee handler not registered on environment`);
-    }
-
-    switch (feeHandlerConfig.type) {
+    const { feeHandlerAddress, feeHandlerType } = await this.getFeeInformation(transfer);
+    switch (feeHandlerType) {
       case FeeHandlerType.BASIC: {
         return await calculateBasicfee({
           basicFeeHandlerAddress: feeHandlerAddress,
@@ -136,6 +119,22 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
       default:
         throw new Error(`Not able to get fee: unsupported fee handler type`);
     }
+  }
+
+  /**
+   * Check if provided transfer is valid.
+   *
+   * This means it checks if route for this transfer exists on chain
+   *
+   * @param transfer instance of transfer
+   */
+  public async isTransferValid(transfer: Transfer<TransferType>): Promise<boolean> {
+    try {
+      await this.getFeeInformation(transfer);
+    } catch (e) {
+      return false;
+    }
+    return true;
   }
 
   /**
@@ -254,6 +253,30 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
       resource.resourceId,
     );
     return utils.isAddress(registeredHandler) && registeredHandler != constants.AddressZero;
+  }
+
+  private async getFeeInformation(
+    transfer: Transfer<TransferType>,
+  ): Promise<{ feeHandlerAddress: string; feeHandlerType: FeeHandlerType }> {
+    const domainConfig = this.config.getSourceDomainConfig() as EthereumConfig;
+    const feeRouter = FeeHandlerRouter__factory.connect(domainConfig.feeRouter, this.provider);
+    const feeHandlerAddress = await feeRouter._domainResourceIDToFeeHandlerAddress(
+      transfer.to.id,
+      transfer.resource.resourceId,
+    );
+
+    if (!utils.isAddress(feeHandlerAddress) || feeHandlerAddress === constants.AddressZero) {
+      throw new Error(`Not able to get fee: route not registered on fee handler`);
+    }
+
+    const feeHandlerConfig = domainConfig.feeHandlers.find(
+      feeHandler => feeHandler.address == feeHandlerAddress,
+    )!;
+    if (!feeHandlerConfig) {
+      throw new Error(`Not able to get fee: fee handler not registered on environment`);
+    }
+
+    return { feeHandlerAddress: feeHandlerAddress, feeHandlerType: feeHandlerConfig.type };
   }
 
   private async getERC20Approvals(

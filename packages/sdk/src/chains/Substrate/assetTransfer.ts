@@ -88,6 +88,18 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
     }
   }
 
+  public async isValidTransfer(transfer: Transfer<TransferType>): Promise<boolean> {
+    const substrateResource = transfer.resource as SubstrateResource;
+    try {
+      await getFeeHandler(this.apiPromise, transfer.to.id, substrateResource.xcmMultiAssetId);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  private getFeeInformation(transfer: Transfer<TransferType>): {}
+
   /**
    * Builds an unsigned transfer transaction.
    *
