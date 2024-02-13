@@ -98,8 +98,6 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
     return true;
   }
 
-  private getFeeInformation(transfer: Transfer<TransferType>): {}
-
   /**
    * Builds an unsigned transfer transaction.
    *
