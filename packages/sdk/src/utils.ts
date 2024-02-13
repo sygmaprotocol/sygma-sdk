@@ -2,22 +2,6 @@ import { IndexerUrl, ExplorerUrl } from './constants.js';
 import type { TransferStatus, TransferStatusResponse } from './types/index.js';
 import { Environment } from './types/index.js';
 
-export const DEVNET_FEE_ORACLE_BASE_URL: string = 'https://fee-oracle.develop.buildwithsygma.com/';
-export const TESTNET_FEE_ORACLE_BASE_URL: string = 'https://fee-oracle.test.buildwithsygma.com/';
-export const MAINNET_FEE_ORACLE_BASE_URL: string = '';
-
-export function getFeeOracleBaseURL(environment?: Environment): string {
-  switch (environment) {
-    case Environment.DEVNET:
-      return DEVNET_FEE_ORACLE_BASE_URL;
-    case Environment.TESTNET:
-      return TESTNET_FEE_ORACLE_BASE_URL;
-    case Environment.MAINNET:
-    default:
-      return MAINNET_FEE_ORACLE_BASE_URL;
-  }
-}
-
 /**
  * @@description Get the status of a transfer using transaction hash and optionally domain id
  */
