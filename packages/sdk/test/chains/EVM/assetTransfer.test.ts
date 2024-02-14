@@ -156,7 +156,7 @@ describe('EVM asset transfer', () => {
         await assetTransfer.getFee(transfer);
         fail('error not thrown');
       } catch (e) {
-        expect(e).toEqual(new Error('Not able to get fee: route not registered on fee handler'));
+        expect(e).toEqual(new Error('Failed getting fee: route not registered on fee handler'));
       }
     });
   });
