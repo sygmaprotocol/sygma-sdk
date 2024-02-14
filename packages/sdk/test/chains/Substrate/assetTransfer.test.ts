@@ -1,15 +1,13 @@
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
+import { enableFetchMocks } from 'jest-fetch-mock';
 import type { ApiPromise } from '@polkadot/api';
 import { BN } from '@polkadot/util';
 import type { Transfer, Fungible } from '../../../src/types/index.js';
 import { FeeHandlerType, Environment, ResourceType, Network } from '../../../src/types/index.js';
 import { testingConfigData } from '../../constants.js';
-import { ConfigUrl } from '../../../src/constants.js';
 import { SubstrateAssetTransfer } from '../../../src/chains/Substrate/index.js';
 import * as Substrate from '../../../src/chains/Substrate/index.js';
 
-const axiosMock = new MockAdapter(axios);
+enableFetchMocks();
 
 const mockApiPromise = {
   consts: {
@@ -52,7 +50,9 @@ describe('Substrate asset transfer', () => {
   let assetTransfer: SubstrateAssetTransfer;
 
   beforeEach(async () => {
-    axiosMock.onGet(ConfigUrl.DEVNET).reply(200, testingConfigData);
+    fetchMock.resetMocks();
+    fetchMock.doMock();
+    fetchMock.mockResponse(JSON.stringify(testingConfigData));
     assetTransfer = new SubstrateAssetTransfer();
     await assetTransfer.init(mockApiPromise as ApiPromise, Environment.DEVNET);
   });

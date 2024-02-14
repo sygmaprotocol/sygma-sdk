@@ -1,14 +1,13 @@
-import axios from 'axios';
-import { localConfig } from './localConfig.js';
 import type {
-  RawConfig,
   Domain,
   EthereumConfig,
-  SubstrateConfig,
+  RawConfig,
   Resource,
-} from './types/index.js';
-import { Environment } from './types/index.js';
-import { ConfigUrl } from './index.js';
+  SubstrateConfig,
+} from '../types/index.js';
+import { Environment } from '../types/index.js';
+import { ConfigUrl } from '../index.js';
+import { localConfig } from './localConfig.js';
 
 export class Config {
   public chainId!: number;
@@ -36,8 +35,8 @@ export class Config {
     }
 
     try {
-      const response = await axios.get(configUrl);
-      this.environment = response.data as unknown as RawConfig;
+      const response = await fetch(configUrl);
+      this.environment = (await response.json()) as RawConfig;
     } catch (err) {
       if (err instanceof Error) {
         throw new Error(`Failed to fetch shared config because of: ${err.message}`);

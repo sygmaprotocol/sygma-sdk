@@ -12,4 +12,8 @@ module.exports = {
     '^.+\\.(ts|tsx)?$': ['ts-jest', { useESM: true }],
   },
   testPathIgnorePatterns: ['./dist'],
+  automock: false,
+  setupFiles: [
+    "./test/setupJest.js"
+  ]
 };

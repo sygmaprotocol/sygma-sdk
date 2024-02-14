@@ -1,5 +1,5 @@
 import { constants } from 'ethers';
-import type { Config } from '../config.js';
+import type { Config } from '../config/config.js';
 import type {
   Environment,
   EvmResource,
@@ -80,6 +80,21 @@ export abstract class BaseAssetTransfer {
    * @param resource - Resource for which we want to check if route is opened
    */
   abstract isRouteRegistered(destinationDomainID: string, resource: Resource): Promise<boolean>;
+
+  /**
+   * Check if provided transfer is valid.
+   *
+   * This means it checks if route for this transfer exists on chain
+   *
+   * @param transfer instance of transfer
+   */
+  public async isTransferValid(transfer: Transfer<TransferType>): Promise<boolean> {
+    try {
+      return await this.isRouteRegistered(transfer.to.id.toString(), transfer.resource);
+    } catch (e) {
+      return false;
+    }
+  }
 
   /**
    * @param {Transfer} transfer Transfer to check
