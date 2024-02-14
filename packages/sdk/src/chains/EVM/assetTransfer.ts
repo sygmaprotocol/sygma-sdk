@@ -122,22 +122,6 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
   }
 
   /**
-   * Check if provided transfer is valid.
-   *
-   * This means it checks if route for this transfer exists on chain
-   *
-   * @param transfer instance of transfer
-   */
-  public async isTransferValid(transfer: Transfer<TransferType>): Promise<boolean> {
-    try {
-      await this.getFeeInformation(transfer);
-    } catch (e) {
-      return false;
-    }
-    return true;
-  }
-
-  /**
    * Builds approval transactions that are required before executing
    * deposit. Returns multiple approvals if fee is payed in ERC20 token.
    *
@@ -266,14 +250,14 @@ export class EVMAssetTransfer extends BaseAssetTransfer {
     );
 
     if (!utils.isAddress(feeHandlerAddress) || feeHandlerAddress === constants.AddressZero) {
-      throw new Error(`Not able to get fee: route not registered on fee handler`);
+      throw new Error(`Failed getting fee: route not registered on fee handler`);
     }
 
     const feeHandlerConfig = domainConfig.feeHandlers.find(
       feeHandler => feeHandler.address == feeHandlerAddress,
     )!;
     if (!feeHandlerConfig) {
-      throw new Error(`Not able to get fee: fee handler not registered on environment`);
+      throw new Error(`Failed getting fee: fee handler not registered on environment`);
     }
 
     return { feeHandlerAddress: feeHandlerAddress, feeHandlerType: feeHandlerConfig.type };

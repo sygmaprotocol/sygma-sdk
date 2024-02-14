@@ -82,6 +82,21 @@ export abstract class BaseAssetTransfer {
   abstract isRouteRegistered(destinationDomainID: string, resource: Resource): Promise<boolean>;
 
   /**
+   * Check if provided transfer is valid.
+   *
+   * This means it checks if route for this transfer exists on chain
+   *
+   * @param transfer instance of transfer
+   */
+  public async isTransferValid(transfer: Transfer<TransferType>): Promise<boolean> {
+    try {
+      return await this.isRouteRegistered(transfer.to.id.toString(), transfer.resource);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
    * @param {Transfer} transfer Transfer to check
    * @param {string} destinationProviderUrl URL of the destination chain provider
    * @returns {Promise<bigint>} Handler balance on the destination chain

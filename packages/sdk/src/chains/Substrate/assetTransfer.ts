@@ -88,14 +88,6 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
     }
   }
 
-  public async isValidTransfer(transfer: Transfer<TransferType>): Promise<boolean> {
-    try {
-      return await this.isRouteRegistered(transfer.to.id.toString(), transfer.resource);
-    } catch (e) {
-      return false;
-    }
-  }
-
   /**
    * Builds an unsigned transfer transaction.
    *
