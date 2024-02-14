@@ -497,16 +497,15 @@ __metadata:
     "@polkadot/util": "npm:12.2.1"
     "@polkadot/util-crypto": "npm:12.2.1"
     "@types/jest": "npm:^29.4.0"
-    axios: "npm:^1.4.0"
-    axios-mock-adapter: "npm:^1.21.4"
     concurrently: "npm:7.0.0"
-    cross-fetch: "npm:^3.1.5"
+    cross-fetch: "npm:^4.0.0"
     eslint: "npm:8"
     ethers: "npm:5.6.2"
     hardhat: "npm:2.8.2"
     jest: "npm:^29.4.1"
     jest-environment-jsdom: "npm:^29.4.1"
     jest-extended: "npm:1.2.0"
+    jest-fetch-mock: "npm:^3.0.3"
     ts-jest: "npm:^29.0.5"
     ts-node: "npm:10.9.1"
     typedoc: "npm:^0.24.1"
@@ -4338,29 +4337,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios-mock-adapter@npm:^1.21.4":
-  version: 1.22.0
-  resolution: "axios-mock-adapter@npm:1.22.0"
-  dependencies:
-    fast-deep-equal: "npm:^3.1.3"
-    is-buffer: "npm:^2.0.5"
-  peerDependencies:
-    axios: ">= 0.17.0"
-  checksum: d3c3631fb50116df57d11d604fa2c3dc80e769f0429728f9961c983662f60533a780f73a93fb7b20dae87995e9ae7c340619827267aeed9fdee02aded696d17a
-  languageName: node
-  linkType: hard
-
-"axios@npm:^1.4.0":
-  version: 1.6.0
-  resolution: "axios@npm:1.6.0"
-  dependencies:
-    follow-redirects: "npm:^1.15.0"
-    form-data: "npm:^4.0.0"
-    proxy-from-env: "npm:^1.1.0"
-  checksum: 2879e17b96cbca7e2096d231a44e2d0f03e657d79f8928ea38ec5fbaf5a5b7bf952d580cdb58a66ba328c26eb3528b89d5a32da57cc5cf89813786c044f7e9d6
-  languageName: node
-  linkType: hard
-
 "babel-jest@npm:^27.5.1":
   version: 27.5.1
   resolution: "babel-jest@npm:27.5.1"
@@ -5451,12 +5427,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-fetch@npm:^3.1.4, cross-fetch@npm:^3.1.5":
+"cross-fetch@npm:^3.0.4, cross-fetch@npm:^3.1.4":
   version: 3.1.8
   resolution: "cross-fetch@npm:3.1.8"
   dependencies:
     node-fetch: "npm:^2.6.12"
   checksum: 4c5e022ffe6abdf380faa6e2373c0c4ed7ef75e105c95c972b6f627c3f083170b6886f19fb488a7fa93971f4f69dcc890f122b0d97f0bf5f41ca1d9a8f58c8af
+  languageName: node
+  linkType: hard
+
+"cross-fetch@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "cross-fetch@npm:4.0.0"
+  dependencies:
+    node-fetch: "npm:^2.6.12"
+  checksum: 386727dc4c6b044746086aced959ff21101abb85c43df5e1d151547ccb6f338f86dec3f28b9dbddfa8ff5b9ec8662ed2263ad4607a93b2dc354fb7fe3bbb898a
   languageName: node
   linkType: hard
 
@@ -7379,7 +7364,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.12.1, follow-redirects@npm:^1.15.0":
+"follow-redirects@npm:^1.12.1":
   version: 1.15.3
   resolution: "follow-redirects@npm:1.15.3"
   peerDependenciesMeta:
@@ -8468,7 +8453,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-buffer@npm:^2.0.5, is-buffer@npm:~2.0.3":
+"is-buffer@npm:~2.0.3":
   version: 2.0.5
   resolution: "is-buffer@npm:2.0.5"
   checksum: e603f6fced83cf94c53399cff3bda1a9f08e391b872b64a73793b0928be3e5f047f2bcece230edb7632eaea2acdbfcb56c23b33d8a20c820023b230f1485679a
@@ -9192,6 +9177,16 @@ __metadata:
     jest-get-type: "npm:^27.0.6"
     jest-matcher-utils: "npm:^27.2.4"
   checksum: 935362bcb0d51670e4eb3640569c4ba9c8a3e0d83a0eb8c73d2d06f1df6e339f97f43684fd777d8a3f893e76760ab985fb224bd080041e07aab0ed1d48c57cbe
+  languageName: node
+  linkType: hard
+
+"jest-fetch-mock@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "jest-fetch-mock@npm:3.0.3"
+  dependencies:
+    cross-fetch: "npm:^3.0.4"
+    promise-polyfill: "npm:^8.1.3"
+  checksum: 21ffe8c902ca5adafa7ed61760e100e4c290e99b0b487645f5bb92938ea64c2d1d9dc8af46e65fb7917d6237586067d53af756583a77330dbb4fbda079a63c29
   languageName: node
   linkType: hard
 
@@ -11978,6 +11973,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"promise-polyfill@npm:^8.1.3":
+  version: 8.3.0
+  resolution: "promise-polyfill@npm:8.3.0"
+  checksum: 97141f07a31a6be135ec9ed53700a3423a771cabec0ba5e08fcb2bf8cfda855479ff70e444fceb938f560be42b450cd032c14f4a940ed2ad1e5b4dcb78368dce
+  languageName: node
+  linkType: hard
+
 "promise-retry@npm:^2.0.1":
   version: 2.0.1
   resolution: "promise-retry@npm:2.0.1"
@@ -12022,13 +12024,6 @@ __metadata:
     forwarded: "npm:0.2.0"
     ipaddr.js: "npm:1.9.1"
   checksum: c3eed999781a35f7fd935f398b6d8920b6fb00bbc14287bc6de78128ccc1a02c89b95b56742bf7cf0362cc333c61d138532049c7dedc7a328ef13343eff81210
-  languageName: node
-  linkType: hard
-
-"proxy-from-env@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "proxy-from-env@npm:1.1.0"
-  checksum: fe7dd8b1bdbbbea18d1459107729c3e4a2243ca870d26d34c2c1bcd3e4425b7bcc5112362df2d93cc7fb9746f6142b5e272fd1cc5c86ddf8580175186f6ad42b
   languageName: node
   linkType: hard
 

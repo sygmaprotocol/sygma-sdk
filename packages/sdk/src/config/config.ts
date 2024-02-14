@@ -1,10 +1,10 @@
-import axios from 'axios';
+import fetch from 'cross-fetch';
 import type {
-  RawConfig,
   Domain,
   EthereumConfig,
-  SubstrateConfig,
+  RawConfig,
   Resource,
+  SubstrateConfig,
 } from '../types/index.js';
 import { Environment } from '../types/index.js';
 import { ConfigUrl } from '../index.js';
@@ -36,8 +36,8 @@ export class Config {
     }
 
     try {
-      const response = await axios.get(configUrl);
-      this.environment = response.data as unknown as RawConfig;
+      const response = await fetch(configUrl);
+      this.environment = (await response.json()) as RawConfig;
     } catch (err) {
       if (err instanceof Error) {
         throw new Error(`Failed to fetch shared config because of: ${err.message}`);

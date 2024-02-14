@@ -1,10 +1,9 @@
-import MockAdapter from 'axios-mock-adapter';
-import axios from 'axios';
+import { enableFetchMocks } from 'jest-fetch-mock';
 import { getRoutes } from '../src/utils.js';
 import { ConfigUrl, Environment, IndexerUrl } from '../src/index.js';
 import { testingConfigData } from './constants.js';
 
-const axiosMock = new MockAdapter(axios);
+enableFetchMocks();
 
 const testingRoutesData: { routes: RouteIndexerType[] } = {
   routes: [
@@ -32,48 +31,58 @@ type RouteIndexerType = {
 
 describe('Utils - getRoutes', () => {
   beforeEach(() => {
-    axiosMock.onGet(ConfigUrl.TESTNET).reply(200, testingConfigData);
-    axiosMock.onGet(ConfigUrl.MAINNET).reply(200, testingConfigData);
-  });
-
-  afterEach(() => {
-    axiosMock.reset();
+    fetchMock.resetMocks();
+    fetchMock.doMock();
+    fetchMock.mockOnceIf(input => {
+      return (
+        input.url === ConfigUrl.TESTNET.toString() || input.url === ConfigUrl.MAINNET.toString()
+      );
+    }, JSON.stringify(testingConfigData));
   });
 
   it('should fetch all routes testnet', async () => {
-    axiosMock
-      .onGet(`${IndexerUrl.TESTNET}/api/routes/from/0?resourceType=all`)
-      .reply(200, testingRoutesData);
+    fetchMock.mockOnceIf(
+      `${IndexerUrl.TESTNET}/api/routes/from/0?resourceType=all`,
+      JSON.stringify(testingRoutesData),
+    );
     const allRoutes = await getRoutes(Environment.TESTNET, 6, 'all');
     expect(allRoutes.length).toEqual(2);
   });
 
   it('should fetch all routes mainnet', async () => {
-    axiosMock
-      .onGet(`${IndexerUrl.MAINNET}/api/routes/from/0?resourceType=all`)
-      .reply(200, testingRoutesData);
+    fetchMock.mockOnceIf(
+      `${IndexerUrl.MAINNET}/api/routes/from/0?resourceType=all`,
+      JSON.stringify(testingRoutesData),
+    );
     const allRoutes = await getRoutes(Environment.MAINNET, 6, 'all');
     expect(allRoutes.length).toEqual(2);
   });
 
   it('should fetch fungible routes', async () => {
-    axiosMock.onGet(`${IndexerUrl.TESTNET}/api/routes/from/0?resourceType=fungible`).reply(200, {
-      routes: [
-        {
-          fromDomainId: '1',
-          toDomainId: '3',
-          type: 'fungible',
-          resourceId: '0x01',
-        },
-      ],
-    });
+    fetchMock.mockOnceIf(
+      `${IndexerUrl.TESTNET}/api/routes/from/0?resourceType=fungible`,
+      JSON.stringify({
+        routes: [
+          {
+            fromDomainId: '1',
+            toDomainId: '3',
+            type: 'fungible',
+            resourceId: '0x01',
+          },
+        ],
+      }),
+    );
     const allRoutes = await getRoutes(Environment.TESTNET, 6, 'fungible');
     expect(allRoutes.length).toEqual(1);
   });
 
   it('should throw an error on network failure', async () => {
-    axiosMock.onGet(`${IndexerUrl.TESTNET}/api/routes/from/0?resourceType=all`).networkError();
-    await expect(getRoutes(Environment.TESTNET, 6, 'all')).rejects.toThrow('Network Error');
+    fetchMock.mockOnceIf(`${IndexerUrl.TESTNET}/api/routes/from/0?resourceType=all`, () => {
+      throw new Error('failed');
+    });
+    await expect(getRoutes(Environment.TESTNET, 6, 'all')).rejects.toThrow(
+      'Failed to fetch routes because of: failed',
+    );
   });
 
   it('should handle invalid environment input', async () => {

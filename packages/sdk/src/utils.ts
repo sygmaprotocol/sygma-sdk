@@ -1,4 +1,4 @@
-import axios from 'axios';
+import fetch from 'cross-fetch';
 import { ExplorerUrl, IndexerUrl } from './constants.js';
 import type {
   EnvironmentMetadata,
@@ -35,12 +35,20 @@ export async function getTransferStatusData(
     throw new Error('Invalid environment');
   }
 
-  const response = await fetch(url);
-  const data = (await response.json()) as Record<string, unknown> & { status: TransferStatus };
-  return {
-    status: data.status,
-    explorerUrl,
-  };
+  try {
+    const response = await fetch(url);
+    const data = (await response.json()) as Record<string, unknown> & { status: TransferStatus };
+    return {
+      status: data.status,
+      explorerUrl,
+    };
+  } catch (err) {
+    if (err instanceof Error) {
+      throw new Error(`Failed to fetch transfer status because of: ${err.message}`);
+    } else {
+      throw new Error('Something went wrong while fetching transfer status');
+    }
+  }
 }
 
 /**
@@ -61,8 +69,8 @@ export async function getEnvironmentMetadata(
 ): Promise<EnvironmentMetadata> {
   try {
     const url = `${getIndexerURL(environment)}/api/domains/metadata`;
-    const response = await axios.get<EnvironmentMetadata>(url);
-    return response.data;
+    const response = await fetch(url);
+    return (await response.json()) as EnvironmentMetadata;
   } catch (err) {
     if (err instanceof Error) {
       throw new Error(`Failed to fetch env metadata because of: ${err.message}`);
@@ -96,8 +104,10 @@ export async function getRoutes(
     const indexerUrl = getIndexerURL(environment);
     const url = `${indexerUrl}/api/routes/from/${config.getSourceDomainConfig().id}?resourceType=${type}`;
 
-    const response = await axios.get<{ routes: RouteIndexerType[] }>(url);
-    return response.data.routes.map(route => {
+    const response = await fetch(url);
+    const data = (await response.json()) as { routes: RouteIndexerType[] };
+
+    return data.routes.map(route => {
       const resource = config.getDomainResources().find(r => r.resourceId === route.resourceId)!;
       return {
         fromDomain: config.getSourceDomainConfig(),
@@ -107,9 +117,9 @@ export async function getRoutes(
     });
   } catch (err) {
     if (err instanceof Error) {
-      throw new Error(`Failed to fetch shared config because of: ${err.message}`);
+      throw new Error(`Failed to fetch routes because of: ${err.message}`);
     } else {
-      throw new Error('Something went wrong while fetching config file');
+      throw new Error('Something went wrong while fetching routes');
     }
   }
 }

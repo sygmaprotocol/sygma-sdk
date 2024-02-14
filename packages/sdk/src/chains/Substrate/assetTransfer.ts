@@ -89,13 +89,11 @@ export class SubstrateAssetTransfer extends BaseAssetTransfer {
   }
 
   public async isValidTransfer(transfer: Transfer<TransferType>): Promise<boolean> {
-    const substrateResource = transfer.resource as SubstrateResource;
     try {
-      await getFeeHandler(this.apiPromise, transfer.to.id, substrateResource.xcmMultiAssetId);
+      return await this.isRouteRegistered(transfer.to.id.toString(), transfer.resource);
     } catch (e) {
       return false;
     }
-    return true;
   }
 
   /**

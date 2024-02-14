@@ -1,14 +1,13 @@
-import axios from 'axios';
 import type { providers } from 'ethers';
 import { BigNumber } from 'ethers';
-import MockAdapter from 'axios-mock-adapter';
-
-import type { Transfer, NonFungible, Fungible } from '../../../src/types/index.js';
-import { ResourceType, FeeHandlerType, Environment, Network } from '../../../src/types/index.js';
-import { testingConfigData } from '../../constants.js';
-import { ConfigUrl } from '../../../src/constants.js';
-import { EVMAssetTransfer } from '../../../src/chains/EVM/index.js';
+import { enableFetchMocks } from 'jest-fetch-mock';
+import type { Fungible, NonFungible, Transfer } from '../../../src/types/index.js';
+import { Environment, FeeHandlerType, Network, ResourceType } from '../../../src/types/index.js';
 import * as EVM from '../../../src/chains/EVM/index.js';
+import { EVMAssetTransfer } from '../../../src/chains/EVM/index.js';
+import { testingConfigData } from '../../constants.js';
+
+enableFetchMocks();
 
 const feeHandlerAddressFunction = jest.fn();
 const resourceHandlerFunction = jest.fn();
@@ -43,7 +42,7 @@ jest.mock(
       },
     }) as unknown,
 );
-const axiosMock = new MockAdapter(axios);
+
 const mockProvider: Partial<providers.Provider> = {
   getFeeData: jest.fn().mockResolvedValue({ gasPrice: BigNumber.from(100) }),
   getNetwork: jest.fn().mockResolvedValue({
@@ -117,7 +116,9 @@ describe('EVM asset transfer', () => {
   };
 
   beforeEach(async () => {
-    axiosMock.onGet(ConfigUrl.DEVNET).reply(200, testingConfigData);
+    fetchMock.resetMocks();
+    fetchMock.doMock();
+    fetchMock.mockResponse(JSON.stringify(testingConfigData));
     assetTransfer = new EVMAssetTransfer();
     await assetTransfer.init(mockProvider as providers.BaseProvider, Environment.DEVNET);
   });
@@ -155,7 +156,7 @@ describe('EVM asset transfer', () => {
         await assetTransfer.getFee(transfer);
         fail('error not thrown');
       } catch (e) {
-        expect(e).toEqual(new Error('Unsupported fee handler type'));
+        expect(e).toEqual(new Error('Not able to get fee: route not registered on fee handler'));
       }
     });
   });
