@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.7.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.6.3...sygma-sdk-core-v2.7.0) (2024-02-14)
+
+
+### Features
+
+* add routes details and domain metadata helper functions ([#340](https://github.com/sygmaprotocol/sygma-sdk/issues/340)) ([1145e68](https://github.com/sygmaprotocol/sygma-sdk/commit/1145e6857a057b83fc9be04c3a3caf9db769d527))
+
+
+### Bug Fixes
+
+* getTransferStatusData ([#342](https://github.com/sygmaprotocol/sygma-sdk/issues/342)) ([724ea2f](https://github.com/sygmaprotocol/sygma-sdk/commit/724ea2f98cd62d5b3dc2f90ae461441d56c9d089))
+* remove unused dynamic fees support ([#335](https://github.com/sygmaprotocol/sygma-sdk/issues/335)) ([63302fd](https://github.com/sygmaprotocol/sygma-sdk/commit/63302fd7d7b9c893c46fb1de856dd95a8c8def5e))
+
 ## [2.6.3](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.6.2...sygma-sdk-core-v2.6.3) (2024-02-06)
 
 
