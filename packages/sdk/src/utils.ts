@@ -1,4 +1,3 @@
-import fetch from 'cross-fetch';
 import { ExplorerUrl, IndexerUrl } from './constants.js';
 import type {
   EnvironmentMetadata,

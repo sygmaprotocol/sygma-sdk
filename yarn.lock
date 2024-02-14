@@ -498,7 +498,6 @@ __metadata:
     "@polkadot/util-crypto": "npm:12.2.1"
     "@types/jest": "npm:^29.4.0"
     concurrently: "npm:7.0.0"
-    cross-fetch: "npm:^4.0.0"
     eslint: "npm:8"
     ethers: "npm:5.6.2"
     hardhat: "npm:2.8.2"
@@ -5433,15 +5432,6 @@ __metadata:
   dependencies:
     node-fetch: "npm:^2.6.12"
   checksum: 4c5e022ffe6abdf380faa6e2373c0c4ed7ef75e105c95c972b6f627c3f083170b6886f19fb488a7fa93971f4f69dcc890f122b0d97f0bf5f41ca1d9a8f58c8af
-  languageName: node
-  linkType: hard
-
-"cross-fetch@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "cross-fetch@npm:4.0.0"
-  dependencies:
-    node-fetch: "npm:^2.6.12"
-  checksum: 386727dc4c6b044746086aced959ff21101abb85c43df5e1d151547ccb6f338f86dec3f28b9dbddfa8ff5b9ec8662ed2263ad4607a93b2dc354fb7fe3bbb898a
   languageName: node
   linkType: hard
 
