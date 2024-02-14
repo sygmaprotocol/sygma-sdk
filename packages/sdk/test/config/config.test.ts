@@ -13,7 +13,6 @@ describe('Config', () => {
     fetchMock.resetMocks();
     fetchMock.doMock();
     fetchMock.mockIf(ConfigUrl.DEVNET.toString(), JSON.stringify(testingConfigData));
-
   });
 
   it('Should successfully initialize config for the corresponding environment', async function () {
