@@ -44,6 +44,7 @@ export async function getTransferStatusData(
     const data = (await response.json()) as (Record<string, unknown> & {
       status: TransferStatus;
       toDomainId: number;
+      fromDomainId: number;
     })[];
 
     if (domainId) {
@@ -53,11 +54,15 @@ export async function getTransferStatusData(
 
       return {
         status: record.status,
+        fromDomainId: record.fromDomainId,
+        toDomainId: record.toDomainId,
         explorerUrl,
       };
     }
     return data.map(record => ({
       status: record.status,
+      fromDomainId: record.fromDomainId,
+      toDomainId: record.toDomainId,
       explorerUrl,
     }));
   } catch (err) {
