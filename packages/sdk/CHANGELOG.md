@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.1](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.7.0...sygma-sdk-core-v2.7.1) (2024-02-15)
+
+
+### Bug Fixes
+
+* getTransferStatusData returning data ([#346](https://github.com/sygmaprotocol/sygma-sdk/issues/346)) ([8ca1855](https://github.com/sygmaprotocol/sygma-sdk/commit/8ca1855222a57fb9f1843d83e04effa1d05e8220))
+
 ## [2.7.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.6.3...sygma-sdk-core-v2.7.0) (2024-02-14)
 
 
