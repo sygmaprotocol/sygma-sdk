@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.2](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.7.1...sygma-sdk-core-v2.7.2) (2024-02-15)
+
+
+### Bug Fixes
+
+* export getRoutes util method ([#349](https://github.com/sygmaprotocol/sygma-sdk/issues/349)) ([35c3e45](https://github.com/sygmaprotocol/sygma-sdk/commit/35c3e45f3d1b4ef83b47184829b7bac21cad9a6c))
+
 ## [2.7.1](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.7.0...sygma-sdk-core-v2.7.1) (2024-02-15)
 
 
