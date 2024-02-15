@@ -91,6 +91,8 @@ export type TransferStatus = 'pending' | 'executed' | 'failed';
 export type TransferStatusResponse = {
   status: TransferStatus;
   explorerUrl: string;
+  fromDomainId: number;
+  toDomainId: number;
 };
 
 export type RouteIndexerType = {
