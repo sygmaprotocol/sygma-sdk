@@ -118,14 +118,15 @@ export async function getEnvironmentMetadata(
 export async function getRoutes(
   environment: Environment,
   sourceChainId: number,
-  type: 'fungible' | 'gmp' | 'all',
+  type?: 'fungible' | 'gmp',
 ): Promise<Route[]> {
   try {
     const config = new Config();
     await config.init(sourceChainId, environment);
 
     const indexerUrl = getIndexerURL(environment);
-    const url = `${indexerUrl}/api/routes/from/${config.getSourceDomainConfig().id}?resourceType=${type}`;
+    const typeQuery = type ? `?resourceType=${type}` : '';
+    const url = `${indexerUrl}/api/routes/from/${config.getSourceDomainConfig().id}${typeQuery}`;
 
     const response = await fetch(url);
     const data = (await response.json()) as { routes: RouteIndexerType[] };
