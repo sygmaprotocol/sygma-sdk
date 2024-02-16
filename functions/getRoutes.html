@@ -17,7 +17,7 @@
 <h1>Function getRoutes</h1></div>
 <section class="tsd-panel">
 <ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="getRoutes"><span class="tsd-kind-call-signature">get<wbr/>Routes</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">environment</span>, <span class="tsd-kind-parameter">sourceChainId</span>, <span class="tsd-kind-parameter">type</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/Route.html" class="tsd-signature-type tsd-kind-type-alias">Route</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span><a href="#getRoutes" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><g stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" id="icon-anchor"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5"></path><path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5"></path></g></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="getRoutes"><span class="tsd-kind-call-signature">get<wbr/>Routes</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">environment</span>, <span class="tsd-kind-parameter">sourceChainId</span>, <span class="tsd-kind-parameter">type</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/Route.html" class="tsd-signature-type tsd-kind-type-alias">Route</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span><a href="#getRoutes" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><g stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" id="icon-anchor"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5"></path><path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5"></path></g></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Fetches route information based on the source chain ID and resource type.</p>
 <p>This function queries the configured indexer URL based on the specified environment (TESTNET or MAINNET)
@@ -37,7 +37,7 @@ to retrieve route data.</p>
 </div>
 <div class="tsd-comment tsd-typography"></div></li>
 <li>
-<h5><span class="tsd-kind-parameter">type</span>: <span class="tsd-signature-type">&quot;fungible&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;gmp&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;all&quot;</span></h5>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">type</span>: <span class="tsd-signature-type">&quot;fungible&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;gmp&quot;</span></h5>
 <div class="tsd-comment tsd-typography"><p>The type of the resource for which routes are being fetched. Can be &#39;fungible&#39;, &#39;gmp&#39;, or &#39;all&#39;.</p>
 </div>
 <div class="tsd-comment tsd-typography"></div></li></ul></div>
@@ -47,7 +47,7 @@ to retrieve route data.</p>
 <h4>Throws</h4><p>Throws an error if an invalid environment is specified, if there&#39;s a network or server issue during the fetch operation, or if the fetched data cannot be processed correctly.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/sygmaprotocol/sygma-sdk/blob/38b4660/packages/sdk/src/utils.ts#L118">utils.ts:118</a></li></ul></aside></li></ul></section></div>
+<li>Defined in <a href="https://github.com/sygmaprotocol/sygma-sdk/blob/c53ae05/packages/sdk/src/utils.ts#L118">utils.ts:118</a></li></ul></aside></li></ul></section></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
