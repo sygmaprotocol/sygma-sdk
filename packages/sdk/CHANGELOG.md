@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.3](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.7.2...sygma-sdk-core-v2.7.3) (2024-02-16)
+
+
+### Bug Fixes
+
+* get all routes ([#351](https://github.com/sygmaprotocol/sygma-sdk/issues/351)) ([c53ae05](https://github.com/sygmaprotocol/sygma-sdk/commit/c53ae0570d2657f84209519ee6b3c28152066a9f))
+
 ## [2.7.2](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.7.1...sygma-sdk-core-v2.7.2) (2024-02-15)
 
 
