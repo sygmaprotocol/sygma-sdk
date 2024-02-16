@@ -42,19 +42,19 @@ describe('Utils - getRoutes', () => {
 
   it('should fetch all routes testnet', async () => {
     fetchMock.mockOnceIf(
-      `${IndexerUrl.TESTNET}/api/routes/from/0?resourceType=all`,
+      `${IndexerUrl.TESTNET}/api/routes/from/0`,
       JSON.stringify(testingRoutesData),
     );
-    const allRoutes = await getRoutes(Environment.TESTNET, 6, 'all');
+    const allRoutes = await getRoutes(Environment.TESTNET, 6);
     expect(allRoutes.length).toEqual(2);
   });
 
   it('should fetch all routes mainnet', async () => {
     fetchMock.mockOnceIf(
-      `${IndexerUrl.MAINNET}/api/routes/from/0?resourceType=all`,
+      `${IndexerUrl.MAINNET}/api/routes/from/0`,
       JSON.stringify(testingRoutesData),
     );
-    const allRoutes = await getRoutes(Environment.MAINNET, 6, 'all');
+    const allRoutes = await getRoutes(Environment.MAINNET, 6);
     expect(allRoutes.length).toEqual(2);
   });
 
@@ -77,15 +77,15 @@ describe('Utils - getRoutes', () => {
   });
 
   it('should throw an error on network failure', async () => {
-    fetchMock.mockOnceIf(`${IndexerUrl.TESTNET}/api/routes/from/0?resourceType=all`, () => {
+    fetchMock.mockOnceIf(`${IndexerUrl.TESTNET}/api/routes/from/0`, () => {
       throw new Error('failed');
     });
-    await expect(getRoutes(Environment.TESTNET, 6, 'all')).rejects.toThrow(
+    await expect(getRoutes(Environment.TESTNET, 6)).rejects.toThrow(
       'Failed to fetch routes because of: failed',
     );
   });
 
   it('should handle invalid environment input', async () => {
-    await expect(getRoutes(Environment.LOCAL, 1, 'all')).rejects.toThrow('Invalid environment');
+    await expect(getRoutes(Environment.LOCAL, 1)).rejects.toThrow('Invalid environment');
   });
 });
