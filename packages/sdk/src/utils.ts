@@ -125,7 +125,7 @@ export async function getRoutes(
     await config.init(sourceChainId, environment);
 
     const indexerUrl = getIndexerURL(environment);
-    const typeQuery = type ? '' : `?resourceType=${type}`;
+    const typeQuery = type ? `?resourceType=${type}` : '';
     const url = `${indexerUrl}/api/routes/from/${config.getSourceDomainConfig().id}${typeQuery}`;
 
     const response = await fetch(url);
