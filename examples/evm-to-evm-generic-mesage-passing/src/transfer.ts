@@ -37,7 +37,7 @@ const sourceProvider = new providers.JsonRpcProvider(
   "https://gateway.tenderly.co/public/sepolia"
 );
 const destinationProvider = new providers.JsonRpcProvider(
-  "wss://polygon-mumbai-bor.publicnode.com"
+  "https://polygon-mumbai-pokt.nodies.app	"
 );
 const storageContract = Storage__factory.connect(
   EXECUTE_CONTRACT_ADDRESS,

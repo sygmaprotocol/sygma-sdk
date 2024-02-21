@@ -32,7 +32,7 @@ const getStatus = async (
 
 export async function erc20Transfer(): Promise<void> {
   const provider = new providers.JsonRpcProvider(
-    "wss://polygon-mumbai-bor.publicnode.com"
+    "https://polygon-mumbai-pokt.nodies.app	"
   );
   const wallet = new Wallet(privateKey ?? "", provider);
   const assetTransfer = new EVMAssetTransfer();

@@ -32,7 +32,7 @@ const getStatus = async (
 
 export async function erc20Transfer(): Promise<void> {
   const provider = new providers.JsonRpcProvider(
-    "wss://ethereum-sepolia.publicnode.com"
+    "https://1rpc.io/sepolia"
   );
   const wallet = new Wallet(privateKey ?? "", provider);
   const assetTransfer = new EVMAssetTransfer();
