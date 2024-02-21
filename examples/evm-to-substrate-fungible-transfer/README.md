@@ -11,7 +11,7 @@ Before running the script, ensure that you have the following:
 - A development wallet funded with `gPHA` tokens from the [Sygma faucet](https://faucet-ui-stage.buildwithsygma.com/)
 - The [exported private key](https://support.metamask.io/hc/en-us/articles/360015289632-How-to-export-an-account-s-private-key) of your development wallet
 - A Substrate wallet to receive tokens into (the example presets an existing wallet address already)
-- [Goerli ETH](https://goerlifaucet.com/) for gas 
+- [Sepolia ETH](https://sepoliafaucet.com/) for gas 
 - An Ethereum [provider](https://www.infura.io/) (in case the hardcoded RPC within the script does not work)
 
 ## Getting started
@@ -65,7 +65,7 @@ yarn run transfer
 ```
 
 The example will use `ethers` in conjuction with the sygma-sdk to
-create a transfer from `Goerli` to `Rococo-Phala` with a GPHA token.
+create a transfer from `Sepolia` to `Rococo-Phala` with a GPHA token.
 
 Replace the placeholder values in the `.env` file with your own Ethereum wallet private key, and your own destination Substrate address within the script.
 
@@ -76,7 +76,7 @@ This example script performs the following steps:
 - initializes the SDK and establishes a connection to the Ethereum provider.
 - retrieves the list of supported domains and resources from the SDK configuration.
 - Searches for the ERC20 token resource with the specified symbol
-- Searches for the Goerli and Rococo-Phala domains in the list of supported domains based on their chain IDs
+- Searches for the Sepolia and Rococo-Phala domains in the list of supported domains based on their chain IDs
 - Constructs a transfer object that defines the details of the ERC20 token transfer
 - Retrieves the fee required for the transfer from the SDK.
 - Builds the necessary approval transactions for the transfer and sends them using the Ethereum wallet. The approval transactions are required to authorize the transfer of ERC20 tokens.

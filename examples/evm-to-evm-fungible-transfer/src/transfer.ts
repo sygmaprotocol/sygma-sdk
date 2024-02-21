@@ -17,7 +17,7 @@ if (!privateKey) {
 const SEPOLIA_CHAIN_ID = 11155111;
 const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000000300";
-
+const MUMBAI_RPC_URL = process.env.MUMBAI_RPC_URL || "https://polygon-mumbai-pokt.nodies.app"
 const getStatus = async (
   txHash: string
 ): Promise<{ status: string; explorerUrl: string } | void> => {
@@ -31,9 +31,7 @@ const getStatus = async (
 };
 
 export async function erc20Transfer(): Promise<void> {
-  const provider = new providers.JsonRpcProvider(
-    "https://polygon-mumbai-pokt.nodies.app	"
-  );
+  const provider = new providers.JsonRpcProvider(MUMBAI_RPC_URL);
   const wallet = new Wallet(privateKey ?? "", provider);
   const assetTransfer = new EVMAssetTransfer();
   // @ts-ignore-next-line

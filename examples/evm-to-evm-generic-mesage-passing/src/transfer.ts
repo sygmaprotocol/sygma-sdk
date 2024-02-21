@@ -33,11 +33,11 @@ const RESOURCE_ID =
 const EXECUTE_CONTRACT_ADDRESS = "0x6f250a12f9a2d6f72b6e8ef5b93484da04cdb69e";
 const EXECUTE_FUNCTION_SIGNATURE = "0xa271ced2";
 const MAX_FEE = "3000000";
-const sourceProvider = new providers.JsonRpcProvider(
-  "https://gateway.tenderly.co/public/sepolia"
-);
-const destinationProvider = new providers.JsonRpcProvider(
-  "https://polygon-mumbai-pokt.nodies.app	"
+const MUMBAI_RPC_URL = process.env.MUMBAI_RPC_URL || "https://polygon-mumbai-pokt.nodies.app"
+const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "https://gateway.tenderly.co/public/sepolia"
+
+const sourceProvider = new providers.JsonRpcProvider(SEPOLIA_RPC_URL);
+const destinationProvider = new providers.JsonRpcProvider(MUMBAI_RPC_URL
 );
 const storageContract = Storage__factory.connect(
   EXECUTE_CONTRACT_ADDRESS,

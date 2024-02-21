@@ -17,7 +17,7 @@ const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000001100";
 const MNEMONIC = process.env.PRIVATE_MNEMONIC;
 const recipient = "0xD31E89feccCf6f2DE10EaC92ADffF48D802b695C";
-
+const RHALA_RPC_URL = process.env.RHALA_RPC_URL || "wss://rhala-node.phala.network/ws"
 if (!MNEMONIC) {
   throw new Error("Missing environment variable: PRIVATE_MNEMONIC");
 }
@@ -43,9 +43,7 @@ const substrateTransfer = async (): Promise<void> => {
 
   const account = keyring.addFromUri(MNEMONIC);
 
-  const wsProvider = new WsProvider(
-    "wss://subbridge-test.phala.network/rhala/ws"
-  );
+  const wsProvider = new WsProvider(RHALA_RPC_URL);
   const api = await ApiPromise.create({ provider: wsProvider });
 
   const assetTransfer = new SubstrateAssetTransfer();

@@ -64,7 +64,7 @@ yarn run transfer
 ```
 
 The example will use `@polkadot/keyring` in conjuction with the sygma-sdk to
-create a transfer from `Roccoco Phala` to `Goerli`.
+create a transfer from `Roccoco Phala` to `Sepolia`.
 
 Replace the placeholder values in the `.env` file with your own Substrate wallet mnemonic, and your own destination EVM address within the script.
 
@@ -75,7 +75,7 @@ This example script performs the following steps:
 - initializes the SDK and establishes a connection to the Substrate node.
 - retrieves the list of supported domains and resources from the SDK configuration.
 - Searches for the Substrate asset resource with the specified ResourceId
-- Searches for the Goerli and Sepolia domains in the list of supported domains based on their chain IDs
+- Searches for the Mumbai and Sepolia domains in the list of supported domains based on their chain IDs
 - Constructs a transfer object that defines the details of the Substrate asset transfer
 - Retrieves the fee required for the transfer from the SDK.
 - Builds the final transfer transaction and sends it using the Substrate account.
