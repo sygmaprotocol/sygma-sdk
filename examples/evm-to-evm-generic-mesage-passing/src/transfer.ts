@@ -27,17 +27,17 @@ const getStatus = async (
   }
 };
 
-const DESTINATION_CHAIN_ID = 5; // Goerli
+const DESTINATION_CHAIN_ID = 7; // Mumbai
 const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000000500"; // Generic Message Handler
-const EXECUTE_CONTRACT_ADDRESS = "0xdFA5621F95675D37248bAc9e536Aab4D86766663";
+const EXECUTE_CONTRACT_ADDRESS = "0x6f250a12f9a2d6f72b6e8ef5b93484da04cdb69e";
 const EXECUTE_FUNCTION_SIGNATURE = "0xa271ced2";
 const MAX_FEE = "3000000";
 const sourceProvider = new providers.JsonRpcProvider(
   "https://gateway.tenderly.co/public/sepolia"
 );
 const destinationProvider = new providers.JsonRpcProvider(
-  "https://rpc.goerli.eth.gateway.fm/"
+  "wss://polygon-mumbai-bor.publicnode.com"
 );
 const storageContract = Storage__factory.connect(
   EXECUTE_CONTRACT_ADDRESS,

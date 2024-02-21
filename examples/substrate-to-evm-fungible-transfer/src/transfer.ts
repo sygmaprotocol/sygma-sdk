@@ -12,9 +12,9 @@ dotenv.config();
 
 const { SubstrateAssetTransfer } = Substrate;
 
-const GOERLI_CHAIN_ID = 5;
+const SEPOLIA_CHAIN_ID = 11155111;
 const RESOURCE_ID =
-  "0x0000000000000000000000000000000000000000000000000000000000001000";
+  "0x0000000000000000000000000000000000000000000000000000000000001100";
 const MNEMONIC = process.env.PRIVATE_MNEMONIC;
 const recipient = "0xD31E89feccCf6f2DE10EaC92ADffF48D802b695C";
 
@@ -54,7 +54,7 @@ const substrateTransfer = async (): Promise<void> => {
 
   const transfer = await assetTransfer.createFungibleTransfer(
     account.address,
-    GOERLI_CHAIN_ID,
+    SEPOLIA_CHAIN_ID,
     recipient,
     RESOURCE_ID,
     "5000000000000" // 12 decimal places

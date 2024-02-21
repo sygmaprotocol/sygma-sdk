@@ -16,7 +16,7 @@ if (!privateKey) {
 const ROCOCO_PHALA_CHAIN_ID = 5231;
 const DESTINATION_ADDRESS = "5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt";
 const RESOURCE_ID =
-  "0x0000000000000000000000000000000000000000000000000000000000001000";
+  "0x0000000000000000000000000000000000000000000000000000000000001100";
 
 const getStatus = async (
   txHash: string
@@ -32,7 +32,7 @@ const getStatus = async (
 
 export async function erc20Transfer(): Promise<void> {
   const provider = new providers.JsonRpcProvider(
-    "https://rpc.goerli.eth.gateway.fm/"
+    "wss://ethereum-sepolia.publicnode.com"
   );
   const wallet = new Wallet(privateKey ?? "", provider);
   const assetTransfer = new EVMAssetTransfer();
