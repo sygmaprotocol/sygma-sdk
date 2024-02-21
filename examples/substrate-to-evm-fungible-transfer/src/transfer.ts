@@ -57,7 +57,7 @@ const substrateTransfer = async (): Promise<void> => {
     SEPOLIA_CHAIN_ID,
     recipient,
     RESOURCE_ID,
-    "5000000000000" // 12 decimal places
+    "5000000" // 6 decimal places
   );
 
   const fee = await assetTransfer.getFee(transfer);
