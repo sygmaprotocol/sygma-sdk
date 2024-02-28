@@ -69,6 +69,11 @@ create a transfer from `Sepolia` to `Rococo-Phala` with a GPHA token.
 
 Replace the placeholder values in the `.env` file with your own Ethereum wallet private key, and your own destination Substrate address within the script.
 
+**Note**
+
+To replace default rpc Sepolia urls use env variables:
+- `SEPOLIA_RPC_URL="SEPOLIA_RPC_URL_HERE"`
+
 ## Script Functionality
 
 This example script performs the following steps:

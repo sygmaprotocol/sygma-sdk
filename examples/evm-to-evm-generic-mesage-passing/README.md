@@ -67,6 +67,12 @@ call a function on a smart contract on `Mumbai` by calling the Deposit method on
 
 Replace the placeholder values in the `.env` file with your own Ethereum wallet private key.
 
+**Note**
+
+To replace default rpc Mumbai and Sepolia urls use env variables:
+- `MUMBAI_RPC_URL="MUMBAI_RPC_URL_HERE"`
+- `SEPOLIA_RPC_URL="SEPOLIA_RPC_URL_HERE"`
+
 ## Script Functionality
 
 This example script performs the following steps:

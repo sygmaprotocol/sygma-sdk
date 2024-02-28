@@ -68,6 +68,11 @@ create a transfer from `Roccoco Phala` to `Sepolia`.
 
 Replace the placeholder values in the `.env` file with your own Substrate wallet mnemonic, and your own destination EVM address within the script.
 
+**Note**
+
+To replace default rpc Rhala urls use env variables:
+- `RHALA_RPC_URL="SEPOLIA_RPC_URL_HERE"`
+
 ## Script Functionality
 
 This example script performs the following steps:
