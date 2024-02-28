@@ -2,6 +2,7 @@ import {
   EVMAssetTransfer,
   Environment,
   getTransferStatusData,
+  TransferStatusResponse
 } from "@buildwithsygma/sygma-sdk-core";
 import { Wallet, providers } from "ethers";
 import dotenv from "dotenv";
@@ -20,14 +21,9 @@ const RESOURCE_ID =
 const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "https://gateway.tenderly.co/public/sepolia"
 const getStatus = async (
   txHash: string
-): Promise<{ status: string; explorerUrl: string } | void> => {
-  try {
+): Promise<TransferStatusResponse[]> => {
     const data = await getTransferStatusData(Environment.TESTNET, txHash);
-
-    return data as { status: string; explorerUrl: string };
-  } catch (e) {
-    console.log("error: ", e);
-  }
+    return data as TransferStatusResponse[];
 };
 
 export async function erc20Transfer(): Promise<void> {
@@ -62,25 +58,22 @@ export async function erc20Transfer(): Promise<void> {
   );
   console.log("Sent transfer with hash: ", response.hash);
 
-  let dataResponse: undefined | { status: string; explorerUrl: string };
-
   const id = setInterval(() => {
     getStatus(response.hash)
       .then((data) => {
-        if (data) {
-          dataResponse = data;
-          console.log(data);
+        if (data[0]) {
+          console.log("Status of the transfer", data[0].status);
+          if(data[0].status == "executed") {
+            clearInterval(id);
+            process.exit(0);
+          }
+        } else {
+          console.log("Waiting for the TX to be indexed");
         }
       })
-      .catch(() => {
-        console.log("Transfer still not indexed, retrying...");
+      .catch((e) => {
+        console.log("error:", e);
       });
-
-    if (dataResponse && dataResponse.status === "executed") {
-      console.log("Transfer executed successfully");
-      clearInterval(id);
-      process.exit(0);
-    }
   }, 5000);
 }
 

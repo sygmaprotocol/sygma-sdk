@@ -6,6 +6,7 @@ import {
   Environment,
   Substrate,
   getTransferStatusData,
+  TransferStatusResponse
 } from "@buildwithsygma/sygma-sdk-core";
 
 dotenv.config();
@@ -24,14 +25,9 @@ if (!MNEMONIC) {
 
 const getStatus = async (
   txHash: string
-): Promise<{ status: string; explorerUrl: string } | void> => {
-  try {
+): Promise<TransferStatusResponse[]> => {
     const data = await getTransferStatusData(Environment.TESTNET, txHash);
-
-    return data as { status: string; explorerUrl: string };
-  } catch (e) {
-    console.log("error: ", e);
-  }
+    return data as TransferStatusResponse[];
 };
 
 const substrateTransfer = async (): Promise<void> => {
@@ -76,26 +72,23 @@ const substrateTransfer = async (): Promise<void> => {
       unsub();
     }
 
-    let dataResponse: undefined | { status: string; explorerUrl: string };
-
     const id = setInterval(() => {
       getStatus(status.asInBlock.toString())
         .then((data) => {
-          if (data) {
-            dataResponse = data;
-            console.log(data);
+          if (data[0]) {
+            console.log("Status of the transfer", data[0].status);
+            if(data[0].status == "executed") {
+              clearInterval(id);
+              process.exit(0);
+            }
+          } else {
+            console.log("Waiting for the TX to be indexed");
           }
         })
-        .catch(() => {
-          console.log("Transfer still not indexed, retrying...");
+        .catch((e) => {
+          console.log("error:", e);
         });
     }, 5000);
-
-    if (dataResponse && dataResponse.status === "executed") {
-      console.log("Transfer executed successfully");
-      clearInterval(id);
-      process.exit(0);
-    }
   });
 };
 

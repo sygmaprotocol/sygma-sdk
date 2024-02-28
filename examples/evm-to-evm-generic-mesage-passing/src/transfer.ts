@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import {
   EVMGenericMessageTransfer,
   Environment,
+  TransferStatusResponse,
   getTransferStatusData,
 } from "@buildwithsygma/sygma-sdk-core";
 import { BigNumber, Wallet, providers, utils } from "ethers";
@@ -17,14 +18,9 @@ if (!privateKey) {
 
 const getStatus = async (
   txHash: string
-): Promise<{ status: string; explorerUrl: string } | void> => {
-  try {
+): Promise<TransferStatusResponse[]> => {
     const data = await getTransferStatusData(Environment.TESTNET, txHash);
-
-    return data as { status: string; explorerUrl: string };
-  } catch (e) {
-    console.log("error: ", e);
-  }
+    return data as TransferStatusResponse[];
 };
 
 const DESTINATION_CHAIN_ID = 80001; // Mumbai
@@ -118,25 +114,22 @@ export async function genericMessage(): Promise<void> {
 
   await waitUntilBridged(contractValueBefore);
 
-  let dataResponse: undefined | { status: string; explorerUrl: string };
-
   const id = setInterval(() => {
     getStatus(response.hash)
       .then((data) => {
-        if (data) {
-          dataResponse = data;
-          console.log("Status of the transfer", data.status);
+        if (data[0]) {
+          console.log("Status of the transfer", data[0].status);
+          if(data[0].status == "executed") {
+            clearInterval(id);
+            process.exit(0);
+          }
+        } else {
+          console.log("Waiting for the TX to be indexed");
         }
       })
-      .catch(() => {
-        console.log("Transfer still not indexed, retrying...");
+      .catch((e) => {
+        console.log("error:", e);
       });
-
-    if (dataResponse && dataResponse.status === "executed") {
-      console.log("Transfer executed successfully");
-      clearInterval(id);
-      process.exit(0);
-    }
   }, 5000);
 }
 
