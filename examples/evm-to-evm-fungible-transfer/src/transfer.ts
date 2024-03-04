@@ -2,6 +2,7 @@ import {
   EVMAssetTransfer,
   Environment,
   getTransferStatusData,
+  TransferStatusResponse
 } from "@buildwithsygma/sygma-sdk-core";
 import { Wallet, providers } from "ethers";
 import dotenv from "dotenv";
@@ -17,23 +18,16 @@ if (!privateKey) {
 const SEPOLIA_CHAIN_ID = 11155111;
 const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000000300";
-
+const MUMBAI_RPC_URL = process.env.MUMBAI_RPC_URL || "https://polygon-mumbai-pokt.nodies.app"
 const getStatus = async (
   txHash: string
-): Promise<{ status: string; explorerUrl: string } | void> => {
-  try {
+): Promise<TransferStatusResponse[]> => {
     const data = await getTransferStatusData(Environment.TESTNET, txHash);
-
-    return data as { status: string; explorerUrl: string };
-  } catch (e) {
-    console.log("error:", e);
-  }
+    return data as TransferStatusResponse[];
 };
 
 export async function erc20Transfer(): Promise<void> {
-  const provider = new providers.JsonRpcProvider(
-    "https://rpc.goerli.eth.gateway.fm/"
-  );
+  const provider = new providers.JsonRpcProvider(MUMBAI_RPC_URL);
   const wallet = new Wallet(privateKey ?? "", provider);
   const assetTransfer = new EVMAssetTransfer();
   // @ts-ignore-next-line
@@ -64,26 +58,22 @@ export async function erc20Transfer(): Promise<void> {
   );
   console.log("Sent transfer with hash: ", response.hash);
 
-  let dataResponse: undefined | { status: string; explorerUrl: string };
-
   const id = setInterval(() => {
     getStatus(response.hash)
       .then((data) => {
-        if (data) {
-          dataResponse = data;
-          console.log("Status of the transfer", data.status);
+        if (data[0]) {
+          console.log("Status of the transfer", data[0].status);
+          if(data[0].status == "executed") {
+            clearInterval(id);
+            process.exit(0);
+          }
+        } else {
+          console.log("Waiting for the TX to be indexed");
         }
       })
       .catch((e) => {
         console.log("error:", e);
-        console.log("Transfer still not indexed, retrying...");
       });
-
-    if (dataResponse && dataResponse.status === "executed") {
-      console.log("Transfer executed successfully");
-      clearInterval(id);
-      process.exit(0);
-    }
   }, 5000);
 }
 

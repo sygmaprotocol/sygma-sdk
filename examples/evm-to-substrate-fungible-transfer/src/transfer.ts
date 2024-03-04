@@ -2,6 +2,7 @@ import {
   EVMAssetTransfer,
   Environment,
   getTransferStatusData,
+  TransferStatusResponse
 } from "@buildwithsygma/sygma-sdk-core";
 import { Wallet, providers } from "ethers";
 import dotenv from "dotenv";
@@ -16,24 +17,17 @@ if (!privateKey) {
 const ROCOCO_PHALA_CHAIN_ID = 5231;
 const DESTINATION_ADDRESS = "5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt";
 const RESOURCE_ID =
-  "0x0000000000000000000000000000000000000000000000000000000000001000";
-
+  "0x0000000000000000000000000000000000000000000000000000000000001100";
+const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "https://gateway.tenderly.co/public/sepolia"
 const getStatus = async (
   txHash: string
-): Promise<{ status: string; explorerUrl: string } | void> => {
-  try {
+): Promise<TransferStatusResponse[]> => {
     const data = await getTransferStatusData(Environment.TESTNET, txHash);
-
-    return data as { status: string; explorerUrl: string };
-  } catch (e) {
-    console.log("error: ", e);
-  }
+    return data as TransferStatusResponse[];
 };
 
 export async function erc20Transfer(): Promise<void> {
-  const provider = new providers.JsonRpcProvider(
-    "https://rpc.goerli.eth.gateway.fm/"
-  );
+  const provider = new providers.JsonRpcProvider(SEPOLIA_RPC_URL);
   const wallet = new Wallet(privateKey ?? "", provider);
   const assetTransfer = new EVMAssetTransfer();
   await assetTransfer.init(provider, Environment.TESTNET);
@@ -64,25 +58,22 @@ export async function erc20Transfer(): Promise<void> {
   );
   console.log("Sent transfer with hash: ", response.hash);
 
-  let dataResponse: undefined | { status: string; explorerUrl: string };
-
   const id = setInterval(() => {
     getStatus(response.hash)
       .then((data) => {
-        if (data) {
-          dataResponse = data;
-          console.log(data);
+        if (data[0]) {
+          console.log("Status of the transfer", data[0].status);
+          if(data[0].status == "executed") {
+            clearInterval(id);
+            process.exit(0);
+          }
+        } else {
+          console.log("Waiting for the TX to be indexed");
         }
       })
-      .catch(() => {
-        console.log("Transfer still not indexed, retrying...");
+      .catch((e) => {
+        console.log("error:", e);
       });
-
-    if (dataResponse && dataResponse.status === "executed") {
-      console.log("Transfer executed successfully");
-      clearInterval(id);
-      process.exit(0);
-    }
   }, 5000);
 }
 

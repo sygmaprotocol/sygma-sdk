@@ -6,32 +6,28 @@ import {
   Environment,
   Substrate,
   getTransferStatusData,
+  TransferStatusResponse
 } from "@buildwithsygma/sygma-sdk-core";
 
 dotenv.config();
 
 const { SubstrateAssetTransfer } = Substrate;
 
-const GOERLI_CHAIN_ID = 5;
+const SEPOLIA_CHAIN_ID = 11155111;
 const RESOURCE_ID =
-  "0x0000000000000000000000000000000000000000000000000000000000001000";
+  "0x0000000000000000000000000000000000000000000000000000000000001100";
 const MNEMONIC = process.env.PRIVATE_MNEMONIC;
 const recipient = "0xD31E89feccCf6f2DE10EaC92ADffF48D802b695C";
-
+const RHALA_RPC_URL = process.env.RHALA_RPC_URL || "wss://rhala-node.phala.network/ws"
 if (!MNEMONIC) {
   throw new Error("Missing environment variable: PRIVATE_MNEMONIC");
 }
 
 const getStatus = async (
   txHash: string
-): Promise<{ status: string; explorerUrl: string } | void> => {
-  try {
+): Promise<TransferStatusResponse[]> => {
     const data = await getTransferStatusData(Environment.TESTNET, txHash);
-
-    return data as { status: string; explorerUrl: string };
-  } catch (e) {
-    console.log("error: ", e);
-  }
+    return data as TransferStatusResponse[];
 };
 
 const substrateTransfer = async (): Promise<void> => {
@@ -43,9 +39,7 @@ const substrateTransfer = async (): Promise<void> => {
 
   const account = keyring.addFromUri(MNEMONIC);
 
-  const wsProvider = new WsProvider(
-    "wss://subbridge-test.phala.network/rhala/ws"
-  );
+  const wsProvider = new WsProvider(RHALA_RPC_URL);
   const api = await ApiPromise.create({ provider: wsProvider });
 
   const assetTransfer = new SubstrateAssetTransfer();
@@ -54,10 +48,10 @@ const substrateTransfer = async (): Promise<void> => {
 
   const transfer = await assetTransfer.createFungibleTransfer(
     account.address,
-    GOERLI_CHAIN_ID,
+    SEPOLIA_CHAIN_ID,
     recipient,
     RESOURCE_ID,
-    "5000000000000" // 12 decimal places
+    "5000000" // 6 decimal places
   );
 
   const fee = await assetTransfer.getFee(transfer);
@@ -78,26 +72,23 @@ const substrateTransfer = async (): Promise<void> => {
       unsub();
     }
 
-    let dataResponse: undefined | { status: string; explorerUrl: string };
-
     const id = setInterval(() => {
       getStatus(status.asInBlock.toString())
         .then((data) => {
-          if (data) {
-            dataResponse = data;
-            console.log(data);
+          if (data[0]) {
+            console.log("Status of the transfer", data[0].status);
+            if(data[0].status == "executed") {
+              clearInterval(id);
+              process.exit(0);
+            }
+          } else {
+            console.log("Waiting for the TX to be indexed");
           }
         })
-        .catch(() => {
-          console.log("Transfer still not indexed, retrying...");
+        .catch((e) => {
+          console.log("error:", e);
         });
     }, 5000);
-
-    if (dataResponse && dataResponse.status === "executed") {
-      console.log("Transfer executed successfully");
-      clearInterval(id);
-      process.exit(0);
-    }
   });
 };
 

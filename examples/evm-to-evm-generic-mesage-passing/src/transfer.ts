@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import {
   EVMGenericMessageTransfer,
   Environment,
+  TransferStatusResponse,
   getTransferStatusData,
 } from "@buildwithsygma/sygma-sdk-core";
 import { BigNumber, Wallet, providers, utils } from "ethers";
@@ -17,27 +18,22 @@ if (!privateKey) {
 
 const getStatus = async (
   txHash: string
-): Promise<{ status: string; explorerUrl: string } | void> => {
-  try {
+): Promise<TransferStatusResponse[]> => {
     const data = await getTransferStatusData(Environment.TESTNET, txHash);
-
-    return data as { status: string; explorerUrl: string };
-  } catch (e) {
-    console.log("error: ", e);
-  }
+    return data as TransferStatusResponse[];
 };
 
-const DESTINATION_CHAIN_ID = 5; // Goerli
+const DESTINATION_CHAIN_ID = 80001; // Mumbai
 const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000000500"; // Generic Message Handler
-const EXECUTE_CONTRACT_ADDRESS = "0xdFA5621F95675D37248bAc9e536Aab4D86766663";
+const EXECUTE_CONTRACT_ADDRESS = "0x6f250a12f9a2d6f72b6e8ef5b93484da04cdb69e";
 const EXECUTE_FUNCTION_SIGNATURE = "0xa271ced2";
 const MAX_FEE = "3000000";
-const sourceProvider = new providers.JsonRpcProvider(
-  "https://gateway.tenderly.co/public/sepolia"
-);
-const destinationProvider = new providers.JsonRpcProvider(
-  "https://rpc.goerli.eth.gateway.fm/"
+const MUMBAI_RPC_URL = process.env.MUMBAI_RPC_URL || "https://polygon-mumbai-pokt.nodies.app"
+const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "https://gateway.tenderly.co/public/sepolia"
+
+const sourceProvider = new providers.JsonRpcProvider(SEPOLIA_RPC_URL);
+const destinationProvider = new providers.JsonRpcProvider(MUMBAI_RPC_URL
 );
 const storageContract = Storage__factory.connect(
   EXECUTE_CONTRACT_ADDRESS,
@@ -118,25 +114,22 @@ export async function genericMessage(): Promise<void> {
 
   await waitUntilBridged(contractValueBefore);
 
-  let dataResponse: undefined | { status: string; explorerUrl: string };
-
   const id = setInterval(() => {
     getStatus(response.hash)
       .then((data) => {
-        if (data) {
-          dataResponse = data;
-          console.log("Status of the transfer", data.status);
+        if (data[0]) {
+          console.log("Status of the transfer", data[0].status);
+          if(data[0].status == "executed") {
+            clearInterval(id);
+            process.exit(0);
+          }
+        } else {
+          console.log("Waiting for the TX to be indexed");
         }
       })
-      .catch(() => {
-        console.log("Transfer still not indexed, retrying...");
+      .catch((e) => {
+        console.log("error:", e);
       });
-
-    if (dataResponse && dataResponse.status === "executed") {
-      console.log("Transfer executed successfully");
-      clearInterval(id);
-      process.exit(0);
-    }
   }, 5000);
 }
 
