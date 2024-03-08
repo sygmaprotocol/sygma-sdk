@@ -13,9 +13,9 @@ import type { Option } from '@polkadot/types';
  */
 export const getAssetBalance = async (
   api: ApiPromise,
-  assetId: number,
+  assetID: number,
   accountAddress: string,
 ): Promise<AssetBalance> => {
-  const assetRes = await api.query.assets.account<Option<AssetBalance>>(assetId, accountAddress);
+  const assetRes = await api.query.assets.account<Option<AssetBalance>>(assetID, accountAddress);
   return assetRes.unwrapOrDefault();
 };
