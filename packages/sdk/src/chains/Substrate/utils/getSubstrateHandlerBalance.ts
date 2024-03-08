@@ -15,7 +15,7 @@ export const getSubstrateHandlerBalance = async (
     const accountInfo = await getNativeTokenBalance(apiPromise, handlerAddress);
     return BigInt(accountInfo.free.toString());
   } else {
-    const assetBalance = await getAssetBalance(apiPromise, resource.assetId ?? 0, handlerAddress);
+    const assetBalance = await getAssetBalance(apiPromise, resource.assetID ?? 0, handlerAddress);
     return BigInt(assetBalance.balance.toString());
   }
 };
