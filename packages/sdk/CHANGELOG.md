@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.4](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.7.3...sygma-sdk-core-v2.7.4) (2024-03-11)
+
+
+### Bug Fixes
+
+* change in config invalid assetId property name into assetID as defined by remote config ([#357](https://github.com/sygmaprotocol/sygma-sdk/issues/357)) ([3b1fb8e](https://github.com/sygmaprotocol/sygma-sdk/commit/3b1fb8e0e9e4bc55936dfe00d9deb82764c18074))
+
 ## [2.7.3](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.7.2...sygma-sdk-core-v2.7.3) (2024-02-16)
 
 
