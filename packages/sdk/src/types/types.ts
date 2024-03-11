@@ -41,7 +41,7 @@ export type EvmResource = BaseResource & {
 };
 
 export type SubstrateResource = BaseResource & {
-  assetId?: number;
+  assetID?: number;
   assetName: string;
   xcmMultiAssetId: XcmMultiAssetIdType;
 };
