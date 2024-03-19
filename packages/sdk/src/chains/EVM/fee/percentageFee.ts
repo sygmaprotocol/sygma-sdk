@@ -2,7 +2,7 @@ import { PercentageERC20FeeHandlerEVM__factory } from '@buildwithsygma/sygma-con
 import type { ethers } from 'ethers';
 import { utils } from 'ethers';
 import { FeeHandlerType } from '../../../types/index.js';
-import type { EvmFee } from '../types/index.js';
+import type { PercentageFee } from '../types/index.js';
 
 /**
  * Calculates and returns the fee in native currency.
@@ -27,7 +27,7 @@ export const getPercentageFee = async ({
   toDomainID: number;
   resourceID: string;
   depositData: string;
-}): Promise<EvmFee> => {
+}): Promise<PercentageFee> => {
   const percentageFeeHandlerContract = PercentageERC20FeeHandlerEVM__factory.connect(
     precentageFeeHandlerAddress,
     provider,
@@ -40,12 +40,14 @@ export const getPercentageFee = async ({
     depositData,
     utils.formatBytes32String(''),
   );
-
+  const feeBounds = await percentageFeeHandlerContract._resourceIDToFeeBounds(resourceID);
   const [fee] = calculatedFee;
   return {
     fee,
     feeData: fee.toHexString(),
     type: FeeHandlerType.PERCENTAGE,
     handlerAddress: precentageFeeHandlerAddress,
+    lowerBound: feeBounds.lowerBound,
+    upperBound: feeBounds.upperBound,
   };
 };
