@@ -10,6 +10,12 @@ export type EvmFee = {
   feeData?: string;
 };
 
+export type PercentageFee = EvmFee & {
+  type: FeeHandlerType.PERCENTAGE;
+  lowerBound: ethers.BigNumber;
+  upperBound: ethers.BigNumber;
+};
+
 export type OracleResource = {
   baseEffectiveRate: string;
   tokenEffectiveRate: string;
