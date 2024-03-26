@@ -61,3 +61,4 @@ export type Erc721TransferParamsType = {
   /** Optional overrides for the transaction, such as gas price, gas limit, or value. */
   overrides?: ethers.PayableOverrides;
 };
+export { FeeHandlerType };

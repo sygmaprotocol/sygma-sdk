@@ -2,8 +2,8 @@ import { BigNumber, ContractReceipt, PopulatedTransaction, ethers } from 'ethers
 import { Bridge } from '@buildwithsygma/sygma-contracts';
 import { Router } from '@nmlinaric/sygma-x-solidity/typechain-types/index.js';
 import { DepositEvent } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge.js';
+import { FeeHandlerType } from '../../../types/index.js';
 
-import { FeeHandlerType } from 'types/index.js';
 import { Erc20TransferParamsType, Erc721TransferParamsType, EvmFee } from '../types/index.js';
 import { createERCDepositData, createPermissionlessGenericDepositData } from '../helpers.js';
 
