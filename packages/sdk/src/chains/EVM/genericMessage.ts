@@ -1,7 +1,8 @@
 import { PopulatedTransaction, providers } from 'ethers';
 
-import { Bridge__factory, FeeHandlerRouter__factory } from '@buildwithsygma/sygma-contracts';
+import { FeeHandlerRouter__factory } from '@buildwithsygma/sygma-contracts';
 
+import { Router__factory } from '@nmlinaric/sygma-x-solidity/typechain-types/index.js';
 import { getFeeOracleBaseURL } from '../../utils';
 import {
   Environment,
@@ -102,7 +103,10 @@ export class EVMGenericMessageTransfer {
     transfer: Transfer<TransferType>,
     fee: EvmFee,
   ): Promise<PopulatedTransaction> {
-    const bridge = Bridge__factory.connect(this.config.getDomainConfig().bridge, this.provider);
+    const bridge = Router__factory.connect(
+      this.config.getDomainConfig().router as string,
+      this.provider,
+    );
     switch (transfer.resource.type) {
       case ResourceType.PERMISSIONLESS_GENERIC: {
         const genericTransfer = transfer as Transfer<GenericMessage>;
@@ -149,7 +153,6 @@ export class EVMGenericMessageTransfer {
       destinationChainId,
       resourceId,
     );
-
     const transfer: Transfer<GenericMessage> = {
       sender: sourceAddress,
       details: {

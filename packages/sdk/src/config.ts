@@ -31,6 +31,10 @@ export class Config {
         configUrl = ConfigUrl.TESTNET;
         break;
       }
+      case Environment.TESTNET_X: {
+        configUrl = ConfigUrl.TESTNET_X;
+        break;
+      }
       default:
         configUrl = ConfigUrl.MAINNET;
     }

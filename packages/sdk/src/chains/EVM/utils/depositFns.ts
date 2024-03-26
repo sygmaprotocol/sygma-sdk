@@ -1,12 +1,14 @@
 import { BigNumber, ContractReceipt, PopulatedTransaction, ethers } from 'ethers';
 import { Bridge } from '@buildwithsygma/sygma-contracts';
+import { Router } from '@nmlinaric/sygma-x-solidity/typechain-types/index.js';
 import { DepositEvent } from '@buildwithsygma/sygma-contracts/dist/ethers/Bridge.js';
 
-import { FeeHandlerType } from '../../../types/index.js';
-import { createERCDepositData, createPermissionlessGenericDepositData } from '../helpers.js';
+import { FeeHandlerType } from 'types/index.js';
 import { Erc20TransferParamsType, Erc721TransferParamsType, EvmFee } from '../types/index.js';
+import { createERCDepositData, createPermissionlessGenericDepositData } from '../helpers.js';
 
 export const ASSET_TRANSFER_GAS_LIMIT: BigNumber = BigNumber.from(300000);
+export const SECURITY_MODEL = 1;
 
 /**
  * Perform an erc20 transfer
@@ -86,7 +88,7 @@ type GenericMessageParams = {
   executionData: string;
   domainId: string;
   resourceId: string;
-  bridgeInstance: Bridge;
+  bridgeInstance: Router;
   feeData: EvmFee;
   overrides?: ethers.PayableOverrides;
 };
@@ -130,11 +132,12 @@ export const executeDeposit = async (
   resourceId: string,
   depositData: string,
   feeData: EvmFee,
-  bridgeInstance: Bridge,
+  bridgeInstance: Router,
   overrides?: ethers.PayableOverrides,
 ): Promise<PopulatedTransaction> => {
   const transactionSettings = {
     value: feeData.type === FeeHandlerType.BASIC ? feeData.fee : undefined,
+
     gasLimit: ASSET_TRANSFER_GAS_LIMIT,
   };
 
@@ -142,14 +145,15 @@ export const executeDeposit = async (
     ...transactionSettings,
     ...overrides,
   };
-  const tx = await bridgeInstance.populateTransaction.deposit(
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return await bridgeInstance.populateTransaction.deposit(
     domainId,
     resourceId,
+    SECURITY_MODEL,
     depositData,
-    feeData.feeData ? feeData.feeData : '0x0',
+    feeData.feeData ? feeData.feeData : '0x',
     payableOverrides,
   );
-  return tx;
 };
 
 /**

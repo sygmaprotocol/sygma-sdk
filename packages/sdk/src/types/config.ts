@@ -3,6 +3,7 @@ import { FeeHandlerType, Resource, ResourceType } from './types';
 export enum Environment {
   LOCAL = 'local',
   DEVNET = 'devnet',
+  TESTNET_X = 'testnet-x',
   TESTNET = 'testnet',
   MAINNET = 'mainnet',
 }
@@ -23,6 +24,8 @@ export interface BaseConfig<Type> {
   name: string;
   type: Type;
   bridge: string;
+  router?: string;
+  executor?: string;
   nativeTokenSymbol: string;
   nativeTokenName: string;
   nativeTokenDecimals: BigInt;
