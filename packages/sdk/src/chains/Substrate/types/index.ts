@@ -50,4 +50,8 @@ export enum PolkadotParachain {
   COMPOSABLE = 2019,
 }
 
-export type ParachainID = KusamaParachain | PolkadotParachain | number;
+export enum RococoParachain {
+  RHALA = 2004,
+}
+
+export type ParachainID = KusamaParachain | PolkadotParachain | RococoParachain | number;
