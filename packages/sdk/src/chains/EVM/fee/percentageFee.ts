@@ -32,6 +32,7 @@ export const getPercentageFee = async ({
     precentageFeeHandlerAddress,
     provider,
   );
+
   const calculatedFee = await percentageFeeHandlerContract.calculateFee(
     sender,
     fromDomainID,
@@ -40,10 +41,17 @@ export const getPercentageFee = async ({
     depositData,
     utils.formatBytes32String(''),
   );
+
   const feeBounds = await percentageFeeHandlerContract._resourceIDToFeeBounds(resourceID);
+
+  const feePercentage = (
+    await percentageFeeHandlerContract._domainResourceIDToFee(toDomainID, resourceID)
+  ).toNumber();
+  const percentage = feePercentage / (await percentageFeeHandlerContract.HUNDRED_PERCENT());
   const [fee] = calculatedFee;
   return {
     fee,
+    percentage,
     feeData: fee.toHexString(),
     type: FeeHandlerType.PERCENTAGE,
     handlerAddress: precentageFeeHandlerAddress,
