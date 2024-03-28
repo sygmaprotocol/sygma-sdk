@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.10.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.9.0...sygma-sdk-core-v2.10.0) (2024-03-28)
+
+
+### Features
+
+* add fee percentage to percentage fee details ([#365](https://github.com/sygmaprotocol/sygma-sdk/issues/365)) ([acd89e8](https://github.com/sygmaprotocol/sygma-sdk/commit/acd89e8e641030b636e875fd1371ac60ec77fd0f))
+
 ## [2.9.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.8.0...sygma-sdk-core-v2.9.0) (2024-03-28)
 
 
