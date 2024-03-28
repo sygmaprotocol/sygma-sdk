@@ -12,6 +12,7 @@ export type EvmFee = {
 
 export type PercentageFee = EvmFee & {
   type: FeeHandlerType.PERCENTAGE;
+  percentage: number;
   lowerBound: ethers.BigNumber;
   upperBound: ethers.BigNumber;
 };
