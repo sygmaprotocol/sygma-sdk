@@ -141,6 +141,7 @@ export const localConfig: RawConfig = {
       nativeTokenDecimals: BigInt(18),
       blockConfirmations: 1,
       bridge: '0x',
+      parachainId: 0, // local setup is not parachain
       handlers: [
         {
           type: ResourceType.FUNGIBLE,
