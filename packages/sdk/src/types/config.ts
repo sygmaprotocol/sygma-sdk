@@ -1,3 +1,4 @@
+import type { ParachainID } from 'chains/Substrate/index.js';
 import type { FeeHandlerType, Resource, ResourceType } from './types.js';
 
 export enum Environment {
@@ -44,6 +45,7 @@ export interface EthereumConfig extends BaseConfig<Network.EVM> {
 
 export interface SubstrateConfig extends BaseConfig<Network.SUBSTRATE> {
   handlers: Array<Handler>;
+  parachainId: ParachainID;
 }
 
 export interface RawConfig {

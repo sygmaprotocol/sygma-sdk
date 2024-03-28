@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.9.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.8.0...sygma-sdk-core-v2.9.0) (2024-03-28)
+
+
+### Features
+
+* Add `ParachainID` to `SubstrateConfig` ([#362](https://github.com/sygmaprotocol/sygma-sdk/issues/362)) ([6a1171d](https://github.com/sygmaprotocol/sygma-sdk/commit/6a1171d33a64c0cb207b43a86d9769d44204f271))
+
+## [2.8.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.7.4...sygma-sdk-core-v2.8.0) (2024-03-20)
+
+
+### Features
+
+* add bounds to percentage fee response ([#360](https://github.com/sygmaprotocol/sygma-sdk/issues/360)) ([3114dad](https://github.com/sygmaprotocol/sygma-sdk/commit/3114dad4ec7df8ed662f55e35adaafa70cc2e6cd))
+
 ## [2.7.4](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.7.3...sygma-sdk-core-v2.7.4) (2024-03-11)
 
 
