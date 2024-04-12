@@ -80,7 +80,7 @@ This example script performs the following steps:
 - initializes the SDK and establishes a connection to the Substrate node.
 - retrieves the list of supported domains and resources from the SDK configuration.
 - Searches for the Substrate asset resource with the specified ResourceId
-- Searches for the Mumbai and Sepolia domains in the list of supported domains based on their chain IDs
+- Searches for the Cronos and Sepolia domains in the list of supported domains based on their chain IDs
 - Constructs a transfer object that defines the details of the Substrate asset transfer
 - Retrieves the fee required for the transfer from the SDK.
 - Builds the final transfer transaction and sends it using the Substrate account.
