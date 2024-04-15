@@ -63,14 +63,14 @@ yarn run transfer
 ```
 
 The example will use `ethers` in conjuction with the sygma-sdk to 
-call a function on a smart contract on `Mumbai` by calling the Deposit method on `Sepolia` and passing the details of the function to be called.
+call a function on a smart contract on `Cronos` by calling the Deposit method on `Sepolia` and passing the details of the function to be called.
 
 Replace the placeholder values in the `.env` file with your own Ethereum wallet private key.
 
 **Note**
 
-To replace default rpc Mumbai and Sepolia urls use env variables:
-- `MUMBAI_RPC_URL="MUMBAI_RPC_URL_HERE"`
+To replace default rpc Cronos and Sepolia urls use env variables:
+- `CRONOS_RPC_URL="CRONOS_RPC_URL_HERE"`
 - `SEPOLIA_RPC_URL="SEPOLIA_RPC_URL_HERE"`
 
 ## Script Functionality
@@ -79,6 +79,6 @@ This example script performs the following steps:
 - initializes the SDK and establishes a connection to the Ethereum provider.
 - retrieves the list of supported domains and resources from the SDK configuration.
 - Searches for the Generic Message Passing resource from the list of supported resources registered.  
-- Searches for the Mumbai and Sepolia domains in the list of supported domains based on their chain IDs.
+- Searches for the Cronos and Sepolia domains in the list of supported domains based on their chain IDs.
 - Constructs a transfer object that defines the details of the destination chain smart contract, function and call-data
 - Builds the final transfer transaction and sends it using the Ethereum wallet.

@@ -18,7 +18,7 @@ if (!privateKey) {
 const SEPOLIA_CHAIN_ID = 11155111;
 const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000000300";
-const MUMBAI_RPC_URL = process.env.MUMBAI_RPC_URL || "https://polygon-mumbai-pokt.nodies.app"
+const CRONOS_RPC_URL = process.env.CRONOS_RPC_URL || "https://evm-t3.cronos.org	"
 const getStatus = async (
   txHash: string
 ): Promise<TransferStatusResponse[]> => {
@@ -27,7 +27,7 @@ const getStatus = async (
 };
 
 export async function erc20Transfer(): Promise<void> {
-  const provider = new providers.JsonRpcProvider(MUMBAI_RPC_URL);
+  const provider = new providers.JsonRpcProvider(CRONOS_RPC_URL);
   const wallet = new Wallet(privateKey ?? "", provider);
   const assetTransfer = new EVMAssetTransfer();
   // @ts-ignore-next-line
