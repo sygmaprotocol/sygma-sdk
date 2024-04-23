@@ -23,13 +23,17 @@ export function getLiquidity(
   throw new Error("Method not implemented");
 }
 
+type SubstrateAssetTransferRequest = {
+  source: string | number | Domain;
+  sourceNetworkProvider: ApiPromise;
+  destination: string | number | Domain;
+  resource: string | SubstrateResource;
+  amount: bigint;
+  destinationAddress: string;
+};
+
 export function createSubstrateFungibleAssetTransfer(
-  source: string | number | Domain,
-  sourceNetworkProvider: ApiPromise,
-  destination: string | number | Domain,
-  resource: string | SubstrateResource,
-  amount: bigint,
-  destinationAddress: string,
+  transferRequest: SubstrateAssetTransferRequest,
 ): Promise<SubstrateFungibleAssetTransfer> {
   throw new Error("Method not implemented");
 }
@@ -38,14 +42,14 @@ export function createSubstrateFungibleAssetTransfer(
  * @dev User should not instance this directly. All the (async) checks should be done in `createSubstrateFungibleAssetTransfer`
  */
 export abstract class SubstrateFungibleAssetTransfer {
-  constructor(
-    sourceDomain: string | number | Domain,
-    sourceNetworkProvider: ApiPromise,
-    destinationDomain: string | number | Domain,
-    resource: string | SubstrateResource,
-    amount: bigint,
-    destinationAddress: string,
-  ) {}
+  constructor(transfer: {
+    sourceDomain: string | number | Domain;
+    sourceNetworkProvider: ApiPromise;
+    destinationDomain: string | number | Domain;
+    resource: string | SubstrateResource;
+    amount: bigint;
+    destinationAddress: string;
+  }) {}
 
   setAmount(amount: bigint): this {
     throw new Error("Method not implemented");

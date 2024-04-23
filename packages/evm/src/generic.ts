@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type { Domain, FeeHandlerType } from "@buildwithsygma/sygma-sdk-core";
+import type { SecurityModel } from "../../core/src/index.js";
 
 interface TransactionRequest {
   to: string;
@@ -25,6 +26,17 @@ type EvmFee = {
   maxFee?: bigint;
 };
 
+type GenericTransferRequest = {
+  sourceDomain: string | number | Domain;
+  sourceNetworkProvider: Eip1193Provider;
+  destinationDomain: string | number | Domain;
+  destinationContractAddress: string;
+  destinationFunctionSignature: string;
+  executionData: string;
+  gasLimit: bigint;
+  securityModel?: SecurityModel; //defaults to MPC
+};
+
 /**
  *
  * @param sourceDomain
@@ -36,17 +48,23 @@ type EvmFee = {
  * @param gasLimit maximum amount of gas to be used to execute on destination. Fee depends on this. Take into account that bridge itself will use xxx amount of gas.
  */
 export function createEvmGenericTransfer(
-  sourceDomain: string | number | Domain,
-  sourceNetworkProvider: Eip1193Provider,
-  destinationDomain: string | number | Domain,
-  destinationContractAddress: string,
-  destinationFunctionSignature: string,
-  executionData: string,
-  gasLimit: bigint,
+  transferRequest: GenericTransferRequest,
 ): Promise<EvmGenericTransfer> {
   throw new Error("Method not implemented");
 }
 
+type ContractCallTransferRequest = {
+  sourceDomain: string | number | Domain;
+  sourceNetworkProvider: Eip1193Provider;
+  destinationDomain: string | number | Domain;
+  destinationContractAddress: string;
+  //find correct typing, make it generic
+  destinationContractAbi: Array<unknown>;
+  //type should depend on submitted abi generic
+  functionName: string;
+  functionParameters: Array<unknown>;
+  gasLimit: bigint;
+};
 /**
  *
  * @param sourceDomain
@@ -59,16 +77,7 @@ export function createEvmGenericTransfer(
  * @param gasLimit
  */
 export function createEvmContractCallTransfer(
-  sourceDomain: string | number | Domain,
-  sourceNetworkProvider: Eip1193Provider,
-  destinationDomain: string | number | Domain,
-  destinationContractAddress: string,
-  //find correct typing, make it generic
-  destinationContractAbi: Array<unknown>,
-  //type should depend on submitted abi generic
-  functionName: string,
-  functionParameters: Array<unknown>,
-  gasLimit: bigint,
+  transferRequest: ContractCallTransferRequest,
 ): Promise<EvmGenericTransfer> {
   throw new Error("Method not implemented");
 }
@@ -77,15 +86,15 @@ export function createEvmContractCallTransfer(
  * @dev User should not instance this directly. All the (async) checks should be done in `createEvmFungibleAssetTransfer`
  */
 export abstract class EvmGenericTransfer {
-  constructor(
-    sourceDomain: string | number | Domain,
-    sourceNetworkProvider: Eip1193Provider,
-    destinationDomain: string | number | Domain,
-    destinationContractAddress: string,
-    destinationFunctionSignature: string,
-    executionData: string,
-    gasLimit: bigint,
-  ) {}
+  constructor(transfer: {
+    sourceDomain: string | number | Domain;
+    sourceNetworkProvider: Eip1193Provider;
+    destinationDomain: string | number | Domain;
+    destinationContractAddress: string;
+    destinationFunctionSignature: string;
+    executionData: string;
+    gasLimit: bigint;
+  }) {}
 
   setDesinationDomain(destinationDomain: string | number | Domain): this {
     throw new Error("Method not implemented");

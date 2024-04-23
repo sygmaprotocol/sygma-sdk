@@ -3,6 +3,7 @@ import type {
   EvmResource,
   FeeHandlerType,
 } from "@buildwithsygma/sygma-sdk-core";
+import type { SecurityModel } from "../../core/src/index.js";
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 interface TransactionRequest {
@@ -30,7 +31,7 @@ type EvmFee = {
 };
 
 /**
- * Return amount of liqudiity tokens on resource handler
+ * Return amount of liquidity tokens on resource handler
  * @param provider
  * @param resource
  */
@@ -41,13 +42,18 @@ export function getLiquidity(
   throw new Error("Method not implemented");
 }
 
+type EvmFungibleTransferRequest = {
+  source: string | number | Domain;
+  sourceNetworkProvider: Eip1193Provider;
+  destination: string | number | Domain;
+  resource: string | EvmResource;
+  amount: bigint;
+  destinationAddress: string;
+  securityModel?: SecurityModel; //defaults to MPC
+};
+
 export function createEvmFungibleAssetTransfer(
-  source: string | number | Domain,
-  sourceNetworkProvider: Eip1193Provider,
-  destination: string | number | Domain,
-  resource: string | EvmResource,
-  amount: bigint,
-  destinationAddress: string,
+  transferRequest: EvmFungibleTransferRequest,
 ): Promise<EvmFungibleAssetTransfer> {
   throw new Error("Method not implemented");
 }
@@ -56,14 +62,15 @@ export function createEvmFungibleAssetTransfer(
  * @dev User should not instance this directly. All the (async) checks should be done in `createEvmFungibleAssetTransfer`
  */
 export abstract class EvmFungibleAssetTransfer {
-  constructor(
-    sourceDomain: string | number | Domain,
-    sourceNetworkProvider: Eip1193Provider,
-    destinationDomain: string | number | Domain,
-    resource: string | EvmResource,
-    amount: bigint,
-    destinationAddress: string,
-  ) {}
+  constructor(transfer: {
+    sourceDomain: string | number | Domain;
+    sourceNetworkProvider: Eip1193Provider;
+    destinationDomain: string | number | Domain;
+    resource: string | EvmResource;
+    amount: bigint;
+    destinationAddress: string;
+    securityModel?: SecurityModel; //defaults to MPC
+  }) {}
 
   setAmount(amount: bigint): this {
     throw new Error("Method not implemented");

@@ -16,12 +16,15 @@ export enum Environment {
 export enum FeeHandlerType {
   BASIC = "basic",
   PERCENTAGE = "percentage",
-  UNDEFINED = "undefined",
 }
 
 export enum Network {
   EVM = "evm",
   SUBSTRATE = "substrate",
+}
+
+export enum SecurityModel {
+  MPC = "mpc",
 }
 
 export type Domain = {
@@ -88,6 +91,9 @@ export type TransferStatus = "pending" | "executed" | "failed";
 export type TransferStatusResponse = {
   status: TransferStatus;
   explorerUrl: string;
+  sourceHash: string;
+  destinationHash: string;
+  depositNonce: number;
   fromDomainId: number;
   toDomainId: number;
 };
@@ -126,7 +132,7 @@ export type Handler = {
   address: string;
 };
 
-export interface RawConfig {
+export interface SygmaConfig {
   domains: Array<EthereumConfig | SubstrateConfig>;
 }
 
@@ -152,7 +158,6 @@ export async function getDomains(options?: {
 export async function getRoutes(
   source: string | number | Domain,
   options?: {
-    env?: Environment;
     routeTypes?: RouteType[];
   },
 ): Promise<Route[]> {
@@ -175,6 +180,6 @@ export async function getTransferStatus(
  */
 export async function getRawConfiguration(
   env: Environment,
-): Promise<RawConfig> {
+): Promise<SygmaConfig> {
   throw new Error("Not implemented");
 }
