@@ -89,6 +89,7 @@ export class Config {
       chainId: domain.chainId,
       name: domain.name,
       type: domain.type,
+      parachainId: (domain as SubstrateConfig).parachainId,
     };
   }
 
