@@ -61,17 +61,13 @@ export class Config {
   }
 
   public async init(environment?: Environment): Promise<void> {
-    if (environment) {
-      this.environment = environment;
-    } else {
-      environment = Environment.MAINNET;
-    }
+    this.environment = environment ? environment : Environment.MAINNET;
 
-    for (const _environment of Object.values(Environment)) {
+    for (const env of Object.values(Environment)) {
       try {
-        if (!this._configuration.get(_environment)) {
-          const rawConfig = await this.fetchConfig(environment);
-          this._configuration.set(_environment, rawConfig);
+        if (!this._configuration.get(env)) {
+          const rawConfig = await this.fetchConfig(env);
+          this._configuration.set(env, rawConfig);
         }
       } catch (error) {
         if (error instanceof Error) {
