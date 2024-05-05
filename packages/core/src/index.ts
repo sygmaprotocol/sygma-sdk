@@ -21,6 +21,7 @@ export enum FeeHandlerType {
 export enum Network {
   EVM = "evm",
   SUBSTRATE = "substrate",
+  BITCOIN = "bitcoin",
 }
 
 export enum SecurityModel {
@@ -77,6 +78,10 @@ export type SubstrateResource = BaseResource & {
   assetID?: number;
   assetName: string;
   xcmMultiAssetId: XcmMultiAssetIdType;
+};
+
+export type BitcoinResource = BaseResource & {
+  address: string;
 };
 
 export type Route = {
