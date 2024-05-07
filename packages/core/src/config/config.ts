@@ -128,21 +128,19 @@ export class Config {
     config: SygmaConfig,
   ): EthereumConfig | SubstrateConfig | undefined {
     let domainConfig = undefined;
+    const domainLiketype = typeof domainLike;
 
-    if (typeof domainLike === 'object') {
+    if (domainLiketype === 'object') {
       domainConfig = config.domains.find(config => {
         return config.chainId === (domainLike as Domain).chainId;
       });
     } else {
-      if (typeof domainLike === 'string') {
-        domainLike = parseInt(domainLike);
+      if (domainLiketype === 'string') {
+        domainLike = parseInt(domainLike as string);
       }
       domainConfig = config.domains.find(config => {
-        return (
-          config.chainId === domainLike ||
-          config.sygmaId === domainLike ||
-          config.caipId === domainLike
-        );
+        const { chainId, sygmaId, caipId } = config;
+        return chainId === domainLike || sygmaId === domainLike || caipId === domainLike;
       });
     }
 
@@ -157,11 +155,9 @@ export class Config {
    */
   public getDomainConfig(domainlike: Domainlike): EthereumConfig | SubstrateConfig {
     const domainConfig = this.findDomainConfig(domainlike, this.configuration);
-
     if (!domainConfig) {
       throw new Error('Config for the provided domain is not setup.');
     }
-
     return domainConfig;
   }
 
