@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/require-await */
 export type ParachainId = number;
 
 export enum RouteType {
@@ -140,50 +138,6 @@ export interface SygmaConfig {
   domains: Array<EthereumConfig | SubstrateConfig>;
 }
 
-/**
- * Returns all Sygma supported domains (networks).
- * By default it will fetch domains configured for mainnet bridge deployment.
- * Alternative option can be specified in options.env.
- * You can filter domains with specifity types or ones that have at least one outbound route of specified type.
- */
-export async function getDomains(options?: {
-  routeTypes?: RouteType[];
-  env?: Environment;
-  networkTypes?: Network[];
-}): Promise<Domain[]> {
-  throw new Error('Not implemented');
-}
-
-/**
- * Returns  supported routes originating from given source domain.
- * @param source Either caip2 identifier, chainId or sygmaId
- * @param options Allows selecting bridge instance (mainnet by default) and filtering routes by type.
- */
-export async function getRoutes(
-  source: string | number | Domain,
-  options?: {
-    routeTypes?: RouteType[];
-  },
-): Promise<Route[]> {
-  throw new Error('Not implemented');
-}
-
-/**
- * TODO: why isn't txHash unique identifier
- * @param txHash
- */
-export async function getTransferStatus(txHash: string): Promise<TransferStatusResponse> {
-  throw new Error('Not implemented');
-}
-
-/**
- * End users shouldn't really need that but lets expose for power users
- * @param env
- */
-export async function getRawConfiguration(env: Environment): Promise<SygmaConfig> {
-  throw new Error('Not implemented');
-}
-
 export type RouteIndexerType = {
   fromDomainId: string;
   toDomainId: string;
@@ -200,3 +154,5 @@ export type EnvironmentMetadata = {
   // domainID -> DomainMetadata
   [key: number]: DomainMetadata;
 };
+
+export type Domainlike = number | string | Domain;

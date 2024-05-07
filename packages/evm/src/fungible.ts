@@ -1,6 +1,6 @@
-import type { Domain, EvmResource } from '@buildwithsygma/core';
-import { SecurityModel, Config, FeeHandlerType } from '@buildwithsygma/core';
-import type { Domainish, Eip1193Provider, EvmFee, TransactionRequest } from 'types.js';
+import type { Domainlike, Domain, EvmResource } from '@buildwithsygma/core';
+import { SecurityModel, Config, FeeHandlerType, BaseTransfer } from '@buildwithsygma/core';
+import type { Eip1193Provider, EvmFee, TransactionRequest } from 'types.js';
 import { Web3Provider } from '@ethersproject/providers';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { BigNumber, type PopulatedTransaction } from 'ethers';
@@ -20,9 +20,9 @@ import { ASSET_TRANSFER_GAS_LIMIT, erc20Transfer } from './utils/depositFns.js';
 // }
 
 type EvmFungibleTransferRequest = {
-  source: Domainish;
+  source: Domainlike;
   sourceNetworkProvider: Eip1193Provider;
-  destination: Domainish;
+  destination: Domainlike;
   resource: string | EvmResource;
   amount: bigint;
   destinationAddress: string;
@@ -35,20 +35,13 @@ export async function createEvmFungibleAssetTransfer(
   const config: Config = new Config();
   await config.init();
 
-  const {
-    source,
-    destination,
-    resource,
-    sourceNetworkProvider,
-    amount,
-    destinationAddress,
-    securityModel,
-  } = transferRequest;
+  const { resource, sourceNetworkProvider, amount, destinationAddress, securityModel } =
+    transferRequest;
 
-  config.setEnvironment(source);
-  const sourceDomain = config.getDomain(source);
-  const destinationDomain = config.getDomain(destination);
-  const resources = config.getDomainResources(sourceDomain);
+  config.setEnvironment(transferRequest.source);
+  const source = config.getDomain(transferRequest.source);
+  const destination = config.getDomain(transferRequest.destination);
+  const resources = config.getDomainResources(source);
 
   const evmResource = resources.find(_resource => {
     switch (typeof resource) {
@@ -65,8 +58,8 @@ export async function createEvmFungibleAssetTransfer(
 
   const assetTransfer = new EvmFungibleAssetTransfer(
     {
-      sourceDomain,
-      destinationDomain,
+      source,
+      destination,
       sourceNetworkProvider: sourceNetworkProvider,
       resource: evmResource as EvmResource,
       amount,
@@ -82,21 +75,24 @@ export async function createEvmFungibleAssetTransfer(
 /**
  * @dev User should not instance this directly. All the (async) checks should be done in `createEvmFungibleAssetTransfer`
  */
-class EvmFungibleAssetTransfer {
+class EvmFungibleAssetTransfer extends BaseTransfer {
   config: Config;
-  sourceDomain: Domain;
+  source: Domain;
+  destination: Domain;
+
   sourceNetworkProvider: Eip1193Provider;
-  destinationDomain: Domain;
+
   resource: EvmResource;
+
   amount: bigint;
   destinationAddress: string;
   securityModel: SecurityModel;
 
   constructor(
     transfer: {
-      sourceDomain: Domain;
+      source: Domain;
       sourceNetworkProvider: Eip1193Provider;
-      destinationDomain: Domain;
+      destination: Domain;
       resource: EvmResource;
       amount: bigint;
       destinationAddress: string;
@@ -104,9 +100,11 @@ class EvmFungibleAssetTransfer {
     },
     config?: Config,
   ) {
-    this.sourceDomain = transfer.sourceDomain;
+    super(transfer, config);
+
+    this.source = transfer.source;
     this.sourceNetworkProvider = transfer.sourceNetworkProvider;
-    this.destinationDomain = transfer.destinationDomain;
+    this.destination = transfer.destination;
     this.resource = transfer.resource;
     this.amount = transfer.amount;
     this.destinationAddress = transfer.destinationAddress;
@@ -129,7 +127,7 @@ class EvmFungibleAssetTransfer {
   }
   setDesinationDomain(destination: string | number | Domain): EvmFungibleAssetTransfer {
     const domain = this.config.getDomain(destination);
-    this.destinationDomain = domain;
+    this.destination = domain;
     return this;
   }
   setDestinationAddress(destinationAddress: string): EvmFungibleAssetTransfer {
@@ -146,19 +144,13 @@ class EvmFungibleAssetTransfer {
       this.amount = amount;
     }
 
-    const sourceDomainConfig = this.config.getDomainConfig(this.sourceDomain);
-    const destinationConfig = this.config.getDomainConfig(this.destinationDomain);
-    if (!sourceDomainConfig || !destinationConfig) {
-      throw new Error('Domain conifg not found.');
-    }
-
     const provider = new Web3Provider(this.sourceNetworkProvider);
     const sender = await provider.getSigner().getAddress();
     const { feeHandlerAddress, feeHandlerType } = await getFeeInformation(
       this.config,
       provider,
-      sourceDomainConfig.sygmaId,
-      destinationConfig.sygmaId,
+      this.source.sygmaId,
+      this.destination.sygmaId,
       this.resource.sygmaResourceId,
     );
 
@@ -169,8 +161,8 @@ class EvmFungibleAssetTransfer {
     const fee = await basicFeeCalculator.calculateFee({
       provider,
       sender,
-      sourceSygmaId: sourceDomainConfig.sygmaId,
-      destinationSygmaId: destinationConfig.sygmaId,
+      sourceSygmaId: this.source.sygmaId,
+      destinationSygmaId: this.destination.sygmaId,
       resourceSygmaId: this.resource.sygmaResourceId,
       feeHandlerAddress,
       feeHandlerType,
@@ -185,7 +177,7 @@ class EvmFungibleAssetTransfer {
    */
   async getApprovalTransactions(): Promise<Array<PopulatedTransaction>> {
     const approvals: Array<PopulatedTransaction> = [];
-    const sourceDomainConfig = this.config.getDomainConfig(this.sourceDomain);
+    const sourceDomainConfig = this.config.getDomainConfig(this.source);
 
     const provider = new Web3Provider(this.sourceNetworkProvider);
     const erc20 = ERC20__factory.connect(this.resource.address, provider);
@@ -217,7 +209,7 @@ class EvmFungibleAssetTransfer {
    * @dev potentially add optional param to override transaction params
    */
   async getTransferTransaction(): Promise<TransactionRequest> {
-    const domainConfig = this.config.getDomainConfig(this.sourceDomain);
+    const domainConfig = this.config.getDomainConfig(this.source);
     const provider = new Web3Provider(this.sourceNetworkProvider);
     const bridge = Bridge__factory.connect(domainConfig.bridge, provider);
     const fee = await this.getFee();
@@ -225,9 +217,9 @@ class EvmFungibleAssetTransfer {
     const transferTx = await erc20Transfer({
       amount: this.amount,
       recipientAddress: this.destinationAddress,
-      parachainId: this.destinationDomain.parachainId,
+      parachainId: this.destination.parachainId,
       bridgeInstance: bridge,
-      domainId: this.destinationDomain.sygmaId.toString(),
+      domainId: this.destination.sygmaId.toString(),
       resourceId: this.resource.sygmaResourceId,
       feeData: fee,
     });

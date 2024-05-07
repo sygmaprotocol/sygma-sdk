@@ -37,7 +37,6 @@ export type GenericTransferRequest = {
   securityModel?: SecurityModel; //defaults to MPC
 };
 
-export type Domainish = number | string | Domain;
 export type EvmResourceish = string | EvmResource;
 
 export type FungibleTransferParams = {

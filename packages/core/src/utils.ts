@@ -9,6 +9,7 @@ import type {
   Network,
   RouteType,
   SygmaConfig,
+  Domainlike,
 } from './types.js';
 import { Environment } from './types.js';
 import { Config } from './index.js';
@@ -103,43 +104,36 @@ export async function getDomains(options?: {
  * @param options Allows selecting bridge instance (mainnet by default) and filtering routes by type.
  */
 export async function getRoutes(
-  source: string | number | Domain,
+  source: Domainlike,
   options?: {
-    env: Environment;
     routeTypes?: RouteType[];
   },
 ): Promise<Route[]> {
   try {
-    await config.init(options?.env);
+    await config.init();
+    config.setEnvironment(source);
 
     const domain = config.getDomainConfig(source);
     if (!domain) {
       throw new Error('Domain not supported or incorrect environment set');
     }
 
-    const indexerUrl = getIndexerURL(options?.env ?? config.environment);
+    const indexerUrl = getIndexerURL(config.environment);
     const typeQuery = options?.routeTypes ? `?resourceType=${options.routeTypes.join(',')}` : '';
     const url = `${indexerUrl}/api/routes/from/${domain.sygmaId}${typeQuery}`;
-
     const response = await fetch(url);
     const data = (await response.json()) as { routes: RouteIndexerType[] };
 
-    return data.routes
-      .filter(route => {
-        if (options?.routeTypes) {
-          return options.routeTypes.includes(route.type);
-        }
-        return true;
-      })
-      .map(route => {
-        const resource = domain.resources.find(r => r.sygmaResourceId === route.sygmaResourceId)!;
-        return {
-          fromDomain: config.getDomain(domain.sygmaId),
-          toDomain: config.getDomain(Number(route.toDomainId)),
-          resource: resource,
-          feeHandler: route.feeHandler,
-        };
-      });
+    return data.routes.map(route => {
+      const resource = domain.resources.find(r => r.sygmaResourceId === route.sygmaResourceId)!;
+
+      return {
+        fromDomain: config.getDomain(domain.chainId),
+        toDomain: config.getDomain(Number(route.toDomainId)),
+        resource: resource,
+        feeHandler: route.feeHandler,
+      };
+    });
   } catch (err) {
     if (err instanceof Error) {
       throw new Error(`Failed to fetch routes because of: ${err.message}`);

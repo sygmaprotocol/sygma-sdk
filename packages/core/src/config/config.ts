@@ -1,5 +1,6 @@
 import type {
   Domain,
+  Domainlike,
   EthereumConfig,
   Network,
   Resource,
@@ -22,26 +23,38 @@ export class Config {
       }
     }
 
-    throw new Error('Configuration unavailable on uninitialized.');
+    throw new Error('Configuration unavailable or uninitialized.');
   }
 
   constructor() {
     this._configuration = new Map();
     this._configuration.set(Environment.LOCAL, localConfig);
   }
-
-  public setEnvironment(sourceDomain: number | string | Domain): void {
+  /**
+   * Sets environment based on source domain specified
+   * TODO: do this in init and make private
+   * @param {Domainlike} sourceDomain source chain id, sygma id or caip id.
+   * @returns {void}
+   */
+  public setEnvironment(sourceDomain: Domainlike): void {
     for (const _environment of Object.values(Environment)) {
-      this.environment = _environment;
-      const domainConfig = this.getDomainConfig(sourceDomain);
-      if (domainConfig) {
-        return;
+      const config = this._configuration.get(_environment);
+
+      if (config) {
+        const domain = this.findDomainConfig(sourceDomain, config);
+
+        if (domain) {
+          this.environment = _environment;
+          return;
+        }
       }
     }
-
-    throw new Error('Specified source domain not configured');
   }
-
+  /**
+   * Retrieve hosted bridge configuration in JSON format
+   * @param {Environment} environment bridging environment i.e mainnet, testnet or devnet
+   * @returns {Promise<SygmaConfig>}
+   */
   private async fetchConfig(environment: Environment): Promise<SygmaConfig> {
     let configUrl;
     switch (environment) {
@@ -59,7 +72,11 @@ export class Config {
     const response = await fetch(configUrl);
     return (await response.json()) as SygmaConfig;
   }
-
+  /**
+   * Initializes the sdk
+   * by retrieving bridge configuration JSONs
+   * @param {Environment} environment bridging environment i.e mainnet, testnet or devnet
+   */
   public async init(environment?: Environment): Promise<void> {
     this.environment = environment ? environment : Environment.MAINNET;
 
@@ -78,9 +95,14 @@ export class Config {
       }
     }
   }
-
-  public getDomain(domainish: number | string | Domain): Domain {
-    const domain = this.getDomainConfig(domainish);
+  /**
+   * Get domain minimal data
+   * ! throws an error if domain is not found
+   * @param {Domainlike} domainlike chain id, sygma id or caip id of a supported domain
+   * @returns {Domain} object containing ids, name and type
+   */
+  public getDomain(domainlike: Domainlike): Domain {
+    const domain = this.getDomainConfig(domainlike);
     if (!domain) throw new Error('Domain not found');
 
     return {
@@ -92,29 +114,63 @@ export class Config {
       parachainId: (domain as SubstrateConfig).parachainId,
     };
   }
+  /**
+   * Find a domain configuration within `SygmaConfig`,
+   * internal use, priority chainId, sygmaId
+   * or caipId.
+   * Correct environment should be set before using the method
+   * @param {Domainlike} domainLike source chain id, sygma id, caip id or domain object itself.
+   * @param {SygmaConfig} config raw sygma configuration from hosted JSON
+   * @returns {EthereumConfig | SubstrateConfig | undefined}
+   */
+  private findDomainConfig(
+    domainLike: Domainlike,
+    config: SygmaConfig,
+  ): EthereumConfig | SubstrateConfig | undefined {
+    let domainConfig = undefined;
 
-  public getDomainConfig(domain: number | string | Domain): EthereumConfig | SubstrateConfig {
-    let domainConfig;
-    if (typeof domain === 'object') {
-      domainConfig = this.configuration.domains.find(config => {
-        return config.chainId === (domain as Domain).chainId;
+    if (typeof domainLike === 'object') {
+      domainConfig = config.domains.find(config => {
+        return config.chainId === (domainLike as Domain).chainId;
       });
     } else {
-      if (typeof domain === 'string') {
-        domain = parseInt(domain);
+      if (typeof domainLike === 'string') {
+        domainLike = parseInt(domainLike);
       }
-      domainConfig = this.configuration.domains.find(config => {
-        return config.chainId === domain || config.caipId === domain || config.sygmaId === domain;
+      domainConfig = config.domains.find(config => {
+        return (
+          config.chainId === domainLike ||
+          config.sygmaId === domainLike ||
+          config.caipId === domainLike
+        );
       });
     }
 
+    return domainConfig;
+  }
+  /**
+   * Get domain configuration,
+   * Correct environment should be set before using the method
+   * ! throws Error if domain is not found
+   * @param {Domainlike} {Domainlike} domainLike source chain id, sygma id, caip id or domain object itself.
+   * @returns {EthereumConfig | SubstrateConfig}
+   */
+  public getDomainConfig(domainlike: Domainlike): EthereumConfig | SubstrateConfig {
+    const domainConfig = this.findDomainConfig(domainlike, this.configuration);
+
     if (!domainConfig) {
-      throw new Error('Domain not found');
+      throw new Error('Config for the provided domain is not setup.');
     }
 
     return domainConfig;
   }
 
+  /**
+   * Get all domains available in current environment
+   * Environment should be set before using this method
+   * @param {{ networkTypes?: Network[] }} options list of network types required
+   * @returns {Array<Domain>}
+   */
   public getDomains(options?: { networkTypes?: Network[] }): Array<Domain> {
     return this.configuration.domains
       .filter(domain => {
@@ -136,41 +192,14 @@ export class Config {
         };
       });
   }
-
-  public getDomainResources(_domain: string | number | Domain): Array<Resource> {
-    const domain = this.getDomainConfig(_domain);
-    return domain ? domain.resources : [];
-  }
-
-  public getBaseTransferParams(
-    source: number | string | Domain,
-    destinationChainId: number,
-    resourceId: string,
-  ): { sourceDomain: Domain; destinationDomain: Domain; resource: Resource } {
-    const sourceDomain = this.getDomainConfig(source);
-
-    if (!sourceDomain) {
-      throw new Error('Config for the provided destination domain is not setup');
-    }
-
-    const destinationDomain = this.getDomains().find(
-      domain => domain.chainId == destinationChainId,
-    );
-    if (!destinationDomain) {
-      throw new Error('Config for the provided destination domain is not setup');
-    }
-
-    const resource = sourceDomain.resources.find(
-      resource => resource.sygmaResourceId == resourceId,
-    );
-    if (!resource) {
-      throw new Error('Config for the provided resource is not setup');
-    }
-
-    return {
-      sourceDomain,
-      destinationDomain,
-      resource,
-    };
+  /**
+   * Get resources of a domain
+   * ! will throw error if domain is not found
+   * @param {Domainlike} domain chain id, caip id, sygma id or domain object itself
+   * @returns {Array<Resource>} resources list
+   */
+  public getDomainResources(domain: Domainlike): Array<Resource> {
+    const d = this.getDomainConfig(domain);
+    return d.resources;
   }
 }

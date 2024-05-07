@@ -1,2 +1,2 @@
-//setupJest.js or similar file
+// setupJest.js or similar file
 require('jest-fetch-mock').enableMocks()

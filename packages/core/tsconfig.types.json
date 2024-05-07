@@ -3,5 +3,8 @@
         "declaration": true,
         "emitDeclarationOnly": true,
         "outDir": "types"
-    }
+    },
+    "exclude": [
+        "test"
+    ]
 }
