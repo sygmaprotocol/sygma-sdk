@@ -77,9 +77,7 @@ export class Config {
    * by retrieving bridge configuration JSONs
    * @param {Environment} environment bridging environment i.e mainnet, testnet or devnet
    */
-  public async init(environment?: Environment): Promise<void> {
-    this.environment = environment ? environment : Environment.MAINNET;
-
+  public async init(params?: { environment?: Environment; source?: Domainlike }): Promise<void> {
     for (const env of Object.values(Environment)) {
       try {
         if (!this._configuration.get(env)) {
@@ -93,6 +91,14 @@ export class Config {
           console.error('Something went wrong while fetching config file');
         }
       }
+    }
+
+    if (params?.environment) {
+      this.environment = params.environment;
+    }
+
+    if (params?.source) {
+      this.setEnvironment(params.source);
     }
   }
   /**

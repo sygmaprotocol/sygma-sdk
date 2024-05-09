@@ -5,7 +5,7 @@ import type { ERC20, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-cont
  * Determines whether the specified token is approved for the provided handler address.
  *
  * @example
- * const tokenApproved = await isApproved(tokenId, tokenInstance, handlerAddress);
+ * const tokenApproved = await isApproved(tokenInstance, handlerAddress, tokenId);
  * console.log(`Token approval status for ${tokenID}:`, isApproved);
  *
  * @category Token iteractions
@@ -28,7 +28,7 @@ export const isApproved = async (
  * Retrieves the current allowance of an ERC20 token for the specified sender and handler addresses.
  *
  * @example
- * const currentAllowance = await getERC20Allowance(senderAddress, erc20Instance, erc20HandlerAddress);
+ * const currentAllowance = await getERC20Allowance(erc20Instance, erc20HandlerAddress, senderAddress);
  * console.log('Current allowance:', currentAllowance);
  *
  * @category Token iteractions

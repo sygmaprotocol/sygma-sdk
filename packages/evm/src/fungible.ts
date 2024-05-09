@@ -5,10 +5,11 @@ import { Web3Provider } from '@ethersproject/providers';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { BigNumber, type PopulatedTransaction } from 'ethers';
 import { approve, getERC20Allowance } from 'utils/approveAndCheckFns.js';
+import { createTransactionRequest } from 'utils/transaction.js';
 import { PercentageFeeCalculator } from './fee/PercentageFee.js';
 import { BasicFeeCalculator } from './fee/BasicFee.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
-import { ASSET_TRANSFER_GAS_LIMIT, erc20Transfer } from './utils/depositFns.js';
+import { erc20Transfer } from './utils/depositFns.js';
 
 /**
  * Return amount of liquidity tokens on resource handler
@@ -33,12 +34,11 @@ export async function createEvmFungibleAssetTransfer(
   transferRequest: EvmFungibleTransferRequest,
 ): Promise<EvmFungibleAssetTransfer> {
   const config: Config = new Config();
-  await config.init();
+  await config.init({ source: transferRequest.source });
 
   const { resource, sourceNetworkProvider, amount, destinationAddress, securityModel } =
     transferRequest;
 
-  config.setEnvironment(transferRequest.source);
   const source = config.getDomain(transferRequest.source);
   const destination = config.getDomain(transferRequest.destination);
   const resources = config.getDomainResources(source);
@@ -175,7 +175,7 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
    * @dev with permit2 we would add TypedData in the array to be signed and signature will be mandatory param into getTransaferTransaction
    * @dev potentially add optional param to override transaction params
    */
-  async getApprovalTransactions(): Promise<Array<PopulatedTransaction>> {
+  async getApprovalTransactions(): Promise<Array<TransactionRequest>> {
     const approvals: Array<PopulatedTransaction> = [];
     const sourceDomainConfig = this.config.getDomainConfig(this.source);
 
@@ -201,7 +201,7 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
       );
     }
 
-    return approvals;
+    return approvals.map(approval => createTransactionRequest(approval));
   }
 
   /**
@@ -224,15 +224,6 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
       feeData: fee,
     });
 
-    const transferTxRequest = {
-      to: bridge.address,
-      value: BigInt(transferTx.value?.toString() ?? '0'),
-      data: transferTx.data ?? '',
-      gasLimit: BigInt(
-        transferTx.gasLimit ? transferTx.gasLimit.toString() : ASSET_TRANSFER_GAS_LIMIT.toString(),
-      ),
-    };
-
-    return transferTxRequest;
+    return createTransactionRequest(transferTx);
   }
 }

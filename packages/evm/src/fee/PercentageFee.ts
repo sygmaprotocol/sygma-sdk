@@ -11,7 +11,7 @@ export class PercentageFeeCalculator extends BaseEvmTransferFeeCalculator {
   }
 
   async calculateFee(params: EvmFeeCalculationParams): Promise<EvmFee> {
-    if (params.feeHandlerType === FeeHandlerType.BASIC) {
+    if (params.feeHandlerType === FeeHandlerType.PERCENTAGE) {
       const percentageFeeHandlerContract = PercentageERC20FeeHandlerEVM__factory.connect(
         params.feeHandlerAddress,
         params.provider,

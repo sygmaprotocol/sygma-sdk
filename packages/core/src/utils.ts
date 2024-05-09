@@ -90,10 +90,10 @@ function getIndexerURL(environment: Environment): string {
  */
 export async function getDomains(options?: {
   routeTypes?: RouteType[];
-  env?: Environment;
+  environment?: Environment;
   networkTypes?: Network[];
 }): Promise<Domain[]> {
-  await config.init(options?.env);
+  await config.init({ environment: options?.environment });
   const domains = config.getDomains(options);
   return domains;
 }
@@ -110,8 +110,7 @@ export async function getRoutes(
   },
 ): Promise<Route[]> {
   try {
-    await config.init();
-    config.setEnvironment(source);
+    await config.init({ source });
 
     const domain = config.getDomainConfig(source);
     if (!domain) {
@@ -185,11 +184,11 @@ export async function getTransferStatus(txHash: string): Promise<TransferStatusR
  * End users shouldn't really need that but lets expose for power users
  * @param env
  */
-export async function getRawConfiguration(env: Environment): Promise<SygmaConfig> {
-  await config.init(env);
+export async function getRawConfiguration(environment: Environment): Promise<SygmaConfig> {
+  await config.init({ environment });
   const sygmaConfig = config.configuration;
   if (!sygmaConfig) {
-    throw new Error(`Unable to fetch configuration for environment: ${env}`);
+    throw new Error(`Unable to fetch configuration for environment: ${environment}`);
   }
   return sygmaConfig;
 }
