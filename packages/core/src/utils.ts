@@ -14,8 +14,6 @@ import type {
 import { Environment } from './types.js';
 import { Config } from './index.js';
 
-const config = new Config();
-
 function getIndexerTransferUrl(
   env: Environment,
   txHash: string,
@@ -93,7 +91,8 @@ export async function getDomains(options?: {
   environment?: Environment;
   networkTypes?: Network[];
 }): Promise<Domain[]> {
-  await config.init({ environment: options?.environment });
+  const config = new Config();
+  await config.init();
   const domains = config.getDomains(options);
   return domains;
 }
@@ -110,24 +109,23 @@ export async function getRoutes(
   },
 ): Promise<Route[]> {
   try {
-    await config.init({ source });
+    const config = new Config();
+    await config.init();
+    const domainConfig = config.findDomainConfig(source);
 
-    const domain = config.getDomainConfig(source);
-    if (!domain) {
-      throw new Error('Domain not supported or incorrect environment set');
-    }
-
-    const indexerUrl = getIndexerURL(config.environment);
+    const indexerUrl = getIndexerURL(domainConfig.environment);
     const typeQuery = options?.routeTypes ? `?resourceType=${options.routeTypes.join(',')}` : '';
-    const url = `${indexerUrl}/api/routes/from/${domain.sygmaId}${typeQuery}`;
+    const url = `${indexerUrl}/api/routes/from/${domainConfig.config.sygmaId}${typeQuery}`;
     const response = await fetch(url);
     const data = (await response.json()) as { routes: RouteIndexerType[] };
 
     return data.routes.map(route => {
-      const resource = domain.resources.find(r => r.sygmaResourceId === route.sygmaResourceId)!;
+      const resource = domainConfig.config.resources.find(
+        r => r.sygmaResourceId === route.sygmaResourceId,
+      )!;
 
       return {
-        fromDomain: config.getDomain(domain.chainId),
+        fromDomain: config.getDomain(domainConfig.config.chainId),
         toDomain: config.getDomain(Number(route.toDomainId)),
         resource: resource,
         feeHandler: route.feeHandler,
@@ -146,8 +144,12 @@ export async function getRoutes(
  * TODO: why isn't txHash unique identifier
  * @param txHash
  */
-export async function getTransferStatus(txHash: string): Promise<TransferStatusResponse> {
-  const { url, explorerUrl } = getIndexerTransferUrl(config.environment, txHash);
+export async function getTransferStatus(
+  txHash: string,
+  environment?: Environment,
+): Promise<TransferStatusResponse> {
+  const env = environment ?? Environment.MAINNET;
+  const { url, explorerUrl } = getIndexerTransferUrl(env, txHash);
 
   try {
     const response = await fetch(url);
@@ -185,8 +187,9 @@ export async function getTransferStatus(txHash: string): Promise<TransferStatusR
  * @param env
  */
 export async function getRawConfiguration(environment: Environment): Promise<SygmaConfig> {
-  await config.init({ environment });
-  const sygmaConfig = config.configuration;
+  const config = new Config();
+  await config.init();
+  const sygmaConfig = config.configuration.get(environment);
   if (!sygmaConfig) {
     throw new Error(`Unable to fetch configuration for environment: ${environment}`);
   }

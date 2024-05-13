@@ -33,14 +33,14 @@ export const isApproved = async (
  *
  * @category Token iteractions
  * @param {ERC20} erc20Instance - The ERC20 token instance used to query the allowance.
- * @param {string} spender - The address for which the token allowance is checked.
  * @param {string} senderAddress - The address of the token sender.
+ * @param {string} spender - The address for which the token allowance is checked.
  * @returns {Promise<number>} A promise that resolves to a number representing the current allowance of the ERC20 token.
  */
 export const getERC20Allowance = async (
   erc20Instance: ERC20,
-  spender: string,
   senderAddress: string,
+  spender: string,
 ): Promise<BigNumber> => {
   return await erc20Instance.allowance(senderAddress, spender);
 };

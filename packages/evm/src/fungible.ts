@@ -1,73 +1,15 @@
-import type {
-  Domainlike,
-  Domain,
-  EvmResource,
-  EthereumConfig,
-  SubstrateConfig,
-} from '@buildwithsygma/core';
-import {
-  SecurityModel,
-  Config,
-  FeeHandlerType,
-  Environment,
-  ResourceType,
-} from '@buildwithsygma/core';
+import type { Domainlike, Domain, EvmResource } from '@buildwithsygma/core';
+import { SecurityModel, Config, FeeHandlerType } from '@buildwithsygma/core';
 import type { Eip1193Provider, EvmFee, TransactionRequest } from 'types.js';
 import { Web3Provider } from '@ethersproject/providers';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
-import { BigNumber, type PopulatedTransaction } from 'ethers';
+import { BigNumber, constants, utils, type PopulatedTransaction } from 'ethers';
 import { approve, getERC20Allowance } from 'utils/approveAndCheckFns.js';
 import { createTransactionRequest } from 'utils/transaction.js';
 import { PercentageFeeCalculator } from './fee/PercentageFee.js';
 import { BasicFeeCalculator } from './fee/BasicFee.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
 import { erc20Transfer } from './utils/depositFns.js';
-import { getEvmHandlerBalance } from './utils/balances.js';
-
-export async function getLiquidity(
-  provider: Eip1193Provider,
-  resource: EvmResource,
-): Promise<bigint> {
-  let domain: EthereumConfig | SubstrateConfig | undefined;
-  const config = new Config();
-  await config.init();
-
-  for (const environment of Object.values(Environment)) {
-    const configuration = config.getConfiguration(environment);
-    domain = configuration.domains.find(domain => {
-      const isResourceOfDomain = domain.resources.find(res => {
-        return res.sygmaResourceId === resource.sygmaResourceId;
-      });
-
-      return !!isResourceOfDomain;
-    });
-
-    if (domain !== undefined) {
-      break;
-    }
-  }
-
-  if (!domain) {
-    throw new Error('Domain configuration not found.');
-  }
-
-  const handler = domain.handlers.find(handler => handler.type === ResourceType.FUNGIBLE);
-
-  if (!handler) {
-    throw new Error(`Fungible handler not found for chainId: ${domain.chainId}`);
-  }
-
-  return await getEvmHandlerBalance(provider, resource, handler.address);
-}
-
-/**
- * Return amount of liquidity tokens on resource handler
- * @param provider
- * @param resource
- */
-// export function getLiquidity(provider: Eip1193Provider, resource: EvmResource): Promise<bigint> {
-//   return Promise.resolve(BigInt(0));
-// }
 
 type EvmFungibleTransferRequest = {
   source: Domainlike;
@@ -82,16 +24,23 @@ type EvmFungibleTransferRequest = {
 export async function createEvmFungibleAssetTransfer(
   transferRequest: EvmFungibleTransferRequest,
 ): Promise<EvmFungibleAssetTransfer> {
+  const {
+    destination,
+    source,
+    resource,
+    sourceNetworkProvider,
+    amount,
+    destinationAddress,
+    securityModel,
+  } = transferRequest;
+
   const config: Config = new Config();
-  await config.init({ source: transferRequest.source });
+  await config.init({ source });
 
-  const { resource, sourceNetworkProvider, amount, destinationAddress, securityModel } =
-    transferRequest;
+  const destinationDomain = config.getDomain(destination);
+  const sourceDomain = config.getDomain(source);
 
-  const source = config.getDomain(transferRequest.source);
-  const destination = config.getDomain(transferRequest.destination);
   const resources = config.getDomainResources(source);
-
   const evmResource = resources.find(_resource => {
     switch (typeof resource) {
       case 'object':
@@ -101,41 +50,66 @@ export async function createEvmFungibleAssetTransfer(
     }
   });
 
-  if (!evmResource) {
-    throw new Error('Resource not configured');
-  }
+  if (!evmResource) throw new Error('Resource not found.');
 
-  const assetTransfer = new EvmFungibleAssetTransfer(
+  const transfer = new EvmFungibleAssetTransfer(
     {
-      source,
-      destination,
-      sourceNetworkProvider: sourceNetworkProvider,
       resource: evmResource as EvmResource,
-      amount,
+      destination: destinationDomain,
+      source: sourceDomain,
+      sourceNetworkProvider,
       destinationAddress,
       securityModel,
+      amount,
     },
     config,
   );
 
-  return assetTransfer;
+  const originalFee = await transfer.getFee();
+  //in case of percentage fee handler, we are calculating what amount + fee will result int user inputed amount
+  //in case of fixed(basic) fee handler, fee is taken from native token
+  if (originalFee.type === FeeHandlerType.PERCENTAGE) {
+    let _amount = amount;
+    const minFee = originalFee.minFee!;
+    const maxFee = originalFee.maxFee!;
+    const percentage = originalFee.percentage!;
+    const userInputAmount = BigNumber.from(amount);
+
+    //calculate amount without fee (percentage)
+    const feelessAmount = userInputAmount
+      .mul(constants.WeiPerEther)
+      .div(utils.parseEther(String(1 + percentage)));
+
+    const calculatedFee = userInputAmount.sub(feelessAmount);
+    _amount = feelessAmount.toBigInt();
+    //if calculated percentage fee is less than lower fee bound, substract lower bound from user input. If lower bound is 0, bound is ignored
+    if (calculatedFee.lt(minFee) && minFee > 0) {
+      _amount = amount - minFee;
+      // this.resourceAmount = userInputAmount.sub(minFee);
+    }
+    //if calculated percentage fee is more than upper fee bound, substract upper bound from user input. If upper bound is 0, bound is ignored
+    if (calculatedFee.gt(maxFee) && maxFee > 0) {
+      // this.resourceAmount = userInputAmount.sub(maxFee);
+      _amount = amount - maxFee;
+    }
+    transfer.setAmount(_amount);
+  }
+
+  return transfer;
 }
 
 /**
  * @dev User should not instance this directly. All the (async) checks should be done in `createEvmFungibleAssetTransfer`
  */
 class EvmFungibleAssetTransfer {
-  config: Config;
-  source: Domain;
-  destination: Domain;
-
   sourceNetworkProvider: Eip1193Provider;
-
-  resource: EvmResource;
-
-  amount: bigint;
   destinationAddress: string;
   securityModel: SecurityModel;
+  destination: Domain;
+  resource: EvmResource;
+  config: Config;
+  source: Domain;
+  amount: bigint;
 
   constructor(
     transfer: {
@@ -163,34 +137,48 @@ class EvmFungibleAssetTransfer {
       this.config = config;
     }
   }
-
+  /**
+   * Set amount to be transferred
+   * @param {BigInt} amount
+   * @returns {EvmFungibleAssetTransfer}
+   */
   setAmount(amount: bigint): EvmFungibleAssetTransfer {
     this.amount = amount;
     return this;
   }
+  /**
+   * Set resource to be transferred
+   * @param {EvmResource} resource
+   * @returns {EvmFungibleAssetTransfer}
+   */
   setResource(resource: EvmResource): EvmFungibleAssetTransfer {
     this.resource = resource;
     return this;
   }
+  /**
+   *
+   * @param destination
+   * @returns
+   */
   setDesinationDomain(destination: string | number | Domain): EvmFungibleAssetTransfer {
     const domain = this.config.getDomain(destination);
     this.destination = domain;
     return this;
   }
+  /**
+   *
+   * @param destinationAddress
+   * @returns
+   */
   setDestinationAddress(destinationAddress: string): EvmFungibleAssetTransfer {
     this.destinationAddress = destinationAddress;
     return this;
   }
-
   /**
    * Returns fee based on transfer amount.
    * @param amount By default it is original amount passed in constructor
    */
-  async getFee(amount?: bigint): Promise<EvmFee> {
-    if (amount) {
-      this.amount = amount;
-    }
-
+  async getFee(): Promise<EvmFee> {
     const provider = new Web3Provider(this.sourceNetworkProvider);
     const sender = await provider.getSigner().getAddress();
     const { feeHandlerAddress, feeHandlerType } = await getFeeInformation(
@@ -223,29 +211,27 @@ class EvmFungibleAssetTransfer {
    * @dev potentially add optional param to override transaction params
    */
   async getApprovalTransactions(): Promise<Array<TransactionRequest>> {
-    const approvals: Array<PopulatedTransaction> = [];
-    const sourceDomainConfig = this.config.getDomainConfig(this.source);
-
     const provider = new Web3Provider(this.sourceNetworkProvider);
-    const erc20 = ERC20__factory.connect(this.resource.address, provider);
+    const sourceDomainConfig = this.config.getDomainConfig(this.source);
     const bridge = Bridge__factory.connect(sourceDomainConfig.bridge, provider);
-
     const handlerAddress = await bridge._resourceIDToHandlerAddress(this.resource.sygmaResourceId);
+
+    const erc20 = ERC20__factory.connect(this.resource.address, provider);
+    const account = await provider.getSigner().getAddress();
     const fee = await this.getFee();
+    const feeHandlerAllowance = await getERC20Allowance(erc20, account, fee.handlerAddress);
+    const handlerAllowance = await getERC20Allowance(erc20, account, handlerAddress);
 
-    const spender = await provider.getSigner().getAddress();
-    const feeHandlerAllowance = await getERC20Allowance(erc20, spender, fee.handlerAddress);
-    const handlerAllowance = await getERC20Allowance(erc20, spender, handlerAddress);
-
+    const approvals: Array<PopulatedTransaction> = [];
     if (fee.type == FeeHandlerType.PERCENTAGE && feeHandlerAllowance.lt(fee.fee)) {
-      approvals.push(await approve(erc20, fee.handlerAddress, BigNumber.from(fee.fee).toString()));
+      const approvalAmount = BigNumber.from(fee.fee).toString();
+      approvals.push(await approve(erc20, fee.handlerAddress, approvalAmount));
     }
 
     const transferAmount = BigNumber.from(this.amount);
     if (handlerAllowance.lt(transferAmount)) {
-      approvals.push(
-        await approve(erc20, handlerAddress, BigNumber.from(transferAmount).toString()),
-      );
+      const approvalAmount = BigNumber.from(transferAmount).toString();
+      approvals.push(await approve(erc20, handlerAddress, approvalAmount));
     }
 
     return approvals.map(approval => createTransactionRequest(approval));

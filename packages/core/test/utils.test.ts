@@ -48,6 +48,7 @@ enableFetchMocks();
 
 describe('Utils - getRoutes', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     fetchMock.resetMocks();
     fetchMock.doMock();
     fetchMock.mockOnceIf(ConfigUrl.DEVNET.toString(), JSON.stringify(mockedDevnetConfig));
@@ -65,8 +66,6 @@ describe('Utils - getRoutes', () => {
   });
 
   it('should fetch all routes mainnet', async () => {
-    fetchMock.resetMocks();
-
     fetchMock.mockOnceIf(
       `${IndexerUrl.MAINNET}/api/routes/from/312`,
       JSON.stringify(mockedMainnetRoutes),
@@ -77,8 +76,6 @@ describe('Utils - getRoutes', () => {
   });
 
   it('should fetch fungible routes', async () => {
-    fetchMock.resetMocks();
-
     fetchMock.mockOnceIf(
       `${IndexerUrl.TESTNET}/api/routes/from/212?resourceType=fungible`,
       JSON.stringify({
@@ -91,8 +88,6 @@ describe('Utils - getRoutes', () => {
   });
 
   it('should throw an error on network failure', async () => {
-    fetchMock.resetMocks();
-
     fetchMock.mockOnceIf(`${IndexerUrl.TESTNET}/api/routes/from/212`, () => {
       throw new Error('failed');
     });
