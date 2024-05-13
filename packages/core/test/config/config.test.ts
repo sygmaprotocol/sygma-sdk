@@ -7,9 +7,8 @@ import { mockedDevnetConfig, mockedMainnetConfig, mockedTestnetConfig } from '..
 enableFetchMocks();
 
 describe('Config', () => {
-  const config = new Config();
-
   beforeEach(() => {
+    jest.clearAllMocks();
     fetchMock.resetMocks();
     fetchMock.doMock();
     fetchMock.mockOnceIf(ConfigUrl.DEVNET.toString(), JSON.stringify(mockedDevnetConfig));
@@ -18,8 +17,11 @@ describe('Config', () => {
   });
 
   it('Should successfully initialize config for the corresponding environment', async function () {
-    await config.init({ environment: Environment.DEVNET });
-    expect(config.configuration).toEqual(mockedDevnetConfig);
+    const config = new Config();
+    await config.init();
+    expect(config.configuration.get(Environment.DEVNET)).toEqual(mockedDevnetConfig);
+    expect(config.configuration.get(Environment.TESTNET)).toEqual(mockedTestnetConfig);
+    expect(config.configuration.get(Environment.MAINNET)).toEqual(mockedMainnetConfig);
   });
 
   it('Should throw error if failed to fetch config', async function () {
@@ -29,17 +31,22 @@ describe('Config', () => {
     fetchMock.mockOnceIf(ConfigUrl.MAINNET.toString(), () => {
       throw new Error('Network Error');
     });
+    fetchMock.mockOnceIf(ConfigUrl.TESTNET.toString(), () => {
+      throw new Error('Network Error');
+    });
+    fetchMock.mockOnceIf(ConfigUrl.DEVNET.toString(), () => {
+      throw new Error('Network Error');
+    });
 
     const conf = new Config();
-    const expectedError = new Error('Configuration unavailable or uninitialized.');
-    await conf.init({ environment: Environment.MAINNET });
+    const expectedError = new Error('Network Error');
 
-    expect(() => conf.configuration).toThrow(expectedError);
+    await expect(() => conf.init()).rejects.toThrow(expectedError);
   });
 
   it('Should successfully return all domains from config', async function () {
-    await config.init({ environment: Environment.DEVNET });
-
+    const config = new Config();
+    await config.init();
     const domainConfig = config.getDomainConfig(111);
 
     expect(domainConfig).toEqual(mockedDevnetConfig.domains[0]);
@@ -48,24 +55,24 @@ describe('Config', () => {
   it("Should throw error if provided chainId doesn't have configured domain", async function () {
     fetchMock.mockIf(ConfigUrl.TESTNET.toString(), JSON.stringify({ domains: [] }));
 
-    const expectedError = new Error('Config for the provided domain is not setup.');
-    await config.init({ environment: Environment.TESTNET });
+    const expectedError = new Error('Domain configuration not found.');
+    const config = new Config();
+    await config.init();
 
     expect(() => config.getDomainConfig(115)).toThrow(expectedError);
   });
 
   it('Should successfully return all resources for domain', async function () {
-    await config.init({ environment: Environment.DEVNET });
-
-    const resources = config.getDomainResources(111);
-
+    const config = new Config();
+    await config.init();
+    const resources = config.getResources(111);
     expect(resources).toEqual(mockedDevnetConfig.domains[0].resources);
   });
 
   it('Should successfully get all supported domains from config', async function () {
-    await config.init({ environment: Environment.DEVNET });
-
-    const domains = config.getDomains();
+    const config = new Config();
+    await config.init();
+    const domains = config.getDomains({ environment: Environment.DEVNET });
 
     expect(domains).toEqual(
       mockedDevnetConfig.domains.map(({ parachainId, caipId, sygmaId, chainId, name, type }) => ({
@@ -79,12 +86,14 @@ describe('Config', () => {
     );
   });
 
-  it('Should fetch all configurations by default', async function () {
-    await config.init({ environment: Environment.DEVNET, source: 111 });
-    expect(config.environment).toEqual(Environment.DEVNET);
-    await config.init({ environment: Environment.TESTNET, source: 211 });
-    expect(config.environment).toEqual(Environment.TESTNET);
-    await config.init({ environment: Environment.MAINNET, source: 311 });
-    expect(config.environment).toEqual(Environment.MAINNET);
+  it('Should fetch all configurations by default', async () => {
+    const config = new Config();
+    await config.init();
+    let dc = config.findDomainConfig(111);
+    expect(dc.environment).toEqual(Environment.DEVNET);
+    dc = config.findDomainConfig(211);
+    expect(dc.environment).toEqual(Environment.TESTNET);
+    dc = config.findDomainConfig(311);
+    expect(dc.environment).toEqual(Environment.MAINNET);
   });
 });
