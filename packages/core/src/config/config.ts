@@ -16,11 +16,13 @@ export class Config {
   public environment!: Environment;
 
   get configuration(): SygmaConfig {
-    if (this.environment) {
-      const configuration = this._configuration.get(this.environment);
-      if (configuration) {
-        return configuration;
-      }
+    return this.getConfiguration(this.environment);
+  }
+
+  getConfiguration(environment: Environment): SygmaConfig {
+    const configuration = this._configuration.get(environment);
+    if (configuration) {
+      return configuration;
     }
 
     throw new Error('Configuration unavailable or uninitialized.');
@@ -32,7 +34,6 @@ export class Config {
   }
   /**
    * Sets environment based on source domain specified
-   * TODO: do this in init and make private
    * @param {Domainlike} sourceDomain source chain id, sygma id or caip id.
    * @returns {void}
    */

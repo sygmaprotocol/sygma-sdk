@@ -1,6 +1,7 @@
 import { ERC20__factory } from '@buildwithsygma/sygma-contracts';
-import { JsonRpcProvider } from '@ethersproject/providers';
-import type { EvmResource } from '../../types.js';
+import { Web3Provider } from '@ethersproject/providers';
+import type { EvmResource } from '@buildwithsygma/core';
+import type { Eip1193Provider } from '../types.js';
 
 /**
  * Get liquidity of resource handler on destination domain
@@ -10,31 +11,32 @@ import type { EvmResource } from '../../types.js';
  * @returns {Promise<bigint>} handler balance
  */
 export const getEvmHandlerBalance = async (
-  destinationProviderUrl: string,
+  provider: Eip1193Provider,
   resource: EvmResource,
   handlerAddress: string,
 ): Promise<bigint> => {
-  const provider = new JsonRpcProvider(destinationProviderUrl);
+  const web3Provider = new Web3Provider(provider);
   if (resource.native) {
-    return BigInt((await provider.getBalance(handlerAddress)).toString());
+    return (await web3Provider.getBalance(handlerAddress)).toBigInt();
   } else {
     const tokenAddress = resource.address;
-    return await getEvmErc20Balance(handlerAddress, tokenAddress, provider);
+    return await getEvmErc20Balance(provider, tokenAddress, handlerAddress);
   }
 };
 
 /**
  * Fetch ERC20 token balance of an address
- * @param {string} address EVM address to query
- * @param {string} tokenAddress ERC20 token address
  * @param {JsonRpcProvider} provider Network provider
+ * @param {string} tokenAddress ERC20 token address
+ * @param {string} address EVM address to query
  * @returns {Promise<bigint>} balance
  */
 export const getEvmErc20Balance = async (
-  address: string,
+  provider: Eip1193Provider,
   tokenAddress: string,
-  provider: JsonRpcProvider,
+  address: string,
 ): Promise<bigint> => {
-  const erc20Contract = ERC20__factory.connect(tokenAddress, provider);
+  const web3Provider = new Web3Provider(provider);
+  const erc20Contract = ERC20__factory.connect(tokenAddress, web3Provider);
   return BigInt((await erc20Contract.balanceOf(address)).toString());
 };

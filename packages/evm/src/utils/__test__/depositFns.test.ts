@@ -1,6 +1,6 @@
 import type { Bridge, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts';
 
-import type { ethers, ContractReceipt, PopulatedTransaction } from 'ethers';
+import { type ethers, type ContractReceipt, type PopulatedTransaction } from 'ethers';
 
 import { FeeHandlerType } from '@buildwithsygma/core';
 import * as EVM from '../depositFns.js';
@@ -40,7 +40,6 @@ describe('deposit functions', () => {
     };
     bridgeInstance = { deposit: jest.fn() } as unknown as Bridge;
 
-    // Reset mocks before each test
     jest.clearAllMocks();
   });
   describe('executeDeposit', () => {
@@ -123,7 +122,7 @@ describe('deposit functions', () => {
         'resourceId',
         'depositData',
         feeData.fee.toString(),
-        { gasLimit: EVM.ASSET_TRANSFER_GAS_LIMIT, value: 100n },
+        { gasLimit: EVM.ASSET_TRANSFER_GAS_LIMIT, value: 0 },
       );
     });
 
@@ -155,9 +154,12 @@ describe('deposit functions', () => {
         },
       } as unknown as Bridge;
 
+      const depositData =
+        '0x0000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000000000000000000000000000000000001498729c03c4d5e820f5e8c45558ae07ae63f97461';
+
       const erc20Params = {
         amount: BigInt('100'),
-        recipientAddress: '0x123',
+        recipientAddress: '0x98729c03c4D5e820F5e8c45558ae07aE63F97461',
         bridgeInstance,
         domainId,
         resourceId,
@@ -168,67 +170,11 @@ describe('deposit functions', () => {
       expect(EVM.executeDeposit).toBeCalledWith(
         domainId,
         resourceId,
-        '0x0erc20value',
+        depositData,
         feeData,
         bridgeInstance,
         undefined,
       );
     });
   });
-
-  //   describe('erc721Transfer', () => {
-  //     it('should successfully execute', async () => {
-  //       jest.spyOn(EVM, 'executeDeposit').mockResolvedValueOnce({} as ethers.PopulatedTransaction);
-  //       const erc721Params = {
-  //         id: '100',
-  //         recipientAddress: '0x123',
-  //         bridgeInstance,
-  //         domainId,
-  //         resourceId,
-  //         feeData,
-  //       };
-  //       await EVM.erc721Transfer(erc721Params);
-  //       expect(EVM.executeDeposit).toBeCalledWith(
-  //         domainId,
-  //         resourceId,
-  //         '0x0erc20value',
-  //         feeData,
-  //         bridgeInstance,
-  //         undefined,
-  //       );
-  //     });
-  //   });
-
-  //   it('should successfully run getDepositEventFromReceipt', async () => {
-  //     const depositEventData = {
-  //       destinationDomainID: 111,
-  //       resourceID: 'asd',
-  //       depositNonce: BigNumber.from('222'),
-  //       user: 'user',
-  //       data: 'ddd',
-  //       handlerResponse: 'resp',
-  //     } as unknown as DepositEvent;
-  //     const bridgeInstance = {
-  //       filters: {
-  //         Deposit: jest.fn() as unknown as DepositEventFilter,
-  //       },
-  //       queryFilter: jest.fn().mockResolvedValue([depositEventData]),
-  //     } as unknown as Bridge;
-  //     const receipt = { blockHash: '0x123' } as unknown as ContractReceipt;
-  //     const result = await EVM.getDepositEventFromReceipt(receipt, bridgeInstance);
-  //     expect(result).toBe(depositEventData);
-  //   });
-
-  //   it('should rejects getDepositEventFromReceipt in case of error', async () => {
-  //     const bridgeInstance = {
-  //       filters: {
-  //         Deposit: jest.fn() as unknown as DepositEventFilter,
-  //       },
-  //       queryFilter: jest.fn().mockRejectedValue(new Error('Sick Error')),
-  //     } as unknown as Bridge;
-  //     const receipt = { blockHash: '0x123' } as unknown as ContractReceipt;
-  //     await expect(EVM.getDepositEventFromReceipt(receipt, bridgeInstance)).rejects.toThrowError(
-  //       'Sick Error',
-  //     );
-  //   });
 });

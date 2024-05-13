@@ -1,5 +1,17 @@
-import type { Domainlike, Domain, EvmResource } from '@buildwithsygma/core';
-import { SecurityModel, Config, FeeHandlerType, BaseTransfer } from '@buildwithsygma/core';
+import type {
+  Domainlike,
+  Domain,
+  EvmResource,
+  EthereumConfig,
+  SubstrateConfig,
+} from '@buildwithsygma/core';
+import {
+  SecurityModel,
+  Config,
+  FeeHandlerType,
+  Environment,
+  ResourceType,
+} from '@buildwithsygma/core';
 import type { Eip1193Provider, EvmFee, TransactionRequest } from 'types.js';
 import { Web3Provider } from '@ethersproject/providers';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
@@ -10,6 +22,43 @@ import { PercentageFeeCalculator } from './fee/PercentageFee.js';
 import { BasicFeeCalculator } from './fee/BasicFee.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
 import { erc20Transfer } from './utils/depositFns.js';
+import { getEvmHandlerBalance } from './utils/balances.js';
+
+export async function getLiquidity(
+  provider: Eip1193Provider,
+  resource: EvmResource,
+): Promise<bigint> {
+  let domain: EthereumConfig | SubstrateConfig | undefined;
+  const config = new Config();
+  await config.init();
+
+  for (const environment of Object.values(Environment)) {
+    const configuration = config.getConfiguration(environment);
+    domain = configuration.domains.find(domain => {
+      const isResourceOfDomain = domain.resources.find(res => {
+        return res.sygmaResourceId === resource.sygmaResourceId;
+      });
+
+      return !!isResourceOfDomain;
+    });
+
+    if (domain !== undefined) {
+      break;
+    }
+  }
+
+  if (!domain) {
+    throw new Error('Domain configuration not found.');
+  }
+
+  const handler = domain.handlers.find(handler => handler.type === ResourceType.FUNGIBLE);
+
+  if (!handler) {
+    throw new Error(`Fungible handler not found for chainId: ${domain.chainId}`);
+  }
+
+  return await getEvmHandlerBalance(provider, resource, handler.address);
+}
 
 /**
  * Return amount of liquidity tokens on resource handler
@@ -75,7 +124,7 @@ export async function createEvmFungibleAssetTransfer(
 /**
  * @dev User should not instance this directly. All the (async) checks should be done in `createEvmFungibleAssetTransfer`
  */
-class EvmFungibleAssetTransfer extends BaseTransfer {
+class EvmFungibleAssetTransfer {
   config: Config;
   source: Domain;
   destination: Domain;
@@ -100,8 +149,6 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     },
     config?: Config,
   ) {
-    super(transfer, config);
-
     this.source = transfer.source;
     this.sourceNetworkProvider = transfer.sourceNetworkProvider;
     this.destination = transfer.destination;
