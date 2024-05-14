@@ -154,6 +154,11 @@ export class Config {
     if (!domainConfig) throw new Error('Domain configuration not found.');
     return this.createDomain(domainConfig.config);
   }
+  /**
+   * Get domain configuration
+   * @param {Domainlike} domainLike chain id, caip id or sygma id
+   * @returns {SubstrateConfig | EthereumConfig}
+   */
   getDomainConfig(domainLike: Domainlike): SubstrateConfig | EthereumConfig {
     if (!this.initialized) throw new Error('SDK Uninitialized');
     const domainConfig = this.findDomainConfig(domainLike);
