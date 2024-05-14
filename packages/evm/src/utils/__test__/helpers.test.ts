@@ -26,7 +26,7 @@ describe('createERCDepositData', () => {
     const expectedDepositData =
       '0x00000000000000000000000000000000000000000000000000000000000000640000000000000000000000000000000000000000000000000000000000000026010200040100fac48520983815e2022ded67ca8d27b73d51b1b022284c48b4eccbb7a328d80f';
 
-    const depositData = createERCDepositData(tokenAmount, recipientAddress, 1);
+    const depositData = createERCDepositData(tokenAmount, recipientAddress, 2004);
 
     expect(depositData).toEqual(expectedDepositData);
   });
