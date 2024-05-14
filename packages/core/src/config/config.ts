@@ -29,8 +29,10 @@ export class Config {
    */
   async init(): Promise<void> {
     for (const environment of Object.values(Environment)) {
+      // get cached configuration
       const exists = this.configuration.has(environment);
-
+      // if cache doesnt exist and env isn't local
+      // fetch shared configuration
       if (!exists && environment !== Environment.LOCAL) {
         try {
           const response = await fetch(this.getConfigUrl(environment));
@@ -42,6 +44,8 @@ export class Config {
       }
     }
 
+    // initialized is set to true when
+    // all configurations have been fetched
     this.initialized = true;
   }
   /**
@@ -80,7 +84,7 @@ export class Config {
    * Find configuration of the domain
    * existing in current sygma configuration
    * @param {Domainlike} domainLike
-   * @returns {SubstrateConfig | EthereumConfig | undefined}
+   * @returns {{ config: SubstrateConfig | EthereumConfig | undefined; environment: Environment; }}
    */
   findDomainConfig(domainLike: Domainlike): {
     config: SubstrateConfig | EthereumConfig;
@@ -98,6 +102,7 @@ export class Config {
       findOptions.caipId = domainLike.caipId;
     } else {
       const id = typeof domainLike === 'string' ? parseInt(domainLike) : domainLike;
+      // search for atleast one id to match
       findOptions.chainId = id;
       findOptions.sygmaId = id;
       findOptions.caipId = id;
@@ -107,6 +112,7 @@ export class Config {
       const environmentConfiguration = this.configuration.get(environment);
 
       if (environmentConfiguration) {
+        // * find domain configuration accross all envs
         const config = environmentConfiguration.domains.find(domain => {
           return (
             domain.chainId === findOptions.chainId ||
@@ -145,13 +151,13 @@ export class Config {
   getDomain(domainLike: Domainlike): Domain {
     if (!this.initialized) throw new Error('SDK Uninitialized');
     const domainConfig = this.findDomainConfig(domainLike);
-    if (!domainConfig) throw new Error('Domain not found.');
+    if (!domainConfig) throw new Error('Domain configuration not found.');
     return this.createDomain(domainConfig.config);
   }
   getDomainConfig(domainLike: Domainlike): SubstrateConfig | EthereumConfig {
     if (!this.initialized) throw new Error('SDK Uninitialized');
     const domainConfig = this.findDomainConfig(domainLike);
-    if (!domainConfig) throw new Error('Domain not found.');
+    if (!domainConfig) throw new Error('Domain configuration not found.');
     return domainConfig.config;
   }
   /**

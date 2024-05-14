@@ -34,13 +34,13 @@ export async function createEvmFungibleAssetTransfer(
     securityModel,
   } = transferRequest;
 
-  const config: Config = new Config();
-  await config.init({ source });
+  const config = new Config();
+  await config.init();
 
   const destinationDomain = config.getDomain(destination);
   const sourceDomain = config.getDomain(source);
 
-  const resources = config.getDomainResources(source);
+  const resources = config.getResources(source);
   const evmResource = resources.find(_resource => {
     switch (typeof resource) {
       case 'object':
@@ -85,11 +85,9 @@ export async function createEvmFungibleAssetTransfer(
     //if calculated percentage fee is less than lower fee bound, substract lower bound from user input. If lower bound is 0, bound is ignored
     if (calculatedFee.lt(minFee) && minFee > 0) {
       _amount = amount - minFee;
-      // this.resourceAmount = userInputAmount.sub(minFee);
     }
     //if calculated percentage fee is more than upper fee bound, substract upper bound from user input. If upper bound is 0, bound is ignored
     if (calculatedFee.gt(maxFee) && maxFee > 0) {
-      // this.resourceAmount = userInputAmount.sub(maxFee);
       _amount = amount - maxFee;
     }
     transfer.setAmount(_amount);
@@ -121,7 +119,7 @@ class EvmFungibleAssetTransfer {
       destinationAddress: string;
       securityModel?: SecurityModel; //defaults to MPC
     },
-    config?: Config,
+    config: Config,
   ) {
     this.source = transfer.source;
     this.sourceNetworkProvider = transfer.sourceNetworkProvider;
@@ -130,12 +128,7 @@ class EvmFungibleAssetTransfer {
     this.amount = transfer.amount;
     this.destinationAddress = transfer.destinationAddress;
     this.securityModel = transfer.securityModel ?? SecurityModel.MPC;
-
-    if (!config) {
-      this.config = new Config();
-    } else {
-      this.config = config;
-    }
+    this.config = config;
   }
   /**
    * Set amount to be transferred
@@ -236,7 +229,6 @@ class EvmFungibleAssetTransfer {
 
     return approvals.map(approval => createTransactionRequest(approval));
   }
-
   /**
    * Returns transaction to be signed by the user
    * @dev potentially add optional param to override transaction params

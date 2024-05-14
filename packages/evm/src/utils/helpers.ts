@@ -1,9 +1,6 @@
 import { utils, BigNumber } from 'ethers';
 import { TypeRegistry } from '@polkadot/types/create';
 import { decodeAddress } from '@polkadot/util-crypto';
-
-const registry = new TypeRegistry();
-
 /**
  * Constructs the deposit data for a erc20 transaction.
  *
@@ -39,7 +36,6 @@ export const createERCDepositData = (
 
   return depositData;
 };
-
 /**
  * Constructs the main deposit data for a given token and recipient.
  *
@@ -56,7 +52,6 @@ const constructMainDepositData = (tokenStats: BigNumber, destRecipient: Uint8Arr
   ]);
   return data;
 };
-
 /**
  * Converts a Substrate recipient address to a JSON multilocation.
  *
@@ -100,7 +95,6 @@ export const constructSubstrateRecipient = (
     },
   });
 };
-
 /**
  * Converts a EVM recipient address to a Uint8Array of bytes.
  *
@@ -110,7 +104,6 @@ export const constructSubstrateRecipient = (
 export const getEVMRecipientAddressInBytes = (recipientAddress: string): Uint8Array => {
   return utils.arrayify(recipientAddress);
 };
-
 /**
  * Converts a Substrate recipient multilocation to a Uint8Array of bytes.
  *
@@ -121,6 +114,7 @@ export const getSubstrateRecipientAddressInBytes = (
   recipientAddress: string,
   parachainId?: number,
 ): Uint8Array => {
+  const registry = new TypeRegistry();
   const result = registry
     .createType(
       'MultiLocation',
@@ -130,7 +124,6 @@ export const getSubstrateRecipientAddressInBytes = (
 
   return result;
 };
-
 /**
  * Return hex data padded to the number defined as padding
  * based on ethers.utils.hexZeroPad

@@ -83,7 +83,6 @@ export type Route = {
   fromDomain: Domain;
   toDomain: Domain;
   resource: Resource;
-  feeHandler: FeeHandler;
 };
 
 export type TransferStatus = 'pending' | 'executed' | 'failed';
@@ -143,7 +142,6 @@ export type RouteIndexerType = {
   toDomainId: string;
   sygmaResourceId: string;
   type: RouteType;
-  feeHandler: FeeHandler;
 };
 
 export type DomainMetadata = {
@@ -155,4 +153,6 @@ export type EnvironmentMetadata = {
   [key: number]: DomainMetadata;
 };
 
+// * can be chain id, caip id, sygma id
+// * or domain object itself
 export type Domainlike = number | string | Domain;

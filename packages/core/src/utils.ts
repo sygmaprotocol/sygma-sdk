@@ -128,7 +128,6 @@ export async function getRoutes(
         fromDomain: config.getDomain(domainConfig.config.chainId),
         toDomain: config.getDomain(Number(route.toDomainId)),
         resource: resource,
-        feeHandler: route.feeHandler,
       };
     });
   } catch (err) {
