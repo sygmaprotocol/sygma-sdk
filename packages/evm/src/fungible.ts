@@ -6,6 +6,7 @@ import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts
 import { BigNumber, constants, utils, type PopulatedTransaction } from 'ethers';
 import { approve, getERC20Allowance } from 'utils/approveAndCheckFns.js';
 import { createTransactionRequest } from 'utils/transaction.js';
+import { BaseTransfer } from 'base-transfer.js';
 import { PercentageFeeCalculator } from './fee/PercentageFee.js';
 import { BasicFeeCalculator } from './fee/BasicFee.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
@@ -25,22 +26,24 @@ export async function createEvmFungibleAssetTransfer(
   transferRequest: EvmFungibleTransferRequest,
 ): Promise<EvmFungibleAssetTransfer> {
   const {
-    destination,
-    source,
-    resource,
     sourceNetworkProvider,
-    amount,
     destinationAddress,
+    destination,
     securityModel,
+    resource,
+    source,
+    amount,
   } = transferRequest;
-
+  // create and initialize config
   const config = new Config();
   await config.init();
-
+  // Retrieve domain and resources from config
+  // will throw error if resource or domain is
+  // not found
   const destinationDomain = config.getDomain(destination);
   const sourceDomain = config.getDomain(source);
-
   const resources = config.getResources(source);
+  // Resource can be an object or sygmaResourceId
   const evmResource = resources.find(_resource => {
     switch (typeof resource) {
       case 'object':
@@ -50,20 +53,24 @@ export async function createEvmFungibleAssetTransfer(
     }
   });
 
-  if (!evmResource) throw new Error('Resource not found.');
+  if (!evmResource) throw new Error('Specified resource does not exist.');
 
   const transfer = new EvmFungibleAssetTransfer(
     {
       resource: evmResource as EvmResource,
       destination: destinationDomain,
-      source: sourceDomain,
       sourceNetworkProvider,
+      source: sourceDomain,
       destinationAddress,
       securityModel,
       amount,
     },
     config,
   );
+
+  const isValid = await transfer.isValidTransfer();
+  if (!isValid)
+    throw new Error('Handler not registered, please check if this is a valid bridge route.');
 
   const originalFee = await transfer.getFee();
   //in case of percentage fee handler, we are calculating what amount + fee will result int user inputed amount
@@ -99,14 +106,9 @@ export async function createEvmFungibleAssetTransfer(
 /**
  * @dev User should not instance this directly. All the (async) checks should be done in `createEvmFungibleAssetTransfer`
  */
-class EvmFungibleAssetTransfer {
-  sourceNetworkProvider: Eip1193Provider;
+class EvmFungibleAssetTransfer extends BaseTransfer {
   destinationAddress: string;
   securityModel: SecurityModel;
-  destination: Domain;
-  resource: EvmResource;
-  config: Config;
-  source: Domain;
   amount: bigint;
 
   constructor(
@@ -121,51 +123,26 @@ class EvmFungibleAssetTransfer {
     },
     config: Config,
   ) {
-    this.source = transfer.source;
-    this.sourceNetworkProvider = transfer.sourceNetworkProvider;
-    this.destination = transfer.destination;
-    this.resource = transfer.resource;
+    super(transfer, config);
     this.amount = transfer.amount;
     this.destinationAddress = transfer.destinationAddress;
     this.securityModel = transfer.securityModel ?? SecurityModel.MPC;
-    this.config = config;
   }
   /**
    * Set amount to be transferred
    * @param {BigInt} amount
-   * @returns {EvmFungibleAssetTransfer}
+   * @returns {void}
    */
-  setAmount(amount: bigint): EvmFungibleAssetTransfer {
+  setAmount(amount: bigint): void {
     this.amount = amount;
-    return this;
   }
   /**
-   * Set resource to be transferred
-   * @param {EvmResource} resource
-   * @returns {EvmFungibleAssetTransfer}
-   */
-  setResource(resource: EvmResource): EvmFungibleAssetTransfer {
-    this.resource = resource;
-    return this;
-  }
-  /**
-   *
-   * @param destination
-   * @returns
-   */
-  setDesinationDomain(destination: string | number | Domain): EvmFungibleAssetTransfer {
-    const domain = this.config.getDomain(destination);
-    this.destination = domain;
-    return this;
-  }
-  /**
-   *
+   * Sets the destination address
    * @param destinationAddress
-   * @returns
+   * @returns {void}
    */
-  setDestinationAddress(destinationAddress: string): EvmFungibleAssetTransfer {
+  setDestinationAddress(destinationAddress: string): void {
     this.destinationAddress = destinationAddress;
-    return this;
   }
   /**
    * Returns fee based on transfer amount.
@@ -174,6 +151,7 @@ class EvmFungibleAssetTransfer {
   async getFee(): Promise<EvmFee> {
     const provider = new Web3Provider(this.sourceNetworkProvider);
     const sender = await provider.getSigner().getAddress();
+
     const { feeHandlerAddress, feeHandlerType } = await getFeeInformation(
       this.config,
       provider,
@@ -186,7 +164,7 @@ class EvmFungibleAssetTransfer {
     const percentageFeeCalculator = new PercentageFeeCalculator();
     basicFeeCalculator.setNextHandler(percentageFeeCalculator);
 
-    const fee = await basicFeeCalculator.calculateFee({
+    return await basicFeeCalculator.calculateFee({
       provider,
       sender,
       sourceSygmaId: this.source.sygmaId,
@@ -195,8 +173,6 @@ class EvmFungibleAssetTransfer {
       feeHandlerAddress,
       feeHandlerType,
     });
-
-    return fee;
   }
   /**
    * Returns array of required approval transactions
