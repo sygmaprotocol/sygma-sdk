@@ -12,11 +12,11 @@ export function createUriEncodedUtxoRequest(): BitcoinFungibleAssetTransfer {
 export abstract class BitcoinFungibleAssetTransfer {
   constructor(transfer: BitcoinTransferRequest) {}
 
-  getUriEncodedUtxoRequest(): string {
+  getUriEncodedUtxoRequest(btcTransferRequest: BitcoinTransferRequest): string {
     throw new Error("Method not implemented");
   }
 
-  getRawUtxoRequest(): string {
+  getBTCTransferRequest(): BitcoinTransferRequest {
     throw new Error("Method not implemented");
   }
 }
