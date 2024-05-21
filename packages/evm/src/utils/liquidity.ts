@@ -4,24 +4,19 @@ import type { Eip1193Provider } from '../types.js';
 import { getEvmHandlerBalance } from './balances.js';
 
 export async function getLiquidity(
+  environment: Environment,
   provider: Eip1193Provider,
   resource: EvmResource,
 ): Promise<bigint> {
   let domain: EthereumConfig | SubstrateConfig | undefined;
   const config = new Config();
-  await config.init();
+  await config.init(environment);
 
-  for (const environment of Object.values(Environment)) {
-    const { domains } = config.getConfiguration(environment);
+  const { domains } = config.getConfiguration();
 
-    domain = domains.find(domain => {
-      return !!domain.resources.find(res => res.sygmaResourceId === resource.sygmaResourceId);
-    });
-
-    if (domain) {
-      break;
-    }
-  }
+  domain = domains.find(domain => {
+    return !!domain.resources.find(res => res.sygmaResourceId === resource.sygmaResourceId);
+  });
 
   if (!domain) throw new Error('Domain configuration not found.');
 

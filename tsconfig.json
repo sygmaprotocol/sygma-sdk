@@ -11,7 +11,10 @@
 	},
 	"references": [
 		{
-			"path": "./packages/sdk"
+			"path": "./packages/core"
+		},
+		{
+			"path": "./packages/evm"
 		}
 	],
 	"exclude": [

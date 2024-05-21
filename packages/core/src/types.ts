@@ -155,4 +155,11 @@ export type EnvironmentMetadata = {
 
 // * can be chain id, caip id, sygma id
 // * or domain object itself
-export type Domainlike = number | string | Domain;
+export type Domainlike = Partial<Omit<Domain, 'name' | 'iconUrl' | 'type'>>;
+
+export interface Eip1193Provider {
+  request(request: {
+    method: string;
+    params?: Array<unknown> | Record<string, unknown>;
+  }): Promise<unknown>;
+}

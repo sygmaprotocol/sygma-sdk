@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"composite": true,
-		"module": "ES2022",
+		"module": "CommonJS",
 		"allowJs": true,
 		"declaration": true,
 		"sourceMap": true,
@@ -14,10 +14,6 @@
 		"allowSyntheticDefaultImports": true,
 		"forceConsistentCasingInFileNames": true,
 		"moduleResolution": "node",
-	},
-	"ts-node": {
-		"esm": true,
-		"experimentalSpecifierResolution": "node"
 	},
 	"include": [
 		"src"

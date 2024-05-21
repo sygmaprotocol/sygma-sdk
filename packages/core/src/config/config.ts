@@ -16,37 +16,55 @@ export class Config {
    * Cache storing all sygma
    * environment configurations
    */
-  configuration = new Map<Environment, SygmaConfig>();
+  configuration!: SygmaConfig;
   initialized = false;
+  /**
+   * Transform old config fields
+   * to new ones
+   * TODO: remove this method
+   * @param {SygmaConfig} oldConfig 
+   * @returns {SygmaConfig}
+   */
+  transformConfig(oldConfig: SygmaConfig): SygmaConfig {
+    oldConfig.domains.forEach((domain) => {
+      domain.resources.forEach((resource) => {
+        if ((resource as any).resourceId) {
+          resource.sygmaResourceId = (resource as any).resourceId;
+        }
+        if (!(resource as any).caip19) {
+          (resource as any).caip19 = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
+        }
+      })
 
-  constructor() {
-    this.configuration = new Map();
-    this.configuration.set(Environment.LOCAL, localConfig);
+      if ((domain as any).id) {
+        domain.sygmaId = (domain as any).id;
+      }
+
+      if (!(domain as any).caipId) {
+        domain.caipId = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
+      }
+    })
+
+    return oldConfig;
   }
+
+  constructor() {}
   /**
    * Initialize and store all
    * sygma configurations
    */
-  async init(): Promise<void> {
-    for (const environment of Object.values(Environment)) {
-      // get cached configuration
-      const exists = this.configuration.has(environment);
-      // if cache doesnt exist and env isn't local
-      // fetch shared configuration
-      if (!exists && environment !== Environment.LOCAL) {
-        try {
-          const response = await fetch(this.getConfigUrl(environment));
-          const data = (await response.json()) as SygmaConfig;
-          this.configuration.set(environment, data);
-        } catch (error) {
-          return Promise.reject(error);
-        }
-      }
+  async init(environment: Environment): Promise<void> {
+    if (environment === Environment.LOCAL) {
+      this.configuration = localConfig;
+    } else {
+      const response = await fetch(this.getConfigUrl(environment));
+      let data = (await response.json()) as SygmaConfig;
+      data = this.transformConfig(data);
+      this.configuration = data;
+      // initialized is set to true when
+      // all configurations have been fetched
+      this.initialized = true;
     }
-
-    // initialized is set to true when
-    // all configurations have been fetched
-    this.initialized = true;
   }
   /**
    * Retrieve hosted bridge configuration in JSON format
@@ -86,61 +104,32 @@ export class Config {
    * @param {Domainlike} domainLike
    * @returns {{ config: SubstrateConfig | EthereumConfig | undefined; environment: Environment; }}
    */
-  findDomainConfig(domainLike: Domainlike): {
-    config: SubstrateConfig | EthereumConfig;
-    environment: Environment;
-  } {
-    const findOptions = {
-      chainId: 0,
-      sygmaId: 0,
-      caipId: 0,
-    };
-
-    if (typeof domainLike === 'object') {
-      findOptions.chainId = domainLike.chainId;
-      findOptions.sygmaId = domainLike.sygmaId;
-      findOptions.caipId = domainLike.caipId;
-    } else {
-      const id = typeof domainLike === 'string' ? parseInt(domainLike) : domainLike;
-      // search for atleast one id to match
-      findOptions.chainId = id;
-      findOptions.sygmaId = id;
-      findOptions.caipId = id;
-    }
-
-    for (const environment of Object.values(Environment)) {
-      const environmentConfiguration = this.configuration.get(environment);
-
-      if (environmentConfiguration) {
-        // * find domain configuration accross all envs
-        const config = environmentConfiguration.domains.find(domain => {
-          return (
-            domain.chainId === findOptions.chainId ||
-            domain.sygmaId === findOptions.sygmaId ||
-            domain.caipId === findOptions.caipId
-          );
-        });
-
-        if (config) {
-          return { config, environment };
-        }
+  findDomainConfig(domainLike: Domainlike): SubstrateConfig | EthereumConfig {
+    const config = this.configuration.domains.find(domain => {
+      if (domainLike.chainId) {
+        return domain.chainId === domainLike.chainId;
       }
-    }
+      if (domainLike.caipId) {
+        return domain.caipId === domainLike.caipId;
+      }
+      if (domainLike.sygmaId) {
+        return domain.sygmaId === domainLike.sygmaId;
+      }
 
+      return false;
+    });
+
+    if (!config)
     throw new Error('Domain configuration not found.');
+
+    return config;
   }
   /**
    * Get sygma raw bridging configuration
-   * @param {Environment} environment
    * @returns {SygmaConfig}
    */
-  getConfiguration(environment: Environment): SygmaConfig {
-    const configuration = this.configuration.get(environment);
-    if (configuration) {
-      return configuration;
-    }
-
-    throw new Error('Configuration unavailable or uninitialized.');
+  getConfiguration(): SygmaConfig {
+    return this.configuration;
   }
   /**
    * Retrieves domain from configuration
@@ -152,7 +141,7 @@ export class Config {
     if (!this.initialized) throw new Error('SDK Uninitialized');
     const domainConfig = this.findDomainConfig(domainLike);
     if (!domainConfig) throw new Error('Domain configuration not found.');
-    return this.createDomain(domainConfig.config);
+    return this.createDomain(domainConfig);
   }
   /**
    * Get domain configuration
@@ -163,7 +152,7 @@ export class Config {
     if (!this.initialized) throw new Error('SDK Uninitialized');
     const domainConfig = this.findDomainConfig(domainLike);
     if (!domainConfig) throw new Error('Domain configuration not found.');
-    return domainConfig.config;
+    return domainConfig;
   }
   /**
    * Retrieves list of supported domains
@@ -171,13 +160,17 @@ export class Config {
    * @param {{ networkTypes?: Network[]; environment?: Environment }} options
    * @returns {Domain[]}
    */
-  getDomains(options?: { networkTypes?: Network[]; environment?: Environment }): Domain[] {
+  getDomains(options?: { networkTypes?: Network[]; }): Domain[] {
     if (!this.initialized) throw new Error('SDK Uninitialized');
-    const environment = options?.environment ?? Environment.MAINNET;
-    const config = this.configuration.get(environment);
+    const config = this.configuration;
     if (!config) throw new Error('Configuration unavailable or uninitialized.');
 
-    const domains = config.domains.map(dc => this.createDomain(dc));
+    const domains = config.domains.filter(f => {
+      if (options?.networkTypes) {
+        return options?.networkTypes?.includes(f.type)
+      }
+      return true
+    }).map(dc => this.createDomain(dc));
     return domains;
   }
   /**
@@ -188,6 +181,6 @@ export class Config {
   getResources(domainLike: Domainlike): Resource[] {
     const domainConfig = this.findDomainConfig(domainLike);
     if (!domainConfig) throw new Error('Domain configuration not found.');
-    return domainConfig.config.resources;
+    return domainConfig.resources;
   }
 }

@@ -1,3 +1,5 @@
+// import { Bridge__factory, FeeHandlerRouter__factory } from '@buildwithsygma/sygma-contracts';
+// import { ethers } from 'ethers';
 import { ExplorerUrl, IndexerUrl } from './constants.js';
 import type {
   Route,
@@ -6,13 +8,15 @@ import type {
   RouteIndexerType,
   EnvironmentMetadata,
   Domain,
-  Network,
   RouteType,
   SygmaConfig,
-  Domainlike,
+  Domainlike
 } from './types.js';
-import { Environment } from './types.js';
+import { Network, Environment } from './types.js';
 import { Config } from './index.js';
+// import MulticallAbi from './abi/Multicall.json';
+// import { defaultAbiCoder } from 'ethers/lib/utils.js';
+// import { Web3Provider } from '@ethersproject/providers';
 
 function getIndexerTransferUrl(
   env: Environment,
@@ -86,13 +90,13 @@ function getIndexerURL(environment: Environment): string {
  * Alternative option can be specified in options.env.
  * You can filter domains with specifity types or ones that have at least one outbound route of specified type.
  */
-export async function getDomains(options?: {
+export async function getDomains(options: {
   routeTypes?: RouteType[];
-  environment?: Environment;
+  environment: Environment;
   networkTypes?: Network[];
 }): Promise<Domain[]> {
   const config = new Config();
-  await config.init();
+  await config.init(options.environment);
   const domains = config.getDomains(options);
   return domains;
 }
@@ -103,6 +107,7 @@ export async function getDomains(options?: {
  * @param options Allows selecting bridge instance (mainnet by default) and filtering routes by type.
  */
 export async function getRoutes(
+  environment: Environment,
   source: Domainlike,
   options?: {
     routeTypes?: RouteType[];
@@ -110,23 +115,56 @@ export async function getRoutes(
 ): Promise<Route[]> {
   try {
     const config = new Config();
-    await config.init();
+    await config.init(environment);
     const domainConfig = config.findDomainConfig(source);
-
-    const indexerUrl = getIndexerURL(domainConfig.environment);
+    const indexerUrl = getIndexerURL(environment);
     const typeQuery = options?.routeTypes ? `?resourceType=${options.routeTypes.join(',')}` : '';
-    const url = `${indexerUrl}/api/routes/from/${domainConfig.config.sygmaId}${typeQuery}`;
+    const url = `${indexerUrl}/api/routes/from/${domainConfig.sygmaId}${typeQuery}`;
     const response = await fetch(url);
     const data = (await response.json()) as { routes: RouteIndexerType[] };
 
+    // if (domainConfig.type === Network.EVM && options?.sourceProvider) {
+      // const provider = new Web3Provider(options.sourceProvider);
+      // const bridge = Bridge__factory.connect(domainConfig.bridge, provider);
+      // const multicall = new ethers.Contract('', JSON.stringify(MulticallAbi));
+      // const feeHandlerRouterAddress = await bridge._feeHandler();
+      // const feeHandlerRouter = FeeHandlerRouter__factory.createInterface();
+      // All calls that will be
+      // Sent to multicall contract
+      // let calls = [];
+
+      // for (let i = 0; i < data.routes.length; i++) {
+      //   calls.push({
+      //     target: feeHandlerRouterAddress,
+      //     callData: feeHandlerRouter.encodeFunctionData(
+      //       '_domainResourceIDToFeeHandlerAddress',
+      //       [parseInt(data.routes[i].toDomainId), data.routes[i].sygmaResourceId],
+      //     ),
+      //   });
+      // }
+
+      // const results = (await multicall.callStatic.aggregate(calls)) as {
+      //   returnData: Array<string>;
+      // };
+
+      // calls = [];
+      // for (let i = 0; i < data.routes.length; i++) {
+      //   const feeHandlerAddress = defaultAbiCoder.decode(['address'], results.returnData[i]);
+      //   calls.push({
+      //     target: feeHandlerAddress,
+      //     callData: 
+      //   })
+      // }
+    // }
+
     return data.routes.map(route => {
-      const resource = domainConfig.config.resources.find(
+      const resource = domainConfig.resources.find(
         r => r.sygmaResourceId === route.sygmaResourceId,
       )!;
 
       return {
-        fromDomain: config.getDomain(domainConfig.config.chainId),
-        toDomain: config.getDomain(Number(route.toDomainId)),
+        fromDomain: config.getDomain({ chainId: domainConfig.chainId }),
+        toDomain: config.getDomain({ sygmaId: Number(route.toDomainId) }),
         resource: resource,
       };
     });
@@ -187,8 +225,8 @@ export async function getTransferStatus(
  */
 export async function getRawConfiguration(environment: Environment): Promise<SygmaConfig> {
   const config = new Config();
-  await config.init();
-  const sygmaConfig = config.configuration.get(environment);
+  await config.init(environment);
+  const sygmaConfig = config.configuration;
   if (!sygmaConfig) {
     throw new Error(`Unable to fetch configuration for environment: ${environment}`);
   }
