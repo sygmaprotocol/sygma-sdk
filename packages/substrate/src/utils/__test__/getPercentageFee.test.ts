@@ -1,18 +1,14 @@
 import type { ApiPromise } from '@polkadot/api';
-import { Option, Enum } from '@polkadot/types';
+import { BN } from '@polkadot/util';
+import { Option, Tuple, u128 } from '@polkadot/types';
 import { TypeRegistry } from '@polkadot/types/create';
-import type { XcmMultiAssetIdType } from '../../types.js';
+import { getPercentageFee } from '../getPercentageFee.js';
 import { FeeHandlerType } from '../../types.js';
-import { getFeeHandler } from '../getFeeHandlers.js';
+import type { Fungible, SubstrateResource, Transfer, XcmMultiAssetIdType } from '../../types.js';
 
 const registry = new TypeRegistry();
 
-describe('Substrate - getFeeHandler', () => {
-  const FEE_HANDLER_NAMES = Enum.with([
-    'PercentageFeeHandler',
-    'BasicFeeHandler',
-    'DynamicFeeHandler',
-  ]);
+describe('Substrate - getPercentageFee', () => {
   const validXcmMultiAssetId: XcmMultiAssetIdType = {
     concrete: {
       parents: 1,
@@ -31,97 +27,143 @@ describe('Substrate - getFeeHandler', () => {
       },
     },
   };
+  const validTransfer: Transfer<Fungible> = {
+    resource: {
+      xcmMultiAssetId: validXcmMultiAssetId,
+    } as SubstrateResource,
+    details: {
+      amount: '1000000',
+    },
+    to: {
+      id: 1,
+    },
+  } as Transfer<Fungible>;
 
-  it('should return PERCENTAGE fee handler type', async () => {
-    const mockFeeHandlerType = new Option(registry, FEE_HANDLER_NAMES, 'PercentageFeeHandler');
+  it('should return the percentage fee correctly', async () => {
+    const feeRate = '100';
+    const min = '10';
+    const max = '1000';
+    const rawResult = new Option(registry, Tuple.with([u128, u128, u128]), [
+      new BN(feeRate),
+      new BN(min),
+      new BN(max),
+    ]);
+
     const api: ApiPromise = {
       query: {
-        sygmaFeeHandlerRouter: {
-          handlerType: jest.fn().mockResolvedValue(mockFeeHandlerType),
+        sygmaPercentageFeeHandler: {
+          assetFeeRate: jest.fn().mockResolvedValue(rawResult),
         },
       },
     } as unknown as ApiPromise;
 
-    const destinationDomainId = 1;
+    const expectedFee = new BN(validTransfer.details.amount)
+      .mul(new BN(feeRate))
+      .div(new BN(10000));
 
-    const feeHandlerType = await getFeeHandler(api, destinationDomainId, validXcmMultiAssetId);
+    const calculatedFee = expectedFee.lt(new BN(min))
+      ? new BN(min)
+      : expectedFee.gt(new BN(max))
+        ? new BN(max)
+        : expectedFee;
 
-    expect(feeHandlerType).toBe(FeeHandlerType.PERCENTAGE);
+    const feeRes = await getPercentageFee(api, validTransfer);
+
+    expect(feeRes).toBeDefined();
+    expect(feeRes).toHaveProperty('fee');
+    expect(feeRes).toHaveProperty('type');
+    expect(feeRes.fee).toBeInstanceOf(BN);
+    expect(feeRes.fee.eq(calculatedFee)).toBe(true);
+    expect(feeRes.type).toBe(FeeHandlerType.PERCENTAGE);
   });
 
-  it('should return BASIC fee handler type', async () => {
-    const mockFeeHandlerType = new Option(registry, FEE_HANDLER_NAMES, 'BasicFeeHandler');
+  it('should throw an error if the fee structure is not found', async () => {
+    const rawResult = new Option(registry, Tuple.with([u128, u128, u128]), null);
 
     const api: ApiPromise = {
       query: {
-        sygmaFeeHandlerRouter: {
-          handlerType: jest.fn().mockResolvedValue(mockFeeHandlerType),
+        sygmaPercentageFeeHandler: {
+          assetFeeRate: jest.fn().mockResolvedValue(rawResult),
         },
       },
     } as unknown as ApiPromise;
 
-    const destinationDomainId = 1;
-
-    const feeHandlerType = await getFeeHandler(api, destinationDomainId, validXcmMultiAssetId);
-
-    expect(feeHandlerType).toBe(FeeHandlerType.BASIC);
+    await expect(getPercentageFee(api, validTransfer)).rejects.toThrow('Error retrieving fee');
   });
 
-  it('should return DYNAMIC fee handler type', async () => {
-    const mockFeeHandlerType = new Option(registry, FEE_HANDLER_NAMES, 'DynamicFeeHandler');
+  it('should handle minimum fee correctly', async () => {
+    const feeRate = '1';
+    const min = '100';
+    const max = '1000';
+    const rawResult = new Option(registry, Tuple.with([u128, u128, u128]), [
+      new BN(feeRate),
+      new BN(min),
+      new BN(max),
+    ]);
 
     const api: ApiPromise = {
       query: {
-        sygmaFeeHandlerRouter: {
-          handlerType: jest.fn().mockResolvedValue(mockFeeHandlerType),
+        sygmaPercentageFeeHandler: {
+          assetFeeRate: jest.fn().mockResolvedValue(rawResult),
         },
       },
     } as unknown as ApiPromise;
 
-    const destinationDomainId = 1;
+    const calculatedFee = new BN(min);
+    const feeRes = await getPercentageFee(api, validTransfer);
 
-    const feeHandlerType = await getFeeHandler(api, destinationDomainId, validXcmMultiAssetId);
-
-    expect(feeHandlerType).toBe(FeeHandlerType.DYNAMIC);
+    expect(feeRes.fee.eq(calculatedFee)).toBe(true);
   });
 
-  it('should return UNDEFINED fee handler type if none is found', async () => {
-    const mockFeeHandlerType = new Option(registry, FEE_HANDLER_NAMES, null);
+  it('should handle maximum fee correctly', async () => {
+    const feeRate = '10000';
+    const min = '10';
+    const max = '1000';
+    const rawResult = new Option(registry, Tuple.with([u128, u128, u128]), [
+      new BN(feeRate),
+      new BN(min),
+      new BN(max),
+    ]);
 
     const api: ApiPromise = {
       query: {
-        sygmaFeeHandlerRouter: {
-          handlerType: jest.fn().mockResolvedValue(mockFeeHandlerType),
+        sygmaPercentageFeeHandler: {
+          assetFeeRate: jest.fn().mockResolvedValue(rawResult),
         },
       },
     } as unknown as ApiPromise;
 
-    const destinationDomainId = 1;
+    const calculatedFee = new BN(max);
 
-    const feeHandlerType = await getFeeHandler(api, destinationDomainId, validXcmMultiAssetId);
+    const feeRes = await getPercentageFee(api, validTransfer);
 
-    expect(feeHandlerType).toBe(FeeHandlerType.UNDEFINED);
+    expect(feeRes.fee.eq(calculatedFee)).toBe(true);
   });
 
-  it('should throw an error for an invalid fee handler type', async () => {
-    const mockFeeHandlerType = new Option(
-      registry,
-      Enum.with(['InvalidFeeHandler']),
-      'InvalidFeeHandler',
-    );
+  it('should handle exact fee correctly within min and max range', async () => {
+    const feeRate = '5';
+    const min = '10';
+    const max = '1000';
+    const rawResult = new Option(registry, Tuple.with([u128, u128, u128]), [
+      new BN(feeRate),
+      new BN(min),
+      new BN(max),
+    ]);
 
     const api: ApiPromise = {
       query: {
-        sygmaFeeHandlerRouter: {
-          handlerType: jest.fn().mockResolvedValue(mockFeeHandlerType),
+        sygmaPercentageFeeHandler: {
+          assetFeeRate: jest.fn().mockResolvedValue(rawResult),
         },
       },
     } as unknown as ApiPromise;
 
-    const destinationDomainId = 1;
+    const expectedFee = new BN(validTransfer.details.amount)
+      .mul(new BN(feeRate))
+      .div(new BN(10000));
 
-    await expect(getFeeHandler(api, destinationDomainId, validXcmMultiAssetId)).rejects.toThrow(
-      'Invalid Fee Handler Type',
-    );
+    const feeRes = await getPercentageFee(api, validTransfer);
+
+    expect(feeRes.fee.eq(expectedFee)).toBe(true);
   });
 });
