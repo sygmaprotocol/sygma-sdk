@@ -33,7 +33,6 @@ export const createERCDepositData = (
     recipientAddressInBytes,
   );
   const depositData = utils.hexlify(depositDataBytes);
-
   return depositData;
 };
 /**

@@ -63,19 +63,19 @@ export async function erc20Transfer(): Promise<void> {
   //   "5000000000000000000" // 18 decimal places
   // );
 
-  // const fee = await transfer.getFee();
-  // console.log('Fee data: ', fee);
+  const fee = await transfer.getFee();
+  console.log('Fee data: ', fee);
 
-  // const approvals = await transfer.getApprovalTransactions();
-  // for (const approval of approvals) {
+  const approvals = await transfer.getApprovalTransactions();
+  for (const approval of approvals) {
     // const response = await wallet.sendTransaction(
     //   approval as providers.TransactionRequest
     // );
-    // console.log("tx: ", approval.data);
-  // }
+    console.log("tx: ", approval.data);
+  }
 
-  // const transferTx = await transfer.getTransferTransaction();
-  // console.log("tx: ", transferTx.data);
+  const transferTx = await transfer.getTransferTransaction();
+  console.log("tx: ", transferTx.data);
   // const response = await wallet.sendTransaction(
   //   transferTx as providers.TransactionRequest
   // );

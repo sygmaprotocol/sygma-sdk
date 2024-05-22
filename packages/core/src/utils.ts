@@ -10,10 +10,13 @@ import type {
   Domain,
   RouteType,
   SygmaConfig,
-  Domainlike
+  Domainlike,
+  Eip1193Provider,
+  FeeHandlerType
 } from './types.js';
 import { Network, Environment } from './types.js';
 import { Config } from './index.js';
+import { getFeeHandlerAddressesOfRoutes, getFeeHandlerTypeOfRoutes } from 'multicall.js';
 // import MulticallAbi from './abi/Multicall.json';
 // import { defaultAbiCoder } from 'ethers/lib/utils.js';
 // import { Web3Provider } from '@ethersproject/providers';
@@ -111,6 +114,7 @@ export async function getRoutes(
   source: Domainlike,
   options?: {
     routeTypes?: RouteType[];
+    sourceProvider: Eip1193Provider;
   },
 ): Promise<Route[]> {
   try {
@@ -123,51 +127,37 @@ export async function getRoutes(
     const response = await fetch(url);
     const data = (await response.json()) as { routes: RouteIndexerType[] };
 
-    // if (domainConfig.type === Network.EVM && options?.sourceProvider) {
-      // const provider = new Web3Provider(options.sourceProvider);
-      // const bridge = Bridge__factory.connect(domainConfig.bridge, provider);
-      // const multicall = new ethers.Contract('', JSON.stringify(MulticallAbi));
-      // const feeHandlerRouterAddress = await bridge._feeHandler();
-      // const feeHandlerRouter = FeeHandlerRouter__factory.createInterface();
-      // All calls that will be
-      // Sent to multicall contract
-      // let calls = [];
+    let routesWithAddressesAndTypes: Array<RouteIndexerType & { feeHandlerType: FeeHandlerType; feeHandlerAddress: string; }> = [];
+    if (domainConfig.type === Network.EVM && options?.sourceProvider) {
+      const routesWithHandlerAddresses = await getFeeHandlerAddressesOfRoutes({
+        routes: data.routes,
+        chainId: domainConfig.chainId,
+        bridgeAddress: domainConfig.bridge,
+        provider: options.sourceProvider
+      });
 
-      // for (let i = 0; i < data.routes.length; i++) {
-      //   calls.push({
-      //     target: feeHandlerRouterAddress,
-      //     callData: feeHandlerRouter.encodeFunctionData(
-      //       '_domainResourceIDToFeeHandlerAddress',
-      //       [parseInt(data.routes[i].toDomainId), data.routes[i].sygmaResourceId],
-      //     ),
-      //   });
-      // }
+      routesWithAddressesAndTypes = await getFeeHandlerTypeOfRoutes({
+        routes: routesWithHandlerAddresses,
+        chainId: domainConfig.chainId,
+        provider: options.sourceProvider
+      })
+    }
 
-      // const results = (await multicall.callStatic.aggregate(calls)) as {
-      //   returnData: Array<string>;
-      // };
-
-      // calls = [];
-      // for (let i = 0; i < data.routes.length; i++) {
-      //   const feeHandlerAddress = defaultAbiCoder.decode(['address'], results.returnData[i]);
-      //   calls.push({
-      //     target: feeHandlerAddress,
-      //     callData: 
-      //   })
-      // }
-    // }
-
-    return data.routes.map(route => {
+    return routesWithAddressesAndTypes.map(route => {
       const resource = domainConfig.resources.find(
         r => r.sygmaResourceId === route.sygmaResourceId,
       )!;
-
+      
       return {
         fromDomain: config.getDomain({ chainId: domainConfig.chainId }),
         toDomain: config.getDomain({ sygmaId: Number(route.toDomainId) }),
         resource: resource,
+        feeHandler: {
+          type: route.feeHandlerType,
+          address: route.feeHandlerAddress
+        }
       };
-    });
+    })
   } catch (err) {
     if (err instanceof Error) {
       throw new Error(`Failed to fetch routes because of: ${err.message}`);
