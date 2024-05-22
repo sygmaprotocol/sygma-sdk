@@ -9,10 +9,12 @@ export interface BaseTransferParams {
   destination: Domainlike;
   sourceNetworkProvider: Eip1193Provider;
   resource: string | EvmResource;
+  sourceAddress: string;
 }
 
 export abstract class BaseTransfer {
   sourceNetworkProvider: Eip1193Provider;
+  sourceAddress: string;
   destination: Domain;
   resource: EvmResource;
   config: Config;
@@ -22,6 +24,7 @@ export abstract class BaseTransfer {
     transfer: BaseTransferParams,
     config: Config,
   ) {
+    this.sourceAddress = transfer.sourceAddress;
     this.source = config.getDomain(transfer.source);
     this.destination = config.getDomain(transfer.destination);
     this.sourceNetworkProvider = transfer.sourceNetworkProvider;
@@ -67,7 +70,7 @@ export abstract class BaseTransfer {
    * @param destination
    * @returns
    */
-  setDesinationDomain(destination: string | number | Domain): void {
+  setDesinationDomain(destination: Domainlike): void {
     const domain = this.config.getDomain(destination);
     this.destination = domain;
   }

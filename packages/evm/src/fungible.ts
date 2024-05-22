@@ -3,7 +3,7 @@ import { SecurityModel, Config, FeeHandlerType } from '@buildwithsygma/core';
 import type { Eip1193Provider, EvmFee, TransactionRequest } from 'types.js';
 import { Web3Provider } from '@ethersproject/providers';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
-import { BigNumber, Signer, Wallet, constants, providers, utils, type PopulatedTransaction } from 'ethers';
+import { BigNumber, constants, providers, utils, type PopulatedTransaction } from 'ethers';
 import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
 import { createTransactionRequest } from './utils/transaction.js';
 import { BaseTransfer } from './base-transfer.js';
@@ -15,6 +15,7 @@ import { erc20Transfer } from './utils/depositFns.js';
 type EvmFungibleTransferRequest = {
   source: Domainlike;
   destination: Domainlike;
+  sourceAddress: string;
   sourceNetworkProvider: Eip1193Provider;
   resource: string | EvmResource;
   amount: bigint;
@@ -26,7 +27,6 @@ type EvmFungibleTransferRequest = {
 export async function createEvmFungibleAssetTransfer(
   params: EvmFungibleTransferRequest,
 ): Promise<EvmFungibleAssetTransfer> {
-  // create and initialize config
   const config = new Config();
   await config.init(params.environment);
 
@@ -34,9 +34,8 @@ export async function createEvmFungibleAssetTransfer(
     params,
     config,
   );
-
+  
   const isValid = await transfer.isValidTransfer();
-
   if (!isValid)
     throw new Error('Handler not registered, please check if this is a valid bridge route.');
 
@@ -79,12 +78,6 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
   securityModel: SecurityModel;
   amount: bigint;
 
-  wallet?: Wallet;
-
-  setWallet(wallet: Wallet): void {
-    this.wallet = wallet;
-  }
-
   constructor(
     transfer: EvmFungibleTransferRequest,
     config: Config,
@@ -116,7 +109,6 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
    */
   async getFee(): Promise<EvmFee> {
     const provider = new providers.Web3Provider(this.sourceNetworkProvider);
-    const sender = this.wallet ? await this.wallet.getAddress() : await provider.getSigner().getAddress();
 
     const { feeHandlerAddress, feeHandlerType } = await getFeeInformation(
       this.config,
@@ -132,7 +124,7 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
 
     return await basicFeeCalculator.calculateFee({
       provider,
-      sender,
+      sender: this.sourceAddress,
       sourceSygmaId: this.source.sygmaId,
       destinationSygmaId: this.destination.sygmaId,
       resourceSygmaId: this.resource.sygmaResourceId,
@@ -150,11 +142,11 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     const sourceDomainConfig = this.config.getDomainConfig(this.source);
     const bridge = Bridge__factory.connect(sourceDomainConfig.bridge, provider);
     const handlerAddress = await bridge._resourceIDToHandlerAddress(this.resource.sygmaResourceId);
-    const account = this.wallet ? await this.wallet.getAddress() : await provider.getSigner().getAddress();
+
     const erc20 = ERC20__factory.connect(this.resource.address, provider);
     const fee = await this.getFee();
-    const feeHandlerAllowance = await getERC20Allowance(erc20, account, fee.handlerAddress);
-    const handlerAllowance = await getERC20Allowance(erc20, account, handlerAddress);
+    const feeHandlerAllowance = await getERC20Allowance(erc20, this.sourceAddress, fee.handlerAddress);
+    const handlerAllowance = await getERC20Allowance(erc20, this.sourceAddress, handlerAddress);
 
     const approvals: Array<PopulatedTransaction> = [];
     if (fee.type == FeeHandlerType.PERCENTAGE && feeHandlerAllowance.lt(fee.fee)) {
