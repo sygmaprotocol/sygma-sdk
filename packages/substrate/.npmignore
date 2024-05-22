@@ -2,10 +2,8 @@
 
 integration/
 coverage/
-dist/
 keysN1/
 keysN2/
-config/
 src/
 
 # Ignore configs
