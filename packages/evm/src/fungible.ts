@@ -1,8 +1,10 @@
 import type {
   Domain,
+  Domainlike,
   EvmResource,
   FeeHandlerType,
-} from "@buildwithsygma/sygma-sdk-core";
+  Environment
+} from "@buildwithsygma/core";
 import type { SecurityModel } from "../../core/src/index.js";
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -43,13 +45,15 @@ export function getLiquidity(
 }
 
 type EvmFungibleTransferRequest = {
-  source: string | number | Domain;
+  source: Domainlike;
+  destination: Domainlike;
+  sourceAddress: string;
   sourceNetworkProvider: Eip1193Provider;
-  destination: string | number | Domain;
   resource: string | EvmResource;
   amount: bigint;
   destinationAddress: string;
-  securityModel?: SecurityModel; //defaults to MPC
+  securityModel?: SecurityModel;
+  environment: Environment;
 };
 
 export function createEvmFungibleAssetTransfer(
@@ -62,15 +66,7 @@ export function createEvmFungibleAssetTransfer(
  * @dev User should not instance this directly. All the (async) checks should be done in `createEvmFungibleAssetTransfer`
  */
 export abstract class EvmFungibleAssetTransfer {
-  constructor(transfer: {
-    sourceDomain: string | number | Domain;
-    sourceNetworkProvider: Eip1193Provider;
-    destinationDomain: string | number | Domain;
-    resource: string | EvmResource;
-    amount: bigint;
-    destinationAddress: string;
-    securityModel?: SecurityModel; //defaults to MPC
-  }) {}
+  constructor(transfer: EvmFungibleTransferRequest) {}
 
   setAmount(amount: bigint): this {
     throw new Error("Method not implemented");

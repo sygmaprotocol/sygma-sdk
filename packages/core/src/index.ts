@@ -99,8 +99,9 @@ export type TransferStatusResponse = {
 };
 
 export interface BaseConfig<T> {
-  id: number;
+  sygmaId: number;
   chainId: number;
+  caipId: number;
   name: string;
   type: T;
   bridge: string;
@@ -125,6 +126,7 @@ export interface EthereumConfig extends BaseConfig<Network.EVM> {
 
 export interface SubstrateConfig extends BaseConfig<Network.SUBSTRATE> {
   handlers: Array<Handler>;
+  parachainId: number;
 }
 
 export type Handler = {
@@ -135,6 +137,8 @@ export type Handler = {
 export interface SygmaConfig {
   domains: Array<EthereumConfig | SubstrateConfig>;
 }
+
+export type Domainlike = Partial<Omit<Domain, 'name' | 'iconUrl' | 'type'>>;
 
 /**
  * Returns all Sygma supported domains (networks).
@@ -156,7 +160,8 @@ export async function getDomains(options?: {
  * @param options Allows selecting bridge instance (mainnet by default) and filtering routes by type.
  */
 export async function getRoutes(
-  source: string | number | Domain,
+  environment: Environment,
+  source: Domainlike,
   options?: {
     routeTypes?: RouteType[];
   },
@@ -169,6 +174,7 @@ export async function getRoutes(
  * @param txHash
  */
 export async function getTransferStatus(
+  environment: Environment,
   txHash: string,
 ): Promise<TransferStatusResponse> {
   throw new Error("Not implemented");
