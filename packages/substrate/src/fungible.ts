@@ -1,9 +1,10 @@
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
-import type { BN } from '@polkadot/util';
+import { BN } from '@polkadot/util';
 import type { Config } from '@buildwithsygma/core/src';
-import { getFeeHandler, getPercentageFee, getBasicFee } from './utils/index.js';
+import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
+import { getFeeHandler, getPercentageFee, getBasicFee, deposit } from './utils/index.js';
 import type { Domain, Fungible, SubstrateResource, Transfer } from './types.js';
-import { FeeHandlerType } from './types.js';
+import { ResourceType, FeeHandlerType } from './types.js';
 
 export type SubstrateFee = {
   fee: BN;
@@ -117,7 +118,30 @@ export abstract class SubstrateFungibleAssetTransfer {
    * Returns transaction to be signed by the user
    * @dev potentially add optional param to override transaction params
    */
-  getTransferTransaction(): Promise<SubmittableResult> {
-    throw new Error('Method not implemented');
+  async getTransferTransaction(): Promise<SubmittableExtrinsic<'promise', SubmittableResult>> {
+    const fee = await this.getFee();
+
+    switch (this.resource.type) {
+      case ResourceType.FUNGIBLE: {
+        if (new BN(this.amount.toString()).lt(fee.fee)) {
+          throw new Error('Transfer amount should be higher than transfer fee');
+        }
+
+        return deposit(
+          this.sourceNetworkProvider,
+          this.resource.xcmMultiAssetId,
+          this.amount.toString(),
+          this.destinationDomain.id.toString(),
+          this.destinationAddress,
+        );
+      }
+
+      default:
+        throw new Error(
+          `Resource type ${
+            this.resource.type
+          } with ${fee.fee.toString()} not supported by asset transfer`,
+        );
+    }
   }
 }
