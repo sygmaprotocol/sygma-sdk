@@ -101,7 +101,7 @@ export type TransferStatusResponse = {
 export interface BaseConfig<T> {
   sygmaId: number;
   chainId: number;
-  caipId: number;
+  caipId: string;
   name: string;
   type: T;
   bridge: string;
