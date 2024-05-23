@@ -19,6 +19,7 @@ if (!privateKey) {
 }
 
 const SEPOLIA_CHAIN_ID = 11155111;
+const HOLESKY_CHAIN_ID = 17000; 
 const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000000300";
 const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "https://sepolia.infura.io/v3/8aa64403febb43359abf4c05b735dbbc"
@@ -37,8 +38,8 @@ export async function erc20Transfer(): Promise<void> {
 
   // console.log('transfer params');
   const params = {
-    source: { chainId: SEPOLIA_CHAIN_ID },
-    destination: { chainId: 17000 },
+    source: SEPOLIA_CHAIN_ID,
+    destination: HOLESKY_CHAIN_ID,
     sourceNetworkProvider: web3Provider,
     resource: RESOURCE_ID,
     amount: BigInt(2) * BigInt(1e18),
