@@ -1,8 +1,9 @@
-import { ethers } from "ethers";
+import { Contract } from "ethers";
 import MulticallAbi from './abi/Multicall.json';
-import { Eip1193Provider, FeeHandlerType, RouteIndexerType } from "types";
+import { Eip1193Provider, FeeHandlerType, RouteIndexerType } from "./types.js";
 import { Bridge__factory, BasicFeeHandler__factory, FeeHandlerRouter__factory } from "@buildwithsygma/sygma-contracts";
 import { defaultAbiCoder } from "ethers/lib/utils";
+import { Web3Provider } from "@ethersproject/providers";
 
 enum DeployedNetworks {
     mainnet = 1,
@@ -183,13 +184,13 @@ export async function getFeeHandlerAddressesOfRoutes(
         provider: Eip1193Provider;
     }
 ): Promise<Array<RouteIndexerType & { feeHandlerAddress: string }>> {
-    const web3Provider = new ethers.providers.Web3Provider(params.provider);
+    const web3Provider = new Web3Provider(params.provider);
     const bridge = Bridge__factory.connect(params.bridgeAddress, web3Provider);
     const feeHandlerRouterAddress = await bridge._feeHandler();
     const feeHandlerRouter = FeeHandlerRouter__factory.createInterface();
 
     const multicallAddress = getMulticallAddress(params.chainId);
-    const multicall = new ethers.Contract(multicallAddress, JSON.stringify(MulticallAbi), web3Provider);
+    const multicall = new Contract(multicallAddress, JSON.stringify(MulticallAbi), web3Provider);
 
     let calls = [];
     for (let i = 0; i < params.routes.length; i++) {
@@ -225,9 +226,9 @@ export async function getFeeHandlerTypeOfRoutes(
     { feeHandlerAddress: string } &
     { feeHandlerType: FeeHandlerType }>
 > {
-    const web3Provider = new ethers.providers.Web3Provider(params.provider);
+    const web3Provider = new Web3Provider(params.provider);
     const multicallAddress = getMulticallAddress(params.chainId);
-    const multicall = new ethers.Contract(multicallAddress, JSON.stringify(MulticallAbi), web3Provider);
+    const multicall = new Contract(multicallAddress, JSON.stringify(MulticallAbi), web3Provider);
     const basicFeeHandlerInterface = BasicFeeHandler__factory.createInterface();
 
     let calls = [];

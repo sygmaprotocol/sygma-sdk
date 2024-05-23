@@ -44,6 +44,7 @@ export const mockedDevnetConfig = {
       resources: [
         {
           sygmaResourceId: '0x0000000000000000000000000000000000000000000000000000000000000000',
+          caip19: '',
           type: 'erc20',
           address: '0x3D151A97A446C9ea6893038e7C0db73466f3f3af',
           symbol: 'ERC20TST',
@@ -51,6 +52,7 @@ export const mockedDevnetConfig = {
         },
         {
           sygmaResourceId: '0x0000000000000000000000000000000000000000000000000000000000000300',
+          caip19: '',
           type: 'erc20',
           address: '0x3F9A68fF29B3d86a6928C44dF171A984F6180009',
           symbol: 'ERC20LRTest',
@@ -58,6 +60,7 @@ export const mockedDevnetConfig = {
         },
         {
           sygmaResourceId: '0x0000000000000000000000000000000000000000000000000000000000000200',
+          caip19: '',
           type: 'erc721',
           address: '0xe9d3b1433bACDfC26ee097629D238A41BF6dA3aE',
           symbol: 'ERC721TST',
@@ -65,6 +68,7 @@ export const mockedDevnetConfig = {
         },
         {
           sygmaResourceId: '0x0000000000000000000000000000000000000000000000000000000000000500',
+          caip19: '',
           type: 'permissionlessGeneric',
           address: '',
           symbol: '',

@@ -43,7 +43,7 @@ describe('Utils - getRoutes', () => {
       JSON.stringify(mockedTestnetRoutes),
     );
 
-    const allRoutes = await getRoutes(Environment.TESTNET, { sygmaId: 112});
+    const allRoutes = await getRoutes(Environment.TESTNET, { sygmaId: 112 });
     expect(allRoutes.length).toEqual(2);
   });
 
@@ -68,6 +68,8 @@ describe('Utils - getRoutes', () => {
   });
 
   it('should handle invalid environment input', async () => {
+    fetchMock.resetMocks();
+    fetchMock.mockOnceIf(ConfigUrl.DEVNET.toString(), JSON.stringify(mockedDevnetConfig));
     await expect(getRoutes(Environment.DEVNET, { chainId: 111 })).rejects.toThrow('Invalid environment');
   });
 });

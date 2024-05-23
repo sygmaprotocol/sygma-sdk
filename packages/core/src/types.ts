@@ -83,7 +83,7 @@ export type Route = {
   fromDomain: Domain;
   toDomain: Domain;
   resource: Resource;
-  feeHandler: FeeHandler;
+  feeHandler?: FeeHandler;
 };
 
 export type TransferStatus = 'pending' | 'executed' | 'failed';
