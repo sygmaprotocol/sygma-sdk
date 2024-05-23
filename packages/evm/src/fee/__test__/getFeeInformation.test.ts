@@ -27,7 +27,7 @@ jest.mock(
 describe('getFeeInformation()', () => {
   const feeInfoParams = {
     config: {
-      getDomainConfig: jest.fn().mockReturnValue({
+      findDomainConfigBySygmaId: jest.fn().mockReturnValue({
         feeRouter: '',
         feeHandlers: [
           {
@@ -35,7 +35,7 @@ describe('getFeeInformation()', () => {
             type: FeeHandlerType.BASIC,
           },
         ],
-      }),
+      })
     },
     sourceProvider: {},
     sygmaSourceId: 1,

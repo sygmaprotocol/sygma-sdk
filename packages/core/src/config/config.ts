@@ -98,7 +98,7 @@ export class Config {
       parachainId: (config as SubstrateConfig).parachainId,
     };
   }
-  findDomainConfigSygmaId(sygmaId: number): SubstrateConfig | EthereumConfig {
+  findDomainConfigBySygmaId(sygmaId: number): SubstrateConfig | EthereumConfig {
     const domainConfig = this.configuration.domains.find((domain) => domain.sygmaId === sygmaId);
     if (!domainConfig) throw new Error(`Domain with sygmaId: ${sygmaId} not found.`);
     return domainConfig;

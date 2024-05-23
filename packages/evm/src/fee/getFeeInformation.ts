@@ -12,7 +12,7 @@ export async function getFeeInformation(
   feeHandlerAddress: string;
   feeHandlerType: FeeHandlerType;
 }> {
-  const domainConfig = config.getDomainConfig({ sygmaId: Number(sygmaSourceId) }) as EthereumConfig;
+  const domainConfig = config.findDomainConfigBySygmaId(sygmaSourceId) as EthereumConfig;
   const feeRouter = FeeHandlerRouter__factory.connect(domainConfig.feeRouter, sourceProvider);
   const feeHandlerAddress = await feeRouter._domainResourceIDToFeeHandlerAddress(
     sygmaDestinationDomainId,

@@ -1,6 +1,6 @@
 import type { Bridge, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts';
 
-import { type ethers, type ContractReceipt, type PopulatedTransaction } from 'ethers';
+import { type ethers, type ContractReceipt, type PopulatedTransaction, BigNumber } from 'ethers';
 
 import { FeeHandlerType } from '@buildwithsygma/core';
 import * as EVM from '../depositFns.js';
@@ -87,7 +87,7 @@ describe('deposit functions', () => {
         'domainId',
         'resourceId',
         'depositData',
-        feeData.fee.toString(),
+        BigNumber.from(feeData.fee).toHexString(),
         { value: feeData.fee, gasLimit: EVM.ASSET_TRANSFER_GAS_LIMIT },
       );
     });
@@ -121,7 +121,7 @@ describe('deposit functions', () => {
         'domainId',
         'resourceId',
         'depositData',
-        feeData.fee.toString(),
+        BigNumber.from(feeData.fee).toHexString(),
         { gasLimit: EVM.ASSET_TRANSFER_GAS_LIMIT, value: 0 },
       );
     });
