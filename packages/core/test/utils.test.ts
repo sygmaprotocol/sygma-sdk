@@ -43,7 +43,7 @@ describe('Utils - getRoutes', () => {
       JSON.stringify(mockedTestnetRoutes),
     );
 
-    const allRoutes = await getRoutes(Environment.TESTNET, { sygmaId: 112 });
+    const allRoutes = await getRoutes(Environment.TESTNET, 111);
     expect(allRoutes.length).toEqual(2);
   });
 
@@ -55,7 +55,7 @@ describe('Utils - getRoutes', () => {
       }),
     );
 
-    const allRoutes = await getRoutes(Environment.TESTNET, { sygmaId: 112 }, { routeTypes: [RouteType.FUNGIBLE] });
+    const allRoutes = await getRoutes(Environment.TESTNET, 111, { routeTypes: [RouteType.FUNGIBLE] });
     expect(allRoutes.length).toEqual(1);
   });
 
@@ -64,12 +64,12 @@ describe('Utils - getRoutes', () => {
       throw new Error('failed');
     });
 
-    await expect(getRoutes(Environment.TESTNET, { chainId: 111 })).rejects.toThrow('Failed to fetch routes because of: failed');
+    await expect(getRoutes(Environment.TESTNET, 111)).rejects.toThrow('Failed to fetch routes because of: failed');
   });
 
   it('should handle invalid environment input', async () => {
     fetchMock.resetMocks();
     fetchMock.mockOnceIf(ConfigUrl.DEVNET.toString(), JSON.stringify(mockedDevnetConfig));
-    await expect(getRoutes(Environment.DEVNET, { chainId: 111 })).rejects.toThrow('Invalid environment');
+    await expect(getRoutes(Environment.DEVNET, 111)).rejects.toThrow('Invalid environment');
   });
 });

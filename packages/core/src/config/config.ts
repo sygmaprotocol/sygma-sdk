@@ -32,7 +32,7 @@ export class Config {
           resource.sygmaResourceId = (resource as any).resourceId;
         }
         if (!(resource as any).caip19) {
-          (resource as any).caip19 = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
+          (resource as any).caip19 = '';
         }
       })
 
@@ -41,7 +41,7 @@ export class Config {
       }
 
       if (!(domain as any).caipId) {
-        domain.caipId = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
+        domain.caipId = '';
       }
     })
 
@@ -98,6 +98,11 @@ export class Config {
       parachainId: (config as SubstrateConfig).parachainId,
     };
   }
+  findDomainConfigSygmaId(sygmaId: number): SubstrateConfig | EthereumConfig {
+    const domainConfig = this.configuration.domains.find((domain) => domain.sygmaId === sygmaId);
+    if (!domainConfig) throw new Error(`Domain with sygmaId: ${sygmaId} not found.`);
+    return domainConfig;
+  }
   /**
    * Find configuration of the domain
    * existing in current sygma configuration
@@ -106,14 +111,14 @@ export class Config {
    */
   findDomainConfig(domainLike: Domainlike): SubstrateConfig | EthereumConfig {
     const config = this.configuration.domains.find(domain => {
-      if (domainLike.chainId) {
-        return domain.chainId === domainLike.chainId;
-      }
-      if (domainLike.caipId) {
-        return domain.caipId === domainLike.caipId;
-      }
-      if (domainLike.sygmaId) {
-        return domain.sygmaId === domainLike.sygmaId;
+      switch(typeof domainLike) {
+        case 'string':
+          return domain.caipId === domainLike;
+        case 'object':
+          return domain.caipId === domainLike.caipId &&
+          domain.chainId === domainLike.chainId;
+        case 'number':
+          return domain.chainId === domainLike;
       }
 
       return false;
@@ -121,7 +126,6 @@ export class Config {
 
     if (!config)
     throw new Error('Domain configuration not found.');
-
     return config;
   }
   /**

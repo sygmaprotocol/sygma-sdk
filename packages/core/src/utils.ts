@@ -169,8 +169,8 @@ export async function getRoutes(
       }
 
       return {
-        fromDomain: config.getDomain({ chainId: domainConfig.chainId }),
-        toDomain: config.getDomain({ sygmaId: Number(route.toDomainId) }),
+        fromDomain: config.getDomain(domainConfig.chainId),
+        toDomain: config.findDomainConfigSygmaId(Number(route.toDomainId)),
         resource: resource,
         feeHandler
       };

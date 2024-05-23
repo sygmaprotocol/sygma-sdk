@@ -5,7 +5,7 @@ export const localConfig: SygmaConfig = {
   domains: [
     {
       sygmaId: 1,
-      caipId: 0,
+      caipId: '',
       chainId: 1337,
       name: 'Ethereum 1',
       type: Network.EVM,
@@ -73,7 +73,7 @@ export const localConfig: SygmaConfig = {
     },
     {
       sygmaId: 2,
-      caipId: 0,
+      caipId: '',
       chainId: 1338,
       name: 'evm2',
       type: Network.EVM,
@@ -141,7 +141,7 @@ export const localConfig: SygmaConfig = {
     },
     {
       sygmaId: 3,
-      caipId: 0,
+      caipId: '',
       chainId: 5,
       name: 'Substrate',
       type: Network.SUBSTRATE,

@@ -35,7 +35,7 @@ describe('Config', () => {
   it('Should successfully return all domains from config', async function () {
     const config = new Config();
     await config.init(Environment.DEVNET);
-    const domainConfig = config.getDomainConfig({ chainId: 111 });
+    const domainConfig = config.getDomainConfig(111);
 
     expect(domainConfig.chainId).toEqual(mockedDevnetConfig.domains[0].chainId);
   });
@@ -47,7 +47,7 @@ describe('Config', () => {
     const config = new Config();
     await config.init(Environment.DEVNET);
 
-    expect(() => config.getDomainConfig({ chainId: 115 })).toThrow(expectedError);
+    expect(() => config.getDomainConfig(115)).toThrow(expectedError);
   });
 
   it('Should successfully get all supported domains from config', async function () {
@@ -71,7 +71,7 @@ describe('Config', () => {
   it('Should successfully return all resources for domain', async function () {
     const config = new Config();
     await config.init(Environment.DEVNET);
-    const resources = config.getResources({ sygmaId: 112 });
+    const resources = config.getResources(111);
     expect(resources).toEqual(mockedDevnetConfig.domains[0].resources);
   });
 });

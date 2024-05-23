@@ -29,7 +29,7 @@ export enum SecurityModel {
 export type Domain = {
   sygmaId: number;
   // https://chainagnostic.org/CAIPs/caip-2
-  caipId: number;
+  caipId: string;
   chainId: number;
   name: string;
   iconUrl?: string;
@@ -101,7 +101,7 @@ export type TransferStatusResponse = {
 export interface BaseConfig<T> {
   sygmaId: number;
   chainId: number;
-  caipId: number;
+  caipId: string;
   name: string;
   type: T;
   bridge: string;
@@ -154,9 +154,8 @@ export type EnvironmentMetadata = {
   [key: number]: DomainMetadata;
 };
 
-// * can be chain id, caip id, sygma id
-// * or domain object itself
-export type Domainlike = Partial<Omit<Domain, 'name' | 'iconUrl' | 'type'>>;
+// either caipId, chainId or a domain object itself
+export type Domainlike = string | number | Domain;
 
 export interface Eip1193Provider {
   request(request: {
