@@ -6,7 +6,7 @@ const mockedIndexerRoutes = [
     {
         fromDomainId: '1',
         toDomainId: '2',
-        sygmaResourceId: '',
+        resourceId: '',
         type: RouteType.FUNGIBLE
     }
 ]

@@ -29,16 +29,12 @@ export class Config {
     oldConfig.domains.forEach((domain) => {
       domain.resources.forEach((resource) => {
         if ((resource as any).resourceId) {
-          resource.sygmaResourceId = (resource as any).resourceId;
+          resource.resourceId = (resource as any).resourceId;
         }
         if (!(resource as any).caip19) {
           (resource as any).caip19 = '';
         }
       })
-
-      if ((domain as any).id) {
-        domain.sygmaId = (domain as any).id;
-      }
 
       if (!(domain as any).caipId) {
         domain.caipId = '';
@@ -90,7 +86,7 @@ export class Config {
    */
   private createDomain(config: EthereumConfig | SubstrateConfig): Domain {
     return {
-      sygmaId: config.sygmaId,
+      id: config.id,
       caipId: config.caipId,
       chainId: config.chainId,
       name: config.name,
@@ -99,7 +95,7 @@ export class Config {
     };
   }
   findDomainConfigBySygmaId(sygmaId: number): SubstrateConfig | EthereumConfig {
-    const domainConfig = this.configuration.domains.find((domain) => domain.sygmaId === sygmaId);
+    const domainConfig = this.configuration.domains.find((domain) => domain.id === sygmaId);
     if (!domainConfig) throw new Error(`Domain with sygmaId: ${sygmaId} not found.`);
     return domainConfig;
   }

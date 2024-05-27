@@ -4,7 +4,7 @@ import { FeeHandlerType, Network, ResourceType } from '../types.js';
 export const localConfig: SygmaConfig = {
   domains: [
     {
-      sygmaId: 1,
+      id: 1,
       caipId: '',
       chainId: 1337,
       name: 'Ethereum 1',
@@ -46,7 +46,7 @@ export const localConfig: SygmaConfig = {
       ],
       resources: [
         {
-          sygmaResourceId: '0x0000000000000000000000000000000000000000000000000000000000000000',
+          resourceId: '0x0000000000000000000000000000000000000000000000000000000000000000',
           type: ResourceType.FUNGIBLE,
           address: '0x37356a2B2EbF65e5Ea18BD93DeA6869769099739',
           symbol: 'ERC20TST',
@@ -54,7 +54,7 @@ export const localConfig: SygmaConfig = {
           caip19: '',
         },
         {
-          sygmaResourceId: '0x0000000000000000000000000000000000000000000000000000000000000200',
+          resourceId: '0x0000000000000000000000000000000000000000000000000000000000000200',
           type: ResourceType.NON_FUNGIBLE,
           address: '0xE54Dc792c226AEF99D6086527b98b36a4ADDe56a',
           symbol: 'ERC721TST',
@@ -62,7 +62,7 @@ export const localConfig: SygmaConfig = {
           caip19: '',
         },
         {
-          sygmaResourceId: '0x0000000000000000000000000000000000000000000000000000000000000300',
+          resourceId: '0x0000000000000000000000000000000000000000000000000000000000000300',
           type: ResourceType.FUNGIBLE,
           address: '0x78E5b9cEC9aEA29071f070C8cC561F692B3511A6',
           symbol: 'ERC20LRTest',
@@ -72,7 +72,7 @@ export const localConfig: SygmaConfig = {
       ],
     },
     {
-      sygmaId: 2,
+      id: 2,
       caipId: '',
       chainId: 1338,
       name: 'evm2',
@@ -114,7 +114,7 @@ export const localConfig: SygmaConfig = {
       ],
       resources: [
         {
-          sygmaResourceId: '0x0000000000000000000000000000000000000000000000000000000000000000',
+          resourceId: '0x0000000000000000000000000000000000000000000000000000000000000000',
           type: ResourceType.FUNGIBLE,
           address: '0x37356a2B2EbF65e5Ea18BD93DeA6869769099739',
           symbol: 'ERC20TST',
@@ -122,7 +122,7 @@ export const localConfig: SygmaConfig = {
           caip19: '',
         },
         {
-          sygmaResourceId: '0x0000000000000000000000000000000000000000000000000000000000000200',
+          resourceId: '0x0000000000000000000000000000000000000000000000000000000000000200',
           type: ResourceType.NON_FUNGIBLE,
           address: '0xE54Dc792c226AEF99D6086527b98b36a4ADDe56a',
           symbol: 'ERC721TST',
@@ -130,7 +130,7 @@ export const localConfig: SygmaConfig = {
           caip19: '',
         },
         {
-          sygmaResourceId: '0x0000000000000000000000000000000000000000000000000000000000000300',
+          resourceId: '0x0000000000000000000000000000000000000000000000000000000000000300',
           type: ResourceType.FUNGIBLE,
           address: '0x78E5b9cEC9aEA29071f070C8cC561F692B3511A6',
           symbol: 'ERC20LRTest',
@@ -140,7 +140,7 @@ export const localConfig: SygmaConfig = {
       ],
     },
     {
-      sygmaId: 3,
+      id: 3,
       caipId: '',
       chainId: 5,
       name: 'Substrate',
@@ -160,7 +160,7 @@ export const localConfig: SygmaConfig = {
       startBlock: BigInt(5),
       resources: [
         {
-          sygmaResourceId: '0x0000000000000000000000000000000000000000000000000000000000000300',
+          resourceId: '0x0000000000000000000000000000000000000000000000000000000000000300',
           type: ResourceType.FUNGIBLE,
           assetName: 'USDC',
           assetID: 2000,
@@ -189,7 +189,7 @@ export const localConfig: SygmaConfig = {
           caip19: '',
         },
         {
-          sygmaResourceId: '0x0000000000000000000000000000000000000000000000000000000000000000',
+          resourceId: '0x0000000000000000000000000000000000000000000000000000000000000000',
           type: ResourceType.FUNGIBLE,
           native: true,
           decimals: 18,

@@ -27,7 +27,7 @@ export enum SecurityModel {
 }
 
 export type Domain = {
-  sygmaId: number;
+  id: number;
   // https://chainagnostic.org/CAIPs/caip-2
   caipId: string;
   chainId: number;
@@ -47,7 +47,7 @@ export enum ResourceType {
 }
 
 interface BaseResource {
-  sygmaResourceId: string;
+  resourceId: string;
   // https://chainagnostic.org/CAIPs/caip-19
   caip19: string;
   type: ResourceType;
@@ -99,7 +99,7 @@ export type TransferStatusResponse = {
 };
 
 export interface BaseConfig<T> {
-  sygmaId: number;
+  id: number;
   chainId: number;
   caipId: string;
   name: string;
@@ -141,7 +141,7 @@ export interface SygmaConfig {
 export type RouteIndexerType = {
   fromDomainId: string;
   toDomainId: string;
-  sygmaResourceId: string;
+  resourceId: string;
   type: RouteType;
 };
 

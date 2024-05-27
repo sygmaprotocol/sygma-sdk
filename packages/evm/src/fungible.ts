@@ -113,9 +113,9 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     const { feeHandlerAddress, feeHandlerType } = await getFeeInformation(
       this.config,
       provider,
-      this.source.sygmaId,
-      this.destination.sygmaId,
-      this.resource.sygmaResourceId,
+      this.source.id,
+      this.destination.id,
+      this.resource.resourceId,
     );
 
     const basicFeeCalculator = new BasicFeeCalculator();
@@ -125,9 +125,9 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     return await basicFeeCalculator.calculateFee({
       provider,
       sender: this.sourceAddress,
-      sourceSygmaId: this.source.sygmaId,
-      destinationSygmaId: this.destination.sygmaId,
-      resourceSygmaId: this.resource.sygmaResourceId,
+      sourceSygmaId: this.source.id,
+      destinationSygmaId: this.destination.id,
+      resourceSygmaId: this.resource.resourceId,
       feeHandlerAddress,
       feeHandlerType,
     });
@@ -141,7 +141,7 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     const provider = new Web3Provider(this.sourceNetworkProvider);
     const sourceDomainConfig = this.config.getDomainConfig(this.source);
     const bridge = Bridge__factory.connect(sourceDomainConfig.bridge, provider);
-    const handlerAddress = await bridge._resourceIDToHandlerAddress(this.resource.sygmaResourceId);
+    const handlerAddress = await bridge._resourceIDToHandlerAddress(this.resource.resourceId);
 
     const erc20 = ERC20__factory.connect(this.resource.address, provider);
     const fee = await this.getFee();
@@ -177,8 +177,8 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
       recipientAddress: this.destinationAddress,
       parachainId: this.destination.parachainId,
       bridgeInstance: bridge,
-      domainId: this.destination.sygmaId.toString(),
-      resourceId: this.resource.sygmaResourceId,
+      domainId: this.destination.id.toString(),
+      resourceId: this.resource.resourceId,
       feeData: fee,
     });
 

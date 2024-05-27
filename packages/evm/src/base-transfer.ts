@@ -31,8 +31,8 @@ export abstract class BaseTransfer {
     const resources = config.getResources(this.source);
     const resource = resources.find((res) => {
       return typeof transfer.resource === 'string' ? 
-        res.sygmaResourceId === transfer.resource : 
-        res.sygmaResourceId === transfer.resource.sygmaResourceId;
+        res.resourceId === transfer.resource : 
+        res.resourceId === transfer.resource.resourceId;
     });
 
     if (resource) {
@@ -53,7 +53,7 @@ export abstract class BaseTransfer {
     const sourceDomainConfig = this.config.getDomainConfig(this.source);
     const web3Provider = new Web3Provider(this.sourceNetworkProvider);
     const bridge = Bridge__factory.connect(sourceDomainConfig.bridge, web3Provider);
-    const resourceId = this.resource.sygmaResourceId;
+    const resourceId = this.resource.resourceId;
     const handlerAddress = await bridge._resourceIDToHandlerAddress(resourceId);
     return utils.isAddress(handlerAddress) && handlerAddress !== constants.AddressZero;
   }

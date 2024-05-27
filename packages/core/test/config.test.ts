@@ -56,8 +56,8 @@ describe('Config', () => {
     const domains = config.getDomains();
 
     expect(domains).toEqual(
-      mockedDevnetConfig.domains.map(({ parachainId, caipId, sygmaId, chainId, name, type }) => ({
-        sygmaId,
+      mockedDevnetConfig.domains.map(({ parachainId, caipId, id, chainId, name, type }) => ({
+        id,
         chainId,
         name,
         type,

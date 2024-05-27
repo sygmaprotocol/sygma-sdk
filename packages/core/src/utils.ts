@@ -123,7 +123,7 @@ export async function getRoutes(
     const domainConfig = config.findDomainConfig(source);
     const indexerUrl = getIndexerURL(environment);
     const typeQuery = options?.routeTypes ? `?resourceType=${options.routeTypes.join(',')}` : '';
-    const url = `${indexerUrl}/api/routes/from/${domainConfig.sygmaId}${typeQuery}`;
+    const url = `${indexerUrl}/api/routes/from/${domainConfig.id}${typeQuery}`;
     const response = await fetch(url);
     const data = (await response.json()) as { routes: RouteIndexerType[] };
 
@@ -148,7 +148,7 @@ export async function getRoutes(
 
     return data.routes.map(route => {
       const resource = domainConfig.resources.find(
-        r => r.sygmaResourceId === route.sygmaResourceId,
+        r => r.resourceId === route.resourceId,
       )!;
 
       let routeWithTypeAndAddress;
@@ -156,7 +156,7 @@ export async function getRoutes(
         routeWithTypeAndAddress = routeFeeHandlerAddressesAndTypes.find((r) => {
           r.fromDomainId === route.fromDomainId &&
           r.toDomainId === route.toDomainId &&
-          r.sygmaResourceId === route.sygmaResourceId
+          r.resourceId === route.resourceId
         })
       }
 

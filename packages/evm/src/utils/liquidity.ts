@@ -15,7 +15,7 @@ export async function getLiquidity(
   const { domains } = config.getConfiguration();
 
   domain = domains.find(domain => {
-    return !!domain.resources.find(res => res.sygmaResourceId === resource.sygmaResourceId);
+    return !!domain.resources.find(res => res.resourceId === resource.resourceId);
   });
 
   if (!domain) throw new Error('Domain configuration not found.');

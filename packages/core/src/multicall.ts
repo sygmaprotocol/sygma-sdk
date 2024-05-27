@@ -198,7 +198,7 @@ export async function getFeeHandlerAddressesOfRoutes(
             target: feeHandlerRouterAddress,
             callData: feeHandlerRouter.encodeFunctionData(
                 '_domainResourceIDToFeeHandlerAddress',
-                [parseInt(params.routes[i].toDomainId), params.routes[i].sygmaResourceId]
+                [parseInt(params.routes[i].toDomainId), params.routes[i].resourceId]
             )
         });
     }

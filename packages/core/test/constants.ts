@@ -2,7 +2,7 @@ export const mockedDevnetConfig = {
   domains: [
     {
       chainId: 111,
-      sygmaId: 112,
+      id: 112,
       caipId: 113,
       name: 'ethereum',
       type: 'evm',
@@ -43,7 +43,7 @@ export const mockedDevnetConfig = {
       ],
       resources: [
         {
-          sygmaResourceId: '0x0000000000000000000000000000000000000000000000000000000000000000',
+          resourceId: '0x0000000000000000000000000000000000000000000000000000000000000000',
           caip19: '',
           type: 'erc20',
           address: '0x3D151A97A446C9ea6893038e7C0db73466f3f3af',
@@ -51,7 +51,7 @@ export const mockedDevnetConfig = {
           decimals: 18,
         },
         {
-          sygmaResourceId: '0x0000000000000000000000000000000000000000000000000000000000000300',
+          resourceId: '0x0000000000000000000000000000000000000000000000000000000000000300',
           caip19: '',
           type: 'erc20',
           address: '0x3F9A68fF29B3d86a6928C44dF171A984F6180009',
@@ -59,7 +59,7 @@ export const mockedDevnetConfig = {
           decimals: 18,
         },
         {
-          sygmaResourceId: '0x0000000000000000000000000000000000000000000000000000000000000200',
+          resourceId: '0x0000000000000000000000000000000000000000000000000000000000000200',
           caip19: '',
           type: 'erc721',
           address: '0xe9d3b1433bACDfC26ee097629D238A41BF6dA3aE',
@@ -67,7 +67,7 @@ export const mockedDevnetConfig = {
           decimals: 0,
         },
         {
-          sygmaResourceId: '0x0000000000000000000000000000000000000000000000000000000000000500',
+          resourceId: '0x0000000000000000000000000000000000000000000000000000000000000500',
           caip19: '',
           type: 'permissionlessGeneric',
           address: '',
