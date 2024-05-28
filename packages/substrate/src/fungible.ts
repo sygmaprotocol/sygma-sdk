@@ -1,10 +1,11 @@
-import type { ApiPromise, SubmittableResult } from '@polkadot/api';
-import { BN } from '@polkadot/util';
 import type { Config } from '@buildwithsygma/core/src';
+import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
-import { getFeeHandler, getPercentageFee, getBasicFee, deposit } from './utils/index.js';
+import { BN } from '@polkadot/util';
+
 import type { Domain, Fungible, SubstrateResource, Transfer } from './types.js';
 import { ResourceType, FeeHandlerType } from './types.js';
+import { getFeeHandler, getPercentageFee, getBasicFee, deposit } from './utils/index.js';
 
 export type SubstrateFee = {
   fee: BN;
@@ -128,6 +129,7 @@ export abstract class SubstrateFungibleAssetTransfer {
         }
 
         return deposit(
+          this.config.environment,
           this.sourceNetworkProvider,
           this.resource.xcmMultiAssetId,
           this.amount.toString(),

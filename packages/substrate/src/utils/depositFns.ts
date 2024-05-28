@@ -160,7 +160,11 @@ export const handleTxExtrinsicResult = (
  * @param {string} domainId - The domain identifier.
  * @returns {object} - The destination multilocation object.
  */
-export const createDestIdMultilocationData = (address: string, domainId: string): object => {
+export const createDestIdMultilocationData = (
+  environment: Environment,
+  address: string,
+  domainId: string,
+): object => {
   switch (environment) {
     case Environment.LOCAL:
       return {
@@ -218,6 +222,7 @@ export const createMultiAssetData = (
  *    });
  *
  * @category Bridge deposit
+ * @param environment
  * @param {ApiPromise} api - The ApiPromise instance.
  * @param {XcmMultiAssetIdType} xcmMultiAssetId - The XCM multi-asset ID type.
  * @param {string} amount - The amount to be deposited.
@@ -226,6 +231,7 @@ export const createMultiAssetData = (
  * @returns {SubmittableExtrinsic<"promise", SubmittableResult>} - A SubmittableExtrinsic representing the deposit transaction.
  */
 export const deposit = (
+  environment: Environment,
   api: ApiPromise,
   xcmMultiAssetId: XcmMultiAssetIdType,
   amount: string,
@@ -234,6 +240,7 @@ export const deposit = (
 ): SubmittableExtrinsic<'promise', SubmittableResult> => {
   const asset = createMultiAssetData(xcmMultiAssetId, amount);
   const destIdMultilocation = createDestIdMultilocationData(
+    environment,
     destinationAddress,
     destinationDomainId,
   );
