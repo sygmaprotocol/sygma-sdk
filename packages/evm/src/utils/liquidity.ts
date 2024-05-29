@@ -1,6 +1,8 @@
-import type { EvmResource, EthereumConfig, SubstrateConfig } from '@buildwithsygma/core';
-import { Config, Environment, ResourceType } from '@buildwithsygma/core';
+import type { EvmResource, Environment } from '@buildwithsygma/core';
+import { Config, ResourceType } from '@buildwithsygma/core';
+
 import type { Eip1193Provider } from '../types.js';
+
 import { getEvmHandlerBalance } from './balances.js';
 
 export async function getLiquidity(
@@ -8,13 +10,12 @@ export async function getLiquidity(
   provider: Eip1193Provider,
   resource: EvmResource,
 ): Promise<bigint> {
-  let domain: EthereumConfig | SubstrateConfig | undefined;
   const config = new Config();
   await config.init(environment);
 
   const { domains } = config.getConfiguration();
 
-  domain = domains.find(domain => {
+  const domain = domains.find(domain => {
     return !!domain.resources.find(res => res.resourceId === resource.resourceId);
   });
 
