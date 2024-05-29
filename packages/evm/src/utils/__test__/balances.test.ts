@@ -1,32 +1,31 @@
 import type { EvmResource } from '@buildwithsygma/core';
 import type { Bridge } from '@buildwithsygma/sygma-contracts';
-
 import type { Eip1193Provider } from '../../types.js';
 import { getEvmErc20Balance, getEvmHandlerBalance } from '../balances.js';
 
 jest.mock('@buildwithsygma/sygma-contracts', () => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const { BigNumber } = jest.requireActual('ethers');
   return {
     ...jest.requireActual('@buildwithsygma/sygma-contracts'),
     ERC20__factory: {
       connect: jest.fn().mockReturnValue({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-        balanceOf: jest.fn().mockResolvedValue(BigNumber.from(0)),
+        balanceOf: jest.fn().mockResolvedValue({
+          toBigInt: () => 0n,
+          toString: () => '0'
+        }),
       }) as unknown as Bridge,
     },
   } as unknown;
 });
 
 jest.mock('@ethersproject/providers', () => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const { BigNumber } = jest.requireActual('ethers');
 
   return {
     ...jest.requireActual('@ethersproject/providers'),
     Web3Provider: jest.fn().mockReturnValue({
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-      getBalance: jest.fn().mockResolvedValue(BigNumber.from(0)),
+      getBalance: jest.fn().mockResolvedValue({
+        toBigInt: () => 0n,
+        toString: () => '0'
+      }),
     }),
   } as unknown;
 });
