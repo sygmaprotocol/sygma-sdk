@@ -1,5 +1,6 @@
 import type { EvmResource } from '@buildwithsygma/core';
 import type { Bridge } from '@buildwithsygma/sygma-contracts';
+
 import type { Eip1193Provider } from '../../types.js';
 import { getEvmErc20Balance, getEvmHandlerBalance } from '../balances.js';
 
@@ -10,7 +11,7 @@ jest.mock('@buildwithsygma/sygma-contracts', () => {
       connect: jest.fn().mockReturnValue({
         balanceOf: jest.fn().mockResolvedValue({
           toBigInt: () => 0n,
-          toString: () => '0'
+          toString: () => '0',
         }),
       }) as unknown as Bridge,
     },
@@ -18,13 +19,12 @@ jest.mock('@buildwithsygma/sygma-contracts', () => {
 });
 
 jest.mock('@ethersproject/providers', () => {
-
   return {
     ...jest.requireActual('@ethersproject/providers'),
     Web3Provider: jest.fn().mockReturnValue({
       getBalance: jest.fn().mockResolvedValue({
         toBigInt: () => 0n,
-        toString: () => '0'
+        toString: () => '0',
       }),
     }),
   } as unknown;
