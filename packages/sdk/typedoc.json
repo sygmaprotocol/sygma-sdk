@@ -1,9 +1,0 @@
-{
-  "extends": ["../../typedoc.base.json"],
-  "name": "Sygma SDK",
-  "entryPoints": ["src/index.ts"],
-  "categoryOrder": ["Bridge deposit", "Event handling", "Fee", "Token iteractions", "Helpers"],
-  "exclude": ["**/*+(.test|.e2e).ts"],
-  "readme": "../../README.md",
-  "includeVersion": true
-}

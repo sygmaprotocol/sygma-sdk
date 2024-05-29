@@ -1,3 +1,4 @@
+import { ConfigUrl } from '../index.js';
 import type {
   Domain,
   Domainlike,
@@ -8,7 +9,7 @@ import type {
   SygmaConfig,
 } from '../types.js';
 import { Environment } from '../types.js';
-import { ConfigUrl } from '../index.js';
+
 import { localConfig } from './localConfig.js';
 
 export class Config {
@@ -18,31 +19,6 @@ export class Config {
    */
   configuration!: SygmaConfig;
   initialized = false;
-  /**
-   * Transform old config fields
-   * to new ones
-   * TODO: remove this method
-   * @param {SygmaConfig} oldConfig 
-   * @returns {SygmaConfig}
-   */
-  transformConfig(oldConfig: SygmaConfig): SygmaConfig {
-    oldConfig.domains.forEach((domain) => {
-      domain.resources.forEach((resource) => {
-        if ((resource as any).resourceId) {
-          resource.resourceId = (resource as any).resourceId;
-        }
-        if (!(resource as any).caip19) {
-          (resource as any).caip19 = '';
-        }
-      })
-
-      if (!(domain as any).caipId) {
-        domain.caipId = '';
-      }
-    })
-
-    return oldConfig;
-  }
 
   constructor() {}
   /**
@@ -54,8 +30,7 @@ export class Config {
       this.configuration = localConfig;
     } else {
       const response = await fetch(this.getConfigUrl(environment));
-      let data = (await response.json()) as SygmaConfig;
-      data = this.transformConfig(data);
+      const data = (await response.json()) as SygmaConfig;
       this.configuration = data;
       // initialized is set to true when
       // all configurations have been fetched
@@ -95,7 +70,7 @@ export class Config {
     };
   }
   findDomainConfigBySygmaId(sygmaId: number): SubstrateConfig | EthereumConfig {
-    const domainConfig = this.configuration.domains.find((domain) => domain.id === sygmaId);
+    const domainConfig = this.configuration.domains.find(domain => domain.id === sygmaId);
     if (!domainConfig) throw new Error(`Domain with sygmaId: ${sygmaId} not found.`);
     return domainConfig;
   }
@@ -107,12 +82,11 @@ export class Config {
    */
   findDomainConfig(domainLike: Domainlike): SubstrateConfig | EthereumConfig {
     const config = this.configuration.domains.find(domain => {
-      switch(typeof domainLike) {
+      switch (typeof domainLike) {
         case 'string':
           return domain.caipId === domainLike;
         case 'object':
-          return domain.caipId === domainLike.caipId &&
-          domain.chainId === domainLike.chainId;
+          return domain.caipId === domainLike.caipId && domain.chainId === domainLike.chainId;
         case 'number':
           return domain.chainId === domainLike;
       }
@@ -120,8 +94,7 @@ export class Config {
       return false;
     });
 
-    if (!config)
-    throw new Error('Domain configuration not found.');
+    if (!config) throw new Error('Domain configuration not found.');
     return config;
   }
   /**
@@ -160,17 +133,19 @@ export class Config {
    * @param {{ networkTypes?: Network[]; environment?: Environment }} options
    * @returns {Domain[]}
    */
-  getDomains(options?: { networkTypes?: Network[]; }): Domain[] {
+  getDomains(options?: { networkTypes?: Network[] }): Domain[] {
     if (!this.initialized) throw new Error('SDK Uninitialized');
     const config = this.configuration;
     if (!config) throw new Error('Configuration unavailable or uninitialized.');
 
-    const domains = config.domains.filter(f => {
-      if (options?.networkTypes) {
-        return options?.networkTypes?.includes(f.type)
-      }
-      return true
-    }).map(dc => this.createDomain(dc));
+    const domains = config.domains
+      .filter(f => {
+        if (options?.networkTypes) {
+          return options?.networkTypes?.includes(f.type);
+        }
+        return true;
+      })
+      .map(dc => this.createDomain(dc));
     return domains;
   }
   /**

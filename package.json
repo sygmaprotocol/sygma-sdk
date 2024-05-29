@@ -13,15 +13,12 @@
     "node": ">=16.0.0"
   },
   "scripts": {
-    "sdk:build": "yarn workspace @buildwithsygma/sygma-sdk-core build:all",
-    "sdk:cleanDist": "yarn workspace @buildwithsygma/sygma-sdk-core clean",
-    "sdk:test": "yarn workspace @buildwithsygma/sygma-sdk-core test",
-    "sdk:lint": "yarn workspace @buildwithsygma/sygma-sdk-core lint",
-    "sdk:lint:fix": "yarn workspace @buildwithsygma/sygma-sdk-core lint:fix",
-    "sdk:test:unit": "yarn workspace @buildwithsygma/sygma-sdk-core test:unit",
-    "start:react-example": "yarn workspace @buildwithsygma/sygma-sdk-react-example start",
-    "sdk:run-local-example": "yarn workspace @buildwithsygma/sygma-sdk-node-example run:local-ex",
-    "sdk:run-ganache-example": "yarn workspace @buildwithsygma/sygma-sdk-node-example run:ganache-ex",
+    "core:build": "yarn workspace @buildwithsygma/core build:all",
+    "core:cleanDist": "yarn workspace @buildwithsygma/core clean",
+    "core:test": "yarn workspace @buildwithsygma/core test",
+    "core:lint": "yarn workspace @buildwithsygma/core lint",
+    "core:lint:fix": "yarn workspace @buildwithsygma/core lint:fix",
+    "core:test:unit": "yarn workspace @buildwithsygma/core test:unit",
     "docs": "typedoc"
   },
   "keywords": [],

@@ -501,109 +501,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@buildwithsygma/sygma-sdk-core@workspace:*, @buildwithsygma/sygma-sdk-core@workspace:packages/sdk":
-  version: 0.0.0-use.local
-  resolution: "@buildwithsygma/sygma-sdk-core@workspace:packages/sdk"
-  dependencies:
-    "@buildwithsygma/sygma-contracts": "npm:2.6.1"
-    "@ethersproject/abi": "npm:^5.7.0"
-    "@ethersproject/bytes": "npm:^5.7.0"
-    "@ethersproject/contracts": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.2"
-    "@polkadot/api": "npm:10.7.2"
-    "@polkadot/api-augment": "npm:10.7.2"
-    "@polkadot/extension-inject": "npm:0.46.3"
-    "@polkadot/keyring": "npm:12.2.1"
-    "@polkadot/rpc-provider": "npm:10.7.2"
-    "@polkadot/types": "npm:10.7.2"
-    "@polkadot/ui-keyring": "npm:3.4.1"
-    "@polkadot/util": "npm:12.2.1"
-    "@polkadot/util-crypto": "npm:12.2.1"
-    "@types/jest": "npm:^29.4.0"
-    concurrently: "npm:7.0.0"
-    eslint: "npm:8"
-    ethers: "npm:5.6.2"
-    hardhat: "npm:2.8.2"
-    jest: "npm:^29.4.1"
-    jest-environment-jsdom: "npm:^29.4.1"
-    jest-extended: "npm:1.2.0"
-    jest-fetch-mock: "npm:^3.0.3"
-    ts-jest: "npm:^29.0.5"
-    ts-node: "npm:10.9.1"
-    typedoc: "npm:^0.24.1"
-    typedoc-plugin-markdown: "npm:^3.15.1"
-    typescript: "npm:5.0.4"
-  languageName: unknown
-  linkType: soft
-
 "@buildwithsygma/sygma-sdk-evm-to-evm-fungible-transfer-example@workspace:examples/evm-to-evm-fungible-transfer":
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-evm-to-evm-fungible-transfer-example@workspace:examples/evm-to-evm-fungible-transfer"
   dependencies:
     "@buildwithsygma/core": "workspace:^"
     "@buildwithsygma/evm": "workspace:^"
-    "@buildwithsygma/sygma-sdk-core": "workspace:*"
     dotenv: "npm:^16.3.1"
     eslint: "npm:8"
     ethers: "npm:5.7.2"
     ts-node: "npm:10.9.1"
     typescript: "npm:5.0.4"
     web3-providers-http: "npm:^1.2.7"
-  languageName: unknown
-  linkType: soft
-
-"@buildwithsygma/sygma-sdk-evm-to-evm-generic-message-example@workspace:examples/evm-to-evm-generic-mesage-passing":
-  version: 0.0.0-use.local
-  resolution: "@buildwithsygma/sygma-sdk-evm-to-evm-generic-message-example@workspace:examples/evm-to-evm-generic-mesage-passing"
-  dependencies:
-    "@buildwithsygma/sygma-sdk-core": "workspace:*"
-    dotenv: "npm:16.3.1"
-    eslint: "npm:8"
-    ethers: "npm:5.6.2"
-    ts-node: "npm:10.9.1"
-    typescript: "npm:5.0.4"
-  languageName: unknown
-  linkType: soft
-
-"@buildwithsygma/sygma-sdk-evm-to-substrate-fungible-transfer-example@workspace:examples/evm-to-substrate-fungible-transfer":
-  version: 0.0.0-use.local
-  resolution: "@buildwithsygma/sygma-sdk-evm-to-substrate-fungible-transfer-example@workspace:examples/evm-to-substrate-fungible-transfer"
-  dependencies:
-    "@buildwithsygma/sygma-sdk-core": "workspace:*"
-    dotenv: "npm:^16.3.1"
-    eslint: "npm:8"
-    ethers: "npm:5.6.2"
-    ts-node: "npm:10.9.1"
-    typescript: "npm:5.0.4"
-  languageName: unknown
-  linkType: soft
-
-"@buildwithsygma/sygma-sdk-local-fungible-transfer-example@workspace:examples/local-fungible-transfer":
-  version: 0.0.0-use.local
-  resolution: "@buildwithsygma/sygma-sdk-local-fungible-transfer-example@workspace:examples/local-fungible-transfer"
-  dependencies:
-    "@buildwithsygma/sygma-contracts": "npm:2.6.1"
-    "@buildwithsygma/sygma-sdk-core": "workspace:*"
-    "@ethersproject/experimental": "npm:^5.7.0"
-    eslint: "npm:8"
-    ethers: "npm:5.6.2"
-    ts-node: "npm:10.9.1"
-    typescript: "npm:5.0.4"
-  languageName: unknown
-  linkType: soft
-
-"@buildwithsygma/sygma-sdk-substrate-to-evm-fungible-transfer-example@workspace:examples/substrate-to-evm-fungible-transfer":
-  version: 0.0.0-use.local
-  resolution: "@buildwithsygma/sygma-sdk-substrate-to-evm-fungible-transfer-example@workspace:examples/substrate-to-evm-fungible-transfer"
-  dependencies:
-    "@buildwithsygma/sygma-sdk-core": "workspace:*"
-    "@polkadot/api": "npm:10.7.2"
-    "@polkadot/keyring": "npm:12.2.1"
-    "@polkadot/util-crypto": "npm:^12.2.1"
-    dotenv: "npm:^16.3.1"
-    eslint: "npm:8"
-    ts-node: "npm:10.9.1"
-    typescript: "npm:5.0.4"
   languageName: unknown
   linkType: soft
 
@@ -1287,17 +1196,6 @@ __metadata:
     "@ethersproject/properties": "npm:^5.7.0"
     "@ethersproject/transactions": "npm:^5.7.0"
   checksum: 97a10361dddaccfb3e9e20e24d071cfa570050adcb964d3452c5f7c9eaaddb4e145ec9cf928e14417948701b89e81d4907800e799a6083123e4d13a576842f41
-  languageName: node
-  linkType: hard
-
-"@ethersproject/experimental@npm:^5.7.0":
-  version: 5.7.0
-  resolution: "@ethersproject/experimental@npm:5.7.0"
-  dependencies:
-    "@ethersproject/web": "npm:^5.7.0"
-    ethers: "npm:^5.7.0"
-    scrypt-js: "npm:3.0.1"
-  checksum: 0546f8737ca062ce7d4a890d9cb354fde34b10b042b1d6b26e7206810c39d0fdb7ac20e60686a89f3f41faf33cc4c4c7366f49700a2d0978f0457e79759a79a4
   languageName: node
   linkType: hard
 
@@ -5484,13 +5382,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:16.3.1":
-  version: 16.3.1
-  resolution: "dotenv@npm:16.3.1"
-  checksum: b95ff1bbe624ead85a3cd70dbd827e8e06d5f05f716f2d0cbc476532d54c7c9469c3bc4dd93ea519f6ad711cb522c00ac9a62b6eb340d5affae8008facc3fbd7
-  languageName: node
-  linkType: hard
-
 "dotenv@npm:^16.3.1":
   version: 16.4.5
   resolution: "dotenv@npm:16.4.5"
@@ -6443,7 +6334,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethers@npm:5.7.2, ethers@npm:^5.7.0":
+"ethers@npm:5.7.2":
   version: 5.7.2
   resolution: "ethers@npm:5.7.2"
   dependencies:

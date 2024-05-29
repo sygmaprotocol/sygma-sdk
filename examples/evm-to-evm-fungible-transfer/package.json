@@ -29,7 +29,6 @@
   "dependencies": {
     "@buildwithsygma/core": "workspace:^",
     "@buildwithsygma/evm": "workspace:^",
-    "@buildwithsygma/sygma-sdk-core": "workspace:*",
     "ethers": "5.7.2",
     "web3-providers-http": "^1.2.7"
   }

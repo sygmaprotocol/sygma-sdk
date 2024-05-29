@@ -1,6 +1,7 @@
 // import { Bridge__factory, FeeHandlerRouter__factory } from '@buildwithsygma/sygma-contracts';
 // import { ethers } from 'ethers';
 import { ExplorerUrl, IndexerUrl } from './constants.js';
+import { getFeeHandlerAddressesOfRoutes, getFeeHandlerTypeOfRoutes } from './multicall.js';
 import type {
   Route,
   TransferStatus,
@@ -12,11 +13,11 @@ import type {
   SygmaConfig,
   Domainlike,
   Eip1193Provider,
-  FeeHandlerType
+  FeeHandlerType,
 } from './types.js';
 import { Network, Environment } from './types.js';
+
 import { Config } from './index.js';
-import { getFeeHandlerAddressesOfRoutes, getFeeHandlerTypeOfRoutes } from './multicall.js';
 // import MulticallAbi from './abi/Multicall.json';
 // import { defaultAbiCoder } from 'ethers/lib/utils.js';
 // import { Web3Provider } from '@ethersproject/providers';
@@ -127,54 +128,52 @@ export async function getRoutes(
     const response = await fetch(url);
     const data = (await response.json()) as { routes: RouteIndexerType[] };
 
-    let routeFeeHandlerAddressesAndTypes: Array<RouteIndexerType &
-    { feeHandlerAddress: string } &
-    { feeHandlerType: FeeHandlerType }>;
+    let routeFeeHandlerAddressesAndTypes: Array<
+      RouteIndexerType & { feeHandlerAddress: string } & { feeHandlerType: FeeHandlerType }
+    >;
 
     if (domainConfig.type === Network.EVM && options?.sourceProvider) {
       const routesWithHandlerAddresses = await getFeeHandlerAddressesOfRoutes({
         routes: data.routes,
         chainId: domainConfig.chainId,
         bridgeAddress: domainConfig.bridge,
-        provider: options.sourceProvider
+        provider: options.sourceProvider,
       });
 
       routeFeeHandlerAddressesAndTypes = await getFeeHandlerTypeOfRoutes({
         routes: routesWithHandlerAddresses,
         chainId: domainConfig.chainId,
-        provider: options.sourceProvider
+        provider: options.sourceProvider,
       });
     }
 
     return data.routes.map(route => {
-      const resource = domainConfig.resources.find(
-        r => r.resourceId === route.resourceId,
-      )!;
+      const resource = domainConfig.resources.find(r => r.resourceId === route.resourceId)!;
 
       let routeWithTypeAndAddress;
       if (routeFeeHandlerAddressesAndTypes) {
-        routeWithTypeAndAddress = routeFeeHandlerAddressesAndTypes.find((r) => {
+        routeWithTypeAndAddress = routeFeeHandlerAddressesAndTypes.find(r => {
           r.fromDomainId === route.fromDomainId &&
-          r.toDomainId === route.toDomainId &&
-          r.resourceId === route.resourceId
-        })
+            r.toDomainId === route.toDomainId &&
+            r.resourceId === route.resourceId;
+        });
       }
 
       let feeHandler = undefined;
       if (routeWithTypeAndAddress) {
         feeHandler = {
           type: routeWithTypeAndAddress.feeHandlerType,
-          address: routeWithTypeAndAddress.feeHandlerAddress
-        }
+          address: routeWithTypeAndAddress.feeHandlerAddress,
+        };
       }
 
       return {
         fromDomain: config.getDomain(domainConfig.chainId),
         toDomain: config.findDomainConfigBySygmaId(Number(route.toDomainId)),
         resource: resource,
-        feeHandler
+        feeHandler,
       };
-    })
+    });
   } catch (err) {
     if (err instanceof Error) {
       throw new Error(`Failed to fetch routes because of: ${err.message}`);
