@@ -23,7 +23,7 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: corepack enable
       - run: yarn install --immutable
-      - run: yarn run sdk:lint # lint code
-      - run: yarn run sdk:build # compile typescript into javascript
-      - run: yarn run sdk:test:unit --silent --coverage # run unit tests
+      - run: yarn run core:lint # lint code
+      - run: yarn run core:build # compile typescript into javascript
+      - run: yarn run core:test:unit --silent --coverage # run unit tests
       # - run: yarn run test:integrations # run integration tests tests
