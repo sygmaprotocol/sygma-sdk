@@ -1,4 +1,5 @@
 import type { PopulatedTransaction } from 'ethers';
+
 import type { TransactionRequest } from '../types.js';
 /**
  * Creates a simple, library agnostic transaction type

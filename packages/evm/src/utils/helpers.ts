@@ -1,6 +1,6 @@
-import { utils, BigNumber } from 'ethers';
 import { TypeRegistry } from '@polkadot/types/create';
 import { decodeAddress } from '@polkadot/util-crypto';
+import { utils, BigNumber } from 'ethers';
 /**
  * Constructs the deposit data for a erc20 transaction.
  *

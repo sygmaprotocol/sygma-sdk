@@ -1,16 +1,17 @@
 import type { Domainlike, Environment, EvmResource } from '@buildwithsygma/core';
 import { SecurityModel, Config, FeeHandlerType } from '@buildwithsygma/core';
-import type { Eip1193Provider, EvmFee, TransactionRequest } from 'types.js';
-import { Web3Provider } from '@ethersproject/providers';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
+import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber, constants, providers, utils, type PopulatedTransaction } from 'ethers';
-import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
-import { createTransactionRequest } from './utils/transaction.js';
+import type { Eip1193Provider, EvmFee, TransactionRequest } from 'types.js';
+
 import { BaseTransfer } from './base-transfer.js';
-import { PercentageFeeCalculator } from './fee/PercentageFee.js';
 import { BasicFeeCalculator } from './fee/BasicFee.js';
+import { PercentageFeeCalculator } from './fee/PercentageFee.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
+import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
 import { erc20Transfer } from './utils/depositFns.js';
+import { createTransactionRequest } from './utils/transaction.js';
 
 type EvmFungibleTransferRequest = {
   source: Domainlike;
@@ -30,11 +31,8 @@ export async function createEvmFungibleAssetTransfer(
   const config = new Config();
   await config.init(params.environment);
 
-  const transfer = new EvmFungibleAssetTransfer(
-    params,
-    config,
-  );
-  
+  const transfer = new EvmFungibleAssetTransfer(params, config);
+
   const isValid = await transfer.isValidTransfer();
   if (!isValid)
     throw new Error('Handler not registered, please check if this is a valid bridge route.');
@@ -78,10 +76,7 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
   securityModel: SecurityModel;
   amount: bigint;
 
-  constructor(
-    transfer: EvmFungibleTransferRequest,
-    config: Config,
-  ) {
+  constructor(transfer: EvmFungibleTransferRequest, config: Config) {
     super(transfer, config);
     this.amount = transfer.amount;
     this.destinationAddress = transfer.destinationAddress;
@@ -145,7 +140,11 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
 
     const erc20 = ERC20__factory.connect(this.resource.address, provider);
     const fee = await this.getFee();
-    const feeHandlerAllowance = await getERC20Allowance(erc20, this.sourceAddress, fee.handlerAddress);
+    const feeHandlerAllowance = await getERC20Allowance(
+      erc20,
+      this.sourceAddress,
+      fee.handlerAddress,
+    );
     const handlerAllowance = await getERC20Allowance(erc20, this.sourceAddress, handlerAddress);
 
     const approvals: Array<PopulatedTransaction> = [];

@@ -1,7 +1,8 @@
-import type { Bridge } from '@buildwithsygma/sygma-contracts';
 import type { EvmResource } from '@buildwithsygma/core';
-import { getEvmErc20Balance, getEvmHandlerBalance } from '../balances.js';
+import type { Bridge } from '@buildwithsygma/sygma-contracts';
+
 import type { Eip1193Provider } from '../../types.js';
+import { getEvmErc20Balance, getEvmHandlerBalance } from '../balances.js';
 
 jest.mock('@buildwithsygma/sygma-contracts', () => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

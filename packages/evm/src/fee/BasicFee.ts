@@ -1,7 +1,9 @@
 import { FeeHandlerType } from '@buildwithsygma/core';
 import { BasicFeeHandler__factory } from '@buildwithsygma/sygma-contracts';
 import { ethers } from 'ethers';
+
 import type { EvmFee } from '../types.js';
+
 import type { EvmFeeCalculationParams } from './types.js';
 import { BaseEvmTransferFeeCalculator } from './types.js';
 

@@ -1,10 +1,9 @@
+import { FeeHandlerType } from '@buildwithsygma/core';
 import type { Bridge, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts';
-
 import { type ethers, type ContractReceipt, type PopulatedTransaction, BigNumber } from 'ethers';
 
-import { FeeHandlerType } from '@buildwithsygma/core';
-import * as EVM from '../depositFns.js';
 import type { EvmFee } from '../../types.js';
+import * as EVM from '../depositFns.js';
 
 jest.mock(
   '@buildwithsygma/sygma-contracts',

@@ -1,7 +1,8 @@
 import type { Config } from '@buildwithsygma/core';
 import { FeeHandlerType } from '@buildwithsygma/core';
-import type { JsonRpcProvider } from '@ethersproject/providers';
 import { FeeHandlerRouter__factory } from '@buildwithsygma/sygma-contracts';
+import type { JsonRpcProvider } from '@ethersproject/providers';
+
 import { getFeeInformation } from '../getFeeInformation.js';
 
 jest.mock(
@@ -18,9 +19,9 @@ jest.mock(
       },
       BasicFeeHandler__factory: {
         connect: jest.fn().mockReturnValue({
-          feeHandlerType: () => "basic"
-        })
-      }
+          feeHandlerType: () => 'basic',
+        }),
+      },
     }) as unknown,
 );
 
@@ -35,7 +36,7 @@ describe('getFeeInformation()', () => {
             type: FeeHandlerType.BASIC,
           },
         ],
-      })
+      }),
     },
     sourceProvider: {},
     sygmaSourceId: 1,

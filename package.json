@@ -19,6 +19,12 @@
     "core:lint": "yarn workspace @buildwithsygma/core lint",
     "core:lint:fix": "yarn workspace @buildwithsygma/core lint:fix",
     "core:test:unit": "yarn workspace @buildwithsygma/core test:unit",
+    "evm:build": "yarn workspace @buildwithsygma/evm build:all",
+    "evm:cleanDist": "yarn workspace @buildwithsygma/evm clean",
+    "evm:test": "yarn workspace @buildwithsygma/evm test",
+    "evm:lint": "yarn workspace @buildwithsygma/evm lint",
+    "evm:lint:fix": "yarn workspace @buildwithsygma/evm lint:fix",
+    "evm:test:unit": "yarn workspace @buildwithsygma/evm test:unit",
     "docs": "typedoc"
   },
   "keywords": [],

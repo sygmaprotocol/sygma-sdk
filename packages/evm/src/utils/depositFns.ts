@@ -1,9 +1,10 @@
+import { FeeHandlerType } from '@buildwithsygma/core';
+import type { Bridge } from '@buildwithsygma/sygma-contracts';
 import type { PopulatedTransaction, ethers } from 'ethers';
 import { BigNumber } from 'ethers';
-import type { Bridge } from '@buildwithsygma/sygma-contracts';
 
-import { FeeHandlerType } from '@buildwithsygma/core';
 import type { EvmFee, FungibleTransferParams } from '../types.js';
+
 import { createERCDepositData } from './helpers.js';
 
 export const ASSET_TRANSFER_GAS_LIMIT: BigNumber = BigNumber.from(300000);

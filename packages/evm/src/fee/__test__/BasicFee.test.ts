@@ -1,6 +1,7 @@
 import { FeeHandlerType } from '@buildwithsygma/core';
 import type { JsonRpcBatchProvider } from '@ethersproject/providers';
 import { constants } from 'ethers';
+
 import { BasicFeeCalculator } from '../BasicFee.js';
 import type { EvmFeeCalculationParams } from '../types.js';
 

@@ -1,6 +1,7 @@
+import type { EvmResource } from '@buildwithsygma/core';
 import { ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
-import type { EvmResource } from '@buildwithsygma/core';
+
 import type { Eip1193Provider } from '../types.js';
 
 /**

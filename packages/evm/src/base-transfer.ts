@@ -1,7 +1,8 @@
 import type { Domain, EvmResource, Config, Domainlike } from '@buildwithsygma/core';
-import { Web3Provider } from '@ethersproject/providers';
 import { Bridge__factory } from '@buildwithsygma/sygma-contracts';
+import { Web3Provider } from '@ethersproject/providers';
 import { constants, utils } from 'ethers';
+
 import type { Eip1193Provider } from './types.js';
 
 export interface BaseTransferParams {
@@ -20,19 +21,16 @@ export abstract class BaseTransfer {
   config: Config;
   source: Domain;
 
-  constructor(
-    transfer: BaseTransferParams,
-    config: Config,
-  ) {
+  constructor(transfer: BaseTransferParams, config: Config) {
     this.sourceAddress = transfer.sourceAddress;
     this.source = config.getDomain(transfer.source);
     this.destination = config.getDomain(transfer.destination);
     this.sourceNetworkProvider = transfer.sourceNetworkProvider;
     const resources = config.getResources(this.source);
-    const resource = resources.find((res) => {
-      return typeof transfer.resource === 'string' ? 
-        res.resourceId === transfer.resource : 
-        res.resourceId === transfer.resource.resourceId;
+    const resource = resources.find(res => {
+      return typeof transfer.resource === 'string'
+        ? res.resourceId === transfer.resource
+        : res.resourceId === transfer.resource.resourceId;
     });
 
     if (resource) {

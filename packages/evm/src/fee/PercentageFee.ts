@@ -1,7 +1,9 @@
+import { FeeHandlerType } from '@buildwithsygma/core';
 import { PercentageERC20FeeHandlerEVM__factory } from '@buildwithsygma/sygma-contracts';
 import { utils } from 'ethers';
-import { FeeHandlerType } from '@buildwithsygma/core';
+
 import type { EvmFee } from '../types.js';
+
 import type { EvmFeeCalculationParams } from './types.js';
 import { BaseEvmTransferFeeCalculator } from './types.js';
 

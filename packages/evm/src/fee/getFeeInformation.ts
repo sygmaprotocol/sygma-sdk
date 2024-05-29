@@ -1,5 +1,8 @@
 import type { Config, EthereumConfig, FeeHandlerType } from '@buildwithsygma/core';
-import { BasicFeeHandler__factory, FeeHandlerRouter__factory } from '@buildwithsygma/sygma-contracts';
+import {
+  BasicFeeHandler__factory,
+  FeeHandlerRouter__factory,
+} from '@buildwithsygma/sygma-contracts';
 import { utils, ethers } from 'ethers';
 
 export async function getFeeInformation(
@@ -23,12 +26,9 @@ export async function getFeeInformation(
     throw new Error(`Failed getting fee: route not registered on fee handler`);
   }
 
-  const FeeHandler = BasicFeeHandler__factory.connect(
-    feeHandlerAddress,
-    sourceProvider
-  )
+  const FeeHandler = BasicFeeHandler__factory.connect(feeHandlerAddress, sourceProvider);
 
-  const feeHandlerType = await FeeHandler.feeHandlerType() as unknown as FeeHandlerType;
+  const feeHandlerType = (await FeeHandler.feeHandlerType()) as unknown as FeeHandlerType;
 
   return { feeHandlerAddress, feeHandlerType };
 }

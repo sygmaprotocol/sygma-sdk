@@ -3,8 +3,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { FeeHandlerType } from '@buildwithsygma/core';
 import type { JsonRpcBatchProvider } from '@ethersproject/providers';
-import type { EvmFeeCalculationParams } from '../types.js';
+
 import { PercentageFeeCalculator } from '../PercentageFee.js';
+import type { EvmFeeCalculationParams } from '../types.js';
 
 jest.mock('@buildwithsygma/sygma-contracts', () => {
   const { constants, BigNumber } = jest.requireActual('ethers');
