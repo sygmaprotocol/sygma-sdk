@@ -1,10 +1,12 @@
-import type { Config } from '@buildwithsygma/core/src';
+import type { Domainlike, Environment } from '@buildwithsygma/core';
+import { Config, FeeHandlerType } from '@buildwithsygma/core';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import { BN } from '@polkadot/util';
 
-import type { Domain, Fungible, SubstrateResource, Transfer } from './types.js';
-import { ResourceType, FeeHandlerType } from './types.js';
+import { BaseTransfer } from './base-transfer.js';
+import type { Fungible, SubstrateResource, Transfer } from './types.js';
+import { ResourceType } from './types.js';
 import { getFeeHandler, getPercentageFee, getBasicFee, deposit } from './utils/index.js';
 
 export type SubstrateFee = {
@@ -17,51 +19,52 @@ export type SubstrateFee = {
  * @param provider
  * @param resource
  */
-export function getLiquidity(provider: ApiPromise, resource: SubstrateResource): Promise<bigint> {
-  throw new Error('Method not implemented');
+export async function getLiquidity(
+  provider: ApiPromise,
+  resource: SubstrateResource,
+): Promise<bigint> {
+  const liquidity = await provider.query.liquidityPallet.liquidity(resource.xcmMultiAssetId);
+
+  return BigInt(liquidity.toString());
 }
 
 type SubstrateAssetTransferRequest = {
-  source: string | number | Domain;
+  source: Domainlike;
   sourceNetworkProvider: ApiPromise;
-  destination: string | number | Domain;
+  destination: Domainlike;
   resource: string | SubstrateResource;
   amount: bigint;
   destinationAddress: string;
+  environment: Environment;
 };
 
-export function createSubstrateFungibleAssetTransfer(
+export async function createSubstrateFungibleAssetTransfer(
   transferRequest: SubstrateAssetTransferRequest,
 ): Promise<SubstrateFungibleAssetTransfer> {
-  throw new Error('Method not implemented');
+  const config = new Config();
+  await config.init(transferRequest.environment);
+
+  const transfer = new SubstrateFungibleAssetTransfer(transferRequest, config);
+
+  return transfer;
 }
 
 /**
  * @dev User should not instance this directly. All the (async) checks should be done in `createSubstrateFungibleAssetTransfer`
  */
-export abstract class SubstrateFungibleAssetTransfer {
+class SubstrateFungibleAssetTransfer extends BaseTransfer {
   private sourceNetworkProvider: ApiPromise;
-  private sourceDomain: Domain;
-  private destinationDomain: Domain;
+  private sourceDomain: Domainlike;
+  private destinationDomain: Domainlike;
   private resource: SubstrateResource;
   private amount: bigint;
   private destinationAddress: string;
   private config: Config;
 
-  protected constructor(
-    transfer: {
-      sourceDomain: Domain;
-      sourceNetworkProvider: ApiPromise;
-      destinationDomain: Domain;
-      resource: SubstrateResource;
-      amount: bigint;
-      destinationAddress: string;
-    },
-    config: Config,
-  ) {
+  constructor(transfer: SubstrateAssetTransferRequest, config: Config) {
     this.sourceNetworkProvider = transfer.sourceNetworkProvider;
-    this.sourceDomain = transfer.sourceDomain;
-    this.destinationDomain = transfer.destinationDomain;
+    this.sourceDomain = transfer.source;
+    this.destinationDomain = transfer.destination;
     this.resource = transfer.resource;
     this.amount = transfer.amount;
     this.destinationAddress = transfer.destinationAddress;
@@ -78,7 +81,7 @@ export abstract class SubstrateFungibleAssetTransfer {
     return this;
   }
 
-  setDestinationDomain(destinationDomain: Domain): this {
+  setDestinationDomain(destinationDomain: Domainlike): this {
     this.destinationDomain = destinationDomain;
     return this;
   }

@@ -1,4 +1,10 @@
-import type { Domain, EvmResource, FeeHandlerType, SecurityModel } from '@buildwithsygma/core';
+import type {
+  Domain,
+  Eip1193Provider,
+  EvmResource,
+  FeeHandlerType,
+  SecurityModel,
+} from '@buildwithsygma/core';
 import type { Bridge } from '@buildwithsygma/sygma-contracts';
 import type { ethers } from 'ethers';
 
@@ -7,13 +13,6 @@ export interface TransactionRequest {
   value: bigint;
   data: string;
   gasLimit: bigint;
-}
-
-export interface Eip1193Provider {
-  request(request: {
-    method: string;
-    params?: Array<unknown> | Record<string, unknown>;
-  }): Promise<unknown>;
 }
 
 export type EvmFee = {
