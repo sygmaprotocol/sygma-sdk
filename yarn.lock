@@ -499,15 +499,15 @@ __metadata:
     "@ethersproject/bytes": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.2"
-    "@polkadot/api": "npm:10.7.2"
-    "@polkadot/api-augment": "npm:10.7.2"
-    "@polkadot/extension-inject": "npm:0.46.3"
-    "@polkadot/keyring": "npm:12.2.1"
-    "@polkadot/rpc-provider": "npm:10.7.2"
-    "@polkadot/types": "npm:10.7.2"
+    "@polkadot/api": "npm:^11.2.1"
+    "@polkadot/api-augment": "npm:^11.2.1"
+    "@polkadot/extension-inject": "npm:^0.47.5"
+    "@polkadot/keyring": "npm:^12.6.2"
+    "@polkadot/rpc-provider": "npm:^11.2.1"
+    "@polkadot/types": "npm:^11.2.1"
     "@polkadot/ui-keyring": "npm:3.4.1"
-    "@polkadot/util": "npm:12.2.1"
-    "@polkadot/util-crypto": "npm:12.2.1"
+    "@polkadot/util": "npm:^12.6.2"
+    "@polkadot/util-crypto": "npm:^12.2.1"
     "@types/jest": "npm:^29.4.0"
     concurrently: "npm:7.0.0"
     eslint: "npm:8"
@@ -2748,6 +2748,24 @@ __metadata:
   peerDependencies:
     "@polkadot/api": "*"
   checksum: 6783b900916914266ca4adb5a0a9a3ee32f46017c9f8a93e97582659d62dab1985373c9a8e2cba55ba2101393f02c151f44857433096862d91a3e9f14781137d
+  languageName: node
+  linkType: hard
+
+"@polkadot/extension-inject@npm:^0.47.5":
+  version: 0.47.5
+  resolution: "@polkadot/extension-inject@npm:0.47.5"
+  dependencies:
+    "@polkadot/api": "npm:^11.1.1"
+    "@polkadot/rpc-provider": "npm:^11.1.1"
+    "@polkadot/types": "npm:^11.1.1"
+    "@polkadot/util": "npm:^12.6.2"
+    "@polkadot/util-crypto": "npm:^12.6.2"
+    "@polkadot/x-global": "npm:^12.6.2"
+    tslib: "npm:^2.6.2"
+  peerDependencies:
+    "@polkadot/api": "*"
+    "@polkadot/util": "*"
+  checksum: b525ed50f1b6290b510e0952ac37a62629a7a55e6ef4ede004acc1f44e318ebcd59cd9bf5086cd8de3f603599045bd8bb521e26e12736e51a00712cc67d6b80f
   languageName: node
   linkType: hard
 

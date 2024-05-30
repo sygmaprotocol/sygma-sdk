@@ -2,6 +2,13 @@ import type { Network } from '@buildwithsygma/core/src';
 
 export type ParachainId = number;
 
+export interface Eip1193Provider {
+  request(request: {
+    method: string;
+    params?: Array<unknown> | Record<string, unknown>;
+  }): Promise<unknown>;
+}
+
 export type XcmMultiAssetIdType = {
   concrete: {
     parents: number;
