@@ -1,6 +1,7 @@
 import type { Config, EthereumConfig, FeeHandlerType } from '@buildwithsygma/core';
 import {
   BasicFeeHandler__factory,
+  Bridge__factory,
   FeeHandlerRouter__factory,
 } from '@buildwithsygma/sygma-contracts';
 import { utils, ethers } from 'ethers';
@@ -16,7 +17,10 @@ export async function getFeeInformation(
   feeHandlerType: FeeHandlerType;
 }> {
   const domainConfig = config.findDomainConfigBySygmaId(sygmaSourceId) as EthereumConfig;
-  const feeRouter = FeeHandlerRouter__factory.connect(domainConfig.feeRouter, sourceProvider);
+  const bridgeInstance = Bridge__factory.connect(domainConfig.bridge, sourceProvider);
+  const feeRouterAddress = await bridgeInstance._feeHandler();
+
+  const feeRouter = FeeHandlerRouter__factory.connect(feeRouterAddress, sourceProvider);
   const feeHandlerAddress = await feeRouter._domainResourceIDToFeeHandlerAddress(
     sygmaDestinationDomainId,
     sygmaResourceId,
