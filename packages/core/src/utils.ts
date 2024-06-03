@@ -14,6 +14,7 @@ import type {
   FeeHandlerType,
 } from './types.js';
 import { Network, Environment } from './types.js';
+
 import { Config } from './index.js';
 
 function getIndexerTransferUrl(
@@ -223,7 +224,9 @@ export async function getTransferStatus(
  * End users shouldn't really need that but lets expose for power users
  * @param env
  */
-export async function getRawConfiguration(environment: Environment = process.env.SYGMA_ENV): Promise<SygmaConfig> {
+export async function getRawConfiguration(
+  environment: Environment = process.env.SYGMA_ENV,
+): Promise<SygmaConfig> {
   const config = new Config();
   await config.init(environment);
   const sygmaConfig = config.configuration;

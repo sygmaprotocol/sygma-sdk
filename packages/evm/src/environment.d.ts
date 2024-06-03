@@ -1,9 +1,9 @@
-import { Environment } from "@buildwithsygma/core";
+import type { Environment } from '@buildwithsygma/core';
 
 declare global {
-    namespace NodeJS {
-      interface ProcessEnv {
-        SYGMA_ENV: Environment;
-      }
+  namespace NodeJS {
+    interface ProcessEnv {
+      SYGMA_ENV: Environment;
     }
+  }
 }

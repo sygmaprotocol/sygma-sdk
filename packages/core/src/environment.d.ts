@@ -1,9 +1,9 @@
-import { Environment } from "./types";
+import type { Environment } from './types.js';
 
 declare global {
-    namespace NodeJS {
-      interface ProcessEnv {
-        SYGMA_ENV: Environment;
-      }
+  namespace NodeJS {
+    interface ProcessEnv {
+      SYGMA_ENV: Environment;
     }
+  }
 }
