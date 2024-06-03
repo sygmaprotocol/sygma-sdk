@@ -1,12 +1,12 @@
-import type { Domainlike, Environment } from '@buildwithsygma/core';
-import { Config, FeeHandlerType } from '@buildwithsygma/core';
+import type { Domainlike, Environment, SubstrateResource } from '@buildwithsygma/core';
+import { ResourceType, Config } from '@buildwithsygma/core';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import { BN } from '@polkadot/util';
 
 import { BaseTransfer } from './base-transfer.js';
-import type { Fungible, SubstrateResource, Transfer } from './types.js';
-import { ResourceType } from './types.js';
+import type { Fungible, Transfer } from './types.js';
+import { FeeHandlerType } from './types.js';
 import { getFeeHandler, getPercentageFee, getBasicFee, deposit } from './utils/index.js';
 
 export type SubstrateFee = {
@@ -29,9 +29,9 @@ export async function getLiquidity(
 }
 
 type SubstrateAssetTransferRequest = {
-  source: Domainlike;
+  sourceDomain: Domainlike;
+  destinationDomain: Domainlike;
   sourceNetworkProvider: ApiPromise;
-  destination: Domainlike;
   resource: string | SubstrateResource;
   amount: bigint;
   destinationAddress: string;
@@ -53,19 +53,15 @@ export async function createSubstrateFungibleAssetTransfer(
  * @dev User should not instance this directly. All the (async) checks should be done in `createSubstrateFungibleAssetTransfer`
  */
 class SubstrateFungibleAssetTransfer extends BaseTransfer {
-  private sourceNetworkProvider: ApiPromise;
-  private sourceDomain: Domainlike;
-  private destinationDomain: Domainlike;
-  private resource: SubstrateResource;
   private amount: bigint;
   private destinationAddress: string;
-  private config: Config;
 
   constructor(transfer: SubstrateAssetTransferRequest, config: Config) {
+    super(transfer, config);
     this.sourceNetworkProvider = transfer.sourceNetworkProvider;
-    this.sourceDomain = transfer.source;
-    this.destinationDomain = transfer.destination;
-    this.resource = transfer.resource;
+    this.sourceDomain = config.getDomain(transfer.sourceDomain);
+    this.destinationDomain = config.getDomain(transfer.destinationDomain);
+
     this.amount = transfer.amount;
     this.destinationAddress = transfer.destinationAddress;
     this.config = config;
@@ -73,16 +69,6 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
 
   setAmount(amount: bigint): this {
     this.amount = amount;
-    return this;
-  }
-
-  setResource(resource: SubstrateResource): this {
-    this.resource = resource;
-    return this;
-  }
-
-  setDestinationDomain(destinationDomain: Domainlike): this {
-    this.destinationDomain = destinationDomain;
     return this;
   }
 

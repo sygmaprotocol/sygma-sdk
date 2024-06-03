@@ -1,38 +1,29 @@
-import type {
-  Config,
-  Domain,
-  Domainlike,
-  EvmResource,
-  SubstrateResource,
-} from '@buildwithsygma/core';
+import type { Config, Domain, Domainlike, SubstrateResource } from '@buildwithsygma/core';
 import { Bridge__factory } from '@buildwithsygma/sygma-contracts';
+import type { ExternalProvider } from '@ethersproject/providers';
 import { Web3Provider } from '@ethersproject/providers';
+import type { ApiPromise } from '@polkadot/api';
 import { constants, utils } from 'ethers';
 
-import type { Eip1193Provider } from './types.js';
-
 export interface BaseTransferParams {
-  source: Domainlike;
-  destination: Domainlike;
-  sourceNetworkProvider: Eip1193Provider;
+  sourceDomain: Domainlike;
+  destinationDomain: Domainlike;
+  sourceNetworkProvider: ApiPromise;
   resource: string | SubstrateResource;
-  sourceAddress: string;
 }
 
 export abstract class BaseTransfer {
-  sourceNetworkProvider: Eip1193Provider;
-  sourceAddress: string;
-  destination: Domain;
-  resource: EvmResource;
+  sourceDomain: Domain;
+  destinationDomain: Domain;
+  sourceNetworkProvider: ApiPromise;
+  resource: SubstrateResource;
   config: Config;
-  source: Domain;
 
-  constructor(transfer: BaseTransferParams, config: Config) {
-    this.sourceAddress = transfer.sourceAddress;
-    this.source = config.getDomain(transfer.source);
-    this.destination = config.getDomain(transfer.destination);
+  protected constructor(transfer: BaseTransferParams, config: Config) {
+    this.sourceDomain = config.getDomain(transfer.sourceDomain);
+    this.destinationDomain = config.getDomain(transfer.destinationDomain);
     this.sourceNetworkProvider = transfer.sourceNetworkProvider;
-    const resources = config.getResources(this.source);
+    const resources = config.getResources(this.sourceDomain);
     const resource = resources.find(res => {
       return typeof transfer.resource === 'string'
         ? res.resourceId === transfer.resource
@@ -40,7 +31,7 @@ export abstract class BaseTransfer {
     });
 
     if (resource) {
-      this.resource = resource as EvmResource;
+      this.resource = resource as SubstrateResource;
     } else {
       throw new Error('Resource not found.');
     }
@@ -55,8 +46,8 @@ export abstract class BaseTransfer {
    * @returns {boolean}
    */
   async isValidTransfer(): Promise<boolean> {
-    const sourceDomainConfig = this.config.getDomainConfig(this.source);
-    const web3Provider = new Web3Provider(this.sourceNetworkProvider);
+    const sourceDomainConfig = this.config.getDomainConfig(this.sourceDomain);
+    const web3Provider = new Web3Provider(this.sourceNetworkProvider as ExternalProvider);
     const bridge = Bridge__factory.connect(sourceDomainConfig.bridge, web3Provider);
     const resourceId = this.resource.resourceId;
     const handlerAddress = await bridge._resourceIDToHandlerAddress(resourceId);
@@ -68,7 +59,7 @@ export abstract class BaseTransfer {
    * @param {EvmResource} resource
    * @returns {BaseTransfer}
    */
-  setResource(resource: EvmResource): void {
+  setResource(resource: SubstrateResource): void {
     this.resource = resource;
   }
 
@@ -78,7 +69,6 @@ export abstract class BaseTransfer {
    * @returns
    */
   setDestinationDomain(destination: Domainlike): void {
-    const domain = this.config.getDomain(destination);
-    this.destination = domain;
+    this.destinationDomain = this.config.getDomain(destination);
   }
 }
