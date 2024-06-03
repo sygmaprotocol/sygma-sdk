@@ -1,4 +1,5 @@
 import type { Network } from '@buildwithsygma/core/src';
+import { ResourceType } from '@buildwithsygma/core';
 
 export type ParachainId = number;
 
@@ -32,12 +33,7 @@ export type Recipient = {
   parachainId?: number;
 };
 
-export enum ResourceType {
-  FUNGIBLE = 'fungible',
-  NON_FUNGIBLE = 'nonfungible',
-  PERMISSIONED_GENERIC = 'permissionedGeneric',
-  PERMISSIONLESS_GENERIC = 'permissionlessGeneric',
-}
+
 
 export enum SubstrateParachain {
   LOCAL = 5,
