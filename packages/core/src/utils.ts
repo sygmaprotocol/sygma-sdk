@@ -1,5 +1,3 @@
-// import { Bridge__factory, FeeHandlerRouter__factory } from '@buildwithsygma/sygma-contracts';
-// import { ethers } from 'ethers';
 import { ExplorerUrl, IndexerUrl } from './constants.js';
 import { getFeeHandlerAddressesOfRoutes, getFeeHandlerTypeOfRoutes } from './multicall.js';
 import type {
@@ -16,14 +14,10 @@ import type {
   FeeHandlerType,
 } from './types.js';
 import { Network, Environment } from './types.js';
-
 import { Config } from './index.js';
-// import MulticallAbi from './abi/Multicall.json';
-// import { defaultAbiCoder } from 'ethers/lib/utils.js';
-// import { Web3Provider } from '@ethersproject/providers';
 
 function getIndexerTransferUrl(
-  env: Environment,
+  env: Environment = process.env.SYGMA_ENV,
   txHash: string,
 ): {
   explorerUrl: string;
@@ -63,7 +57,7 @@ function getIndexerTransferUrl(
  *
  */
 export async function getEnvironmentMetadata(
-  environment: Environment,
+  environment: Environment = process.env.SYGMA_ENV,
 ): Promise<EnvironmentMetadata> {
   try {
     const url = `${getIndexerURL(environment)}/api/domains/metadata`;
@@ -111,8 +105,8 @@ export async function getDomains(options: {
  * @param options Allows selecting bridge instance (mainnet by default) and filtering routes by type.
  */
 export async function getRoutes(
-  environment: Environment,
   source: Domainlike,
+  environment: Environment = process.env.SYGMA_ENV,
   options?: {
     routeTypes?: RouteType[];
     sourceProvider?: Eip1193Provider;
@@ -189,7 +183,7 @@ export async function getRoutes(
  */
 export async function getTransferStatus(
   txHash: string,
-  environment?: Environment,
+  environment: Environment = process.env.SYGMA_ENV,
 ): Promise<TransferStatusResponse> {
   const env = environment ?? Environment.MAINNET;
   const { url, explorerUrl } = getIndexerTransferUrl(env, txHash);
@@ -229,7 +223,7 @@ export async function getTransferStatus(
  * End users shouldn't really need that but lets expose for power users
  * @param env
  */
-export async function getRawConfiguration(environment: Environment): Promise<SygmaConfig> {
+export async function getRawConfiguration(environment: Environment = process.env.SYGMA_ENV): Promise<SygmaConfig> {
   const config = new Config();
   await config.init(environment);
   const sygmaConfig = config.configuration;

@@ -1,4 +1,4 @@
-import type { Domainlike, Environment, EvmResource } from '@buildwithsygma/core';
+import type { Domainlike, EvmResource } from '@buildwithsygma/core';
 import { SecurityModel, Config, FeeHandlerType } from '@buildwithsygma/core';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
@@ -22,14 +22,13 @@ type EvmFungibleTransferRequest = {
   amount: bigint;
   destinationAddress: string;
   securityModel?: SecurityModel;
-  environment: Environment;
 };
 
 export async function createEvmFungibleAssetTransfer(
   params: EvmFungibleTransferRequest,
 ): Promise<EvmFungibleAssetTransfer> {
   const config = new Config();
-  await config.init(params.environment);
+  await config.init(process.env.SYGMA_ENV);
 
   const transfer = new EvmFungibleAssetTransfer(params, config);
 

@@ -10,7 +10,7 @@ import { defaultAbiCoder } from 'ethers/lib/utils';
 import MulticallAbi from './abi/Multicall.json';
 import type { Eip1193Provider, FeeHandlerType, RouteIndexerType } from './types.js';
 
-enum DeployedNetworks {
+enum MulticallDeployedNetworks {
   mainnet = 1,
   ropsten = 3,
   rinkeby = 4,
@@ -90,89 +90,89 @@ enum DeployedNetworks {
   amoy = 80002,
 }
 
-function getMulticallAddress(chainId: DeployedNetworks): string {
+function getMulticallAddress(chainId: MulticallDeployedNetworks): string {
   switch (chainId) {
-    case DeployedNetworks.mainnet:
-    case DeployedNetworks.ropsten:
-    case DeployedNetworks.rinkeby:
-    case DeployedNetworks.goerli:
-    case DeployedNetworks.optimism:
-    case DeployedNetworks.kovan:
-    case DeployedNetworks.matic:
-    case DeployedNetworks.kovanOptimism:
-    case DeployedNetworks.xdai:
-    case DeployedNetworks.xDaiTestnet:
-    case DeployedNetworks.goerliOptimism:
-    case DeployedNetworks.sepoliaOptimism:
-    case DeployedNetworks.arbitrum:
-    case DeployedNetworks.rinkebyArbitrum:
-    case DeployedNetworks.goerliArbitrum:
-    case DeployedNetworks.sepoliaArbitrum:
-    case DeployedNetworks.mumbai:
-    case DeployedNetworks.sepolia:
-    case DeployedNetworks.avalancheMainnet:
-    case DeployedNetworks.avalancheFuji:
-    case DeployedNetworks.fantomTestnet:
-    case DeployedNetworks.fantom:
-    case DeployedNetworks.bsc:
-    case DeployedNetworks.bsc_testnet:
-    case DeployedNetworks.moonbeam:
-    case DeployedNetworks.moonriver:
-    case DeployedNetworks.moonbaseAlphaTestnet:
-    case DeployedNetworks.harmony:
-    case DeployedNetworks.cronos:
-    case DeployedNetworks.fuse:
-    case DeployedNetworks.songbirdCanaryNetwork:
-    case DeployedNetworks.costonTestnet:
-    case DeployedNetworks.boba:
-    case DeployedNetworks.aurora:
-    case DeployedNetworks.astar:
-    case DeployedNetworks.okc:
-    case DeployedNetworks.heco:
-    case DeployedNetworks.metis:
-    case DeployedNetworks.rsk:
-    case DeployedNetworks.rskTestnet:
-    case DeployedNetworks.evmos:
-    case DeployedNetworks.evmosTestnet:
-    case DeployedNetworks.thundercore:
-    case DeployedNetworks.thundercoreTestnet:
-    case DeployedNetworks.oasis:
-    case DeployedNetworks.celo:
-    case DeployedNetworks.godwoken:
-    case DeployedNetworks.godwokentestnet:
-    case DeployedNetworks.klatyn:
-    case DeployedNetworks.milkomeda:
-    case DeployedNetworks.kcc:
-    case DeployedNetworks.lineaTestnet:
-    case DeployedNetworks.linea:
-    case DeployedNetworks.mantle:
-    case DeployedNetworks.mantleTestnet:
-    case DeployedNetworks.base:
-    case DeployedNetworks.baseTestnet:
-    case DeployedNetworks.blastSepolia:
-    case DeployedNetworks.polygonZkEvm:
-    case DeployedNetworks.polygonZkEvmTestnet:
-    case DeployedNetworks.zora:
-    case DeployedNetworks.zoraTestnet:
-    case DeployedNetworks.flare:
-    case DeployedNetworks.pulsechain:
-    case DeployedNetworks.scroll:
-    case DeployedNetworks.scrollSepolia:
-    case DeployedNetworks.sapphire:
-    case DeployedNetworks.blast:
-    case DeployedNetworks.amoy:
+    case MulticallDeployedNetworks.mainnet:
+    case MulticallDeployedNetworks.ropsten:
+    case MulticallDeployedNetworks.rinkeby:
+    case MulticallDeployedNetworks.goerli:
+    case MulticallDeployedNetworks.optimism:
+    case MulticallDeployedNetworks.kovan:
+    case MulticallDeployedNetworks.matic:
+    case MulticallDeployedNetworks.kovanOptimism:
+    case MulticallDeployedNetworks.xdai:
+    case MulticallDeployedNetworks.xDaiTestnet:
+    case MulticallDeployedNetworks.goerliOptimism:
+    case MulticallDeployedNetworks.sepoliaOptimism:
+    case MulticallDeployedNetworks.arbitrum:
+    case MulticallDeployedNetworks.rinkebyArbitrum:
+    case MulticallDeployedNetworks.goerliArbitrum:
+    case MulticallDeployedNetworks.sepoliaArbitrum:
+    case MulticallDeployedNetworks.mumbai:
+    case MulticallDeployedNetworks.sepolia:
+    case MulticallDeployedNetworks.avalancheMainnet:
+    case MulticallDeployedNetworks.avalancheFuji:
+    case MulticallDeployedNetworks.fantomTestnet:
+    case MulticallDeployedNetworks.fantom:
+    case MulticallDeployedNetworks.bsc:
+    case MulticallDeployedNetworks.bsc_testnet:
+    case MulticallDeployedNetworks.moonbeam:
+    case MulticallDeployedNetworks.moonriver:
+    case MulticallDeployedNetworks.moonbaseAlphaTestnet:
+    case MulticallDeployedNetworks.harmony:
+    case MulticallDeployedNetworks.cronos:
+    case MulticallDeployedNetworks.fuse:
+    case MulticallDeployedNetworks.songbirdCanaryNetwork:
+    case MulticallDeployedNetworks.costonTestnet:
+    case MulticallDeployedNetworks.boba:
+    case MulticallDeployedNetworks.aurora:
+    case MulticallDeployedNetworks.astar:
+    case MulticallDeployedNetworks.okc:
+    case MulticallDeployedNetworks.heco:
+    case MulticallDeployedNetworks.metis:
+    case MulticallDeployedNetworks.rsk:
+    case MulticallDeployedNetworks.rskTestnet:
+    case MulticallDeployedNetworks.evmos:
+    case MulticallDeployedNetworks.evmosTestnet:
+    case MulticallDeployedNetworks.thundercore:
+    case MulticallDeployedNetworks.thundercoreTestnet:
+    case MulticallDeployedNetworks.oasis:
+    case MulticallDeployedNetworks.celo:
+    case MulticallDeployedNetworks.godwoken:
+    case MulticallDeployedNetworks.godwokentestnet:
+    case MulticallDeployedNetworks.klatyn:
+    case MulticallDeployedNetworks.milkomeda:
+    case MulticallDeployedNetworks.kcc:
+    case MulticallDeployedNetworks.lineaTestnet:
+    case MulticallDeployedNetworks.linea:
+    case MulticallDeployedNetworks.mantle:
+    case MulticallDeployedNetworks.mantleTestnet:
+    case MulticallDeployedNetworks.base:
+    case MulticallDeployedNetworks.baseTestnet:
+    case MulticallDeployedNetworks.blastSepolia:
+    case MulticallDeployedNetworks.polygonZkEvm:
+    case MulticallDeployedNetworks.polygonZkEvmTestnet:
+    case MulticallDeployedNetworks.zora:
+    case MulticallDeployedNetworks.zoraTestnet:
+    case MulticallDeployedNetworks.flare:
+    case MulticallDeployedNetworks.pulsechain:
+    case MulticallDeployedNetworks.scroll:
+    case MulticallDeployedNetworks.scrollSepolia:
+    case MulticallDeployedNetworks.sapphire:
+    case MulticallDeployedNetworks.blast:
+    case MulticallDeployedNetworks.amoy:
       return '0xcA11bde05977b3631167028862bE2a173976CA11';
-    case DeployedNetworks.etherlite:
+    case MulticallDeployedNetworks.etherlite:
       return '0x21681750D7ddCB8d1240eD47338dC984f94AF2aC';
-    case DeployedNetworks.zkSyncEra:
-    case DeployedNetworks.zkSyncEraTestnet:
-      // case DeployedNetworks.zkSyncEraSepoliaTestnet:
+    case MulticallDeployedNetworks.zkSyncEra:
+    case MulticallDeployedNetworks.zkSyncEraTestnet:
+      // case MulticallDeployedNetworks.zkSyncEraSepoliaTestnet:
       return '0xF9cda624FBC7e059355ce98a31693d299FACd963';
-    case DeployedNetworks.shibarium:
+    case MulticallDeployedNetworks.shibarium:
       return '0xd1727fC8F78aBA7DD6294f6033D74c72Ccd3D3B0';
-    case DeployedNetworks.starknet:
+    case MulticallDeployedNetworks.starknet:
       return '0xc662c410C0ECf747543f5bA90660f6ABeBD9C8c4';
-    case DeployedNetworks.starknetTestnet:
+    case MulticallDeployedNetworks.starknetTestnet:
       return '0xde29d060D45901Fb19ED6C6e959EB22d8626708e';
 
     default:
