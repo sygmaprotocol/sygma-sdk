@@ -22,6 +22,11 @@ jest.mock(
           feeHandlerType: () => 'basic',
         }),
       },
+      Bridge__factory: {
+        connect: jest.fn().mockReturnValue({
+          _feeHandler: jest.fn().mockResolvedValue('0x0000000000000000000000000000000000000000')
+        })
+      },
     }) as unknown,
 );
 
