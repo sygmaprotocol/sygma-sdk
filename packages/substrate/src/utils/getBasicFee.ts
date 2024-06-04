@@ -1,9 +1,10 @@
+import type { XcmMultiAssetIdType } from '@buildwithsygma/core/src';
 import type { ApiPromise } from '@polkadot/api';
 import type { Option, u128 } from '@polkadot/types';
 import { BN } from '@polkadot/util';
+
 import type { SubstrateFee } from '../fungible.js';
-import { FeeHandlerType } from '../types';
-import { XcmMultiAssetIdType } from '@buildwithsygma/core/src';
+import { FeeHandlerType } from '../types.js';
 /**
  * Retrieves the basic fee for a given domainId and asset.
  *

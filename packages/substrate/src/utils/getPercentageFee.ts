@@ -1,9 +1,10 @@
 import type { ApiPromise } from '@polkadot/api';
-import { BN } from '@polkadot/util';
 import type { Option, Tuple } from '@polkadot/types';
+import { BN } from '@polkadot/util';
+
+import type { SubstrateFee } from '../fungible.js';
 import type { Fungible, SubstrateResource, Transfer } from '../types.js';
 import { FeeHandlerType } from '../types.js';
-import type { SubstrateFee } from '../fungible.js';
 
 /**
  * Retrieves the basic fee for a given domainId and asset.
