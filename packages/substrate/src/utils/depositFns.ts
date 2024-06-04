@@ -1,9 +1,9 @@
+import { Environment } from '@buildwithsygma/core/src';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
-
-import { BN, numberToHex } from '@polkadot/util';
 import type { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
-import { Environment } from '@buildwithsygma/core/src';
+import { BN, numberToHex } from '@polkadot/util';
+
 import type { XcmMultiAssetIdType } from '../types.js';
 
 export type DepositEventDataType = {

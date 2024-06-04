@@ -1,5 +1,5 @@
+import type { ResourceType } from '@buildwithsygma/core';
 import type { Network } from '@buildwithsygma/core/src';
-import { ResourceType } from '@buildwithsygma/core';
 
 export type ParachainId = number;
 
@@ -32,8 +32,6 @@ export type Recipient = {
   address: string;
   parachainId?: number;
 };
-
-
 
 export enum SubstrateParachain {
   LOCAL = 5,
