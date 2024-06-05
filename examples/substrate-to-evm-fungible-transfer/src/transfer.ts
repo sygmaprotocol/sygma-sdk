@@ -8,8 +8,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const SEPOLIA_CHAIN_ID = 11155111;
-const HOLESKY_CHAIN_ID = 17000;
-const RESOURCE_ID =
+const PHALA_CHAIN_ID = 5231;
+const RESOURCE_ID_SYGMA_USD =
   "0x0000000000000000000000000000000000000000000000000000000000001100";
 const MNEMONIC = process.env.PRIVATE_MNEMONIC;
 const recipient = "0xD31E89feccCf6f2DE10EaC92ADffF48D802b695C";
@@ -29,10 +29,10 @@ const substrateTransfer = async (): Promise<void> => {
   const api = await ApiPromise.create({ provider: wsProvider });
 
   const transferParams = {
-    sourceDomain: SEPOLIA_CHAIN_ID,
-    destinationDomain: HOLESKY_CHAIN_ID,
+    sourceDomain: PHALA_CHAIN_ID,
+    destinationDomain: SEPOLIA_CHAIN_ID,
     sourceNetworkProvider: api,
-    resource: RESOURCE_ID,
+    resource: RESOURCE_ID_SYGMA_USD,
     amount: BigInt("5000000"),
     destinationAddress: account.address || recipient,
     environment: Environment.DEVNET,
