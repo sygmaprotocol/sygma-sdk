@@ -1,0 +1,36 @@
+{
+  "name": "@buildwithsygma/sygma-sdk-substrate-to-evm-fungible-transfer-example",
+  "version": "0.1.0",
+  "license": "LGPL-3.0-or-later",
+  "description": "Sygma SDK Substrate Example",
+  "type": "module",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sygmaprotocol/sygma-sdk"
+  },
+  "keywords": [
+    "sygma",
+    "sygmaprotocol",
+    "buildwithsygma",
+    "web3",
+    "bridge",
+    "ethereum"
+  ],
+  "scripts": {
+    "transfer": "ts-node src/transfer.ts"
+  },
+  "author": "Sygmaprotocol Product Team",
+  "devDependencies": {
+    "dotenv": "^16.3.1",
+    "eslint": "8",
+    "ts-node": "10.9.1",
+    "typescript": "5.0.4"
+  },
+  "dependencies": {
+    "@buildwithsygma/sygma-sdk-core": "workspace:*",
+    "@polkadot/api": "10.7.2",
+    "@polkadot/keyring": "12.2.1",
+    "@polkadot/util-crypto": "^12.2.1"
+  }
+}
