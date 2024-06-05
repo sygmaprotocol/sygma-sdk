@@ -2,7 +2,7 @@ import { Environment } from '@buildwithsygma/core/src';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import type { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
-import { BN, numberToHex } from '@polkadot/util';
+import { numberToHex } from '@polkadot/util';
 
 import type { XcmMultiAssetIdType } from '../types.js';
 
@@ -33,22 +33,6 @@ export type DepositCallbacksType = {
    * Callback for sygmaBridge.Deposit event on finalize stage
    */
   onDepositEvent?: (data: DepositEventDataType) => void;
-};
-
-/**
- * Calculates a big number from an amount and chain decimals retrived from API.
- *
- * @category Bridge deposit
- * @param {ApiPromise} api - An API Promise object.
- * @param {string} amount - The amount to be converted.
- * @returns {BN} The converted amount as a BN object.
- */
-export const calculateBigNumber = (api: ApiPromise, amount: string): BN => {
-  const bnAmount = new BN(Number(amount));
-  const bnBase = new BN(10);
-  const bnDecimals = new BN(api.registry.chainDecimals[0]);
-  const convertAmount = bnAmount.mul(bnBase.pow(bnDecimals));
-  return convertAmount;
 };
 
 /**
@@ -113,7 +97,7 @@ export const handleTxExtrinsicResult = (
   const { status } = result;
   console.log(`Current status is ${status.toString()}`);
 
-  // if error has been found in events log the error and unsubsribe
+  // if error has been found in events log the error and unsubscribe
   throwErrorIfAny(api, result, unsub);
 
   if (status.isInBlock) {
@@ -181,7 +165,7 @@ export const createDestIdMultilocationData = (
         parents: 0,
         interior: {
           x3: [
-            // This is the `sygma` multilocation path
+            // This is the `sygma` multiplication path
             {
               generalKey: [5, '0x7379676d61000000000000000000000000000000000000000000000000000000'],
             },

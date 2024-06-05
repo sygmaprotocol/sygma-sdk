@@ -184,6 +184,7 @@ export async function getRoutes(
 /**
  * TODO: why isn't txHash unique identifier
  * @param txHash
+ * @param environment
  */
 export async function getTransferStatus(
   txHash: string,

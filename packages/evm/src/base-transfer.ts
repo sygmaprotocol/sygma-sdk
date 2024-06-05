@@ -1,9 +1,13 @@
-import type { Domain, EvmResource, Config, Domainlike } from '@buildwithsygma/core';
+import type {
+  Domain,
+  EvmResource,
+  Config,
+  Domainlike,
+  Eip1193Provider,
+} from '@buildwithsygma/core';
 import { Bridge__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import { constants, utils } from 'ethers';
-
-import type { Eip1193Provider } from './types.js';
 
 export interface BaseTransferParams {
   source: Domainlike;
