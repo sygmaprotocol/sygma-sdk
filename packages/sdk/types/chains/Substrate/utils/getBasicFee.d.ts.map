@@ -1,1 +1,0 @@
-{"version":3,"file":"getBasicFee.d.ts","sourceRoot":"","sources":["../../../../src/chains/Substrate/utils/getBasicFee.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,UAAU,EAAE,MAAM,eAAe,CAAC;AAGhD,OAAO,KAAK,EAAE,YAAY,EAAE,mBAAmB,EAAE,MAAM,mBAAmB,CAAC;AAE3E;;;;;;;;;;;;;;;;;;GAkBG;AACH,eAAO,MAAM,WAAW,QACjB,UAAU,uBACM,MAAM,mBACV,mBAAmB,KACnC,QAAQ,YAAY,CActB,CAAC"}
