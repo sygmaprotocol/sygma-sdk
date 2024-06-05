@@ -1,5 +1,11 @@
-import type { Domainlike, Environment, SubstrateResource } from '@buildwithsygma/core';
+import type {
+  Domainlike,
+  Environment,
+  SubstrateConfig,
+  SubstrateResource,
+} from '@buildwithsygma/core';
 import { ResourceType, Config } from '@buildwithsygma/core';
+import { LiquidityError } from '@buildwithsygma/core/types/errors/customErrors';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import { BN } from '@polkadot/util';
@@ -7,6 +13,7 @@ import { BN } from '@polkadot/util';
 import { BaseTransfer } from './base-transfer.js';
 import type { Fungible, Transfer } from './types.js';
 import { FeeHandlerType } from './types.js';
+import { getLiquidity } from './utils/getLiquidity.js';
 import { getFeeHandler, getPercentageFee, getBasicFee, deposit } from './utils/index.js';
 
 export type SubstrateFee = {
@@ -14,21 +21,7 @@ export type SubstrateFee = {
   type: FeeHandlerType;
 };
 
-/**
- * Return amount of liquidity tokens on resource handler
- * @param provider
- * @param resource
- */
-export async function getLiquidity(
-  provider: ApiPromise,
-  resource: SubstrateResource,
-): Promise<bigint> {
-  const liquidity = await provider.query.liquidityPallet.liquidity(resource.xcmMultiAssetId);
-
-  return BigInt(liquidity.toString());
-}
-
-type SubstrateAssetTransferRequest = {
+export type SubstrateAssetTransferRequest = {
   sourceDomain: Domainlike;
   destinationDomain: Domainlike;
   sourceNetworkProvider: ApiPromise;
@@ -39,12 +32,38 @@ type SubstrateAssetTransferRequest = {
 };
 
 export async function createSubstrateFungibleAssetTransfer(
-  transferRequest: SubstrateAssetTransferRequest,
+  transferRequestParams: SubstrateAssetTransferRequest,
 ): Promise<SubstrateFungibleAssetTransfer> {
   const config = new Config();
-  await config.init(transferRequest.environment);
+  await config.init(transferRequestParams.environment);
 
-  const transfer = new SubstrateFungibleAssetTransfer(transferRequest, config);
+  const transfer = new SubstrateFungibleAssetTransfer(transferRequestParams, config);
+
+  const destinationDomain = config.getDomainConfig(transfer.destinationAddress) as SubstrateConfig;
+  const handlerAddress = destinationDomain.handlers.find(
+    h => h.type === ResourceType.FUNGIBLE,
+  )?.address;
+
+  if (!handlerAddress) {
+    throw new Error('No Fungible handler configured on destination domain');
+  }
+
+  const destinationResource = destinationDomain.resources.find(
+    r => r.resourceId === transfer.resource.resourceId,
+  );
+
+  const destinationHandlerBalance = await getLiquidity(
+    transfer.sourceNetworkProvider,
+    destinationResource as SubstrateResource,
+    handlerAddress,
+  );
+
+  if (destinationHandlerBalance < BigInt(transfer.amount)) {
+    throw new LiquidityError(destinationHandlerBalance);
+  }
+
+  if (!(await transfer.isValidTransfer()))
+    throw new Error('Handler not registered, please check if this is a valid bridge route.');
 
   return transfer;
 }
@@ -53,18 +72,16 @@ export async function createSubstrateFungibleAssetTransfer(
  * @dev User should not instance this directly. All the (async) checks should be done in `createSubstrateFungibleAssetTransfer`
  */
 class SubstrateFungibleAssetTransfer extends BaseTransfer {
-  private amount: bigint;
-  private destinationAddress: string;
+  amount: bigint;
+  destinationAddress: string;
 
   constructor(transfer: SubstrateAssetTransferRequest, config: Config) {
     super(transfer, config);
-    this.sourceNetworkProvider = transfer.sourceNetworkProvider;
     this.sourceDomain = config.getDomain(transfer.sourceDomain);
     this.destinationDomain = config.getDomain(transfer.destinationDomain);
 
     this.amount = transfer.amount;
     this.destinationAddress = transfer.destinationAddress;
-    this.config = config;
   }
 
   setAmount(amount: bigint): this {
