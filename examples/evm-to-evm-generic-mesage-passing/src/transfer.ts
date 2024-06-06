@@ -23,17 +23,17 @@ const getStatus = async (
     return data as TransferStatusResponse[];
 };
 
-const DESTINATION_CHAIN_ID = 338; // Cronos
+const DESTINATION_CHAIN_ID = 84532; // base sepolia
 const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000000500"; // Generic Message Handler
-const EXECUTE_CONTRACT_ADDRESS = "0x6f250a12f9a2d6f72b6e8ef5b93484da04cdb69e";
+const EXECUTE_CONTRACT_ADDRESS = "0x669f52487ffa6f9abf722082f735537a98ec0e4b";
 const EXECUTE_FUNCTION_SIGNATURE = "0xa271ced2";
 const MAX_FEE = "3000000";
-const CRONOS_RPC_URL = process.env.CRONOS_RPC_URL || "https://evm-t3.cronos.org	"
+const BASE_SEPOLIA_RPC_URL = process.env.BASE_SEPOLIA_RPC_URL || "https://sepolia.base.org"
 const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "https://gateway.tenderly.co/public/sepolia"
 
 const sourceProvider = new providers.JsonRpcProvider(SEPOLIA_RPC_URL);
-const destinationProvider = new providers.JsonRpcProvider(CRONOS_RPC_URL
+const destinationProvider = new providers.JsonRpcProvider(BASE_SEPOLIA_RPC_URL
 );
 const storageContract = Storage__factory.connect(
   EXECUTE_CONTRACT_ADDRESS,
