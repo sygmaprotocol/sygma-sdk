@@ -5,7 +5,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import type { ApiPromise } from '@polkadot/api';
 import { constants, utils } from 'ethers';
 
-export interface BaseTransferParams {
+interface BaseTransferParams {
   sourceDomain: Domainlike;
   destinationDomain: Domainlike;
   sourceNetworkProvider: ApiPromise;

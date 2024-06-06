@@ -1,63 +1,17 @@
-import type { ResourceType } from '@buildwithsygma/core';
-import type { Network } from '@buildwithsygma/core/src';
+import type { Domain, Resource } from '@buildwithsygma/core';
+import type { BN } from '@polkadot/util';
 
 export type ParachainId = number;
 
-export interface Eip1193Provider {
-  request(request: {
-    method: string;
-    params?: Array<unknown> | Record<string, unknown>;
-  }): Promise<unknown>;
-}
-
-export type XcmMultiAssetIdType = {
-  concrete: {
-    parents: number;
-    interior:
-      | 'here'
-      | {
-          x3: Array<{ parachain: number } | { generalKey: [number, string] }>; // This is a tuple of length and value
-        };
-  };
-};
-
-export type Domain = {
-  id: number;
-  chainId: number;
-  name: string;
-  type: Network;
-};
-
-export type Recipient = {
-  address: string;
-  parachainId?: number;
+export type SubstrateFee = {
+  fee: BN;
+  type: FeeHandlerType;
 };
 
 export enum SubstrateParachain {
   LOCAL = 5,
   ROCOCO_PHALA = 5231,
 }
-
-export type Resource = EvmResource | SubstrateResource;
-
-interface BaseResource {
-  resourceId: string;
-  type: ResourceType;
-  native?: boolean;
-  burnable?: boolean;
-  symbol?: string;
-  decimals?: number;
-}
-
-export type EvmResource = BaseResource & {
-  address: string;
-};
-
-export type SubstrateResource = BaseResource & {
-  assetID?: number;
-  assetName: string;
-  xcmMultiAssetId: XcmMultiAssetIdType;
-};
 
 export enum FeeHandlerType {
   DYNAMIC = 'oracle',
@@ -122,10 +76,4 @@ export type DomainMetadata = {
 export type EnvironmentMetadata = {
   // domainID -> DomainMetadata
   [key: number]: DomainMetadata;
-};
-
-export type Route = {
-  fromDomain: Domain;
-  toDomain: Domain;
-  resource: Resource;
 };

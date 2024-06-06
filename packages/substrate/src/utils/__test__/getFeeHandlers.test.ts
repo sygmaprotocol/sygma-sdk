@@ -1,8 +1,8 @@
+import type { XcmMultiAssetIdType } from '@buildwithsygma/core';
 import type { ApiPromise } from '@polkadot/api';
 import { Option, Enum } from '@polkadot/types';
 import { TypeRegistry } from '@polkadot/types/create';
 
-import type { XcmMultiAssetIdType } from '../../types.js';
 import { FeeHandlerType } from '../../types.js';
 import { getFeeHandler } from '../getFeeHandlers.js';
 
