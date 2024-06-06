@@ -1,10 +1,9 @@
-import { Environment } from '@buildwithsygma/core/src';
+import { Environment } from '@buildwithsygma/core';
+import type { XcmMultiAssetIdType } from '@buildwithsygma/core';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import type { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
 import { numberToHex } from '@polkadot/util';
-
-import type { XcmMultiAssetIdType } from '../types.js';
 
 export type DepositEventDataType = {
   depositData: string;
@@ -86,7 +85,7 @@ export const throwErrorIfAny = (
  * @param {ApiPromise} api - The API promise object.
  * @param {SubmittableResult} result - The submittable result object.
  * @param {Function} unsub - A function to stop listen for events.
- * @param {DepositCallbacksType=} callbacks - Optional callbacks for success and error cases.
+ * @param {DepositCallbacksType} callbacks - Optional callbacks for success and error cases.
  */
 export const handleTxExtrinsicResult = (
   api: ApiPromise,
@@ -97,7 +96,7 @@ export const handleTxExtrinsicResult = (
   const { status } = result;
   console.log(`Current status is ${status.toString()}`);
 
-  // if error has been found in events log the error and unsubscribe
+  // if error has been found in events, log the error and unsubscribe
   throwErrorIfAny(api, result, unsub);
 
   if (status.isInBlock) {

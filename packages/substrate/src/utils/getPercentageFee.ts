@@ -1,9 +1,9 @@
+import type { SubstrateResource } from '@buildwithsygma/core';
 import type { ApiPromise } from '@polkadot/api';
 import type { Option, Tuple } from '@polkadot/types';
 import { BN } from '@polkadot/util';
 
-import type { SubstrateFee } from '../fungible.js';
-import type { Fungible, SubstrateResource, Transfer } from '../types.js';
+import type { Fungible, SubstrateFee, Transfer } from '../types.js';
 import { FeeHandlerType } from '../types.js';
 
 /**

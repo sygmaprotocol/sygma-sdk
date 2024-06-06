@@ -11,15 +11,10 @@ import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import { BN } from '@polkadot/util';
 
 import { BaseTransfer } from './base-transfer.js';
-import type { Fungible, Transfer } from './types.js';
+import type { Fungible, SubstrateFee, Transfer } from './types.js';
 import { FeeHandlerType } from './types.js';
 import { getLiquidity } from './utils/getLiquidity.js';
 import { getFeeHandler, getPercentageFee, getBasicFee, deposit } from './utils/index.js';
-
-export type SubstrateFee = {
-  fee: BN;
-  type: FeeHandlerType;
-};
 
 export type SubstrateAssetTransferRequest = {
   sourceDomain: Domainlike;
