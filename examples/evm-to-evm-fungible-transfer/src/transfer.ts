@@ -1,4 +1,4 @@
-import { Environment, } from "@buildwithsygma/core";
+import { Environment } from "@buildwithsygma/core";
 import { createEvmFungibleAssetTransfer } from "@buildwithsygma/evm";
 import dotenv from "dotenv";
 import { Wallet, providers } from "ethers";
@@ -34,7 +34,7 @@ export async function erc20Transfer(): Promise<void> {
     amount: BigInt(2) * BigInt(1e18),
     destinationAddress: destinationAddress,
     environment: Environment.DEVNET,
-    sourceAddress: destinationAddress
+    sourceAddress: destinationAddress,
   };
 
   const transfer = await createEvmFungibleAssetTransfer(params);
