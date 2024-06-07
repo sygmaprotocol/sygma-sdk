@@ -1,12 +1,10 @@
-import type { EvmResource } from '@buildwithsygma/core';
+import type { Eip1193Provider, EvmResource } from '@buildwithsygma/core';
 import { ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
 
-import type { Eip1193Provider } from '../types.js';
-
 /**
  * Get liquidity of resource handler on destination domain
- * @param {string} destinationProviderUrl destination network provider URL
+ * @param provider
  * @param {EvmResource} resource sygma transferrable resource
  * @param {string} handlerAddress address of resource handler
  * @returns {Promise<bigint>} handler balance
