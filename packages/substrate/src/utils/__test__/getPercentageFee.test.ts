@@ -1,10 +1,10 @@
 import type { SubstrateResource, XcmMultiAssetIdType } from '@buildwithsygma/core';
+import { FeeHandlerType } from '@buildwithsygma/core';
 import type { ApiPromise } from '@polkadot/api';
 import { Option, Tuple, u128 } from '@polkadot/types';
 import { TypeRegistry } from '@polkadot/types/create';
 import { BN } from '@polkadot/util';
 
-import { FeeHandlerType } from '../../types.js';
 import type { Fungible, Transfer } from '../../types.js';
 import { getPercentageFee } from '../getPercentageFee.js';
 

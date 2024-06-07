@@ -1,10 +1,10 @@
 import type { SubstrateResource } from '@buildwithsygma/core';
+import { FeeHandlerType } from '@buildwithsygma/core';
 import type { ApiPromise } from '@polkadot/api';
 import type { Option, Tuple } from '@polkadot/types';
 import { BN } from '@polkadot/util';
 
 import type { Fungible, SubstrateFee, Transfer } from '../types.js';
-import { FeeHandlerType } from '../types.js';
 
 /**
  * Retrieves the basic fee for a given domainId and asset.

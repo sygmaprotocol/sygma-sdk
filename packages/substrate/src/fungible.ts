@@ -4,7 +4,7 @@ import type {
   SubstrateConfig,
   SubstrateResource,
 } from '@buildwithsygma/core';
-import { ResourceType, Config } from '@buildwithsygma/core';
+import { Config, FeeHandlerType, ResourceType } from '@buildwithsygma/core';
 import { LiquidityError } from '@buildwithsygma/core/types/errors/customErrors';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
@@ -12,9 +12,8 @@ import { BN } from '@polkadot/util';
 
 import { BaseTransfer } from './base-transfer.js';
 import type { Fungible, SubstrateFee, Transfer } from './types.js';
-import { FeeHandlerType } from './types.js';
 import { getLiquidity } from './utils/getLiquidity.js';
-import { getFeeHandler, getPercentageFee, getBasicFee, deposit } from './utils/index.js';
+import { deposit, getBasicFee, getFeeHandler, getPercentageFee } from './utils/index.js';
 
 export type SubstrateAssetTransferRequest = {
   sourceDomain: Domainlike;
