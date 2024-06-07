@@ -13,7 +13,7 @@ module.exports = {
     '^.+\\.(ts|tsx)?$': ['ts-jest', { useESM: true }],
   },
 
-  testPathIgnorePatterns: ['./dist'],
+  testPathIgnorePatterns: ['./dist-cjs/', './dist-esm/'],
   automock: false,
   setupFiles: [
     './test/setupJest.js',
