@@ -18,8 +18,9 @@ import { Network, Environment } from './types.js';
 
 import { Config } from './index.js';
 
+
 function getIndexerTransferUrl(
-  env: Environment = process.env.SYGMA_ENV,
+  env: Environment = process.env.SYGMA_ENV as Environment,
   txHash: string,
 ): {
   explorerUrl: string;
@@ -59,7 +60,7 @@ function getIndexerTransferUrl(
  *
  */
 export async function getEnvironmentMetadata(
-  environment: Environment = process.env.SYGMA_ENV,
+  environment: Environment = process.env.SYGMA_ENV as Environment,
 ): Promise<EnvironmentMetadata> {
   try {
     const url = `${getIndexerURL(environment)}/api/domains/metadata`;
@@ -104,11 +105,12 @@ export async function getDomains(options: {
 /**
  * Returns  supported routes originating from given source domain.
  * @param source Either caip2 identifier, chainId or sygmaId
+ * @param environment
  * @param options Allows selecting bridge instance (mainnet by default) and filtering routes by type.
  */
 export async function getRoutes(
   source: Domainlike,
-  environment: Environment = process.env.SYGMA_ENV,
+  environment: Environment = process.env.SYGMA_ENV as Environment,
   options?: {
     routeTypes?: RouteType[];
     sourceProvider?: Eip1193Provider;
@@ -188,7 +190,7 @@ export async function getRoutes(
  */
 export async function getTransferStatus(
   txHash: string,
-  environment: Environment = process.env.SYGMA_ENV,
+  environment: Environment = process.env.SYGMA_ENV as Environment,
 ): Promise<TransferStatusResponse> {
   const env = environment ?? Environment.MAINNET;
   const { url, explorerUrl } = getIndexerTransferUrl(env, txHash);
@@ -232,7 +234,7 @@ export async function getTransferStatus(
  * @param env
  */
 export async function getRawConfiguration(
-  environment: Environment = process.env.SYGMA_ENV,
+  environment: Environment = process.env.SYGMA_ENV as Environment,
 ): Promise<SygmaConfig> {
   const config = new Config();
   await config.init(environment);

@@ -1,8 +1,7 @@
 import type { XcmMultiAssetIdType } from '@buildwithsygma/core';
+import { FeeHandlerType } from '@buildwithsygma/core';
 import type { ApiPromise } from '@polkadot/api';
 import type { Enum, Option } from '@polkadot/types';
-
-import { FeeHandlerType } from '../types.js';
 
 /**
  * Retrieves the fee handler for a given domainId and asset.
@@ -24,10 +23,6 @@ export const getFeeHandler = async (
     xcmMultiAssetId,
   ]);
 
-  if (feeHandler.isNone) {
-    return FeeHandlerType.UNDEFINED;
-  }
-
   const feeHandlerName = feeHandler.unwrap().toString();
 
   switch (feeHandlerName) {
@@ -35,8 +30,6 @@ export const getFeeHandler = async (
       return FeeHandlerType.PERCENTAGE;
     case 'BasicFeeHandler':
       return FeeHandlerType.BASIC;
-    case 'DynamicFeeHandler':
-      return FeeHandlerType.DYNAMIC;
     default:
       throw new Error('Invalid Fee Handler Type');
   }

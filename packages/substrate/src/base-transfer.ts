@@ -56,7 +56,7 @@ export abstract class BaseTransfer {
 
   /**
    * Set resource to be transferred
-   * @param {EvmResource} resource
+   * @param {SubstrateResource} resource
    * @returns {BaseTransfer}
    */
   setResource(resource: SubstrateResource): void {

@@ -1,10 +1,10 @@
 import type { XcmMultiAssetIdType } from '@buildwithsygma/core';
+import { FeeHandlerType } from '@buildwithsygma/core';
 import type { ApiPromise } from '@polkadot/api';
 import { u128, Option } from '@polkadot/types';
 import { TypeRegistry } from '@polkadot/types/create';
 import { BN } from '@polkadot/util';
 
-import { FeeHandlerType } from '../../types.js';
 import { getBasicFee } from '../getBasicFee.js';
 
 const registry = new TypeRegistry();
