@@ -1,34 +1,12 @@
 {
-    "compilerOptions": {
-      "allowSyntheticDefaultImports": true,
-      "module": "ES2022",
-      "declaration": true,
-      "declarationMap": true,
-      "esModuleInterop": true,
-      "forceConsistentCasingInFileNames": true,
-      "importHelpers": true,
-      "moduleResolution": "node",
-      "noEmitOnError": true,
-      "noFallthroughCasesInSwitch": true,
-      "noImplicitAny": true,
-      "noImplicitReturns": true,
-      "noImplicitThis": true,
-      "noUnusedLocals": true,
-      "preserveSymlinks": true,
-      "preserveWatchOutput": true,
-      "pretty": false,
-      "strict": true,
-      "sourceMap": true,
-      "target": "es2020",
-      "skipLibCheck": true,
-      "resolveJsonModule": true,
-      "baseUrl": "./src"
-    },
-    "exclude": ["node_modules/**", "dist"],
-    "include": ["./src/**/*.ts", "./test/**/*.ts", "substrate-asset-transfer.ts"],
-    "ts-node": {
-      "esm": true,
-      "experimentalSpecifierResolution": "node"
-    }
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ES2022",
+    "target": "es2020"
+  },
+  "include": ["./src/**/*.ts", "./test/**/*.ts", "substrate-asset-transfer.ts"],
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
   }
-  
+}

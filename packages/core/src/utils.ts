@@ -1,20 +1,14 @@
 import { ExplorerUrl, IndexerUrl } from './constants.js';
 import { getFeeHandlerAddressesOfRoutes, getFeeHandlerTypeOfRoutes } from './multicall.js';
 import type {
-  Route,
-  TransferStatus,
-  TransferStatusResponse,
-  RouteIndexerType,
-  EnvironmentMetadata,
   Domain,
-  RouteType,
-  SygmaConfig,
   Domainlike,
   Eip1193Provider,
+  EnvironmentMetadata,
   FeeHandlerType,
   IndexerRoutesResponse,
 } from './types.js';
-import { Network, Environment } from './types.js';
+import { Environment, Network } from './types.js';
 
 import { Config } from './index.js';
 
@@ -154,8 +148,8 @@ export async function getRoutes(
       if (routeFeeHandlerAddressesAndTypes) {
         routeWithTypeAndAddress = routeFeeHandlerAddressesAndTypes.find(_route => {
           _route.fromDomainId === route.fromDomainId &&
-            _route.toDomainId === route.toDomainId &&
-            _route.resourceId === route.resourceId;
+          _route.toDomainId === route.toDomainId &&
+          _route.resourceId === route.resourceId;
         });
       }
 
