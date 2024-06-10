@@ -15,8 +15,6 @@ module.exports = {
 
   testPathIgnorePatterns: ['./dist-cjs/', './dist-esm/'],
   automock: false,
-  setupFiles: [
-    './test/setupJest.js',
-  ],
+  setupFiles: ['./test/setupJest.js'],
   testMatch: ['**/test/**/*.test.ts', '**/__test__/*.test.ts'],
 };

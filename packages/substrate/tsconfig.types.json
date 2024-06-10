@@ -1,8 +1,8 @@
 {
-    "extends": "./tsconfig.base.json",
-    "compilerOptions": {
-        "emitDeclarationOnly": true,
-        "outDir": "types"
-    },
-    "exclude": ["test", "src/**/__test__/**"]
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "emitDeclarationOnly": true,
+    "outDir": "types"
+  },
+  "exclude": ["test", "src/**/__test__/**"]
 }
