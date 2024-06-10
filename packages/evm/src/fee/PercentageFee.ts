@@ -21,7 +21,7 @@ export class PercentageFeeCalculator extends BaseEvmTransferFeeCalculator {
       destinationSygmaId,
       resourceSygmaId,
       provider,
-      depositData
+      depositData,
     } = params;
 
     if (feeHandlerType === FeeHandlerType.PERCENTAGE) {
@@ -39,9 +39,7 @@ export class PercentageFeeCalculator extends BaseEvmTransferFeeCalculator {
         utils.formatBytes32String(''),
       );
 
-      const feeBounds = await percentageFeeHandlerContract._resourceIDToFeeBounds(
-        resourceSygmaId,
-      );
+      const feeBounds = await percentageFeeHandlerContract._resourceIDToFeeBounds(resourceSygmaId);
 
       const feePercentage = (
         await percentageFeeHandlerContract._domainResourceIDToFee(
@@ -50,7 +48,7 @@ export class PercentageFeeCalculator extends BaseEvmTransferFeeCalculator {
         )
       ).toNumber();
 
-      const HUNDRED_PERCENT = await percentageFeeHandlerContract.HUNDRED_PERCENT()
+      const HUNDRED_PERCENT = await percentageFeeHandlerContract.HUNDRED_PERCENT();
       const percentage = feePercentage / HUNDRED_PERCENT;
       const [fee] = calculatedFee;
 

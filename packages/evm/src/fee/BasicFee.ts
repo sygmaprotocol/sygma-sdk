@@ -20,14 +20,11 @@ export class BasicFeeCalculator extends BaseEvmTransferFeeCalculator {
       sourceSygmaId,
       destinationSygmaId,
       resourceSygmaId,
-      provider
+      provider,
     } = params;
 
     if (feeHandlerType === FeeHandlerType.BASIC) {
-      const BasicFeeHandlerInstance = BasicFeeHandler__factory.connect(
-        feeHandlerAddress,
-        provider,
-      );
+      const BasicFeeHandlerInstance = BasicFeeHandler__factory.connect(feeHandlerAddress, provider);
 
       const calculatedFee = await BasicFeeHandlerInstance.calculateFee(
         sender,
