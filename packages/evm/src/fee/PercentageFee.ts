@@ -13,38 +13,52 @@ export class PercentageFeeCalculator extends BaseEvmTransferFeeCalculator {
   }
 
   async calculateFee(params: EvmFeeCalculationParams): Promise<EvmFee> {
-    if (params.feeHandlerType === FeeHandlerType.PERCENTAGE) {
+    const {
+      feeHandlerAddress,
+      feeHandlerType,
+      sender,
+      sourceSygmaId,
+      destinationSygmaId,
+      resourceSygmaId,
+      provider,
+      depositData
+    } = params;
+
+    if (feeHandlerType === FeeHandlerType.PERCENTAGE) {
       const percentageFeeHandlerContract = PercentageERC20FeeHandlerEVM__factory.connect(
-        params.feeHandlerAddress,
-        params.provider,
+        feeHandlerAddress,
+        provider,
       );
 
       const calculatedFee = await percentageFeeHandlerContract.calculateFee(
-        params.sender,
-        params.sourceSygmaId,
-        params.destinationSygmaId,
-        params.resourceSygmaId,
-        params.depositData ?? utils.formatBytes32String(''),
+        sender,
+        sourceSygmaId,
+        destinationSygmaId,
+        resourceSygmaId,
+        depositData ?? utils.formatBytes32String(''),
         utils.formatBytes32String(''),
       );
 
       const feeBounds = await percentageFeeHandlerContract._resourceIDToFeeBounds(
-        params.resourceSygmaId,
+        resourceSygmaId,
       );
 
       const feePercentage = (
         await percentageFeeHandlerContract._domainResourceIDToFee(
-          params.destinationSygmaId,
-          params.resourceSygmaId,
+          destinationSygmaId,
+          resourceSygmaId,
         )
       ).toNumber();
-      const percentage = feePercentage / (await percentageFeeHandlerContract.HUNDRED_PERCENT());
+
+      const HUNDRED_PERCENT = await percentageFeeHandlerContract.HUNDRED_PERCENT()
+      const percentage = feePercentage / HUNDRED_PERCENT;
       const [fee] = calculatedFee;
+
       return {
         fee: fee.toBigInt(),
         percentage,
         type: FeeHandlerType.PERCENTAGE,
-        handlerAddress: params.feeHandlerAddress,
+        handlerAddress: feeHandlerAddress,
         minFee: feeBounds.lowerBound.toBigInt(),
         maxFee: feeBounds.upperBound.toBigInt(),
       };

@@ -182,12 +182,21 @@ function getMulticallAddress(chainId: MulticallDeployedNetworks): string {
   }
 }
 
+type AggregateStaticCallResponse = {
+  returnData: Array<string>;
+};
+
+type IndexerRouteWithFeeHandlerAddress = RouteIndexerType & { feeHandlerAddress: string };
+type IndexerRouteWithFeeHandlerAddressAndType = IndexerRouteWithFeeHandlerAddress & {
+  feeHandlerType: FeeHandlerType;
+};
+
 export async function getFeeHandlerAddressesOfRoutes(params: {
   routes: RouteIndexerType[];
   chainId: number;
   bridgeAddress: string;
   provider: Eip1193Provider;
-}): Promise<Array<RouteIndexerType & { feeHandlerAddress: string }>> {
+}): Promise<Array<IndexerRouteWithFeeHandlerAddress>> {
   const web3Provider = new Web3Provider(params.provider);
   const bridge = Bridge__factory.connect(params.bridgeAddress, web3Provider);
   const feeHandlerRouterAddress = await bridge._feeHandler();
@@ -197,19 +206,18 @@ export async function getFeeHandlerAddressesOfRoutes(params: {
   const multicall = new Contract(multicallAddress, JSON.stringify(MulticallAbi), web3Provider);
 
   const calls = [];
-  for (let i = 0; i < params.routes.length; i++) {
+
+  for (const route of params.routes) {
     calls.push({
       target: feeHandlerRouterAddress,
       callData: feeHandlerRouter.encodeFunctionData('_domainResourceIDToFeeHandlerAddress', [
-        parseInt(params.routes[i].toDomainId),
-        params.routes[i].resourceId,
+        parseInt(route.toDomainId),
+        route.resourceId,
       ]),
     });
   }
 
-  const results = (await multicall.callStatic.aggregate(calls)) as {
-    returnData: Array<string>;
-  };
+  const results = (await multicall.callStatic.aggregate(calls)) as AggregateStaticCallResponse;
 
   return params.routes.map((route, idx) => {
     return {
@@ -220,28 +228,25 @@ export async function getFeeHandlerAddressesOfRoutes(params: {
 }
 
 export async function getFeeHandlerTypeOfRoutes(params: {
-  routes: Array<RouteIndexerType & { feeHandlerAddress: string }>;
+  routes: Array<IndexerRouteWithFeeHandlerAddress>;
   chainId: number;
   provider: Eip1193Provider;
-}): Promise<
-  Array<RouteIndexerType & { feeHandlerAddress: string } & { feeHandlerType: FeeHandlerType }>
-> {
+}): Promise<Array<IndexerRouteWithFeeHandlerAddressAndType>> {
   const web3Provider = new Web3Provider(params.provider);
   const multicallAddress = getMulticallAddress(params.chainId);
   const multicall = new Contract(multicallAddress, JSON.stringify(MulticallAbi), web3Provider);
   const basicFeeHandlerInterface = BasicFeeHandler__factory.createInterface();
 
   const calls = [];
-  for (let i = 0; i < params.routes.length; i++) {
+
+  for (const route of params.routes) {
     calls.push({
-      target: params.routes[i].feeHandlerAddress,
+      target: route.feeHandlerAddress,
       callData: basicFeeHandlerInterface.encodeFunctionData('feeHandlerType'),
     });
   }
 
-  const results = (await multicall.callStatic.aggregate(calls)) as {
-    returnData: Array<string>;
-  };
+  const results = (await multicall.callStatic.aggregate(calls)) as AggregateStaticCallResponse;
 
   return params.routes.map((route, idx) => {
     return {

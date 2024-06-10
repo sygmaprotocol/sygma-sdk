@@ -74,12 +74,12 @@ export const executeDeposit = async (
     ...overrides,
   };
 
-  const tx = await bridgeInstance.populateTransaction.deposit(
+  const depositTransaction = await bridgeInstance.populateTransaction.deposit(
     domainId,
     resourceId,
     depositData,
     feeData.fee ? BigNumber.from(feeData.fee).toHexString() : '0x00',
     payableOverrides,
   );
-  return tx;
+  return depositTransaction;
 };

@@ -129,6 +129,8 @@ export interface SubstrateConfig extends BaseConfig<Network.SUBSTRATE> {
   parachainId: ParachainId;
 }
 
+export type IndexerRoutesResponse = { routes: RouteIndexerType[] };
+
 export type Handler = {
   type: ResourceType;
   address: string;

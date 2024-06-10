@@ -27,10 +27,10 @@ export abstract class BaseTransfer {
     this.destination = config.getDomain(transfer.destination);
     this.sourceNetworkProvider = transfer.sourceNetworkProvider;
     const resources = config.getResources(this.source);
-    const resource = resources.find(res => {
+    const resource = resources.find(resource => {
       return typeof transfer.resource === 'string'
-        ? res.resourceId === transfer.resource
-        : res.resourceId === transfer.resource.resourceId;
+        ? resource.resourceId === transfer.resource
+        : resource.resourceId === transfer.resource.resourceId;
     });
 
     if (resource) {
@@ -51,7 +51,7 @@ export abstract class BaseTransfer {
     const sourceDomainConfig = this.config.getDomainConfig(this.source);
     const web3Provider = new Web3Provider(this.sourceNetworkProvider);
     const bridge = Bridge__factory.connect(sourceDomainConfig.bridge, web3Provider);
-    const resourceId = this.resource.resourceId;
+    const { resourceId } = this.resource;
     const handlerAddress = await bridge._resourceIDToHandlerAddress(resourceId);
     return utils.isAddress(handlerAddress) && handlerAddress !== constants.AddressZero;
   }

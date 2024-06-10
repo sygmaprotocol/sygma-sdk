@@ -19,8 +19,6 @@ export class Config {
    */
   configuration!: SygmaConfig;
   initialized = false;
-
-  constructor() {}
   /**
    * Initialize and store all
    * sygma configurations
@@ -69,6 +67,13 @@ export class Config {
       parachainId: (config as SubstrateConfig).parachainId,
     };
   }
+  /**
+   * Find a domain by sygma ID
+   * @note there are cases in fee processing when we have
+   * to explicitly search on the basis of sygma ID
+   * @param {number} sygmaId
+   * @returns {SubstrateConfig | EthereumConfig}
+   */
   findDomainConfigBySygmaId(sygmaId: number): SubstrateConfig | EthereumConfig {
     const domainConfig = this.configuration.domains.find(domain => domain.id === sygmaId);
     if (!domainConfig) throw new Error(`Domain with sygmaId: ${sygmaId} not found.`);

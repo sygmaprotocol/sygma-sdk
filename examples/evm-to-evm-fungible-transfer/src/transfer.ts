@@ -18,6 +18,9 @@ const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000000200";
 const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "https://sepolia.infura.io/v3/8aa64403febb43359abf4c05b735dbbc"
 
+const explorerUrls: Record<number, string> = { [SEPOLIA_CHAIN_ID]: 'https://sepolia.etherscan.io' };
+const getTxExplorerUrl = (params: { txHash: string; chainId: number }): string => `${explorerUrls[params.chainId]}/tx/${params.txHash}`;
+
 export async function erc20Transfer(): Promise<void> {
   const web3Provider = new Web3HttpProvider(SEPOLIA_RPC_URL);
   const ethersWeb3Provider = new providers.Web3Provider(web3Provider);
@@ -42,13 +45,13 @@ export async function erc20Transfer(): Promise<void> {
   for (const approval of approvals) {
     const response = await wallet.sendTransaction(approval);
     await response.wait();
-    console.log("approved, tx: ", response.hash);
+    console.log("Approved, transaction: ", getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID }));
   }
 
   const transferTx = await transfer.getTransferTransaction();
   const response = await wallet.sendTransaction(transferTx);
   await response.wait();
-  console.log("Depositted for transfer tx: ", response.hash);
+  console.log("Depositted, transaction: ", getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID }));
 }
 
 erc20Transfer().finally(() => {});

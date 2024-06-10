@@ -13,26 +13,37 @@ export class BasicFeeCalculator extends BaseEvmTransferFeeCalculator {
   }
 
   async calculateFee(params: EvmFeeCalculationParams): Promise<EvmFee> {
-    if (params.feeHandlerType === FeeHandlerType.BASIC) {
+    const {
+      feeHandlerAddress,
+      feeHandlerType,
+      sender,
+      sourceSygmaId,
+      destinationSygmaId,
+      resourceSygmaId,
+      provider
+    } = params;
+
+    if (feeHandlerType === FeeHandlerType.BASIC) {
       const BasicFeeHandlerInstance = BasicFeeHandler__factory.connect(
-        params.feeHandlerAddress,
-        params.provider,
+        feeHandlerAddress,
+        provider,
       );
 
       const calculatedFee = await BasicFeeHandlerInstance.calculateFee(
-        params.sender,
-        params.sourceSygmaId,
-        params.destinationSygmaId,
-        params.resourceSygmaId,
+        sender,
+        sourceSygmaId,
+        destinationSygmaId,
+        resourceSygmaId,
         ethers.utils.formatBytes32String(''),
         ethers.utils.formatBytes32String(''),
       );
 
       const [fee] = calculatedFee;
+
       return {
         fee: fee.toBigInt(),
         type: FeeHandlerType.BASIC,
-        handlerAddress: params.feeHandlerAddress,
+        handlerAddress: feeHandlerAddress,
       };
     }
 

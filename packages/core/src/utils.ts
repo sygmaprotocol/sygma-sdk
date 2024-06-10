@@ -12,6 +12,7 @@ import type {
   Domainlike,
   Eip1193Provider,
   FeeHandlerType,
+  IndexerRoutesResponse,
 } from './types.js';
 import { Network, Environment } from './types.js';
 
@@ -121,7 +122,7 @@ export async function getRoutes(
     const typeQuery = options?.routeTypes ? `?resourceType=${options.routeTypes.join(',')}` : '';
     const url = `${indexerUrl}/api/routes/from/${domainConfig.id}${typeQuery}`;
     const response = await fetch(url);
-    const data = (await response.json()) as { routes: RouteIndexerType[] };
+    const data = (await response.json()) as IndexerRoutesResponse;
 
     let routeFeeHandlerAddressesAndTypes: Array<
       RouteIndexerType & { feeHandlerAddress: string } & { feeHandlerType: FeeHandlerType }
@@ -143,14 +144,16 @@ export async function getRoutes(
     }
 
     return data.routes.map(route => {
-      const resource = domainConfig.resources.find(r => r.resourceId === route.resourceId)!;
+      const resource = domainConfig.resources.find(
+        resource => resource.resourceId === route.resourceId,
+      )!;
 
       let routeWithTypeAndAddress;
       if (routeFeeHandlerAddressesAndTypes) {
-        routeWithTypeAndAddress = routeFeeHandlerAddressesAndTypes.find(r => {
-          r.fromDomainId === route.fromDomainId &&
-            r.toDomainId === route.toDomainId &&
-            r.resourceId === route.resourceId;
+        routeWithTypeAndAddress = routeFeeHandlerAddressesAndTypes.find(_route => {
+          _route.fromDomainId === route.fromDomainId &&
+            _route.toDomainId === route.toDomainId &&
+            _route.resourceId === route.resourceId;
         });
       }
 
