@@ -14,9 +14,8 @@ if (!privateKey) {
 
 const SEPOLIA_CHAIN_ID = 11155111;
 const HOLESKY_CHAIN_ID = 17000; 
-const RESOURCE_ID =
-  "0x0000000000000000000000000000000000000000000000000000000000000200";
-const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "https://sepolia.infura.io/v3/8aa64403febb43359abf4c05b735dbbc"
+const RESOURCE_ID = "0x0000000000000000000000000000000000000000000000000000000000000200";
+const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "https://eth-sepolia-public.unifra.io"
 
 const explorerUrls: Record<number, string> = { [SEPOLIA_CHAIN_ID]: 'https://sepolia.etherscan.io' };
 const getTxExplorerUrl = (params: { txHash: string; chainId: number }): string => `${explorerUrls[params.chainId]}/tx/${params.txHash}`;
