@@ -1,4 +1,10 @@
-import { Domainlike, Environment, LiquidityError, SubstrateConfig, SubstrateResource } from '@buildwithsygma/core';
+import {
+  Domainlike,
+  Environment,
+  LiquidityError,
+  SubstrateConfig,
+  SubstrateResource,
+} from '@buildwithsygma/core';
 import { Config, FeeHandlerType, ResourceType } from '@buildwithsygma/core';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
@@ -18,14 +24,25 @@ export type SubstrateAssetTransferRequest = {
   environment: Environment;
 };
 
-async function checkDestinationFungibleHandler(destinationDomain: SubstrateConfig, resourceId: string, amount: bigint, sourceNetworkProvider: ApiPromise): Promise<void> {
-  const handlerAddress = destinationDomain.handlers.find(h => h.type === ResourceType.FUNGIBLE)?.address;
+async function checkDestinationFungibleHandler(
+  destinationDomain: SubstrateConfig,
+  resourceId: string,
+  amount: bigint,
+  sourceNetworkProvider: ApiPromise,
+): Promise<void> {
+  const handlerAddress = destinationDomain.handlers.find(
+    h => h.type === ResourceType.FUNGIBLE,
+  )?.address;
   if (!handlerAddress) {
     throw new Error('No Fungible handler configured on destination domain');
   }
 
   const destinationResource = destinationDomain.resources.find(r => r.resourceId === resourceId);
-  const destinationHandlerBalance = await getLiquidity(sourceNetworkProvider, destinationResource as SubstrateResource, handlerAddress);
+  const destinationHandlerBalance = await getLiquidity(
+    sourceNetworkProvider,
+    destinationResource as SubstrateResource,
+    handlerAddress,
+  );
 
   if (destinationHandlerBalance < amount) {
     throw new LiquidityError(destinationHandlerBalance);
@@ -41,7 +58,12 @@ export async function createSubstrateFungibleAssetTransfer(
   const transfer = new SubstrateFungibleAssetTransfer(transferRequestParams, config);
 
   const destinationDomain = config.getDomainConfig(transfer.destinationAddress) as SubstrateConfig;
-  await checkDestinationFungibleHandler(destinationDomain, transfer.resource.resourceId, transfer.amount, transfer.sourceNetworkProvider);
+  await checkDestinationFungibleHandler(
+    destinationDomain,
+    transfer.resource.resourceId,
+    transfer.amount,
+    transfer.sourceNetworkProvider,
+  );
 
   if (!(await transfer.isValidTransfer()))
     throw new Error('Handler not registered, please check if this is a valid bridge route.');

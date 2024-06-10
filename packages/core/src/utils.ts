@@ -12,7 +12,6 @@ import { Environment, Network } from './types.js';
 
 import { Config } from './index.js';
 
-
 function getIndexerTransferUrl(
   env: Environment = process.env.SYGMA_ENV as Environment,
   txHash: string,
@@ -148,8 +147,8 @@ export async function getRoutes(
       if (routeFeeHandlerAddressesAndTypes) {
         routeWithTypeAndAddress = routeFeeHandlerAddressesAndTypes.find(_route => {
           _route.fromDomainId === route.fromDomainId &&
-          _route.toDomainId === route.toDomainId &&
-          _route.resourceId === route.resourceId;
+            _route.toDomainId === route.toDomainId &&
+            _route.resourceId === route.resourceId;
         });
       }
 
