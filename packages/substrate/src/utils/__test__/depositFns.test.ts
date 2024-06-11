@@ -1,5 +1,4 @@
-import type { XcmMultiAssetIdType } from '@buildwithsygma/core';
-import { Environment } from '@buildwithsygma/core';
+import { Environment, XcmMultiAssetIdType } from '@buildwithsygma/core';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
 import type { Codec } from '@polkadot/types-codec/types';
@@ -91,9 +90,10 @@ describe('throwErrorIfAny', () => {
 
 describe('createDestIdMultilocationData', () => {
   it('should create multilocation data for LOCAL environment', () => {
+    process.env.SYGMA_ENV = Environment.LOCAL;
     const address = '0x123abc';
     const domainId = '42';
-    const data = createDestIdMultilocationData(Environment.LOCAL, address, domainId);
+    const data = createDestIdMultilocationData(address, domainId);
 
     expect(data).toEqual({
       parents: 0,
@@ -107,9 +107,10 @@ describe('createDestIdMultilocationData', () => {
   });
 
   it('should create multilocation data for non-LOCAL environment', () => {
+    process.env.SYGMA_ENV = Environment.DEVNET;
     const address = '0x123abc';
     const domainId = '42';
-    const data = createDestIdMultilocationData(Environment.TESTNET, address, domainId);
+    const data = createDestIdMultilocationData(address, domainId);
 
     expect(data).toEqual({
       parents: 0,
@@ -163,6 +164,7 @@ describe('handleTxExtrinsicResult', () => {
 
 describe('deposit', () => {
   it('should create a deposit transaction', () => {
+    process.env.SYGMA_ENV = Environment.LOCAL;
     const xcmMultiAssetId: XcmMultiAssetIdType = {
       concrete: {
         parents: 1,
@@ -187,14 +189,7 @@ describe('deposit', () => {
       },
     } as unknown as ApiPromise;
 
-    deposit(
-      Environment.LOCAL,
-      mockApi,
-      xcmMultiAssetId,
-      amount,
-      destinationDomainId,
-      destinationAddress,
-    );
+    deposit(mockApi, xcmMultiAssetId, amount, destinationDomainId, destinationAddress);
 
     expect(mockApi.tx.sygmaBridge.deposit).toHaveBeenCalledWith(
       {
