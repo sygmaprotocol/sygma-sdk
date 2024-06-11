@@ -80,9 +80,6 @@ export class SubstrateFungibleAssetTransfer extends BaseTransfer {
 
   constructor(transfer: SubstrateAssetTransferRequest, config: Config) {
     super(transfer, config);
-    this.sourceDomain = config.getDomain(transfer.sourceDomain);
-    this.destinationDomain = config.getDomain(transfer.destinationDomain);
-
     this.amount = transfer.amount;
     this.destinationAddress = transfer.destinationAddress;
   }
