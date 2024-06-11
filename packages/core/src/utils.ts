@@ -11,10 +11,11 @@ import {
   RouteIndexerType,
   RouteType,
   SygmaConfig,
+  Environment,
+  Network,
   TransferStatus,
   TransferStatusResponse,
 } from './types.js';
-import { Environment, Network } from './types.js';
 
 import { Config } from './index.js';
 
