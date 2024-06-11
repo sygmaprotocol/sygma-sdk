@@ -134,7 +134,6 @@ export class SubstrateFungibleAssetTransfer extends BaseTransfer {
         }
 
         return deposit(
-          this.config.environment,
           this.sourceNetworkProvider,
           this.resource.xcmMultiAssetId,
           this.amount.toString(),
