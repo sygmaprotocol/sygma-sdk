@@ -1,35 +1,32 @@
-import { ApiPromise, SubmittableResult } from '@polkadot/api';
-import {
-  Config,
-  FeeHandlerType,
-  LiquidityError,
-  ResourceType,
-  SubstrateResource,
-} from '@buildwithsygma/core';
+import type { SubstrateResource } from '@buildwithsygma/core';
+import { Config, FeeHandlerType, LiquidityError, ResourceType } from '@buildwithsygma/core';
+import type { ApiPromise, SubmittableResult } from '@polkadot/api';
+import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import { BN } from '@polkadot/util';
-import { createSubstrateFungibleAssetTransfer, SubstrateFungibleAssetTransfer } from '../fungible';
-import { getBasicFee, getFeeHandler, getLiquidity, getPercentageFee } from '../utils';
-import { SubmittableExtrinsic } from '@polkadot/api-base/types';
-import { domainsMock } from '../../test/dataMocks';
-import { BaseTransfer } from '../base-transfer';
+
+import { domainsMock } from '../../test/dataMocks.js';
+import { BaseTransfer } from '../base-transfer.js';
+import {
+  createSubstrateFungibleAssetTransfer,
+  SubstrateFungibleAssetTransfer,
+} from '../fungible.js';
+import { getBasicFee, getFeeHandler, getLiquidity, getPercentageFee } from '../utils/index.js';
 
 jest.mock('../utils');
-jest.mock('@buildwithsygma/core', () => {
-  return {
-    ...jest.requireActual('@buildwithsygma/core'),
-    Config: jest.fn().mockImplementation(() => ({
-      configuration: domainsMock,
-      initialized: true,
-      init: jest.fn(),
-      getDomainConfig: jest.fn().mockReturnValue(domainsMock.domains[1]),
-      getDomain: jest
-        .fn()
-        .mockReturnValueOnce(domainsMock.domains[1])
-        .mockReturnValueOnce(domainsMock.domains[2]),
-      getResources: jest.fn().mockReturnValue(domainsMock.domains[1].resources),
-    })),
-  };
-});
+jest.mock('@buildwithsygma/core', (): object => ({
+  ...jest.requireActual('@buildwithsygma/core'),
+  Config: jest.fn().mockImplementation(() => ({
+    configuration: domainsMock,
+    initialized: true,
+    init: jest.fn(),
+    getDomainConfig: jest.fn().mockReturnValue(domainsMock.domains[1]),
+    getDomain: jest
+      .fn()
+      .mockReturnValueOnce(domainsMock.domains[1])
+      .mockReturnValueOnce(domainsMock.domains[2]),
+    getResources: jest.fn().mockReturnValue(domainsMock.domains[1].resources),
+  })),
+}));
 
 const mockGetBasicFee = getBasicFee as jest.MockedFunction<typeof getBasicFee>;
 const mockGetFeeHandler = getFeeHandler as jest.MockedFunction<typeof getFeeHandler>;
@@ -49,7 +46,7 @@ describe('SubstrateFungibleAssetTransfer', () => {
     destinationAddress: 'destinationAddress',
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     jest.clearAllMocks();
     isValidTransferSpy = jest.spyOn(BaseTransfer.prototype, 'isValidTransfer');
   });

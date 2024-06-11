@@ -1,18 +1,23 @@
-import {
+import type {
   Domainlike,
   Environment,
-  LiquidityError,
   SubstrateConfig,
   SubstrateResource,
 } from '@buildwithsygma/core';
-import { Config, FeeHandlerType, ResourceType } from '@buildwithsygma/core';
+import { LiquidityError, Config, FeeHandlerType, ResourceType } from '@buildwithsygma/core';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import { BN } from '@polkadot/util';
 
 import { BaseTransfer } from './base-transfer.js';
 import type { Fungible, SubstrateFee, Transfer } from './types.js';
-import { deposit, getBasicFee, getFeeHandler, getPercentageFee, getLiquidity } from './utils';
+import {
+  deposit,
+  getBasicFee,
+  getFeeHandler,
+  getPercentageFee,
+  getLiquidity,
+} from './utils/index.js';
 
 export type SubstrateAssetTransferRequest = {
   sourceDomain: Domainlike;
@@ -85,11 +90,11 @@ export class SubstrateFungibleAssetTransfer extends BaseTransfer {
     this.destinationAddress = transfer.destinationAddress;
   }
 
-  setAmount(amount: bigint) {
+  setAmount(amount: bigint): void {
     this.amount = amount;
   }
 
-  setDestinationAddress(destinationAddress: string) {
+  setDestinationAddress(destinationAddress: string): void {
     this.destinationAddress = destinationAddress;
   }
 
