@@ -23,5 +23,3 @@ export type Transfer<TransferType> = {
   resource: Resource;
   sender: string;
 };
-
-// export type LiquidityError = Error & { maximumTransferAmount: bigint };

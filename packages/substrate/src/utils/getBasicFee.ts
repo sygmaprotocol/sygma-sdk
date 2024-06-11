@@ -35,7 +35,7 @@ export const getBasicFee = async (
   ]);
 
   if (rawFee.isNone) {
-    throw new Error('Error retrieving fee');
+    throw new Error('Error retrieving fee.');
   }
 
   return {

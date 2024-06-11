@@ -90,7 +90,7 @@ describe('Substrate - getPercentageFee', () => {
       },
     } as unknown as ApiPromise;
 
-    await expect(getPercentageFee(api, validTransfer)).rejects.toThrow('Error retrieving fee');
+    await expect(getPercentageFee(api, validTransfer)).rejects.toThrow('Error retrieving fee.');
   });
 
   it('should handle minimum fee correctly', async () => {
