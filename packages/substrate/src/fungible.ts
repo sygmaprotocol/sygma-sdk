@@ -21,7 +21,6 @@ export type SubstrateAssetTransferRequest = {
   resource: string | SubstrateResource;
   amount: bigint;
   destinationAddress: string;
-  environment: Environment;
 };
 
 async function checkDestinationFungibleHandler(
@@ -55,7 +54,7 @@ export async function createSubstrateFungibleAssetTransfer(
   transferRequestParams: SubstrateAssetTransferRequest,
 ): Promise<SubstrateFungibleAssetTransfer> {
   const config = new Config();
-  await config.init(transferRequestParams.environment);
+  await config.init(process.env.SYGMA_ENV as Environment);
 
   const transfer = new SubstrateFungibleAssetTransfer(transferRequestParams, config);
 

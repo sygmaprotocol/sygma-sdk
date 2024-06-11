@@ -1,7 +1,6 @@
 import { ApiPromise, SubmittableResult } from '@polkadot/api';
 import {
   Config,
-  Environment,
   FeeHandlerType,
   LiquidityError,
   ResourceType,
@@ -48,7 +47,6 @@ describe('SubstrateFungibleAssetTransfer', () => {
       .resources[1] as SubstrateResource,
     amount: BigInt(1000),
     destinationAddress: 'destinationAddress',
-    environment: Environment.LOCAL,
   };
 
   beforeEach(async () => {
