@@ -28,6 +28,5 @@ yarn-debug.log*
 yarn-error.log*
 
 .env
-.vscode
-
-/node1
+.vscode/
+.idea/
