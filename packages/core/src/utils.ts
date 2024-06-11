@@ -1,6 +1,6 @@
 import { ExplorerUrl, IndexerUrl } from './constants.js';
 import { getFeeHandlerAddressesOfRoutes, getFeeHandlerTypeOfRoutes } from './multicall.js';
-import {
+import type {
   Domain,
   Domainlike,
   Eip1193Provider,
@@ -11,11 +11,10 @@ import {
   RouteIndexerType,
   RouteType,
   SygmaConfig,
-  Environment,
-  Network,
   TransferStatus,
   TransferStatusResponse,
 } from './types.js';
+import { Environment, Network } from './types.js';
 
 import { Config } from './index.js';
 
