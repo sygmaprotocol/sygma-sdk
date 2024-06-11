@@ -1,12 +1,18 @@
 import { ExplorerUrl, IndexerUrl } from './constants.js';
 import { getFeeHandlerAddressesOfRoutes, getFeeHandlerTypeOfRoutes } from './multicall.js';
-import type {
+import {
   Domain,
   Domainlike,
   Eip1193Provider,
   EnvironmentMetadata,
   FeeHandlerType,
   IndexerRoutesResponse,
+  Route,
+  RouteIndexerType,
+  RouteType,
+  SygmaConfig,
+  TransferStatus,
+  TransferStatusResponse,
 } from './types.js';
 import { Environment, Network } from './types.js';
 
@@ -221,7 +227,7 @@ export async function getTransferStatus(
 
 /**
  * End users shouldn't really need that but lets expose for power users
- * @param env
+ * @param environment
  */
 export async function getRawConfiguration(
   environment: Environment = process.env.SYGMA_ENV as Environment,
