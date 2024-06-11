@@ -1,4 +1,5 @@
-import { Environment, XcmMultiAssetIdType } from '@buildwithsygma/core';
+import type { XcmMultiAssetIdType } from '@buildwithsygma/core';
+import { Environment } from '@buildwithsygma/core';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
 import type { Codec } from '@polkadot/types-codec/types';

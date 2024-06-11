@@ -108,7 +108,7 @@ export const handleTxExtrinsicResult = (
     result.events.forEach(({ event: { data, method, section } }) => {
       // Search for Deposit event
       if (section === 'sygmaBridge' && method === 'Deposit') {
-        console.log(`${section}.${method}.event data: ${data.toHuman()}`);
+        console.log(`${section}.${method}.event data:`, data.toHuman());
         callbacks?.onDepositEvent?.(data.toHuman() as DepositEventDataType);
       }
     });
