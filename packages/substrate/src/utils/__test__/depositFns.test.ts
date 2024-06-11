@@ -12,7 +12,6 @@ import {
   throwErrorIfAny,
 } from '../depositFns.js';
 
-// Mock objects
 const mockApi = {
   registry: {
     findMetaError: jest
