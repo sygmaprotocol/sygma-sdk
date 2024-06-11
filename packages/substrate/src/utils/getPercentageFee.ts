@@ -36,7 +36,7 @@ export const getPercentageFee = async (
   ]);
 
   if (feeStructure.isNone) {
-    throw new Error('Error retrieving fee');
+    throw new Error('Error retrieving fee.');
   }
 
   const [feeRate, min, max] = feeStructure
@@ -48,7 +48,6 @@ export const getPercentageFee = async (
 
   let fee: BN;
   if (calculatedFee.lt(min)) {
-    console.log('calculatedFee lt');
     fee = min;
   } else if (calculatedFee.gt(max)) {
     fee = max;

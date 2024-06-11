@@ -65,14 +65,14 @@ describe('Substrate - getBasicFee', () => {
     } as unknown as ApiPromise;
     const domainId = 2; // some non-existent domain id;
 
-    const expectedError = new Error('Error retrieving fee');
+    const expectedError = new Error('Error retrieving fee.');
     const actualError = await getBasicFee(api, domainId, validXcmMultiAssetId)
       .then(res => res)
       .catch((e: Error) => e);
     expect(expectedError).toMatchObject(actualError);
 
     await expect(getBasicFee(api, domainId, validXcmMultiAssetId)).rejects.toThrow(
-      'Error retrieving fee',
+      'Error retrieving fee.',
     );
   });
 

@@ -37,7 +37,9 @@ async function checkDestinationFungibleHandler(
     throw new Error('No Fungible handler configured on destination domain');
   }
 
-  const destinationResource = destinationDomain.resources.find(r => r.resourceId === resourceId);
+  const destinationResource = destinationDomain.resources.find(
+    resource => resource.resourceId === resourceId,
+  );
   const destinationHandlerBalance = await getLiquidity(
     sourceNetworkProvider,
     destinationResource as SubstrateResource,
@@ -84,14 +86,12 @@ export class SubstrateFungibleAssetTransfer extends BaseTransfer {
     this.destinationAddress = transfer.destinationAddress;
   }
 
-  setAmount(amount: bigint): this {
+  setAmount(amount: bigint) {
     this.amount = amount;
-    return this;
   }
 
-  setDestinationAddress(destinationAddress: string): this {
+  setDestinationAddress(destinationAddress: string) {
     this.destinationAddress = destinationAddress;
-    return this;
   }
 
   /**

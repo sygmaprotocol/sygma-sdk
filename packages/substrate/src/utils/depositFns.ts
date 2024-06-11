@@ -100,15 +100,15 @@ export const handleTxExtrinsicResult = (
   throwErrorIfAny(api, result, unsub);
 
   if (status.isInBlock) {
-    console.log(`Transaction included at blockHash ${status.asInBlock.toString()}`);
+    console.log(`Transaction included at blockHash ${status.asInBlock.toString()}.`);
     callbacks?.onInBlock?.(status);
   } else if (status.isFinalized) {
-    console.log(`Transaction finalized at blockHash ${status.asFinalized.toString()}`);
+    console.log(`Transaction finalized at blockHash ${status.asFinalized.toString()}.`);
 
     result.events.forEach(({ event: { data, method, section } }) => {
       // Search for Deposit event
       if (section === 'sygmaBridge' && method === 'Deposit') {
-        console.log(`${section}.${method}.event data:`, data.toHuman());
+        console.log(`${section}.${method}.event data: ${data.toHuman()}`);
         callbacks?.onDepositEvent?.(data.toHuman() as DepositEventDataType);
       }
     });
