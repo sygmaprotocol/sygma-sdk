@@ -1,5 +1,8 @@
 import { Environment, getTransferStatus } from "@buildwithsygma/core/types";
-import { createSubstrateFungibleAssetTransfer } from "@buildwithsygma/substrate/src";
+import {
+  createSubstrateFungibleAssetTransfer,
+  SubstrateAssetTransferRequest,
+} from "@buildwithsygma/substrate/src";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { Keyring } from "@polkadot/keyring";
 import { cryptoWaitReady } from "@polkadot/util-crypto";
@@ -35,8 +38,7 @@ const substrateTransfer = async (): Promise<void> => {
     resource: RESOURCE_ID_SYGMA_USD,
     amount: BigInt("5000000"),
     destinationAddress: account.address || recipient,
-    environment: Environment.DEVNET,
-  };
+  } as SubstrateAssetTransferRequest;
 
   const transfer = await createSubstrateFungibleAssetTransfer(transferParams);
   const transferTx = await transfer.getTransferTransaction();
