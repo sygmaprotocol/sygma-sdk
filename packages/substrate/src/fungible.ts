@@ -31,7 +31,7 @@ async function checkDestinationFungibleHandler(
   sourceNetworkProvider: ApiPromise,
 ): Promise<void> {
   const handlerAddress = destinationDomain.handlers.find(
-    h => h.type === ResourceType.FUNGIBLE,
+    handler => handler.type === ResourceType.FUNGIBLE,
   )?.address;
   if (!handlerAddress) {
     throw new Error('No Fungible handler configured on destination domain');
