@@ -562,8 +562,8 @@ __metadata:
   dependencies:
     "@buildwithsygma/core": "workspace:*"
     "@buildwithsygma/substrate": "workspace:*"
-    "@polkadot/api": "npm:10.7.2"
-    "@polkadot/keyring": "npm:12.2.1"
+    "@polkadot/api": "npm:11.2.1"
+    "@polkadot/keyring": "npm:12.6.2"
     "@polkadot/util-crypto": "npm:^12.2.1"
     dotenv: "npm:^16.3.1"
     eslint: "npm:8"
