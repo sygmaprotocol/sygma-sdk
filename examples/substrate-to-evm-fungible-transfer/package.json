@@ -30,8 +30,8 @@
   "dependencies": {
     "@buildwithsygma/core": "workspace:*",
     "@buildwithsygma/substrate": "workspace:*",
-    "@polkadot/api": "10.7.2",
-    "@polkadot/keyring": "12.2.1",
+    "@polkadot/api": "11.2.1",
+    "@polkadot/keyring": "12.6.2",
     "@polkadot/util-crypto": "^12.2.1"
   }
 }
