@@ -55,26 +55,27 @@
     "typescript": "^5.0.4"
   },
   "resolutions": {
-    "@polkadot/api": "^9.13.6",
-    "@polkadot/api-augment": "^9.13.6",
+    "@types/jest": "^29.4.0",
+    "@polkadot/api": "^11.2.1",
+    "@polkadot/api-augment": "^11.2.1",
     "@polkadot/api-base": "^9.13.6",
     "@polkadot/api-contract": "^9.13.6",
     "@polkadot/api-derive": "^9.13.6",
     "@polkadot/hw-ledger": "^10.3.1",
-    "@polkadot/keyring": "^10.3.1",
+    "@polkadot/keyring": "^12.6.2",
     "@polkadot/networks": "^10.3.1",
     "@polkadot/phishing": "^0.19.1",
     "@polkadot/rpc-augment": "^9.13.6",
     "@polkadot/rpc-core": "^9.13.6",
-    "@polkadot/rpc-provider": "^9.13.6",
-    "@polkadot/types": "^9.13.6",
+    "@polkadot/rpc-provider": "^11.2.1",
+    "@polkadot/types": "^11.2.1",
     "@polkadot/types-augment": "^9.13.6",
     "@polkadot/types-codec": "^9.13.6",
     "@polkadot/types-create": "^9.13.6",
     "@polkadot/types-known": "^9.13.6",
     "@polkadot/types-support": "^9.13.6",
-    "@polkadot/util": "^10.3.1",
-    "@polkadot/util-crypto": "^10.3.1",
+    "@polkadot/util": "^12.6.2",
+    "@polkadot/util-crypto": "^12.2.1",
     "@polkadot/wasm-crypto": "^6.4.1",
     "@polkadot/x-bigint": "^10.3.1",
     "@polkadot/x-fetch": "^10.3.1",
@@ -83,7 +84,6 @@
     "@polkadot/x-textdecoder": "^10.3.1",
     "@polkadot/x-textencoder": "^10.3.1",
     "@polkadot/x-ws": "^10.3.1",
-    "babel-core": "^7.0.0-bridge.0",
-    "typescript": "^5.0.4"
+    "babel-core": "^7.0.0-bridge.0"
   }
 }
