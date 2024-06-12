@@ -23,10 +23,9 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: corepack enable
       - run: yarn install --immutable
-      - run: yarn run core:lint # lint code
-      - run: yarn run core:build # compile typescript into javascript
-      - run: yarn run core:test:unit --silent --coverage # run unit tests
-      - run: yarn run evm:lint # lint code
-      - run: yarn run evm:build # compile typescript into javascript
-      - run: yarn run evm:test:unit --silent --coverage # run unit tests
+      - name: Lint, Build, and Test all packages in the monorepo ${{ matrix.node }}
+        run: |
+          yarn run lint
+          yarn run build
+          yarn run test
       # - run: yarn run test:integrations # run integration tests tests
