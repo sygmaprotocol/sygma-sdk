@@ -204,14 +204,16 @@ export async function getTransferStatus(
     })[];
 
     if (!data.length) throw new Error(`Record for ${txHash} not found`);
+    const [transactionData] = data;
+    const { status, fromDomainId, toDomainId, sourceHash, depositNonce, destinationHash } = transactionData;
 
     return {
-      status: data[0].status,
-      fromDomainId: data[0].fromDomainId,
-      toDomainId: data[0].toDomainId,
-      sourceHash: data[0].sourceHash,
-      depositNonce: data[0].depositNonce,
-      destinationHash: data[0].destinationHash,
+      status,
+      fromDomainId,
+      toDomainId,
+      sourceHash,
+      depositNonce,
+      destinationHash,
       explorerUrl,
     };
   } catch (err) {
