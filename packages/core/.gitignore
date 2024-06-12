@@ -29,5 +29,17 @@ yarn-error.log*
 
 .env
 .vscode
+.history
 
-/node1
+# runtime config
+public/chainbridge-runtime-config.js
+
+# IDE
+.idea/
+
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
