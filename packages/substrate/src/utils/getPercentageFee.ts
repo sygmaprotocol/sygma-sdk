@@ -1,4 +1,3 @@
-import type { SubstrateResource } from '@buildwithsygma/core';
 import { FeeHandlerType } from '@buildwithsygma/core';
 import type { ApiPromise } from '@polkadot/api';
 import type { Option, Tuple } from '@polkadot/types';
@@ -13,7 +12,7 @@ import type { Fungible, SubstrateFee, Transfer } from '../types.js';
  * // Assuming the api instance is already connected and ready to use
  * const domainId = 1;
  * const xcmMultiAssetId = {...} // XCM MultiAsset ID of the asset
- * getBasicFee(api, domainId, xcmMultiAssetId)
+ * getPercentageFee(api, transfer)
  *   .catch((error) => {
  *     console.error('Error fetching basic fee:', error);
  *   });
@@ -28,7 +27,7 @@ export const getPercentageFee = async (
   api: ApiPromise,
   transfer: Transfer<Fungible>,
 ): Promise<SubstrateFee> => {
-  const assetId = (transfer.resource as SubstrateResource).xcmMultiAssetId;
+  const assetId = transfer.resource.xcmMultiAssetId;
 
   const feeStructure = await api.query.sygmaPercentageFeeHandler.assetFeeRate<Option<Tuple>>([
     transfer.to.id,

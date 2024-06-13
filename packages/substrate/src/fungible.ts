@@ -4,19 +4,19 @@ import type {
   SubstrateConfig,
   SubstrateResource,
 } from '@buildwithsygma/core';
-import { LiquidityError, Config, FeeHandlerType, ResourceType } from '@buildwithsygma/core';
+import { Config, FeeHandlerType, LiquidityError, ResourceType } from '@buildwithsygma/core';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import { BN } from '@polkadot/util';
 
 import { BaseTransfer } from './base-transfer.js';
-import type { Fungible, SubstrateFee, Transfer } from './types.js';
+import type { SubstrateFee } from './types.js';
 import {
+  deposit,
   getBasicFee,
   getFeeHandler,
-  getPercentageFee,
   getLiquidity,
-  deposit,
+  getPercentageFee,
 } from './utils/index.js';
 
 export type SubstrateAssetTransferRequest = {
@@ -37,6 +37,7 @@ async function checkDestinationFungibleHandler(
   const handlerAddress = destinationDomain.handlers.find(
     handler => handler.type === ResourceType.FUNGIBLE,
   )?.address;
+
   if (!handlerAddress) {
     throw new Error('No Fungible handler configured on destination domain');
   }
@@ -44,6 +45,7 @@ async function checkDestinationFungibleHandler(
   const destinationResource = destinationDomain.resources.find(
     resource => resource.resourceId === resourceId,
   );
+
   const destinationHandlerBalance = await getLiquidity(
     sourceNetworkProvider,
     destinationResource as SubstrateResource,
@@ -62,8 +64,8 @@ export async function createSubstrateFungibleAssetTransfer(
   await config.init(process.env.SYGMA_ENV as Environment);
 
   const transfer = new SubstrateFungibleAssetTransfer(transferRequestParams, config);
-
   const destinationDomain = config.getDomainConfig(transfer.destinationAddress) as SubstrateConfig;
+
   await checkDestinationFungibleHandler(
     destinationDomain,
     transfer.resource.resourceId,
@@ -77,9 +79,6 @@ export async function createSubstrateFungibleAssetTransfer(
   return transfer;
 }
 
-/**
- * @dev User should not instance this directly. All the (async) checks should be done in `createSubstrateFungibleAssetTransfer`
- */
 export class SubstrateFungibleAssetTransfer extends BaseTransfer {
   amount: bigint;
   destinationAddress: string;
@@ -90,17 +89,26 @@ export class SubstrateFungibleAssetTransfer extends BaseTransfer {
     this.destinationAddress = transfer.destinationAddress;
   }
 
+  /**
+   * Set the transfer amount.
+   * @param {bigint} amount
+   */
   setAmount(amount: bigint): void {
     this.amount = amount;
   }
 
+  /**
+   * Set the destination address.
+   * @param {string} destinationAddress
+   */
   setDestinationAddress(destinationAddress: string): void {
     this.destinationAddress = destinationAddress;
   }
 
   /**
-   * Returns fee based on transfer amount.
-   * @param amount
+   * Returns the fee based on the transfer amount.
+   * @param {bigint} [amount]
+   * @returns {Promise<SubstrateFee>}
    */
   async getFee(amount?: bigint): Promise<SubstrateFee> {
     if (amount) this.amount = amount;
@@ -119,40 +127,40 @@ export class SubstrateFungibleAssetTransfer extends BaseTransfer {
           this.resource.xcmMultiAssetId,
         );
       case FeeHandlerType.PERCENTAGE:
-        return await getPercentageFee(this.sourceNetworkProvider, {} as Transfer<Fungible>);
+        return await getPercentageFee(this.sourceNetworkProvider, {
+          details: { amount: this.amount.toString(), recipient: this.destinationAddress },
+          from: this.sourceDomain,
+          resource: this.resource,
+          sender: '',
+          to: this.destinationDomain,
+        });
       default:
         throw new Error('Unable to retrieve fee');
     }
   }
 
   /**
-   * Returns transaction to be signed by the user
+   * Returns the transaction to be signed by the user.
    * @dev potentially add optional param to override transaction params
+   * @returns {Promise<SubmittableExtrinsic<'promise', SubmittableResult>>}
    */
   async getTransferTransaction(): Promise<SubmittableExtrinsic<'promise', SubmittableResult>> {
     const fee = await this.getFee();
 
-    switch (this.resource.type) {
-      case ResourceType.FUNGIBLE: {
-        if (new BN(this.amount.toString()).lt(fee.fee)) {
-          throw new Error('Transfer amount should be higher than transfer fee');
-        }
-
-        return deposit(
-          this.sourceNetworkProvider,
-          this.resource.xcmMultiAssetId,
-          this.amount.toString(),
-          this.destinationDomain.id.toString(),
-          this.destinationAddress,
-        );
-      }
-
-      default:
-        throw new Error(
-          `Resource type ${
-            this.resource.type
-          } with ${fee.fee.toString()} not supported by asset transfer`,
-        );
+    if (this.resource.type !== ResourceType.FUNGIBLE) {
+      throw new Error(`Resource type ${this.resource.type} not supported by asset transfer`);
     }
+
+    if (new BN(this.amount.toString()).lt(fee.fee)) {
+      throw new Error('Transfer amount should be higher than transfer fee');
+    }
+
+    return deposit(
+      this.sourceNetworkProvider,
+      this.resource.xcmMultiAssetId,
+      this.amount.toString(),
+      this.destinationDomain.id.toString(),
+      this.destinationAddress,
+    );
   }
 }

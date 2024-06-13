@@ -23,20 +23,28 @@ export abstract class BaseTransfer {
     this.sourceDomain = config.getDomain(transfer.sourceDomain);
     this.destinationDomain = config.getDomain(transfer.destinationDomain);
     this.sourceNetworkProvider = transfer.sourceNetworkProvider;
-    const resources = config.getResources(this.sourceDomain);
-    const resource = resources.find(res => {
-      return typeof transfer.resource === 'string'
-        ? res.resourceId === transfer.resource
-        : res.resourceId === transfer.resource.resourceId;
-    });
+
+    const resources = config.getResources(this.sourceDomain) as SubstrateResource[];
+    const resource = this.findResource(resources, transfer.resource);
 
     if (resource) {
-      this.resource = resource as SubstrateResource;
+      this.resource = resource;
     } else {
       throw new Error('Resource not found.');
     }
 
     this.config = config;
+  }
+
+  private findResource(
+    resources: SubstrateResource[],
+    resourceIdentifier: string | SubstrateResource,
+  ): SubstrateResource | undefined {
+    return resources.find(res => {
+      return typeof resourceIdentifier === 'string'
+        ? res.resourceId === resourceIdentifier
+        : res.resourceId === resourceIdentifier.resourceId;
+    });
   }
 
   /**
@@ -51,22 +59,21 @@ export abstract class BaseTransfer {
     const bridge = Bridge__factory.connect(sourceDomainConfig.bridge, web3Provider);
     const resourceId = this.resource.resourceId;
     const handlerAddress = await bridge._resourceIDToHandlerAddress(resourceId);
+
     return utils.isAddress(handlerAddress) && handlerAddress !== constants.AddressZero;
   }
 
   /**
-   * Set resource to be transferred
+   * Set resource to be transferred.
    * @param {SubstrateResource} resource
-   * @returns {BaseTransfer}
    */
   setResource(resource: SubstrateResource): void {
     this.resource = resource;
   }
 
   /**
-   *
-   * @param destination
-   * @returns
+   * Set the destination domain.
+   * @param {Domainlike} destination
    */
   setDestinationDomain(destination: Domainlike): void {
     this.destinationDomain = this.config.getDomain(destination);

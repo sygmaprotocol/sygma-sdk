@@ -1,4 +1,4 @@
-import type { Domain, FeeHandlerType, Resource } from '@buildwithsygma/core';
+import type { Domain, FeeHandlerType, SubstrateResource } from '@buildwithsygma/core';
 import type { BN } from '@polkadot/util';
 
 export type ParachainId = number;
@@ -20,6 +20,6 @@ export type Transfer<TransferType> = {
   details: TransferType;
   to: Domain;
   from: Domain;
-  resource: Resource;
+  resource: SubstrateResource;
   sender: string;
 };
