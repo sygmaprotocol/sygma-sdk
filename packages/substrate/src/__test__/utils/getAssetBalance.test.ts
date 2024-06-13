@@ -2,7 +2,7 @@ import type { ApiPromise } from '@polkadot/api';
 import { Option, TypeRegistry } from '@polkadot/types';
 import type { AssetBalance } from '@polkadot/types/interfaces';
 
-import { getAssetBalance } from '../getAssetBalance.js';
+import { getAssetBalance } from '../../utils/getAssetBalance.js';
 
 const registry = new TypeRegistry();
 const mockApi = {

@@ -4,7 +4,7 @@ import type { ApiPromise } from '@polkadot/api';
 import { Option, Enum } from '@polkadot/types';
 import { TypeRegistry } from '@polkadot/types/create';
 
-import { getFeeHandler } from '../getFeeHandlers.js';
+import { getFeeHandler } from '../../utils/getFeeHandlers.js';
 
 const registry = new TypeRegistry();
 

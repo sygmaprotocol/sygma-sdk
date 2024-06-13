@@ -5,12 +5,12 @@ import type { AccountData, AssetBalance } from '@polkadot/types/interfaces';
 import { BN } from '@polkadot/util';
 import { constants } from 'ethers';
 
-import { getAssetBalance } from '../getAssetBalance.js';
-import { getLiquidity } from '../getLiquidity.js';
-import { getNativeTokenBalance } from '../getNativeTokenBalance.js';
+import { getAssetBalance } from '../../utils/getAssetBalance.js';
+import { getLiquidity } from '../../utils/getLiquidity.js';
+import { getNativeTokenBalance } from '../../utils/getNativeTokenBalance.js';
 
-jest.mock('../getAssetBalance.js');
-jest.mock('../getNativeTokenBalance.js');
+jest.mock('../../utils/getAssetBalance');
+jest.mock('../../utils/getNativeTokenBalance');
 
 const mockGetAssetBalance = getAssetBalance as jest.MockedFunction<typeof getAssetBalance>;
 const mockGetNativeTokenBalance = getNativeTokenBalance as jest.MockedFunction<

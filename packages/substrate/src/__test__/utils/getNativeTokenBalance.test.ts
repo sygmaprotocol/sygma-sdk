@@ -2,7 +2,7 @@ import type { ApiPromise } from '@polkadot/api';
 import type { AccountInfo } from '@polkadot/types/interfaces';
 import { BN } from '@polkadot/util';
 
-import { getNativeTokenBalance } from '../getNativeTokenBalance.js';
+import { getNativeTokenBalance } from '../../utils/getNativeTokenBalance.js';
 
 describe('getNativeTokenBalance', () => {
   let mockApi: ApiPromise;

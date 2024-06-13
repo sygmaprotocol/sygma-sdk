@@ -12,11 +12,11 @@ import { BN } from '@polkadot/util';
 import { BaseTransfer } from './base-transfer.js';
 import type { Fungible, SubstrateFee, Transfer } from './types.js';
 import {
-  deposit,
   getBasicFee,
   getFeeHandler,
   getPercentageFee,
   getLiquidity,
+  deposit,
 } from './utils/index.js';
 
 export type SubstrateAssetTransferRequest = {

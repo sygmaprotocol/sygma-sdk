@@ -5,7 +5,7 @@ import { u128, Option } from '@polkadot/types';
 import { TypeRegistry } from '@polkadot/types/create';
 import { BN } from '@polkadot/util';
 
-import { getBasicFee } from '../getBasicFee.js';
+import { getBasicFee } from '../../utils/getBasicFee.js';
 
 const registry = new TypeRegistry();
 

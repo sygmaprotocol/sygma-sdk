@@ -6,11 +6,11 @@ import { TypeRegistry } from '@polkadot/types/create';
 import { BN } from '@polkadot/util';
 
 import type { Fungible, Transfer } from '../../types.js';
-import { getPercentageFee } from '../getPercentageFee.js';
+import { getPercentageFee } from '../../utils/getPercentageFee.js';
 
 const registry = new TypeRegistry();
 
-describe('Substrate - getPercentageFee', () => {
+describe('getPercentageFee', () => {
   const validXcmMultiAssetId: XcmMultiAssetIdType = {
     concrete: {
       parents: 1,
