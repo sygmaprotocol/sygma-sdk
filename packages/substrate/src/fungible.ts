@@ -1,9 +1,4 @@
-import type {
-  Domainlike,
-  Environment,
-  SubstrateConfig,
-  SubstrateResource,
-} from '@buildwithsygma/core';
+import type { Domainlike, SubstrateConfig, SubstrateResource } from '@buildwithsygma/core';
 import { Config, FeeHandlerType, LiquidityError, ResourceType } from '@buildwithsygma/core';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
@@ -12,11 +7,11 @@ import { BN } from '@polkadot/util';
 import { BaseTransfer } from './base-transfer.js';
 import type { SubstrateFee } from './types.js';
 import {
-  deposit,
   getBasicFee,
   getFeeHandler,
-  getLiquidity,
   getPercentageFee,
+  getLiquidity,
+  deposit,
 } from './utils/index.js';
 
 export type SubstrateAssetTransferRequest = {
@@ -61,7 +56,7 @@ export async function createSubstrateFungibleAssetTransfer(
   transferRequestParams: SubstrateAssetTransferRequest,
 ): Promise<SubstrateFungibleAssetTransfer> {
   const config = new Config();
-  await config.init(process.env.SYGMA_ENV as Environment);
+  await config.init(process.env.SYGMA_ENV);
 
   const transfer = new SubstrateFungibleAssetTransfer(transferRequestParams, config);
   const destinationDomain = config.getDomainConfig(transfer.destinationAddress) as SubstrateConfig;
@@ -72,9 +67,6 @@ export async function createSubstrateFungibleAssetTransfer(
     transfer.amount,
     transfer.sourceNetworkProvider,
   );
-
-  if (!(await transfer.isValidTransfer()))
-    throw new Error('Handler not registered, please check if this is a valid bridge route.');
 
   return transfer;
 }

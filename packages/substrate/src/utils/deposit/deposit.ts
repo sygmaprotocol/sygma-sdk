@@ -12,7 +12,7 @@ import { numberToHex } from '@polkadot/util';
  * @returns {object} - The destination multilocation object.
  */
 export const createDestIdMultilocationData = (address: string, domainId: string): object => {
-  const environment = process.env.SYGMA_ENV as Environment;
+  const environment = process.env.SYGMA_ENV;
 
   switch (environment) {
     case Environment.LOCAL:

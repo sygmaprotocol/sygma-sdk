@@ -5,7 +5,6 @@ import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import { BN } from '@polkadot/util';
 
 import { domainsMock } from '../../test/dataMocks.js';
-import { BaseTransfer } from '../base-transfer.js';
 import {
   createSubstrateFungibleAssetTransfer,
   SubstrateFungibleAssetTransfer,
@@ -34,8 +33,6 @@ const mockGetPercentageFee = getPercentageFee as jest.MockedFunction<typeof getP
 const mockGetLiquidity = getLiquidity as jest.MockedFunction<typeof getLiquidity>;
 
 describe('SubstrateFungibleAssetTransfer', () => {
-  let isValidTransferSpy: jest.SpyInstance;
-
   const transferRequest = {
     sourceDomain: 5231, // rococo-phala chainId
     destinationDomain: 84532, // base_sepolia chainId
@@ -48,32 +45,13 @@ describe('SubstrateFungibleAssetTransfer', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    isValidTransferSpy = jest.spyOn(BaseTransfer.prototype, 'isValidTransfer');
-  });
-
-  afterEach(() => {
-    isValidTransferSpy.mockRestore();
   });
 
   it('should create a SubstrateFungibleAssetTransfer successfully', async () => {
     mockGetLiquidity.mockResolvedValueOnce(BigInt(10000));
-    isValidTransferSpy.mockResolvedValue(true);
     const transfer = await createSubstrateFungibleAssetTransfer(transferRequest);
 
     expect(transfer).toBeInstanceOf(SubstrateFungibleAssetTransfer);
-  });
-
-  it('should throw an error if the handler is not registered', async () => {
-    mockGetLiquidity.mockResolvedValueOnce(BigInt(10000));
-    isValidTransferSpy.mockResolvedValue(false);
-    Config.prototype.getDomainConfig = jest.fn().mockReturnValueOnce({
-      handlers: [],
-      resources: [],
-    });
-
-    await expect(createSubstrateFungibleAssetTransfer(transferRequest)).rejects.toThrow(
-      'Handler not registered, please check if this is a valid bridge route.',
-    );
   });
 
   it('should throw an error if the liquidity is insufficient', async () => {
