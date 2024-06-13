@@ -59,7 +59,9 @@ export async function createSubstrateFungibleAssetTransfer(
   await config.init(process.env.SYGMA_ENV);
 
   const transfer = new SubstrateFungibleAssetTransfer(transferRequestParams, config);
-  const destinationDomain = config.getDomainConfig(transfer.destinationAddress) as SubstrateConfig;
+  const destinationDomain = config.getDomainConfig(
+    transfer.destinationDomain.chainId,
+  ) as SubstrateConfig;
 
   await checkDestinationFungibleHandler(
     destinationDomain,

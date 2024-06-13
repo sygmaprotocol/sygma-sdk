@@ -5,7 +5,7 @@ import { Web3Provider } from '@ethersproject/providers';
 /**
  * Get liquidity of resource handler on destination domain
  * @param provider
- * @param {EvmResource} resource sygma transferrable resource
+ * @param {EvmResource} resource sygma transferable resource
  * @param {string} handlerAddress address of resource handler
  * @returns {Promise<bigint>} handler balance
  */
@@ -25,7 +25,7 @@ export const getEvmHandlerBalance = async (
 
 /**
  * Fetch ERC20 token balance of an address
- * @param {JsonRpcProvider} provider Network provider
+ * @param {Eip1193Provider} provider Network provider
  * @param {string} tokenAddress ERC20 token address
  * @param {string} address EVM address to query
  * @returns {Promise<bigint>} balance
