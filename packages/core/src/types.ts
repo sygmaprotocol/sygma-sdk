@@ -20,6 +20,7 @@ export enum FeeHandlerType {
 export enum Network {
   EVM = 'evm',
   SUBSTRATE = 'substrate',
+  BITCOIN = 'bitcoin',
 }
 
 export enum SecurityModel {
