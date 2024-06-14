@@ -31,7 +31,7 @@ type EvmFungibleTransferRequest = {
  * @param {EvmFungibleAssetTransfer} transfer
  * @param {EvmFee} fee
  */
-async function calculateAdjustedAmount(transfer: EvmFungibleAssetTransfer, fee: EvmFee): Promise<void> {
+function calculateAdjustedAmount(transfer: EvmFungibleAssetTransfer, fee: EvmFee): bigint {
   //in case of percentage fee handler, we are calculating what amount + fee will result int user inputed amount
   //in case of fixed(basic) fee handler, fee is taken from native token
   if (fee.type === FeeHandlerType.PERCENTAGE) {
@@ -58,8 +58,10 @@ async function calculateAdjustedAmount(transfer: EvmFungibleAssetTransfer, fee: 
       amount = transfer.amount - maxFee;
     }
 
-    transfer.setAmount(amount);
+    return amount;
   }
+
+  return transfer.amount;
 }
 
 export async function createEvmFungibleAssetTransfer(
@@ -74,9 +76,7 @@ export async function createEvmFungibleAssetTransfer(
   if (!isValid)
     throw new Error('Handler not registered, please check if this is a valid bridge route.');
 
-  const originalFee = await transfer.getFee();
-  calculateAdjustedAmount(transfer, originalFee);
-
+  await transfer.setAmount(params.amount);
   return transfer;
 }
 
@@ -99,8 +99,10 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
    * @param {BigInt} amount
    * @returns {void}
    */
-  setAmount(amount: bigint): void {
+  async setAmount(amount: bigint): Promise<void> {
     this.amount = amount;
+    const fee = await this.getFee();
+    this.amount = calculateAdjustedAmount(this, fee);
   }
   /**
    * Sets the destination address
