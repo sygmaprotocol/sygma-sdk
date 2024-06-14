@@ -28,10 +28,10 @@ type EvmFungibleTransferRequest = {
  * @internal only
  * This method is used to adjust transfer amount
  * based on percentage fee calculations
- * @param {EvmFungibleAssetTransfer} transfer 
+ * @param {EvmFungibleAssetTransfer} transfer
  * @param {EvmFee} fee
  */
-function calculateAdjustedAmount(transfer: EvmFungibleAssetTransfer, fee: EvmFee): void {
+async function calculateAdjustedAmount(transfer: EvmFungibleAssetTransfer, fee: EvmFee): Promise<void> {
   //in case of percentage fee handler, we are calculating what amount + fee will result int user inputed amount
   //in case of fixed(basic) fee handler, fee is taken from native token
   if (fee.type === FeeHandlerType.PERCENTAGE) {
@@ -99,10 +99,8 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
    * @param {BigInt} amount
    * @returns {void}
    */
-  async setAmount(amount: bigint): Promise<void> {
+  setAmount(amount: bigint): void {
     this.amount = amount;
-    const fee = await this.getFee();
-    calculateAdjustedAmount(this, fee);
   }
   /**
    * Sets the destination address
