@@ -210,7 +210,7 @@ export async function getFeeHandlerAddressesOfRoutes(params: {
     callData: feeHandlerRouter.encodeFunctionData('_domainResourceIDToFeeHandlerAddress', [
       parseInt(route.toDomainId),
       route.resourceId,
-    ]),    
+    ]),
   }));
 
   const results = (await multicall.callStatic.aggregate(calls)) as AggregateStaticCallResponse;
@@ -232,9 +232,9 @@ export async function getFeeHandlerTypeOfRoutes(params: {
   const multicall = new Contract(multicallAddress, JSON.stringify(MulticallAbi), web3Provider);
   const basicFeeHandlerInterface = BasicFeeHandler__factory.createInterface();
 
-  const calls = params.routes.map((route) => ({
+  const calls = params.routes.map(route => ({
     target: route.feeHandlerAddress,
-    callData: basicFeeHandlerInterface.encodeFunctionData('feeHandlerType'),    
+    callData: basicFeeHandlerInterface.encodeFunctionData('feeHandlerType'),
   }));
 
   const results = (await multicall.callStatic.aggregate(calls)) as AggregateStaticCallResponse;
