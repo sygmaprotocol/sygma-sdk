@@ -8,17 +8,18 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+const MNEMONIC = process.env.PRIVATE_MNEMONIC;
+if (!MNEMONIC) {
+  throw new Error("Missing environment variable: PRIVATE_MNEMONIC");
+}
+
 const SEPOLIA_CHAIN_ID = 11155111;
 const PHALA_CHAIN_ID = 5231;
 const RESOURCE_ID_SYGMA_USD =
   "0x0000000000000000000000000000000000000000000000000000000000001100";
-const MNEMONIC = process.env.PRIVATE_MNEMONIC;
 const recipient = "0xD31E89feccCf6f2DE10EaC92ADffF48D802b695C";
 const RHALA_RPC_URL =
   process.env.RHALA_RPC_URL || "wss://rhala-node.phala.network/ws";
-if (!MNEMONIC) {
-  throw new Error("Missing environment variable: PRIVATE_MNEMONIC");
-}
 
 const explorerUrls: Record<number, string> = {
   [PHALA_CHAIN_ID]: "https://phala.subscan.io/transfer",
