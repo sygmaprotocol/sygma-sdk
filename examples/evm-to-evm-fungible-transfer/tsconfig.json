@@ -15,10 +15,6 @@
 		"forceConsistentCasingInFileNames": true,
 		"moduleResolution": "node",
 	},
-	"ts-node": {
-		"esm": true,
-		"experimentalSpecifierResolution": "node"
-	},
 	"include": [
 		"src"
 	]
