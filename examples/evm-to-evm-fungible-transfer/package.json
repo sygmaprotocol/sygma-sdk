@@ -1,6 +1,7 @@
 {
   "name": "@buildwithsygma/sygma-sdk-evm-to-evm-fungible-transfer-example",
   "version": "0.1.0",
+  "type": "module",
   "description": "Sygma sdk examples",
   "sideEffects": false,
   "repository": {
@@ -16,7 +17,7 @@
     "ethereum"
   ],
   "scripts": {
-    "transfer": "ts-node src/transfer.ts"
+    "transfer": "tsx src/transfer.ts"
   },
   "author": "Sygmaprotocol Product Team",
   "license": "LGPL-3.0-or-later",
@@ -30,6 +31,7 @@
     "@buildwithsygma/core": "workspace:^",
     "@buildwithsygma/evm": "workspace:^",
     "ethers": "5.7.2",
+    "tsx": "^4.15.4",
     "web3-providers-http": "^1.2.7"
   }
 }
