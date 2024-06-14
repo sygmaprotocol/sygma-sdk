@@ -20,6 +20,15 @@ if (!MNEMONIC) {
   throw new Error("Missing environment variable: PRIVATE_MNEMONIC");
 }
 
+const explorerUrls: Record<number, string> = {
+  [PHALA_CHAIN_ID]: "https://phala.subscan.io/transfer",
+};
+
+const getTxExplorerUrl = (params: {
+  txHash: string;
+  chainId: number;
+}): string => `${explorerUrls[params.chainId]}/${params.txHash}`;
+
 const substrateTransfer = async (): Promise<void> => {
   // Make sure to fund this account with native tokens
   // Account address: 5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS
@@ -29,14 +38,14 @@ const substrateTransfer = async (): Promise<void> => {
   const wsProvider = new WsProvider(RHALA_RPC_URL);
   const api = await ApiPromise.create({ provider: wsProvider });
 
-  const transferParams = {
+  const transferParams: SubstrateAssetTransferRequest = {
     sourceDomain: PHALA_CHAIN_ID,
     destinationDomain: SEPOLIA_CHAIN_ID,
     sourceNetworkProvider: api,
     resource: RESOURCE_ID_SYGMA_USD,
     amount: BigInt("5000000"),
-    destinationAddress: account.address || recipient,
-  } as SubstrateAssetTransferRequest;
+    destinationAddress: recipient,
+  };
 
   const transfer = await createSubstrateFungibleAssetTransfer(transferParams);
   const transferTx = await transfer.getTransferTransaction();
@@ -59,7 +68,10 @@ const substrateTransfer = async (): Promise<void> => {
       getTransferStatus(status.asInBlock.toString(), Environment.TESTNET)
         .then((data) => {
           if (data) {
-            console.log("Status of the transfer", data.status);
+            console.log(
+              `Status of the transfer ${getTxExplorerUrl({ txHash: data.sourceHash, chainId: PHALA_CHAIN_ID })}`,
+              data.status,
+            );
             if (data.status == "executed") {
               clearInterval(id);
               process.exit(0);
