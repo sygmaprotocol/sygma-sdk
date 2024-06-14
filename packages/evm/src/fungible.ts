@@ -84,13 +84,17 @@ export async function createEvmFungibleAssetTransfer(
  * @dev User should not instance this directly. All the (async) checks should be done in `createEvmFungibleAssetTransfer`
  */
 class EvmFungibleAssetTransfer extends BaseTransfer {
-  destinationAddress: string;
-  securityModel: SecurityModel;
-  amount: bigint;
+  protected destinationAddress: string;
+  protected securityModel: SecurityModel;
+  protected _amount: bigint;
+
+  get amount(): bigint {
+    return this.amount;
+  }
 
   constructor(transfer: EvmFungibleTransferRequest, config: Config) {
     super(transfer, config);
-    this.amount = transfer.amount;
+    this._amount = transfer.amount;
     this.destinationAddress = transfer.destinationAddress;
     this.securityModel = transfer.securityModel ?? SecurityModel.MPC;
   }
@@ -100,9 +104,9 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
    * @returns {void}
    */
   async setAmount(amount: bigint): Promise<void> {
-    this.amount = amount;
+    this._amount = amount;
     const fee = await this.getFee();
-    this.amount = calculateAdjustedAmount(this, fee);
+    this._amount = calculateAdjustedAmount(this, fee);
   }
   /**
    * Sets the destination address

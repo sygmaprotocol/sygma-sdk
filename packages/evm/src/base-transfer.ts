@@ -14,12 +14,12 @@ export interface BaseTransferParams {
 }
 
 export abstract class BaseTransfer {
-  sourceNetworkProvider: Eip1193Provider;
-  sourceAddress: string;
-  destination: Domain;
-  resource: EvmResource;
-  config: Config;
-  source: Domain;
+  protected sourceNetworkProvider: Eip1193Provider;
+  protected sourceAddress: string;
+  protected destination: Domain;
+  protected resource: EvmResource;
+  protected config: Config;
+  protected source: Domain;
 
   constructor(transfer: BaseTransferParams, config: Config) {
     this.sourceAddress = transfer.sourceAddress;
