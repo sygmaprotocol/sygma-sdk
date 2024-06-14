@@ -4,7 +4,7 @@ import { Web3Provider } from '@ethersproject/providers';
 
 /**
  * Get liquidity of resource handler on destination domain
- * @param provider
+ * @param {Eip1193Provider} provider
  * @param {EvmResource} resource sygma transferable resource
  * @param {string} handlerAddress address of resource handler
  * @returns {Promise<bigint>} handler balance
