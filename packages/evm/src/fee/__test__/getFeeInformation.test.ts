@@ -41,7 +41,7 @@ describe('getFeeInformation()', () => {
             type: FeeHandlerType.BASIC,
           },
         ],
-      })
+      }),
     },
     sourceProvider: {},
     sygmaSourceId: 1,
