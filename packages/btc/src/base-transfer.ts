@@ -5,11 +5,11 @@ type BitcoinTransferRequest = {
   btcAmount: number;
 };
 
-export function createUriEncodedUtxoRequest(): BitcoinFungibleAssetTransfer {
+export function createUriEncodedUtxoRequest(): BaseTransfer {
   throw new Error("Method not implemented");
 }
 
-export abstract class BitcoinFungibleAssetTransfer {
+export abstract class BaseTransfer {
   constructor(transfer: BitcoinTransferRequest) {}
 
   getUriEncodedUtxoRequest(btcTransferRequest: BitcoinTransferRequest): string {
