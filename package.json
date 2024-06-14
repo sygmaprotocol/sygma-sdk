@@ -25,6 +25,8 @@
     "evm:lint": "yarn workspace @buildwithsygma/evm lint",
     "evm:lint:fix": "yarn workspace @buildwithsygma/evm lint:fix",
     "evm:test:unit": "yarn workspace @buildwithsygma/evm test:unit",
+    "build:all": "yarn workspace @buildwithsygma/core build:all; yarn workspace @buildwithsygma/evm build:all",
+    "clean:all": "yarn workspace @buildwithsygma/core clean; yarn workspace @buildwithsygma/evm clean",
     "docs": "typedoc"
   },
   "keywords": [],

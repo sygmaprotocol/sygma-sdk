@@ -10,7 +10,7 @@ Before running the script, ensure that you have the following:
 - Yarn (version 3.4.1 or higher)
 - A development wallet funded with `ERC20LRTest` tokens from the [Sygma faucet](https://faucet-ui-stage.buildwithsygma.com/)
 - The [exported private key](https://support.metamask.io/hc/en-us/articles/360015289632-How-to-export-an-account-s-private-key) of your development wallet
-- [Goerli ETH](https://goerlifaucet.com/) for gas 
+- [Sepolia ETH](https://www.alchemy.com/faucets/ethereum-sepolia) for gas 
 - An Ethereum [provider](https://www.infura.io/) (in case the hardcoded RPC within the script does not work)
 
 ## Getting started
@@ -37,7 +37,7 @@ yarn install
 To start the example you need to build the sdk first with:
 
 ```bash
-yarn sdk:build
+yarn build:all
 ```
 
 ## Usage
@@ -71,7 +71,6 @@ Replace the placeholder values in the `.env` file with your own Ethereum wallet 
 **Note**
 
 To replace default rpc Cronos and Sepolia urls use env variables:
-- `CRONOS_RPC_URL="CRONOS_RPC_URL_HERE"`
 - `SEPOLIA_RPC_URL="SEPOLIA_RPC_URL_HERE"`
 ## Script Functionality
 
