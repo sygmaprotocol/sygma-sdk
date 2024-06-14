@@ -1,6 +1,6 @@
-import { Environment, getTransferStatus } from "@buildwithsygma/core/types";
-import type { SubstrateAssetTransferRequest } from "@buildwithsygma/substrate/src";
-import { createSubstrateFungibleAssetTransfer } from "@buildwithsygma/substrate/src";
+import { Environment, getTransferStatus } from "@buildwithsygma/core";
+import type { SubstrateAssetTransferRequest } from "@buildwithsygma/substrate";
+import { createSubstrateFungibleAssetTransfer } from "@buildwithsygma/substrate";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { Keyring } from "@polkadot/keyring";
 import { cryptoWaitReady } from "@polkadot/util-crypto";
