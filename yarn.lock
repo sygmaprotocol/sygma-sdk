@@ -568,6 +568,7 @@ __metadata:
     dotenv: "npm:^16.3.1"
     eslint: "npm:8"
     ts-node: "npm:10.9.1"
+    tsx: "npm:^4.15.4"
     typescript: "npm:5.0.4"
   languageName: unknown
   linkType: soft
