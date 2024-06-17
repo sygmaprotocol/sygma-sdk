@@ -58,15 +58,9 @@
   "dependencies": {
     "@buildwithsygma/core": "workspace:^",
     "@buildwithsygma/sygma-contracts": "2.5.1",
-    "@ethersproject/abi": "^5.7.0",
-    "@ethersproject/bytes": "^5.7.0",
-    "@ethersproject/contracts": "^5.7.0",
-    "@ethersproject/providers": "^5.7.2",
-    "@polkadot/extension-inject": "^0.47.5",
+    "@polkadot/api": "^11.2.1",
     "@polkadot/types": "^11.2.1",
-    "@polkadot/ui-keyring": "3.4.1",
     "@polkadot/util": "^12.6.2",
-    "dotenv": "^16.4.5",
-    "ethers": "5.6.2"
+    "dotenv": "^16.4.5"
   }
 }

@@ -43,7 +43,6 @@
   "author": "Sygmaprotocol Product Team",
   "license": "LGPL-3.0-or-later",
   "devDependencies": {
-    "@polkadot/types": "11.2.1",
     "@types/jest": "^29.4.0",
     "concurrently": "7.0.0",
     "eslint": "8",
@@ -64,14 +63,6 @@
     "@ethersproject/bytes": "^5.7.0",
     "@ethersproject/contracts": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",
-    "@polkadot/api": "11.2.1",
-    "@polkadot/api-augment": "11.2.1",
-    "@polkadot/extension-inject": "0.46.3",
-    "@polkadot/keyring": "12.6.2",
-    "@polkadot/rpc-provider": "11.2.1",
-    "@polkadot/ui-keyring": "3.4.1",
-    "@polkadot/util": "12.6.2",
-    "@polkadot/util-crypto": "12.6.2",
     "ethers": "5.6.2"
   }
 }

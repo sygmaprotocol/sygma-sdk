@@ -17,9 +17,9 @@ const SEPOLIA_CHAIN_ID = 11155111;
 const PHALA_CHAIN_ID = 5231;
 const RESOURCE_ID_SYGMA_USD =
   "0x0000000000000000000000000000000000000000000000000000000000001100";
-const recipient = "0xD31E89feccCf6f2DE10EaC92ADffF48D802b695C";
+const recipient = "0x98729c03c4D5e820F5e8c45558ae07aE63F97461";
 const RHALA_RPC_URL =
-  process.env.RHALA_RPC_URL || "wss://rhala-node.phala.network/ws";
+  process.env.RHALA_RPC_URL ?? "wss://rhala-node.phala.network/ws";
 
 const explorerUrls: Record<number, string> = {
   [PHALA_CHAIN_ID]: "https://phala.subscan.io/transfer",
@@ -59,32 +59,36 @@ const substrateTransfer = async (): Promise<void> => {
         `Transaction included at blockHash ${status.asInBlock.toString()}`,
       );
     } else if (status.isFinalized) {
+      // not working, no rhala subscan
+      // console.log(getTxExplorerUrl({ txHash: status.hash.toString(), chainId: PHALA_CHAIN_ID }));
       console.log(
         `Transaction finalized at blockHash ${status.asFinalized.toString()}`,
       );
       unsub();
     }
 
-    const id = setInterval(() => {
-      getTransferStatus(status.asInBlock.toString(), Environment.TESTNET)
-        .then((data) => {
-          if (data) {
-            console.log(
-              `Status of the transfer ${getTxExplorerUrl({ txHash: data.sourceHash, chainId: PHALA_CHAIN_ID })}`,
-              data.status,
-            );
-            if (data.status == "executed") {
-              clearInterval(id);
-              process.exit(0);
-            }
-          } else {
-            console.log("Waiting for the TX to be indexed");
-          }
-        })
-        .catch((e) => {
-          console.log("error:", e);
-        });
-    }, 5000);
+    // not working
+    // no immediate data from indexer
+    // const id = setInterval(() => {
+    //   getTransferStatus(status.hash.toString(), Environment.TESTNET)
+    //     .then((data) => {
+    //       if (data) {
+    //         console.log(
+    //           `Status of the transfer ${getTxExplorerUrl({ txHash: data.sourceHash, chainId: PHALA_CHAIN_ID })}`,
+    //           data.status,
+    //         );
+    //         if (data.status == "executed") {
+    //           clearInterval(id);
+    //           process.exit(0);
+    //         }
+    //       } else {
+    //         console.log("Waiting for the TX to be indexed");
+    //       }
+    //     })
+    //     .catch((e) => {
+    //       console.log("error:", e);
+    //     });
+    // }, 5000);
   });
 };
 
