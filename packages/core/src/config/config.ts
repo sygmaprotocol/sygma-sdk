@@ -32,8 +32,8 @@ export class Config {
       this.configuration = config;
       // initialized is set to true when
       // all configurations have been fetched
-      this.initialized = true;
     }
+    this.initialized = true;
   }
   /**
    * Retrieve hosted bridge configuration in JSON format
@@ -42,12 +42,10 @@ export class Config {
    */
   private getConfigUrl(environment: Environment): string {
     switch (environment) {
-      case Environment.DEVNET: {
+      case Environment.DEVNET:
         return ConfigUrl.DEVNET;
-      }
-      case Environment.TESTNET: {
+      case Environment.TESTNET:
         return ConfigUrl.TESTNET;
-      }
       default:
         return ConfigUrl.MAINNET;
     }

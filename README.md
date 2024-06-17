@@ -30,7 +30,8 @@ Currently supported:
 
 ## Installation
 ```bash
-yarn add @buildwithsygma/sygma-sdk-core
+yarn add @buildwithsygma/core
+yarn add @buildwithsygma/evm
 ```
 
 ## Example 
