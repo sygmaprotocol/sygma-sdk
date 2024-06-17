@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 type BitcoinTransferRequest = {
-  destinationEvmAddress: string;
-  btcAmount: number;
+  destinationAddress: string;
+  amount: bigint;
 };
 
 export function createUriEncodedUtxoRequest(): BaseTransfer {
