@@ -16,9 +16,10 @@ if (!privateKey) {
 }
 
 const SEPOLIA_CHAIN_ID = 11155111;
+const HOLESKY_CHAIN_ID = 17000;
 const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000000300";
-const CRONOS_RPC_URL = process.env.CRONOS_RPC_URL || "https://evm-t3.cronos.org	"
+const SEPOLIA = process.env.SEPOLIA_RPC_URL || "https://eth-sepolia.api.onfinality.io/public"
 const getStatus = async (
   txHash: string
 ): Promise<TransferStatusResponse[]> => {
@@ -27,7 +28,7 @@ const getStatus = async (
 };
 
 export async function erc20Transfer(): Promise<void> {
-  const provider = new providers.JsonRpcProvider(CRONOS_RPC_URL);
+  const provider = new providers.JsonRpcProvider(SEPOLIA);
   const wallet = new Wallet(privateKey ?? "", provider);
   const assetTransfer = new EVMAssetTransfer();
   // @ts-ignore-next-line
@@ -35,10 +36,10 @@ export async function erc20Transfer(): Promise<void> {
 
   const transfer = await assetTransfer.createFungibleTransfer(
     await wallet.getAddress(),
-    SEPOLIA_CHAIN_ID,
+    HOLESKY_CHAIN_ID,
     await wallet.getAddress(), // Sending to the same address on a different chain
     RESOURCE_ID,
-    "5000000000000000000" // 18 decimal places
+    "5000000000000000000", // 18 decimal places
   );
 
   const fee = await assetTransfer.getFee(transfer);
