@@ -1,5 +1,5 @@
-import type { Domainlike, SubstrateConfig, SubstrateResource } from '@buildwithsygma/core';
-import { Config, FeeHandlerType, LiquidityError, ResourceType } from '@buildwithsygma/core';
+import type { Domainlike, SubstrateResource } from '@buildwithsygma/core';
+import { Config, FeeHandlerType, ResourceType } from '@buildwithsygma/core';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import { BN } from '@polkadot/util';
@@ -10,7 +10,6 @@ import {
   getBasicFee,
   getFeeHandler,
   getPercentageFee,
-  getLiquidity,
   deposit,
 } from './utils/index.js';
 
@@ -23,33 +22,6 @@ export type SubstrateAssetTransferRequest = {
   destinationAddress: string;
 };
 
-async function checkDestinationFungibleHandler(
-  destinationDomain: SubstrateConfig,
-  resourceId: string,
-  amount: bigint,
-  sourceNetworkProvider: ApiPromise,
-): Promise<void> {
-  const handlerAddress = destinationDomain.handlers.find(
-    handler => handler.type === ResourceType.FUNGIBLE,
-  )?.address;
-  if (!handlerAddress) {
-    throw new Error('No Fungible handler configured on destination domain');
-  }
-
-  const destinationResource = destinationDomain.resources.find(
-    resource => resource.resourceId === resourceId,
-  );
-  const destinationHandlerBalance = await getLiquidity(
-    sourceNetworkProvider,
-    destinationResource as SubstrateResource,
-    handlerAddress,
-  );
-
-  if (destinationHandlerBalance < amount) {
-    throw new LiquidityError(destinationHandlerBalance);
-  }
-}
-
 export async function createSubstrateFungibleAssetTransfer(
   transferRequestParams: SubstrateAssetTransferRequest,
 ): Promise<SubstrateFungibleAssetTransfer> {
@@ -57,21 +29,10 @@ export async function createSubstrateFungibleAssetTransfer(
   await config.init(process.env.SYGMA_ENV);
 
   const transfer = new SubstrateFungibleAssetTransfer(transferRequestParams, config);
-  const destinationDomain = config.getDomainConfig(
-    transfer.destinationDomain.chainId,
-  ) as SubstrateConfig;
-
-  await checkDestinationFungibleHandler(
-    destinationDomain,
-    transfer.resource.resourceId,
-    transfer.amount,
-    transfer.sourceNetworkProvider,
-  );
-
   return transfer;
 }
 
-export class SubstrateFungibleAssetTransfer extends BaseTransfer {
+class SubstrateFungibleAssetTransfer extends BaseTransfer {
   amount: bigint;
   destinationAddress: string;
 
