@@ -45,5 +45,9 @@
       "packages/*",
       "examples/*"
     ]
+  },
+  "dependencies": {
+    "@chainsafe/eslint-config": "^2.2.4",
+    "eslint-plugin-require-extensions": "^0.1.3"
   }
 }

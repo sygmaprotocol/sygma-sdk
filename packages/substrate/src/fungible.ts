@@ -6,12 +6,7 @@ import { BN } from '@polkadot/util';
 
 import { BaseTransfer } from './base-transfer.js';
 import type { SubstrateFee } from './types.js';
-import {
-  getBasicFee,
-  getFeeHandler,
-  getPercentageFee,
-  deposit,
-} from './utils/index.js';
+import { getBasicFee, getFeeHandler, getPercentageFee, deposit } from './utils/index.js';
 
 export type SubstrateAssetTransferRequest = {
   sourceDomain: Domainlike;

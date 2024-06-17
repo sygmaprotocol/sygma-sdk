@@ -14,6 +14,7 @@ if (!MNEMONIC) {
 }
 
 const SEPOLIA_CHAIN_ID = 11155111;
+// TODO: should be rhala?
 const PHALA_CHAIN_ID = 5231;
 const RESOURCE_ID_SYGMA_USD =
   "0x0000000000000000000000000000000000000000000000000000000000001100";
@@ -22,6 +23,7 @@ const RHALA_RPC_URL =
   process.env.RHALA_RPC_URL ?? "wss://rhala-node.phala.network/ws";
 
 const explorerUrls: Record<number, string> = {
+  // TODO: update for rhala
   [PHALA_CHAIN_ID]: "https://phala.subscan.io/transfer",
 };
 
