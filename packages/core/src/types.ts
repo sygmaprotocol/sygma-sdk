@@ -21,13 +21,6 @@ export enum SecurityModel {
   MPC = 'mpc',
 }
 
-export interface Eip1193Provider {
-  request(request: {
-    method: string;
-    params?: Array<unknown> | Record<string, unknown>;
-  }): Promise<unknown>;
-}
-
 export type Domain = {
   id: number;
   // https://chainagnostic.org/CAIPs/caip-2

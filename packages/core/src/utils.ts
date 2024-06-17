@@ -19,7 +19,7 @@ import { Environment, Network } from './types.js';
 import { Config } from './index.js';
 
 function getIndexerTransferUrl(
-  env: Environment = process.env.SYGMA_ENV as Environment,
+  env: Environment = process.env.SYGMA_ENV,
   txHash: string,
 ): {
   explorerUrl: string;
@@ -59,7 +59,7 @@ function getIndexerTransferUrl(
  *
  */
 export async function getEnvironmentMetadata(
-  environment: Environment = process.env.SYGMA_ENV as Environment,
+  environment: Environment = process.env.SYGMA_ENV,
 ): Promise<EnvironmentMetadata> {
   try {
     const url = `${getIndexerURL(environment)}/api/domains/metadata`;
@@ -109,7 +109,7 @@ export async function getDomains(options: {
  */
 export async function getRoutes(
   source: Domainlike,
-  environment: Environment = process.env.SYGMA_ENV as Environment,
+  environment: Environment = process.env.SYGMA_ENV,
   options?: {
     routeTypes?: RouteType[];
     sourceProvider?: Eip1193Provider;
@@ -189,7 +189,7 @@ export async function getRoutes(
  */
 export async function getTransferStatus(
   txHash: string,
-  environment: Environment = process.env.SYGMA_ENV as Environment,
+  environment: Environment = process.env.SYGMA_ENV,
 ): Promise<TransferStatusResponse> {
   const env = environment ?? Environment.MAINNET;
   const { url, explorerUrl } = getIndexerTransferUrl(env, txHash);
@@ -206,14 +206,17 @@ export async function getTransferStatus(
     })[];
 
     if (!data.length) throw new Error(`Record for ${txHash} not found`);
+    const [transactionData] = data;
+    const { status, fromDomainId, toDomainId, sourceHash, depositNonce, destinationHash } =
+      transactionData;
 
     return {
-      status: data[0].status,
-      fromDomainId: data[0].fromDomainId,
-      toDomainId: data[0].toDomainId,
-      sourceHash: data[0].sourceHash,
-      depositNonce: data[0].depositNonce,
-      destinationHash: data[0].destinationHash,
+      status,
+      fromDomainId,
+      toDomainId,
+      sourceHash,
+      depositNonce,
+      destinationHash,
       explorerUrl,
     };
   } catch (err) {
@@ -230,7 +233,7 @@ export async function getTransferStatus(
  * @param environment
  */
 export async function getRawConfiguration(
-  environment: Environment = process.env.SYGMA_ENV as Environment,
+  environment: Environment = process.env.SYGMA_ENV,
 ): Promise<SygmaConfig> {
   const config = new Config();
   await config.init(environment);

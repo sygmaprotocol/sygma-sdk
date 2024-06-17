@@ -1,6 +1,6 @@
 import {
-  Bridge__factory,
   BasicFeeHandler__factory,
+  Bridge__factory,
   FeeHandlerRouter__factory,
 } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
@@ -205,20 +205,15 @@ export async function getFeeHandlerAddressesOfRoutes(params: {
   const multicallAddress = getMulticallAddress(params.chainId);
   const multicall = new Contract(multicallAddress, JSON.stringify(MulticallAbi), web3Provider);
 
-  const calls = [];
-
-  for (const route of params.routes) {
-    calls.push({
-      target: feeHandlerRouterAddress,
-      callData: feeHandlerRouter.encodeFunctionData('_domainResourceIDToFeeHandlerAddress', [
-        parseInt(route.toDomainId),
-        route.resourceId,
-      ]),
-    });
-  }
+  const calls = params.routes.map(route => ({
+    target: feeHandlerRouterAddress,
+    callData: feeHandlerRouter.encodeFunctionData('_domainResourceIDToFeeHandlerAddress', [
+      parseInt(route.toDomainId),
+      route.resourceId,
+    ]),
+  }));
 
   const results = (await multicall.callStatic.aggregate(calls)) as AggregateStaticCallResponse;
-
   return params.routes.map((route, idx) => {
     return {
       ...route,
@@ -237,14 +232,10 @@ export async function getFeeHandlerTypeOfRoutes(params: {
   const multicall = new Contract(multicallAddress, JSON.stringify(MulticallAbi), web3Provider);
   const basicFeeHandlerInterface = BasicFeeHandler__factory.createInterface();
 
-  const calls = [];
-
-  for (const route of params.routes) {
-    calls.push({
-      target: route.feeHandlerAddress,
-      callData: basicFeeHandlerInterface.encodeFunctionData('feeHandlerType'),
-    });
-  }
+  const calls = params.routes.map(route => ({
+    target: route.feeHandlerAddress,
+    callData: basicFeeHandlerInterface.encodeFunctionData('feeHandlerType'),
+  }));
 
   const results = (await multicall.callStatic.aggregate(calls)) as AggregateStaticCallResponse;
 

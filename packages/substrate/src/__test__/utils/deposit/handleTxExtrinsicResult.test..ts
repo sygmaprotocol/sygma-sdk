@@ -1,19 +1,11 @@
-import type { XcmMultiAssetIdType } from '@buildwithsygma/core';
-import { Environment } from '@buildwithsygma/core';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
 import type { Codec } from '@polkadot/types-codec/types';
-import { numberToHex } from '@polkadot/util';
-
-import {
-  createDestIdMultilocationData,
-  deposit,
-} from '../deposit/deposit';
 
 import {
   handleTxExtrinsicResult,
   throwErrorIfAny,
-} from '../deposit/handleTxExtrinsicResult';
+} from '../../../utils/deposit/handleTxExtrinsicResult.js';
 
 const mockApi = {
   registry: {
@@ -92,43 +84,6 @@ describe('throwErrorIfAny', () => {
   });
 });
 
-describe('createDestIdMultilocationData', () => {
-  it('should create multilocation data for LOCAL environment', () => {
-    process.env.SYGMA_ENV = Environment.LOCAL;
-    const address = '0x123abc';
-    const domainId = '42';
-    const data = createDestIdMultilocationData(address, domainId);
-
-    expect(data).toEqual({
-      parents: 0,
-      interior: {
-        x2: [
-          { generalKey: [(address.length - 2) / 2, address.padEnd(66, '0')] },
-          { generalKey: [1, numberToHex(Number(domainId)).padEnd(66, '0')] },
-        ],
-      },
-    });
-  });
-
-  it('should create multilocation data for non-LOCAL environment', () => {
-    process.env.SYGMA_ENV = Environment.DEVNET;
-    const address = '0x123abc';
-    const domainId = '42';
-    const data = createDestIdMultilocationData(address, domainId);
-
-    expect(data).toEqual({
-      parents: 0,
-      interior: {
-        x3: [
-          { generalKey: [5, '0x7379676d61000000000000000000000000000000000000000000000000000000'] },
-          { generalIndex: numberToHex(Number(domainId)) },
-          { generalKey: [(address.length - 2) / 2, address.padEnd(66, '0')] },
-        ],
-      },
-    });
-  });
-});
-
 describe('handleTxExtrinsicResult', () => {
   it('should call onInBlock callback when status is inBlock', () => {
     const callbacks = { onInBlock: jest.fn(), onFinalized: jest.fn(), onDepositEvent: jest.fn() };
@@ -163,56 +118,5 @@ describe('handleTxExtrinsicResult', () => {
     expect(callbacks.onFinalized).toHaveBeenCalledWith(mockResult.status);
     expect(callbacks.onDepositEvent).toHaveBeenCalledWith(mockedCodecData);
     expect(unsub).toHaveBeenCalled();
-  });
-});
-
-describe('deposit', () => {
-  it('should create a deposit transaction', () => {
-    process.env.SYGMA_ENV = Environment.LOCAL;
-    const xcmMultiAssetId: XcmMultiAssetIdType = {
-      concrete: {
-        parents: 1,
-        interior: {
-          x3: [
-            { parachain: 2000 },
-            { generalKey: [1, 'someKey'] },
-            { generalKey: [2, 'anotherKey'] },
-          ],
-        },
-      },
-    };
-    const amount = '1000';
-    const destinationDomainId = '1';
-    const destinationAddress = '0x123abc';
-
-    const mockApi = {
-      tx: {
-        sygmaBridge: {
-          deposit: jest.fn(),
-        },
-      },
-    } as unknown as ApiPromise;
-
-    deposit(mockApi, xcmMultiAssetId, amount, destinationDomainId, destinationAddress);
-
-    expect(mockApi.tx.sygmaBridge.deposit).toHaveBeenCalledWith(
-      {
-        id: xcmMultiAssetId,
-        fun: {
-          fungible: amount,
-        },
-      },
-      {
-        parents: 0,
-        interior: {
-          x2: [
-            {
-              generalKey: [(destinationAddress.length - 2) / 2, destinationAddress.padEnd(66, '0')],
-            },
-            { generalKey: [1, numberToHex(Number(destinationDomainId)).padEnd(66, '0')] },
-          ],
-        },
-      },
-    );
   });
 });

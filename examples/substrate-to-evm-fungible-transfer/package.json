@@ -18,7 +18,7 @@
     "ethereum"
   ],
   "scripts": {
-    "transfer": "ts-node src/transfer.ts"
+    "transfer": "tsx src/transfer.ts"
   },
   "author": "Sygmaprotocol Product Team",
   "devDependencies": {
@@ -30,8 +30,9 @@
   "dependencies": {
     "@buildwithsygma/core": "workspace:*",
     "@buildwithsygma/substrate": "workspace:*",
-    "@polkadot/api": "10.7.2",
-    "@polkadot/keyring": "12.2.1",
-    "@polkadot/util-crypto": "^12.2.1"
+    "@polkadot/api": "11.2.1",
+    "@polkadot/keyring": "12.6.2",
+    "@polkadot/util-crypto": "^12.2.1",
+    "tsx": "^4.15.4"
   }
 }

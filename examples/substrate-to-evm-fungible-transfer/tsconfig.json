@@ -13,11 +13,7 @@
 		"downlevelIteration": true,
 		"allowSyntheticDefaultImports": true,
 		"forceConsistentCasingInFileNames": true,
-		"moduleResolution": "node",
-	},
-	"ts-node": {
-		"esm": true,
-		"experimentalSpecifierResolution": "node"
+		"moduleResolution": "node"
 	},
 	"include": [
 		"src"

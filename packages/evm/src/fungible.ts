@@ -24,6 +24,46 @@ type EvmFungibleTransferRequest = {
   securityModel?: SecurityModel;
 };
 
+/**
+ * @internal only
+ * This method is used to adjust transfer amount
+ * based on percentage fee calculations
+ * @param {EvmFungibleAssetTransfer} transfer
+ * @param {EvmFee} fee
+ */
+function calculateAdjustedAmount(transfer: EvmFungibleAssetTransfer, fee: EvmFee): bigint {
+  //in case of percentage fee handler, we are calculating what amount + fee will result int user inputed amount
+  //in case of fixed(basic) fee handler, fee is taken from native token
+  if (fee.type === FeeHandlerType.PERCENTAGE) {
+    const minFee = fee.minFee!;
+    const maxFee = fee.maxFee!;
+    const percentage = fee.percentage!;
+    const userSpecifiedAmount = BigNumber.from(transfer.amount);
+
+    let amount = transfer.amount;
+    //calculate amount without fee (percentage)
+    const feelessAmount = userSpecifiedAmount
+      .mul(constants.WeiPerEther)
+      .div(utils.parseEther(String(1 + percentage)));
+
+    const calculatedFee = userSpecifiedAmount.sub(feelessAmount);
+    amount = feelessAmount.toBigInt();
+
+    //if calculated percentage fee is less than lower fee bound, substract lower bound from user input. If lower bound is 0, bound is ignored
+    if (calculatedFee.lt(minFee) && minFee > 0) {
+      amount = transfer.amount - minFee;
+    }
+    //if calculated percentage fee is more than upper fee bound, substract upper bound from user input. If upper bound is 0, bound is ignored
+    if (calculatedFee.gt(maxFee) && maxFee > 0) {
+      amount = transfer.amount - maxFee;
+    }
+
+    return amount;
+  }
+
+  return transfer.amount;
+}
+
 export async function createEvmFungibleAssetTransfer(
   params: EvmFungibleTransferRequest,
 ): Promise<EvmFungibleAssetTransfer> {
@@ -36,34 +76,7 @@ export async function createEvmFungibleAssetTransfer(
   if (!isValid)
     throw new Error('Handler not registered, please check if this is a valid bridge route.');
 
-  const originalFee = await transfer.getFee();
-  //in case of percentage fee handler, we are calculating what amount + fee will result int user inputed amount
-  //in case of fixed(basic) fee handler, fee is taken from native token
-  if (originalFee.type === FeeHandlerType.PERCENTAGE) {
-    let _amount = transfer.amount;
-    const minFee = originalFee.minFee!;
-    const maxFee = originalFee.maxFee!;
-    const percentage = originalFee.percentage!;
-    const userInputAmount = BigNumber.from(transfer.amount);
-
-    //calculate amount without fee (percentage)
-    const feelessAmount = userInputAmount
-      .mul(constants.WeiPerEther)
-      .div(utils.parseEther(String(1 + percentage)));
-
-    const calculatedFee = userInputAmount.sub(feelessAmount);
-    _amount = feelessAmount.toBigInt();
-    //if calculated percentage fee is less than lower fee bound, substract lower bound from user input. If lower bound is 0, bound is ignored
-    if (calculatedFee.lt(minFee) && minFee > 0) {
-      _amount = transfer.amount - minFee;
-    }
-    //if calculated percentage fee is more than upper fee bound, substract upper bound from user input. If upper bound is 0, bound is ignored
-    if (calculatedFee.gt(maxFee) && maxFee > 0) {
-      _amount = transfer.amount - maxFee;
-    }
-    transfer.setAmount(_amount);
-  }
-
+  await transfer.setAmount(params.amount);
   return transfer;
 }
 
@@ -71,13 +84,17 @@ export async function createEvmFungibleAssetTransfer(
  * @dev User should not instance this directly. All the (async) checks should be done in `createEvmFungibleAssetTransfer`
  */
 class EvmFungibleAssetTransfer extends BaseTransfer {
-  destinationAddress: string;
-  securityModel: SecurityModel;
-  amount: bigint;
+  protected destinationAddress: string;
+  protected securityModel: SecurityModel;
+  protected _amount: bigint;
+
+  get amount(): bigint {
+    return this.amount;
+  }
 
   constructor(transfer: EvmFungibleTransferRequest, config: Config) {
     super(transfer, config);
-    this.amount = transfer.amount;
+    this._amount = transfer.amount;
     this.destinationAddress = transfer.destinationAddress;
     this.securityModel = transfer.securityModel ?? SecurityModel.MPC;
   }
@@ -86,8 +103,10 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
    * @param {BigInt} amount
    * @returns {void}
    */
-  setAmount(amount: bigint): void {
-    this.amount = amount;
+  async setAmount(amount: bigint): Promise<void> {
+    this._amount = amount;
+    const fee = await this.getFee();
+    this._amount = calculateAdjustedAmount(this, fee);
   }
   /**
    * Sets the destination address

@@ -28,12 +28,12 @@ export class Config {
       this.configuration = localConfig;
     } else {
       const response = await fetch(this.getConfigUrl(environment));
-      const data = (await response.json()) as SygmaConfig;
-      this.configuration = data;
+      const config = (await response.json()) as SygmaConfig;
+      this.configuration = config;
       // initialized is set to true when
       // all configurations have been fetched
-      this.initialized = true;
     }
+    this.initialized = true;
   }
   /**
    * Retrieve hosted bridge configuration in JSON format
@@ -42,12 +42,10 @@ export class Config {
    */
   private getConfigUrl(environment: Environment): string {
     switch (environment) {
-      case Environment.DEVNET: {
+      case Environment.DEVNET:
         return ConfigUrl.DEVNET;
-      }
-      case Environment.TESTNET: {
+      case Environment.TESTNET:
         return ConfigUrl.TESTNET;
-      }
       default:
         return ConfigUrl.MAINNET;
     }
@@ -144,13 +142,13 @@ export class Config {
     if (!config) throw new Error('Configuration unavailable or uninitialized.');
 
     const domains = config.domains
-      .filter(f => {
+      .filter(domain => {
         if (options?.networkTypes) {
-          return options?.networkTypes?.includes(f.type);
+          return options?.networkTypes?.includes(domain.type);
         }
         return true;
       })
-      .map(dc => this.createDomain(dc));
+      .map(domainConfig => this.createDomain(domainConfig));
     return domains;
   }
   /**

@@ -3,5 +3,10 @@
   "compilerOptions": {
     "module": "ES2020",
     "outDir": "./dist-esm"
-  }
+  },
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  },
+  "exclude": ["test/**", "src/**/*.test.ts"]
 }

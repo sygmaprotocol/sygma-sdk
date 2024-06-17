@@ -44,13 +44,13 @@ export async function erc20Transfer(): Promise<void> {
   for (const approval of approvals) {
     const response = await wallet.sendTransaction(approval);
     await response.wait();
-    console.log("Approved, transaction: ", getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID }));
+    console.log(`Approved, transaction: ${getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID })}`);
   }
 
   const transferTx = await transfer.getTransferTransaction();
   const response = await wallet.sendTransaction(transferTx);
   await response.wait();
-  console.log("Depositted, transaction: ", getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID }));
+  console.log(`Depositted, transaction:  ${getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID })}`);
 }
 
 erc20Transfer().finally(() => {});

@@ -29,4 +29,7 @@ jobs:
       - run: yarn run evm:lint # lint code
       - run: yarn run evm:build # compile typescript into javascript
       - run: yarn run evm:test:unit --silent --coverage # run unit tests
+      - run: yarn run substrate:lint
+      - run: yarn run substrate:build
+      - run: yarn run substrate:test:unit --silent --coverage
       # - run: yarn run test:integrations # run integration tests tests
