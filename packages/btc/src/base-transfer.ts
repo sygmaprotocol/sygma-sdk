@@ -14,7 +14,7 @@ type BitcoinTransferRequest = {
   depositAddress: string;
 };
 
-export async function createBitcoinTransferRequest(): Promise<BaseTransfer> {
+export async function createBitcoinTransferRequest(params: BaseTransferParams): Promise<BaseTransfer> {
   throw new Error("Method not implemented");
 }
 
