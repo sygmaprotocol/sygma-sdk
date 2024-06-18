@@ -24,7 +24,7 @@ export abstract class BaseTransfer {
 
   /**
    * Set resource to be transferred.
-   * @param {SubstrateResource} resource
+   * @param {BitcoinResource} resource
    */
   setResource(resource: BitcoinResource): void {
     throw new Error("Method not implemented");
