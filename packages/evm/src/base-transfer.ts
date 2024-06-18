@@ -5,6 +5,12 @@ import { constants, utils } from 'ethers';
 
 import type { Eip1193Provider } from './types.js';
 
+/**
+ * @category Transfer
+ * Required transfer parameters
+ * for any type of transfer
+ * @internal
+ */
 export interface BaseTransferParams {
   source: Domainlike;
   destination: Domainlike;
@@ -13,6 +19,13 @@ export interface BaseTransferParams {
   sourceAddress: string;
 }
 
+/**
+ * @category Transfer
+ * BaseTransfer
+ * An abstraction to facilitate
+ * specialized types of transfers
+ * @internal
+ */
 export abstract class BaseTransfer {
   protected sourceNetworkProvider: Eip1193Provider;
   protected sourceAddress: string;
@@ -20,7 +33,11 @@ export abstract class BaseTransfer {
   protected resource: EvmResource;
   protected config: Config;
   protected source: Domain;
-
+  /**
+   * constructor
+   * @param {BaseTransferParams} transfer 
+   * @param {Config} config
+   */
   constructor(transfer: BaseTransferParams, config: Config) {
     this.sourceAddress = transfer.sourceAddress;
     this.source = config.getDomain(transfer.source);
@@ -64,9 +81,9 @@ export abstract class BaseTransfer {
     this.resource = resource;
   }
   /**
-   *
-   * @param destination
-   * @returns
+   * Set a different destination domain
+   * @param {Domainlke} destination
+   * @returns {void}
    */
   setDesinationDomain(destination: Domainlike): void {
     const domain = this.config.getDomain(destination);

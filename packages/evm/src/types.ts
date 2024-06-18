@@ -16,13 +16,21 @@ export interface Eip1193Provider {
   }): Promise<unknown>;
 }
 
+/** Fees associated with an EVM transfer */
 export type EvmFee = {
+  /** amount that will be deducated */
   fee: bigint;
+  /** type of fee calculation that will be used */
   type: FeeHandlerType;
+  /** fee handler contract address */
   handlerAddress: string;
+  /** fungible token ERC20 address */
   tokenAddress?: string;
+  /** Percentage - applicable when percentage calculation is used */
   percentage?: number;
+  /** minimum Fee - applicable when percentage calculation is used */
   minFee?: bigint;
+  /** maximum Fee - applicable when percentage calculation is used */
   maxFee?: bigint;
 };
 
@@ -37,8 +45,10 @@ export type GenericTransferRequest = {
   securityModel?: SecurityModel; //defaults to MPC
 };
 
+/** An EVM resource is accepted as either the resource object or it's Sygma ID */
 export type EvmResourceish = string | EvmResource;
 
+/** @internal */
 export type FungibleTransferParams = {
   /** The unique identifier for the destination network on the bridge. */
   domainId: string;
