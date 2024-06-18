@@ -447,6 +447,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@buildwithsygma/evm-to-evm-fungible-transfer-example@workspace:examples/evm-to-evm-fungible-transfer":
+  version: 0.0.0-use.local
+  resolution: "@buildwithsygma/evm-to-evm-fungible-transfer-example@workspace:examples/evm-to-evm-fungible-transfer"
+  dependencies:
+    "@buildwithsygma/core": "workspace:^"
+    "@buildwithsygma/evm": "workspace:^"
+    dotenv: "npm:^16.3.1"
+    eslint: "npm:8"
+    ethers: "npm:5.7.2"
+    ts-node: "npm:10.9.1"
+    tsx: "npm:^4.15.4"
+    typescript: "npm:5.0.4"
+    web3-providers-http: "npm:^1.2.7"
+  languageName: unknown
+  linkType: soft
+
 "@buildwithsygma/evm@workspace:^, @buildwithsygma/evm@workspace:packages/evm":
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/evm@workspace:packages/evm"
@@ -471,6 +487,23 @@ __metadata:
     ts-node: "npm:10.9.1"
     typedoc: "npm:^0.24.1"
     typedoc-plugin-markdown: "npm:^3.15.1"
+    typescript: "npm:5.0.4"
+  languageName: unknown
+  linkType: soft
+
+"@buildwithsygma/substrate-to-evm-fungible-transfer-example@workspace:examples/substrate-to-evm-fungible-transfer":
+  version: 0.0.0-use.local
+  resolution: "@buildwithsygma/substrate-to-evm-fungible-transfer-example@workspace:examples/substrate-to-evm-fungible-transfer"
+  dependencies:
+    "@buildwithsygma/core": "workspace:*"
+    "@buildwithsygma/substrate": "workspace:*"
+    "@polkadot/api": "npm:^11.2.1"
+    "@polkadot/keyring": "npm:^12.6.2"
+    "@polkadot/util-crypto": "npm:^12.6.2"
+    dotenv: "npm:^16.3.1"
+    eslint: "npm:8"
+    ts-node: "npm:10.9.1"
+    tsx: "npm:^4.15.4"
     typescript: "npm:5.0.4"
   languageName: unknown
   linkType: soft
@@ -521,39 +554,6 @@ __metadata:
   checksum: 3955af36c816324d7e9c65fd7f8ea46d2c2c1c79bb476e511ef3df3d6248a10df745f3c5dde6d4a9d3e62b47bc0368cebc10ad63a4f59d7c03e7b9dccb3198ab
   languageName: node
   linkType: hard
-
-"@buildwithsygma/sygma-sdk-evm-to-evm-fungible-transfer-example@workspace:examples/evm-to-evm-fungible-transfer":
-  version: 0.0.0-use.local
-  resolution: "@buildwithsygma/sygma-sdk-evm-to-evm-fungible-transfer-example@workspace:examples/evm-to-evm-fungible-transfer"
-  dependencies:
-    "@buildwithsygma/core": "workspace:^"
-    "@buildwithsygma/evm": "workspace:^"
-    dotenv: "npm:^16.3.1"
-    eslint: "npm:8"
-    ethers: "npm:5.7.2"
-    ts-node: "npm:10.9.1"
-    tsx: "npm:^4.15.4"
-    typescript: "npm:5.0.4"
-    web3-providers-http: "npm:^1.2.7"
-  languageName: unknown
-  linkType: soft
-
-"@buildwithsygma/sygma-sdk-substrate-to-evm-fungible-transfer-example@workspace:examples/substrate-to-evm-fungible-transfer":
-  version: 0.0.0-use.local
-  resolution: "@buildwithsygma/sygma-sdk-substrate-to-evm-fungible-transfer-example@workspace:examples/substrate-to-evm-fungible-transfer"
-  dependencies:
-    "@buildwithsygma/core": "workspace:*"
-    "@buildwithsygma/substrate": "workspace:*"
-    "@polkadot/api": "npm:^11.2.1"
-    "@polkadot/keyring": "npm:^12.6.2"
-    "@polkadot/util-crypto": "npm:^12.6.2"
-    dotenv: "npm:^16.3.1"
-    eslint: "npm:8"
-    ts-node: "npm:10.9.1"
-    tsx: "npm:^4.15.4"
-    typescript: "npm:5.0.4"
-  languageName: unknown
-  linkType: soft
 
 "@buildwithsygma/sygma-sdk@workspace:.":
   version: 0.0.0-use.local
