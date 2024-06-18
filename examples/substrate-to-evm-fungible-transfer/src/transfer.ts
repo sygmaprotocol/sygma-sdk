@@ -1,4 +1,3 @@
-import { Environment, getTransferStatus } from "@buildwithsygma/core";
 import type { SubstrateAssetTransferRequest } from "@buildwithsygma/substrate";
 import { createSubstrateFungibleAssetTransfer } from "@buildwithsygma/substrate";
 import { ApiPromise, WsProvider } from "@polkadot/api";
@@ -14,27 +13,22 @@ if (!MNEMONIC) {
 }
 
 const SEPOLIA_CHAIN_ID = 11155111;
-// TODO: should be rhala?
-const PHALA_CHAIN_ID = 5231;
+const RHALA_CHAIN_ID = 5231;
+
 const RESOURCE_ID_SYGMA_USD =
   "0x0000000000000000000000000000000000000000000000000000000000001100";
 const recipient = "0x98729c03c4D5e820F5e8c45558ae07aE63F97461";
 const RHALA_RPC_URL =
   process.env.RHALA_RPC_URL ?? "wss://rhala-node.phala.network/ws";
 
-const explorerUrls: Record<number, string> = {
-  // TODO: update for rhala
-  [PHALA_CHAIN_ID]: "https://phala.subscan.io/transfer",
-};
-
-const getTxExplorerUrl = (params: {
-  txHash: string;
-  chainId: number;
-}): string => `${explorerUrls[params.chainId]}/${params.txHash}`;
+const SYGMA_EXPLORER_URL = 'https://scan.test.buildwithsygma.com';
+const getSygmaExplorerTransferUrl = (params: {
+  blockNumber: number;
+  extrinsicIndex: number;
+}) => `${SYGMA_EXPLORER_URL}/transfer/${params.blockNumber}-${params.extrinsicIndex}`
 
 const substrateTransfer = async (): Promise<void> => {
-  // Make sure to fund this account with native tokens
-  // Account address: 5FNHV5TZAQ1AofSPbP7agn5UesXSYDX9JycUSCJpNuwgoYTS
+  // Make sure to account with native tokens
   const keyring = new Keyring({ type: "sr25519" });
   await cryptoWaitReady();
   const account = keyring.addFromUri(MNEMONIC);
@@ -42,7 +36,7 @@ const substrateTransfer = async (): Promise<void> => {
   const api = await ApiPromise.create({ provider: wsProvider });
 
   const transferParams: SubstrateAssetTransferRequest = {
-    sourceDomain: PHALA_CHAIN_ID,
+    sourceDomain: RHALA_CHAIN_ID,
     destinationDomain: SEPOLIA_CHAIN_ID,
     sourceNetworkProvider: api,
     resource: RESOURCE_ID_SYGMA_USD,
@@ -53,44 +47,21 @@ const substrateTransfer = async (): Promise<void> => {
   const transfer = await createSubstrateFungibleAssetTransfer(transferParams);
   const transferTx = await transfer.getTransferTransaction();
 
-  const unsub = await transferTx.signAndSend(account, ({ status }) => {
+  const unsub = await transferTx.signAndSend(account, (results) => {
+    const { status } = results;
     console.log(`Current status is ${status.toString()}`);
 
     if (status.isInBlock) {
-      console.log(
-        `Transaction included at blockHash ${status.asInBlock.toString()}`,
-      );
+      console.log(`Transaction included at blockHash ${status.asInBlock.toString()}`);
     } else if (status.isFinalized) {
-      // not working, no rhala subscan
-      // console.log(getTxExplorerUrl({ txHash: status.hash.toString(), chainId: PHALA_CHAIN_ID }));
-      console.log(
-        `Transaction finalized at blockHash ${status.asFinalized.toString()}`,
-      );
-      unsub();
-    }
+      const blockNumber = results.blockNumber!.toNumber();
+      const extrinsicIndex = results.txIndex!;
 
-    // not working
-    // no immediate data from indexer
-    // const id = setInterval(() => {
-    //   getTransferStatus(status.hash.toString(), Environment.TESTNET)
-    //     .then((data) => {
-    //       if (data) {
-    //         console.log(
-    //           `Status of the transfer ${getTxExplorerUrl({ txHash: data.sourceHash, chainId: PHALA_CHAIN_ID })}`,
-    //           data.status,
-    //         );
-    //         if (data.status == "executed") {
-    //           clearInterval(id);
-    //           process.exit(0);
-    //         }
-    //       } else {
-    //         console.log("Waiting for the TX to be indexed");
-    //       }
-    //     })
-    //     .catch((e) => {
-    //       console.log("error:", e);
-    //     });
-    // }, 5000);
+      console.log(`Transaction finalized at blockHash ${status.asFinalized.toString()}`);
+      console.log(`Explorer URL: ${getSygmaExplorerTransferUrl({ blockNumber, extrinsicIndex })}`);
+      unsub();
+      process.exit(0);
+    }
   });
 };
 

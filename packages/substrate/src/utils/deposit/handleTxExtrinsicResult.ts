@@ -1,34 +1,6 @@
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
-import type { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
-
-export type DepositEventDataType = {
-  depositData: string;
-  depositNonce: string;
-  destDomainId: string;
-  handlerResponse: string;
-  resourceId: string;
-  sender: string;
-  transferType: string;
-};
-
-export type DepositCallbacksType = {
-  /**
-   * Callback for when the transaction is included in a block.
-   */
-  onInBlock?: (status: ExtrinsicStatus) => void;
-  /**
-   * Callback for when the transaction is finalized.
-   */
-  onFinalized?: (status: ExtrinsicStatus) => void;
-  /**
-   * Callback for when an error occurs.
-   */
-  onError?: (error: unknown) => void;
-  /**
-   * Callback for sygmaBridge.Deposit event on finalize stage
-   */
-  onDepositEvent?: (data: DepositEventDataType) => void;
-};
+import type { DispatchError } from '@polkadot/types/interfaces';
+import { DepositCallbacksType, DepositEventDataType } from '../../types.js';
 
 export const throwErrorIfAny = (
   api: ApiPromise,
@@ -82,21 +54,16 @@ export const handleTxExtrinsicResult = (
   callbacks?: DepositCallbacksType,
 ): void => {
   const { status } = result;
-  console.log(`Current status is ${status.toString()}`);
 
   // if error has been found in events, log the error and unsubscribe
   throwErrorIfAny(api, result, unsub);
 
   if (status.isInBlock) {
-    console.log(`Transaction included at blockHash ${status.asInBlock.toString()}.`);
     callbacks?.onInBlock?.(status);
   } else if (status.isFinalized) {
-    console.log(`Transaction finalized at blockHash ${status.asFinalized.toString()}.`);
-
     result.events.forEach(({ event: { data, method, section } }) => {
       // Search for Deposit event
       if (section === 'sygmaBridge' && method === 'Deposit') {
-        console.log(`${section}.${method}.event data:`, data.toHuman());
         callbacks?.onDepositEvent?.(data.toHuman() as DepositEventDataType);
       }
     });
