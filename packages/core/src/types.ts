@@ -20,6 +20,7 @@ export enum FeeHandlerType {
 export enum Network {
   EVM = 'evm',
   SUBSTRATE = 'substrate',
+  BITCOIN = 'bitcoin',
 }
 
 export enum SecurityModel {
@@ -71,6 +72,11 @@ export type XcmMultiAssetIdType = {
           x3: Array<{ parachain: number } | { generalKey: [number, string] }>; // This is a tuple of length and value
         };
   };
+};
+
+export type BitcoinResource = BaseResource & {
+  script: string;
+  tweak: string;
 };
 
 export type SubstrateResource = BaseResource & {
