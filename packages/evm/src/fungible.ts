@@ -1,9 +1,9 @@
-import type { Domainlike, EvmResource } from '@buildwithsygma/core';
+import type { Domainlike } from '@buildwithsygma/core';
 import { SecurityModel, Config, FeeHandlerType } from '@buildwithsygma/core';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber, constants, providers, utils, type PopulatedTransaction } from 'ethers';
-import type { Eip1193Provider, EvmFee, TransactionRequest } from 'types.js';
+import type { Eip1193Provider, EvmFee, EvmResourceish, TransactionRequest } from 'types.js';
 
 import { BaseTransfer } from './base-transfer.js';
 import { BasicFeeCalculator } from './fee/BasicFee.js';
@@ -12,24 +12,36 @@ import { getFeeInformation } from './fee/getFeeInformation.js';
 import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
 import { erc20Transfer } from './utils/depositFns.js';
 import { createTransactionRequest } from './utils/transaction.js';
-
+/**
+ * Params required to initiate
+ * a fungible token transfer from
+ * an EVM chain
+ */
 type EvmFungibleTransferRequest = {
+  /** Source Chain ID or CAIP ID */
   source: Domainlike;
+  /** Source Chain ID or CAIP ID */
   destination: Domainlike;
+  /** Address that will be used to send the transaction */
   sourceAddress: string;
+  /** Network provider for the EVM source chain */
   sourceNetworkProvider: Eip1193Provider;
-  resource: string | EvmResource;
+  /** Sygma resource that will be transferred */
+  resource: EvmResourceish;
+  /** Amount of tokens that should be transferred */
   amount: bigint;
+  /** Destination address that will recieve the tokens */
   destinationAddress: string;
+  /** Security model */
   securityModel?: SecurityModel;
 };
-
 /**
- * @internal only
  * This method is used to adjust transfer amount
- * based on percentage fee calculations
+ * based on percentage fee calculations to provide
+ * a similar user experience to substrate token transfers.
  * @param {EvmFungibleAssetTransfer} transfer
  * @param {EvmFee} fee
+ * @internal
  */
 function calculateAdjustedAmount(transfer: EvmFungibleAssetTransfer, fee: EvmFee): bigint {
   //in case of percentage fee handler, we are calculating what amount + fee will result int user inputed amount
@@ -63,7 +75,13 @@ function calculateAdjustedAmount(transfer: EvmFungibleAssetTransfer, fee: EvmFee
 
   return transfer.amount;
 }
-
+/**
+ * Returns an EVMFungibleAssetTransfer
+ * instance that will provide approval
+ * and bridge transfer transactions.
+ * @param {EvmFungibleTransferRequest} params
+ * @returns {EvmFungibleAssetTransfer}
+ */
 export async function createEvmFungibleAssetTransfer(
   params: EvmFungibleTransferRequest,
 ): Promise<EvmFungibleAssetTransfer> {
@@ -79,7 +97,6 @@ export async function createEvmFungibleAssetTransfer(
   await transfer.setAmount(params.amount);
   return transfer;
 }
-
 /**
  * @dev User should not instance this directly. All the (async) checks should be done in `createEvmFungibleAssetTransfer`
  */
@@ -87,11 +104,19 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
   protected destinationAddress: string;
   protected securityModel: SecurityModel;
   protected _amount: bigint;
-
+  /**
+   * Get the amount of
+   * fungible tokens that will
+   * be transferred.
+   */
   get amount(): bigint {
     return this.amount;
   }
-
+  /**
+   * Create an instance of EvmFungibleAssetTrasfer
+   * @param {EvmFungibleTransferRequest} transfer
+   * @param {Config} config 
+   */
   constructor(transfer: EvmFungibleTransferRequest, config: Config) {
     super(transfer, config);
     this._amount = transfer.amount;
@@ -99,9 +124,10 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     this.securityModel = transfer.securityModel ?? SecurityModel.MPC;
   }
   /**
+   * @async
    * Set amount to be transferred
    * @param {BigInt} amount
-   * @returns {void}
+   * @returns {Promise<void>}
    */
   async setAmount(amount: bigint): Promise<void> {
     this._amount = amount;
