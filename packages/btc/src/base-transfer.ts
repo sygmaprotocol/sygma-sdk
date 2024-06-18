@@ -3,17 +3,23 @@
 import { BitcoinResource } from "@buildwithsygma/core/src";
 import { Config } from "@buildwithsygma/core/types";
 
-type BitcoinTransferRequest = {
+type BaseTransferParams = {
   destinationAddress: string;
   amount: bigint;
 };
 
-export function createTransferRequest(): BaseTransfer {
+type BitcoinTransferRequest = {
+  destinationAddress: string;
+  amount: bigint;
+  depositAddress: string;
+};
+
+export async function createBitcoinTransferRequest(): Promise<BaseTransfer> {
   throw new Error("Method not implemented");
 }
 
 export abstract class BaseTransfer {
-  constructor(transfer: BitcoinTransferRequest, config: Config) {}
+  constructor(transfer: BaseTransferParams, config: Config) {}
 
   private findResource(
     resources: BitcoinResource[],
@@ -30,7 +36,7 @@ export abstract class BaseTransfer {
     throw new Error("Method not implemented");
   }
 
-  getUriEncodedUtxoRequest(btcTransferRequest: BitcoinTransferRequest): string {
+  getUriEncodedUtxoRequest(btcTransferRequest: BaseTransferParams): string {
     throw new Error("Method not implemented");
   }
 
