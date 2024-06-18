@@ -471,6 +471,7 @@ __metadata:
     ts-node: "npm:10.9.1"
     typedoc: "npm:^0.24.1"
     typedoc-plugin-markdown: "npm:^3.15.1"
+    typescript: "npm:5.0.4"
   languageName: unknown
   linkType: soft
 
