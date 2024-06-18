@@ -1,6 +1,7 @@
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { DispatchError } from '@polkadot/types/interfaces';
-import { DepositCallbacksType, DepositEventDataType } from '../../types.js';
+
+import type { DepositCallbacksType, DepositEventDataType } from '../../types.js';
 
 export const throwErrorIfAny = (
   api: ApiPromise,

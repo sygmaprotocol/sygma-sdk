@@ -1,5 +1,5 @@
 import type { Domain, FeeHandlerType, SubstrateResource } from '@buildwithsygma/core';
-import { ExtrinsicStatus } from '@polkadot/types/interfaces';
+import type { ExtrinsicStatus } from '@polkadot/types/interfaces';
 import type { BN } from '@polkadot/util';
 
 export type ParachainId = number;
@@ -24,7 +24,6 @@ export type Transfer<TransferType> = {
   resource: SubstrateResource;
   sender: string;
 };
-
 
 export type DepositEventDataType = {
   depositData: string;
