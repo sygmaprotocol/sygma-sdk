@@ -74,6 +74,11 @@ export type XcmMultiAssetIdType = {
   };
 };
 
+export type BitcoinResource = BaseResource & {
+  script: string;
+  tweak: string;
+};
+
 export type SubstrateResource = BaseResource & {
   assetID?: number;
   assetName: string;
