@@ -30,12 +30,10 @@ export abstract class BaseTransfer {
     resources: BitcoinResource[],
     resourceIdentifier: string | BitcoinResource,
   ): BitcoinResource | undefined {
-    return resources.find(resource => {
-      if (typeof resourceIdentifier === 'string') {
-        return resource.resourceId === resourceIdentifier;
-      }
-
-      return resource === resourceIdentifier;
+    return resources.find(res => {
+      return typeof resourceIdentifier === 'string'
+        ? res.resourceId === resourceIdentifier
+        : res.resourceId === resourceIdentifier.resourceId;
     });
   }
 
