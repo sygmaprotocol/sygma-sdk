@@ -1,31 +1,42 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-import { BitcoinResource } from "@buildwithsygma/core/src";
-import { Config } from "@buildwithsygma/core/types";
-
-type BaseTransferParams = {
-  destinationAddress: string;
-  amount: bigint;
-};
-
-type BitcoinTransferRequest = {
-  destinationAddress: string;
-  amount: bigint;
-  depositAddress: string;
-};
-
-export async function createBitcoinTransferRequest(params: BaseTransferParams): Promise<BaseTransfer> {
-  throw new Error("Method not implemented");
-}
+import type { BitcoinResource } from '@buildwithsygma/core/src';
+import type { Config, Domain } from '@buildwithsygma/core/types';
+import type { BaseTransferParams } from 'types';
 
 export abstract class BaseTransfer {
-  constructor(transfer: BaseTransferParams, config: Config) {}
+  protected destinationAddress: string;
+  protected amount: bigint;
+  protected config: Config;
+  protected resource: BitcoinResource;
+  protected sourceDomain: Domain;
+
+  constructor(transfer: BaseTransferParams, config: Config) {
+    this.destinationAddress = transfer.destinationAddress;
+    this.amount = transfer.amount;
+    this.sourceDomain = config.getDomain(transfer.sourceDomain);
+
+    const resources = config.getResources(this.sourceDomain) as BitcoinResource[];
+    const resource = this.findResource(resources, transfer.resource);
+
+    if (resource) {
+      this.resource = resource;
+    } else {
+      throw new Error('Resource not found.');
+    }
+
+    this.config = config;
+  }
 
   private findResource(
     resources: BitcoinResource[],
     resourceIdentifier: string | BitcoinResource,
   ): BitcoinResource | undefined {
-    throw new Error("Method not implemented");
+    return resources.find(resource => {
+      if (typeof resourceIdentifier === 'string') {
+        return resource.resourceId === resourceIdentifier;
+      }
+
+      return resource === resourceIdentifier;
+    });
   }
 
   /**
@@ -33,14 +44,6 @@ export abstract class BaseTransfer {
    * @param {BitcoinResource} resource
    */
   setResource(resource: BitcoinResource): void {
-    throw new Error("Method not implemented");
-  }
-
-  getUriEncodedUtxoRequest(btcTransferRequest: BaseTransferParams): string {
-    throw new Error("Method not implemented");
-  }
-
-  getBTCTransferRequest(): BitcoinTransferRequest {
-    throw new Error("Method not implemented");
+    this.resource = resource;
   }
 }

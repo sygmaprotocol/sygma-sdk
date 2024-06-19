@@ -38,7 +38,7 @@ export type Domain = {
   parachainId?: ParachainId;
 };
 
-export type Resource = EvmResource | SubstrateResource;
+export type Resource = EvmResource | SubstrateResource | BitcoinResource;
 
 export enum ResourceType {
   FUNGIBLE = 'fungible',
@@ -75,6 +75,7 @@ export type XcmMultiAssetIdType = {
 };
 
 export type BitcoinResource = BaseResource & {
+  address: string;
   script: string;
   tweak: string;
 };
