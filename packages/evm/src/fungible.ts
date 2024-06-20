@@ -1,11 +1,11 @@
-import type { Domainlike, EvmResource } from '@buildwithsygma/core';
-import { SecurityModel, Config, FeeHandlerType } from '@buildwithsygma/core';
+import type { EvmResource } from '@buildwithsygma/core';
+import { SecurityModel, Config, FeeHandlerType, ResourceType } from '@buildwithsygma/core';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber, constants, providers, utils, type PopulatedTransaction } from 'ethers';
-import type { Eip1193Provider, EvmFee, TransactionRequest } from 'types.js';
+import type { EvmFee, TransactionRequest } from 'types.js';
 
-import { BaseTransfer } from './base-transfer.js';
+import { BaseTransfer, BaseTransferParams } from './base-transfer.js';
 import { BasicFeeCalculator } from './fee/BasicFee.js';
 import { PercentageFeeCalculator } from './fee/PercentageFee.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
@@ -13,11 +13,7 @@ import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
 import { erc20Transfer } from './utils/depositFns.js';
 import { createTransactionRequest } from './utils/transaction.js';
 
-type EvmFungibleTransferRequest = {
-  source: Domainlike;
-  destination: Domainlike;
-  sourceAddress: string;
-  sourceNetworkProvider: Eip1193Provider;
+interface FungibleTokenTransferRequest extends BaseTransferParams {
   resource: string | EvmResource;
   amount: bigint;
   destinationAddress: string;
@@ -65,7 +61,7 @@ function calculateAdjustedAmount(transfer: EvmFungibleAssetTransfer, fee: EvmFee
 }
 
 export async function createEvmFungibleAssetTransfer(
-  params: EvmFungibleTransferRequest,
+  params: FungibleTokenTransferRequest,
 ): Promise<EvmFungibleAssetTransfer> {
   const config = new Config();
   await config.init(process.env.SYGMA_ENV);
@@ -87,16 +83,57 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
   protected destinationAddress: string;
   protected securityModel: SecurityModel;
   protected _amount: bigint;
+  protected resource: EvmResource;
 
   get amount(): bigint {
     return this.amount;
   }
 
-  constructor(transfer: EvmFungibleTransferRequest, config: Config) {
+  /**
+   * Method that checks whether the transfer
+   * is valid and route has been registered on
+   * the bridge
+   * @returns {boolean}
+   */
+  async isValidTransfer(): Promise<boolean> {
+    const sourceDomainConfig = this.config.getDomainConfig(this.source);
+    const web3Provider = new Web3Provider(this.sourceNetworkProvider);
+    const bridge = Bridge__factory.connect(sourceDomainConfig.bridge, web3Provider);
+    const { resourceId } = this.resource;
+    const handlerAddress = await bridge._resourceIDToHandlerAddress(resourceId);
+    return utils.isAddress(handlerAddress) && handlerAddress !== constants.AddressZero;
+  }
+
+  constructor(transfer: FungibleTokenTransferRequest, config: Config) {
     super(transfer, config);
     this._amount = transfer.amount;
     this.destinationAddress = transfer.destinationAddress;
     this.securityModel = transfer.securityModel ?? SecurityModel.MPC;
+
+    const resources = config.getResources(this.source);
+    const resource = resources.find(resource => {
+      return typeof transfer.resource === 'string'
+        ? resource.resourceId === transfer.resource
+        : resource.resourceId === transfer.resource.resourceId;
+    });
+
+    if (resource) {
+      this.resource = resource as EvmResource;
+    } else {
+      throw new Error('Resource not found.');
+    }
+
+  }
+  /**
+   * Set resource to be transferred
+   * @param {EvmResource} resource
+   * @returns {BaseTransfer}
+   */
+  setResource(resource: EvmResource): void {
+    if (resource.type !== ResourceType.FUNGIBLE) {
+      throw new Error('Resource type unsupported.');
+    }
+    this.resource = resource;
   }
   /**
    * Set amount to be transferred

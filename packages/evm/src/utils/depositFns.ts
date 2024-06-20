@@ -5,7 +5,7 @@ import { BigNumber } from 'ethers';
 
 import type { EvmFee, FungibleTransferParams } from '../types.js';
 
-import { createERCDepositData } from './helpers.js';
+import { createERCDepositData, createPermissionlessGenericDepositData } from './helpers.js';
 
 export const ASSET_TRANSFER_GAS_LIMIT: BigNumber = BigNumber.from(300000);
 
@@ -82,4 +82,39 @@ export const executeDeposit = async (
     payableOverrides,
   );
   return depositTransaction;
+};
+
+type GenericMessageParams = {
+  executeFunctionSignature: string;
+  executeContractAddress: string;
+  maxFee: string;
+  depositor: string;
+  executionData: string;
+  domainId: string;
+  resourceId: string;
+  bridgeInstance: Bridge;
+  feeData: EvmFee;
+  overrides?: ethers.PayableOverrides;
+};
+
+export const genericMessageTransfer = async ({
+  executeFunctionSignature,
+  executeContractAddress,
+  maxFee,
+  depositor,
+  executionData,
+  bridgeInstance,
+  domainId,
+  resourceId,
+  feeData,
+  overrides,
+}: GenericMessageParams): Promise<PopulatedTransaction> => {
+  const depositData = createPermissionlessGenericDepositData(
+    executeFunctionSignature,
+    executeContractAddress,
+    maxFee,
+    depositor,
+    executionData,
+  );
+  return executeDeposit(domainId, resourceId, depositData, feeData, bridgeInstance, overrides);
 };

@@ -136,3 +136,35 @@ export const toHex = (covertThis: string | number | BigNumber, padding: number):
   const amount = covertThis instanceof BigNumber ? covertThis : BigNumber.from(covertThis);
   return utils.hexZeroPad(utils.hexlify(amount), padding);
 };
+
+/**
+ * Creates the data for permissionless generic handler
+ *
+ * @category Helpers
+ * @param executeFunctionSignature - execution function signature
+ * @param executeContractAddress - execution contract address
+ * @param maxFee - max fee defined
+ * @param depositor - address of depositor on source chain
+ * @param executionData - the data to pass as parameter of the function being called on destination chain
+ * @returns {string}
+ */
+export const createPermissionlessGenericDepositData = (
+  executeFunctionSignature: string,
+  executeContractAddress: string,
+  maxFee: string,
+  depositor: string,
+  executionData: string,
+): string => {
+  return (
+    '0x' +
+    toHex(maxFee, 32).substr(2) + // uint256
+    toHex(executeFunctionSignature.substr(2).length / 2, 2).substr(2) + // uint16
+    executeFunctionSignature.substr(2) + // bytes
+    toHex(executeContractAddress.substr(2).length / 2, 1).substr(2) + // uint8
+    executeContractAddress.substr(2) + // bytes
+    toHex(depositor.substr(2).length / 2, 1).substr(2) + // uint8
+    depositor.substr(2) +
+    executionData.substr(2)
+  ) // bytes
+    .toLowerCase();
+};
