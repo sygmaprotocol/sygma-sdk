@@ -17,8 +17,7 @@
     "bitcoin"
   ],
   "scripts": {
-    "transfer": "tsx src/transfer.ts",
-    "watch": "tsx watch src/transfer.ts"
+    "transfer": "tsx src/transfer.ts"
   },
   "author": "Sygmaprotocol Product Team",
   "license": "LGPL-3.0-or-later",
@@ -31,6 +30,9 @@
   "dependencies": {
     "@buildwithsygma/btc": "workspace:^",
     "@buildwithsygma/core": "workspace:^",
+    "bitcoinjs-lib": "^6.1.6",
+    "ecpair": "^2.1.0",
+    "tiny-secp256k1": "^2.2.3",
     "tsx": "^4.15.4"
   }
 }
