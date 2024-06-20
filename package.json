@@ -25,7 +25,12 @@
     "evm:lint": "yarn workspace @buildwithsygma/evm lint",
     "evm:lint:fix": "yarn workspace @buildwithsygma/evm lint:fix",
     "evm:test:unit": "yarn workspace @buildwithsygma/evm test:unit",
-    "build:all": "yarn workspace @buildwithsygma/core build:all; yarn workspace @buildwithsygma/evm build:all",
+    "btc:build": "yarn workspace @buildwithsygma/btc build:all",
+    "btc:cleanDist": "yarn workspace @buildwithsygma/btc clean",
+    "btc:test": "yarn workspace @buildwithsygma/btc test",
+    "btc:lint": "yarn workspace @buildwithsygma/btc lint",
+    "btc:lint:fix": "yarn workspace @buildwithsygma/btc lint:fix",
+    "build:all": "yarn workspace @buildwithsygma/core build:all; yarn workspace @buildwithsygma/evm build:all; yarn workspace @buildwithsygma/btc build:all",
     "clean:all": "yarn workspace @buildwithsygma/core clean; yarn workspace @buildwithsygma/evm clean",
     "docs": "typedoc"
   },
