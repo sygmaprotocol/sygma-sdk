@@ -1,8 +1,5 @@
 {
-  "exclude": [
-    "src/**/__test__/**",
-    "test/**",
-  ],
+  "exclude": ["src/**/__test__/**", "test/**"],
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "declaration": true,

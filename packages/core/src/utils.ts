@@ -1,20 +1,20 @@
 import { ExplorerUrl, IndexerUrl } from './constants.js';
 import { getFeeHandlerAddressesOfRoutes, getFeeHandlerTypeOfRoutes } from './multicall.js';
 import type {
-  Route,
-  TransferStatus,
-  TransferStatusResponse,
-  RouteIndexerType,
-  EnvironmentMetadata,
   Domain,
-  RouteType,
-  SygmaConfig,
   Domainlike,
   Eip1193Provider,
+  EnvironmentMetadata,
   FeeHandlerType,
   IndexerRoutesResponse,
+  Route,
+  RouteIndexerType,
+  RouteType,
+  SygmaConfig,
+  TransferStatus,
+  TransferStatusResponse,
 } from './types.js';
-import { Network, Environment } from './types.js';
+import { Environment, Network } from './types.js';
 
 import { Config } from './index.js';
 
@@ -104,6 +104,7 @@ export async function getDomains(options: {
 /**
  * Returns  supported routes originating from given source domain.
  * @param source Either caip2 identifier, chainId or sygmaId
+ * @param environment
  * @param options Allows selecting bridge instance (mainnet by default) and filtering routes by type.
  */
 export async function getRoutes(
@@ -184,6 +185,7 @@ export async function getRoutes(
 /**
  * TODO: why isn't txHash unique identifier
  * @param txHash
+ * @param environment
  */
 export async function getTransferStatus(
   txHash: string,
@@ -228,7 +230,7 @@ export async function getTransferStatus(
 
 /**
  * End users shouldn't really need that but lets expose for power users
- * @param env
+ * @param environment
  */
 export async function getRawConfiguration(
   environment: Environment = process.env.SYGMA_ENV,
