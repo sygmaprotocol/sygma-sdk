@@ -17,7 +17,7 @@ import { createTransactionRequest } from 'utils/transaction';
 
 interface GenericMessageTransferRequest<
   ContractAbi extends Abi,
-  FunctionName extends ExtractAbiFunctionNames<ContractAbi, 'pure' | 'view'>,
+  FunctionName extends ExtractAbiFunctionNames<ContractAbi, 'nonpayable' | 'payable'>,
 > extends BaseTransferParams {
   gasLimit: bigint;
   functionParameters: AbiParametersToPrimitiveTypes<
@@ -32,7 +32,7 @@ interface GenericMessageTransferRequest<
 
 export async function createCrossChainContractCall<
   ContractAbi extends Abi,
-  FunctionName extends ExtractAbiFunctionNames<ContractAbi, 'pure' | 'view'>,
+  FunctionName extends ExtractAbiFunctionNames<ContractAbi, 'nonpayable' | 'payable'>,
 >(
   request: GenericMessageTransferRequest<ContractAbi, FunctionName>,
 ): Promise<GenericMessageTransfer<ContractAbi, FunctionName>> {
@@ -47,7 +47,7 @@ export async function createCrossChainContractCall<
 
 class GenericMessageTransfer<
   ContractAbi extends Abi,
-  FunctionName extends ExtractAbiFunctionNames<ContractAbi, 'pure' | 'view'>,
+  FunctionName extends ExtractAbiFunctionNames<ContractAbi, 'nonpayable' | 'payable'>,
 > extends BaseTransfer {
   maxFee: bigint;
   destinationContractAddress: string;
