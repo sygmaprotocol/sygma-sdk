@@ -1,11 +1,17 @@
-import type { Domain, Config, Domainlike } from '@buildwithsygma/core';
-import type { Eip1193Provider } from './types.js';
+import type { Domain, Config, Domainlike, EvmResource } from '@buildwithsygma/core';
+import { providers } from 'ethers';
+import { BasicFeeCalculator } from 'fee/BasicFee.js';
+import { PercentageFeeCalculator } from 'fee/PercentageFee.js';
+import { getFeeInformation } from 'fee/getFeeInformation.js';
+
+import type { Eip1193Provider, EvmFee } from './types.js';
 
 export interface BaseTransferParams {
   source: Domainlike;
   destination: Domainlike;
   sourceNetworkProvider: Eip1193Provider;
   sourceAddress: string;
+  resource: string | EvmResource;
 }
 
 export abstract class BaseTransfer {
@@ -14,6 +20,7 @@ export abstract class BaseTransfer {
   protected destination: Domain;
   protected config: Config;
   protected source: Domain;
+  protected resource: EvmResource;
 
   constructor(transfer: BaseTransferParams, config: Config) {
     this.sourceAddress = transfer.sourceAddress;
@@ -21,6 +28,48 @@ export abstract class BaseTransfer {
     this.destination = config.getDomain(transfer.destination);
     this.sourceNetworkProvider = transfer.sourceNetworkProvider;
     this.config = config;
+
+    const resources = config.getResources(this.source);
+    const resource = resources.find(resource => {
+      return typeof transfer.resource === 'string'
+        ? resource.resourceId === transfer.resource
+        : resource.resourceId === transfer.resource.resourceId;
+    });
+
+    if (resource) {
+      this.resource = resource as EvmResource;
+    } else {
+      throw new Error('Resource not found.');
+    }
+  }
+  /**
+   * Returns fee based on transfer amount.
+   * @param amount By default it is original amount passed in constructor
+   */
+  async getFee(): Promise<EvmFee> {
+    const provider = new providers.Web3Provider(this.sourceNetworkProvider);
+
+    const { feeHandlerAddress, feeHandlerType } = await getFeeInformation(
+      this.config,
+      provider,
+      this.source.id,
+      this.destination.id,
+      this.resource.resourceId,
+    );
+
+    const basicFeeCalculator = new BasicFeeCalculator();
+    const percentageFeeCalculator = new PercentageFeeCalculator();
+    basicFeeCalculator.setNextHandler(percentageFeeCalculator);
+
+    return await basicFeeCalculator.calculateFee({
+      provider,
+      sender: this.sourceAddress,
+      sourceSygmaId: this.source.id,
+      destinationSygmaId: this.destination.id,
+      resourceSygmaId: this.resource.resourceId,
+      feeHandlerAddress,
+      feeHandlerType,
+    });
   }
   /**
    *

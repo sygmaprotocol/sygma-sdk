@@ -2,13 +2,11 @@ import type { EvmResource } from '@buildwithsygma/core';
 import { SecurityModel, Config, FeeHandlerType, ResourceType } from '@buildwithsygma/core';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
-import { BigNumber, constants, providers, utils, type PopulatedTransaction } from 'ethers';
+import { BigNumber, constants, utils, type PopulatedTransaction } from 'ethers';
 import type { EvmFee, TransactionRequest } from 'types.js';
 
-import { BaseTransfer, BaseTransferParams } from './base-transfer.js';
-import { BasicFeeCalculator } from './fee/BasicFee.js';
-import { PercentageFeeCalculator } from './fee/PercentageFee.js';
-import { getFeeInformation } from './fee/getFeeInformation.js';
+import type { BaseTransferParams } from './base-transfer.js';
+import { BaseTransfer } from './base-transfer.js';
 import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
 import { erc20Transfer } from './utils/depositFns.js';
 import { createTransactionRequest } from './utils/transaction.js';
@@ -18,7 +16,7 @@ interface FungibleTokenTransferRequest extends BaseTransferParams {
   amount: bigint;
   destinationAddress: string;
   securityModel?: SecurityModel;
-};
+}
 
 /**
  * @internal only
@@ -83,7 +81,6 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
   protected destinationAddress: string;
   protected securityModel: SecurityModel;
   protected _amount: bigint;
-  protected resource: EvmResource;
 
   get amount(): bigint {
     return this.amount;
@@ -109,20 +106,6 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     this._amount = transfer.amount;
     this.destinationAddress = transfer.destinationAddress;
     this.securityModel = transfer.securityModel ?? SecurityModel.MPC;
-
-    const resources = config.getResources(this.source);
-    const resource = resources.find(resource => {
-      return typeof transfer.resource === 'string'
-        ? resource.resourceId === transfer.resource
-        : resource.resourceId === transfer.resource.resourceId;
-    });
-
-    if (resource) {
-      this.resource = resource as EvmResource;
-    } else {
-      throw new Error('Resource not found.');
-    }
-
   }
   /**
    * Set resource to be transferred
@@ -153,35 +136,7 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
   setDestinationAddress(destinationAddress: string): void {
     this.destinationAddress = destinationAddress;
   }
-  /**
-   * Returns fee based on transfer amount.
-   * @param amount By default it is original amount passed in constructor
-   */
-  async getFee(): Promise<EvmFee> {
-    const provider = new providers.Web3Provider(this.sourceNetworkProvider);
 
-    const { feeHandlerAddress, feeHandlerType } = await getFeeInformation(
-      this.config,
-      provider,
-      this.source.id,
-      this.destination.id,
-      this.resource.resourceId,
-    );
-
-    const basicFeeCalculator = new BasicFeeCalculator();
-    const percentageFeeCalculator = new PercentageFeeCalculator();
-    basicFeeCalculator.setNextHandler(percentageFeeCalculator);
-
-    return await basicFeeCalculator.calculateFee({
-      provider,
-      sender: this.sourceAddress,
-      sourceSygmaId: this.source.id,
-      destinationSygmaId: this.destination.id,
-      resourceSygmaId: this.resource.resourceId,
-      feeHandlerAddress,
-      feeHandlerType,
-    });
-  }
   /**
    * Returns array of required approval transactions
    * @dev with permit2 we would add TypedData in the array to be signed and signature will be mandatory param into getTransaferTransaction
