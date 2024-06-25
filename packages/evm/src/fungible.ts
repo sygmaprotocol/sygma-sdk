@@ -89,7 +89,7 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
   protected _amount: bigint;
 
   get amount(): bigint {
-    return this.amount;
+    return this._amount;
   }
 
   constructor(transfer: EvmFungibleTransferRequest, config: Config) {
