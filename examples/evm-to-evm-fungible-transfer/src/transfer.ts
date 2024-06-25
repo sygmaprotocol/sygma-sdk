@@ -1,4 +1,4 @@
-import { Environment, } from "@buildwithsygma/core";
+import { Eip1193Provider, Environment, } from "@buildwithsygma/core";
 import { createEvmFungibleAssetTransfer } from "@buildwithsygma/evm";
 import dotenv from "dotenv";
 import { Wallet, providers } from "ethers";
@@ -29,7 +29,7 @@ export async function erc20Transfer(): Promise<void> {
   const params = {
     source: SEPOLIA_CHAIN_ID,
     destination: HOLESKY_CHAIN_ID,
-    sourceNetworkProvider: web3Provider,
+    sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
     resource: RESOURCE_ID,
     amount: BigInt(2) * BigInt(1e18),
     destinationAddress: destinationAddress,

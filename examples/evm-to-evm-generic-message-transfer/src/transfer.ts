@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import { createCrossChainContractCall } from '@buildwithsygma/evm';
 import { Wallet, ethers, providers } from "ethers";
 import { storageAbi } from './contracts';
+import { Eip1193Provider } from "@buildwithsygma/core";
 
 dotenv.config();
 
@@ -38,11 +39,13 @@ export async function genericMessage(): Promise<void> {
       maxFee: BigInt(MAX_FEE),
       source: SEPOLIA_CHAIN_ID,
       destination: DESTINATION_CHAIN_ID,
-      sourceNetworkProvider: sourceProvider,
+      sourceNetworkProvider: sourceProvider as unknown as Eip1193Provider,
       sourceAddress: walletAddress,
       resource: RESOURCE_ID
     });
 
+
+    console.log(transfer.buildTransaction());
 }
 
 genericMessage().finally(() => {});

@@ -1,4 +1,5 @@
-import { Config, Domainlike, Eip1193Provider, EvmResource, Network, ResourceType } from '@buildwithsygma/core';
+import type { Domainlike, Eip1193Provider, EvmResource } from '@buildwithsygma/core';
+import { Config, Network, ResourceType } from '@buildwithsygma/core';
 import { Bridge__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import type {
@@ -8,18 +9,19 @@ import type {
   ExtractAbiFunctionNames,
 } from 'abitype';
 // import type { BaseTransferParams } from 'base-transfer';
-import { BaseTransfer } from 'base-transfer';
 import { constants, ethers } from 'ethers';
-import { getFeeInformation } from 'fee';
-import type { TransactionRequest } from 'types';
-import { genericMessageTransfer } from 'utils';
-import { createTransactionRequest } from 'utils/transaction';
+
+import { BaseTransfer } from './baseTransfer.js';
+import { getFeeInformation } from './fee/getFeeInformation.js';
+import type { TransactionRequest } from './types.js';
+import { genericMessageTransfer } from './utils/index.js';
+import { createTransactionRequest } from './utils/transaction.js';
 
 export interface GenericMessageTransferRequest<
   ContractAbi extends Abi,
   FunctionName extends ExtractAbiFunctionNames<ContractAbi, 'nonpayable' | 'payable'>,
 > {
-// extends BaseTransferParams
+  // TODO: investigate why "extends BaseTransferParams" is not working
   source: Domainlike;
   destination: Domainlike;
   sourceNetworkProvider: Eip1193Provider;

@@ -3,10 +3,10 @@ import { SecurityModel, Config, FeeHandlerType, ResourceType } from '@buildwiths
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber, constants, utils, type PopulatedTransaction } from 'ethers';
-import type { EvmFee, TransactionRequest } from 'types.js';
 
-import type { BaseTransferParams } from './base-transfer.js';
-import { BaseTransfer } from './base-transfer.js';
+import type { BaseTransferParams } from './baseTransfer.js';
+import { BaseTransfer } from './baseTransfer.js';
+import type { EvmFee, TransactionRequest } from './types.js';
 import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
 import { erc20Transfer } from './utils/depositFns.js';
 import { createTransactionRequest } from './utils/transaction.js';
@@ -83,7 +83,7 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
   protected _amount: bigint;
 
   get amount(): bigint {
-    return this.amount;
+    return this._amount;
   }
 
   /**
