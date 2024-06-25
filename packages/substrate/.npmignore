@@ -1,0 +1,24 @@
+
+
+integration/
+coverage/
+keysN1/
+keysN2/
+src/
+
+# Ignore configs
+setupTests.ts
+.eslintrc.cjs
+.prettierrc.json
+docker-compose.yml
+Dockerfile
+jest.config.cjs
+tsconfig.json
+tsconfig.*.json
+tsconfig.tsbuildinfo
+rollup.config.js
+**/__test__/*
+
+# Ignore random junk
+.DS_Store
+node_modules/**

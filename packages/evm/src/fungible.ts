@@ -3,7 +3,6 @@ import { SecurityModel, Config, FeeHandlerType, ResourceType } from '@buildwiths
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber, constants, utils, type PopulatedTransaction } from 'ethers';
-
 import type { BaseTransferParams } from './baseTransfer.js';
 import { BaseTransfer } from './baseTransfer.js';
 import type { EvmFee, TransactionRequest } from './types.js';

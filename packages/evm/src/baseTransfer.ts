@@ -1,10 +1,10 @@
 import type { Domain, Config, Domainlike, EvmResource } from '@buildwithsygma/core';
 import { providers } from 'ethers';
-
+import { Eip1193Provider } from "@buildwithsygma/core";
 import { BasicFeeCalculator } from './fee/BasicFee.js';
 import { PercentageFeeCalculator } from './fee/PercentageFee.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
-import type { Eip1193Provider, EvmFee } from './types.js';
+import type { EvmFee } from './types.js';
 
 export interface BaseTransferParams {
   source: Domainlike;

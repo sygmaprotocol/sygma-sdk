@@ -12,11 +12,6 @@ export enum Environment {
   MAINNET = 'mainnet',
 }
 
-export enum FeeHandlerType {
-  BASIC = 'basic',
-  PERCENTAGE = 'percentage',
-}
-
 export enum Network {
   EVM = 'evm',
   SUBSTRATE = 'substrate',
@@ -62,6 +57,11 @@ interface BaseResource {
 export type EvmResource = BaseResource & {
   address: string;
 };
+
+export enum FeeHandlerType {
+  BASIC = 'basic',
+  PERCENTAGE = 'percentage',
+}
 
 export type XcmMultiAssetIdType = {
   concrete: {

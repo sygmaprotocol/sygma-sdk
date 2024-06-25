@@ -1,6 +1,8 @@
 import { enableFetchMocks } from 'jest-fetch-mock';
-import { getRoutes } from '../src/utils.js';
+
 import { ConfigUrl, Environment, IndexerUrl, ResourceType, RouteType } from '../src/index.js';
+import { getRoutes } from '../src/utils.js';
+
 import { mockedDevnetConfig } from './constants.js';
 
 type RouteIndexerType = {
@@ -55,7 +57,9 @@ describe('Utils - getRoutes', () => {
       }),
     );
 
-    const allRoutes = await getRoutes(111, Environment.TESTNET, { routeTypes: [RouteType.FUNGIBLE] });
+    const allRoutes = await getRoutes(111, Environment.TESTNET, {
+      routeTypes: [RouteType.FUNGIBLE],
+    });
     expect(allRoutes.length).toEqual(1);
   });
 
@@ -64,7 +68,9 @@ describe('Utils - getRoutes', () => {
       throw new Error('failed');
     });
 
-    await expect(getRoutes(111, Environment.TESTNET)).rejects.toThrow('Failed to fetch routes because of: failed');
+    await expect(getRoutes(111, Environment.TESTNET)).rejects.toThrow(
+      'Failed to fetch routes because of: failed',
+    );
   });
 
   it('should handle invalid environment input', async () => {
