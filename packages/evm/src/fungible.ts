@@ -11,7 +11,7 @@ import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
 import { erc20Transfer } from './utils/depositFns.js';
 import { createTransactionRequest } from './utils/transaction.js';
 
-interface FungibleTokenTransferRequest extends BaseTransferParams {
+export interface FungibleTokenTransferRequest extends BaseTransferParams {
   resource: string | EvmResource;
   amount: bigint;
   destinationAddress: string;
