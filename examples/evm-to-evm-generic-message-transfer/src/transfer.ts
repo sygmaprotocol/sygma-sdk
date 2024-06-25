@@ -13,7 +13,7 @@ if (!privateKey) {
   throw new Error("Missing environment variable: PRIVATE_KEY");
 }
 
-const DESTINATION_CHAIN_ID = 84532;
+const DESTINATION_CHAIN_ID = 17000;
 const SEPOLIA_CHAIN_ID = 11155111;
 const RESOURCE_ID = "0x0000000000000000000000000000000000000000000000000000000000000500";
 const EXECUTE_CONTRACT_ADDRESS = "0x669f52487ffa6f9abf722082f735537a98ec0e4b";
@@ -45,8 +45,8 @@ export async function genericMessage(): Promise<void> {
       resource: RESOURCE_ID
     });
 
-
-    console.log(transfer.buildTransaction());
+    const transaction = await transfer.buildTransaction();
+    console.log(transaction);
 }
 
 genericMessage().finally(() => {});

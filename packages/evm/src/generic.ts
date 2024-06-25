@@ -143,7 +143,7 @@ class GenericMessageTransfer<
     );
     const executionData = contractInterface.encodeFunctionData(
       this.functionName,
-      this.functionParameters,
+      this.functionParameters as any[],
     );
     const executeFunctionSignature = contractInterface.getSighash(this.functionName);
     return { executionData, executeFunctionSignature };
