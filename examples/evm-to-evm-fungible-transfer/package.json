@@ -32,6 +32,6 @@
     "@buildwithsygma/evm": "workspace:^",
     "ethers": "5.7.2",
     "tsx": "^4.15.4",
-    "web3-providers-http": "^1.2.7"
+    "web3-providers-http": "1.10.4"
   }
 }
