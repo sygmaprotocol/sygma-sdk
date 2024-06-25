@@ -16,7 +16,10 @@ import { getFeeInformation } from './fee/getFeeInformation.js';
 import type { TransactionRequest } from './types.js';
 import { genericMessageTransfer } from './utils/index.js';
 import { createTransactionRequest } from './utils/transaction.js';
-
+/**
+ * Required parameters for initiating
+ * a generic message transfer request
+ */
 export interface GenericMessageTransferRequest<
   ContractAbi extends Abi,
   FunctionName extends ExtractAbiFunctionNames<ContractAbi, 'nonpayable' | 'payable'>,
@@ -38,7 +41,12 @@ export interface GenericMessageTransferRequest<
   destinationContractAddress: string;
   maxFee: bigint;
 }
-
+/**
+ * Creates a cross chain contract
+ * call object
+ * @param {GenericMessageTransferRequest<ContractAbi, FunctionName>} request 
+ * @returns {Promise<GenericMessageTransfer<ContractAbi, FunctionName>>}
+ */
 export async function createCrossChainContractCall<
   ContractAbi extends Abi,
   FunctionName extends ExtractAbiFunctionNames<ContractAbi, 'nonpayable' | 'payable'>,
@@ -54,7 +62,12 @@ export async function createCrossChainContractCall<
 
   return genericTransfer;
 }
-
+/**
+ * GenericMessageTransfer contains
+ * functionality that facilitates generic 
+ * transfers or contract calls between two
+ * EVM chains (for now)
+ */
 class GenericMessageTransfer<
   ContractAbi extends Abi,
   FunctionName extends ExtractAbiFunctionNames<ContractAbi, 'nonpayable' | 'payable'>,
@@ -68,7 +81,11 @@ class GenericMessageTransfer<
     ExtractAbiFunction<ContractAbi, FunctionName>['inputs'],
     'inputs'
   >;
-
+  /**
+   * Create a GenericMessageTransfer object
+   * @param {GenericMessageTransferRequest<ContractAbi, FunctionName>} params 
+   * @param {Config} config 
+   */
   constructor(params: GenericMessageTransferRequest<ContractAbi, FunctionName>, config: Config) {
     super(params, config);
     this.destinationContractAddress = params.destinationContractAddress;
@@ -78,7 +95,11 @@ class GenericMessageTransfer<
     this.destinationContractAbi = params.destinationContractAbi;
     this.maxFee = params.maxFee;
   }
-
+  /**
+   * Checks whether the transfer is valid
+   * given all parameters
+   * @returns {Promise<boolean>}
+   */
   async isValidTransfer(): Promise<boolean> {
     // Resource type should always be generic
     if (
@@ -115,19 +136,32 @@ class GenericMessageTransfer<
 
     return true;
   }
-
+  /**
+   * Sets the destination contract address
+   * Target contract address
+   * @param {string} contractAddress
+   */
   setDestinationContractAddress(contractAddress: string): void {
     this.destinationContractAddress = contractAddress;
   }
-
+  /**
+   * Sets the destination contract ABI
+   * @param {ContractAbi} contractAbi
+   */
   setDestinationContractAbi(contractAbi: ContractAbi): void {
     this.destinationContractAbi = contractAbi;
   }
-
+  /**
+   * Sets the exectuion function name
+   * @param {FunctionName} name
+   */
   setExecutionFunctionName(name: FunctionName): void {
     this.functionName = name;
   }
-
+  /**
+   * Set functions arguments
+   * @param {AbiParametersToPrimitiveTypes<ExtractAbiFunction<ContractAbi, FunctionName>['inputs'], 'inputs'>} parameters 
+   */
   setFunctionExecutionParameters(
     parameters: AbiParametersToPrimitiveTypes<
       ExtractAbiFunction<ContractAbi, FunctionName>['inputs'],
@@ -136,7 +170,10 @@ class GenericMessageTransfer<
   ): void {
     this.functionParameters = parameters;
   }
-
+  /**
+   * Prepare function call encodings
+   * @returns {{ executionData: string; executionFunctionSignature: string; }}
+   */
   private prepareFunctionCallEncodings(): {
     executionData: string;
     executeFunctionSignature: string;
@@ -151,7 +188,12 @@ class GenericMessageTransfer<
     const executeFunctionSignature = contractInterface.getSighash(this.functionName);
     return { executionData, executeFunctionSignature };
   }
-
+  /**
+   * Creates the transaction that can be
+   * sent to blockchain node
+   * @param {ethers.Overrides} overrides 
+   * @returns {Promise<TransactionRequest>}
+   */
   async buildTransaction(overrides?: ethers.Overrides): Promise<TransactionRequest> {
     const isValid = await this.isValidTransfer();
     if (!isValid) throw new Error('Invalid Transfer.');
