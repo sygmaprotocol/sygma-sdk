@@ -3,6 +3,7 @@ import { createCrossChainContractCall } from '@buildwithsygma/evm';
 import { Wallet, ethers, providers } from "ethers";
 import { storageAbi } from './contracts';
 import { Eip1193Provider } from "@buildwithsygma/core";
+import Web3HttpProvider from "web3-providers-http";
 
 dotenv.config();
 
@@ -20,8 +21,8 @@ const MAX_FEE = "3000000";
 const BASE_SEPOLIA_RPC_URL = process.env.BASE_SEPOLIA_RPC_URL || "https://sepolia.base.org"
 const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "https://gateway.tenderly.co/public/sepolia"
 
-const sourceProvider = new providers.JsonRpcProvider(SEPOLIA_RPC_URL);
-const wallet = new Wallet(privateKey ?? "", sourceProvider);
+const sourceProvider = new Web3HttpProvider(SEPOLIA_RPC_URL);
+const wallet = new Wallet(privateKey ?? "");
 const destinationProvider = new providers.JsonRpcProvider(BASE_SEPOLIA_RPC_URL);
 
 export async function genericMessage(): Promise<void> {

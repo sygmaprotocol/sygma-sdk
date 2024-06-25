@@ -46,6 +46,7 @@ export async function createCrossChainContractCall<
   request: GenericMessageTransferRequest<ContractAbi, FunctionName>,
 ): Promise<GenericMessageTransfer<ContractAbi, FunctionName>> {
   const config = new Config();
+  await config.init(process.env.SYGMA_ENV);
   const genericTransfer = new GenericMessageTransfer<ContractAbi, FunctionName>(request, config);
 
   const isValidTransfer = await genericTransfer.isValidTransfer();
@@ -80,7 +81,7 @@ class GenericMessageTransfer<
 
   async isValidTransfer(): Promise<boolean> {
     // Resource type should always be generic
-    if (this.resource.type !== ResourceType.PERMISSIONED_GENERIC) {
+    if (this.resource.type !== ResourceType.PERMISSIONED_GENERIC && this.resource.type !== ResourceType.PERMISSIONLESS_GENERIC) {
       return false;
     }
 
