@@ -81,7 +81,10 @@ class GenericMessageTransfer<
 
   async isValidTransfer(): Promise<boolean> {
     // Resource type should always be generic
-    if (this.resource.type !== ResourceType.PERMISSIONED_GENERIC && this.resource.type !== ResourceType.PERMISSIONLESS_GENERIC) {
+    if (
+      this.resource.type !== ResourceType.PERMISSIONED_GENERIC &&
+      this.resource.type !== ResourceType.PERMISSIONLESS_GENERIC
+    ) {
       return false;
     }
 
@@ -143,7 +146,7 @@ class GenericMessageTransfer<
     );
     const executionData = contractInterface.encodeFunctionData(
       this.functionName,
-      this.functionParameters as any[],
+      this.functionParameters as unknown[],
     );
     const executeFunctionSignature = contractInterface.getSighash(this.functionName);
     return { executionData, executeFunctionSignature };
