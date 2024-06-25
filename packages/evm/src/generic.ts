@@ -44,7 +44,7 @@ export interface GenericMessageTransferRequest<
 /**
  * Creates a cross chain contract
  * call object
- * @param {GenericMessageTransferRequest<ContractAbi, FunctionName>} request 
+ * @param {GenericMessageTransferRequest<ContractAbi, FunctionName>} request
  * @returns {Promise<GenericMessageTransfer<ContractAbi, FunctionName>>}
  */
 export async function createCrossChainContractCall<
@@ -64,7 +64,7 @@ export async function createCrossChainContractCall<
 }
 /**
  * GenericMessageTransfer contains
- * functionality that facilitates generic 
+ * functionality that facilitates generic
  * transfers or contract calls between two
  * EVM chains (for now)
  */
@@ -83,8 +83,8 @@ class GenericMessageTransfer<
   >;
   /**
    * Create a GenericMessageTransfer object
-   * @param {GenericMessageTransferRequest<ContractAbi, FunctionName>} params 
-   * @param {Config} config 
+   * @param {GenericMessageTransferRequest<ContractAbi, FunctionName>} params
+   * @param {Config} config
    */
   constructor(params: GenericMessageTransferRequest<ContractAbi, FunctionName>, config: Config) {
     super(params, config);
@@ -160,7 +160,7 @@ class GenericMessageTransfer<
   }
   /**
    * Set functions arguments
-   * @param {AbiParametersToPrimitiveTypes<ExtractAbiFunction<ContractAbi, FunctionName>['inputs'], 'inputs'>} parameters 
+   * @param {AbiParametersToPrimitiveTypes<ExtractAbiFunction<ContractAbi, FunctionName>['inputs'], 'inputs'>} parameters
    */
   setFunctionExecutionParameters(
     parameters: AbiParametersToPrimitiveTypes<
@@ -191,7 +191,7 @@ class GenericMessageTransfer<
   /**
    * Creates the transaction that can be
    * sent to blockchain node
-   * @param {ethers.Overrides} overrides 
+   * @param {ethers.Overrides} overrides
    * @returns {Promise<TransactionRequest>}
    */
   async buildTransaction(overrides?: ethers.Overrides): Promise<TransactionRequest> {
