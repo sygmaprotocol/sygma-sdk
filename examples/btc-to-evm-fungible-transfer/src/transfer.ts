@@ -20,7 +20,7 @@ const RESOURCE_ID = process.env.RESOURCE_ID;
 const SOURCE_DOMAIN_ID = Number(process.env.SOURCE_DOMAIN_ID);
 
 if (!DESTINATION_ADDRESS || !PRIVATE_KEY || !DESTINATION_DOMAIN_ID || !BLOCKSTREAM_URL || !RESOURCE_ID || !SOURCE_DOMAIN_ID) {
-  throw new Error('Please provide DESTINATION_ADDRESS or PRIVATE_KEY or DOMAIN_ID or BLOCKSTREAM_URL or RESOURCE_ID in .env file');
+  throw new Error('Please provided needed env variavles in .env file');
 }
 
 async function btcToEvmTransfer(): Promise<void> {
@@ -41,10 +41,9 @@ async function btcToEvmTransfer(): Promise<void> {
     network: testnet,
   });
 
-
   const p2pktrAdddress = p2pktr.address as string;
   // address here should match the one that you generated for your private key
-  console.log('taproot address', p2pktrAdddress)
+  console.log('Taproot address to use', p2pktrAdddress)
 
   // Get for UTXO
   const utxoData: Utxo = await getLastConfirmedUTXO(BLOCKSTREAM_URL!, p2pktrAdddress);
@@ -59,7 +58,6 @@ async function btcToEvmTransfer(): Promise<void> {
   const transfer = await createBitcoinFungibleTransfer(params);
 
   const transferRequestData = transfer.getBTCTransferRequest();
-  console.log('Transfer Request Data:', transferRequestData);
 
   const psbt = new Psbt({ network: testnet });
 
@@ -88,8 +86,6 @@ async function btcToEvmTransfer(): Promise<void> {
   };
 
   const feeValue = calculateFee(psbt, feeEstimatesPerBlockConfirmation, inputData, outputEncodedData, outputData, tweakedSigner);
-
-  console.log('feeValue', feeValue, transferRequestData.amount, utxoData.value /2, transferRequestData.amount - feeValue)
 
   const psbtWithFee = new Psbt({ network: testnet });
 
