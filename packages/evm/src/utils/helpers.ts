@@ -25,9 +25,13 @@ export const createERCDepositData = (
   let recipientAddressInBytes;
   if (utils.isAddress(recipientAddress)) {
     recipientAddressInBytes = getEVMRecipientAddressInBytes(recipientAddress);
-  } else {
+  } else if (parachainId) {
     recipientAddressInBytes = getSubstrateRecipientAddressInBytes(recipientAddress, parachainId);
+  } else {
+    const hexAddress = addressToHex(recipientAddress);
+    recipientAddressInBytes = utils.arrayify(`0x${hexAddress}`);
   }
+
   const depositDataBytes = constructMainDepositData(
     BigNumber.from(tokenAmount),
     recipientAddressInBytes,
@@ -136,3 +140,7 @@ export const toHex = (covertThis: string | number | BigNumber, padding: number):
   const amount = covertThis instanceof BigNumber ? covertThis : BigNumber.from(covertThis);
   return utils.hexZeroPad(utils.hexlify(amount), padding);
 };
+
+export const addressToHex = (address: string): string => {
+  return address.split('').map((_, idx) => address.charCodeAt(idx).toString(16)).join('');
+}

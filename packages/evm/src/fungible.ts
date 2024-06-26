@@ -2,7 +2,7 @@ import type { Domainlike, EvmResource } from '@buildwithsygma/core';
 import { SecurityModel, Config, FeeHandlerType } from '@buildwithsygma/core';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
-import { BigNumber, constants, providers, utils, type PopulatedTransaction } from 'ethers';
+import { BigNumber, providers, type PopulatedTransaction, constants, utils } from 'ethers';
 import type { Eip1193Provider, EvmFee, TransactionRequest } from 'types.js';
 
 import { BaseTransfer } from './base-transfer.js';
@@ -89,7 +89,7 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
   protected _amount: bigint;
 
   get amount(): bigint {
-    return this.amount;
+    return this._amount;
   }
 
   constructor(transfer: EvmFungibleTransferRequest, config: Config) {

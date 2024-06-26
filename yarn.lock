@@ -539,6 +539,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@buildwithsygma/sygma-sdk-evm-to-btc-fungible-transfer@workspace:examples/evm-to-btc-fungible-transfer":
+  version: 0.0.0-use.local
+  resolution: "@buildwithsygma/sygma-sdk-evm-to-btc-fungible-transfer@workspace:examples/evm-to-btc-fungible-transfer"
+  dependencies:
+    "@buildwithsygma/core": "workspace:^"
+    "@buildwithsygma/evm": "workspace:^"
+    dotenv: "npm:^16.3.1"
+    eslint: "npm:8"
+    ts-node: "npm:10.9.1"
+    tsx: "npm:^4.15.4"
+    typescript: "npm:5.0.4"
+  languageName: unknown
+  linkType: soft
+
 "@buildwithsygma/sygma-sdk-evm-to-evm-fungible-transfer-example@workspace:examples/evm-to-evm-fungible-transfer":
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-evm-to-evm-fungible-transfer-example@workspace:examples/evm-to-evm-fungible-transfer"
