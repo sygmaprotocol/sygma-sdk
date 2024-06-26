@@ -70,39 +70,34 @@ async function btcToEvmTransfer(): Promise<void> {
 
   const embed = payments.embed({ data: [data] });
 
-  const feeValue = calculateFee(psbt, feeEstimatesPerBlockConfirmation, {
+  const inputData = {
     hash: utxoData.txid,
     index: utxoData.vout,
     witnessUtxo: { value: utxoData.value, script: p2pktr.output! },
     tapInternalKey: toXOnly(publicKey)
-  }, {
+  };
+
+  const outputEncodedData = {
     script: embed.output!,
     value: 0,
-  }, {
+  };
+
+  const outputData = {
     address: transferRequestData.depositAddress,
     value: utxoData.value - transferRequestData.amount
-  }, tweakedSigner);
+  };
+
+  const feeValue = calculateFee(psbt, feeEstimatesPerBlockConfirmation, inputData, outputEncodedData, outputData, tweakedSigner);
 
   console.log('feeValue', feeValue, transferRequestData.amount, utxoData.value /2, transferRequestData.amount - feeValue)
 
   const psbtWithFee = new Psbt({ network: testnet });
 
-  psbtWithFee.addInput({
-    hash: utxoData.txid,
-    index: utxoData.vout,
-    witnessUtxo: { value: utxoData.value, script: p2pktr.output! },
-    tapInternalKey: toXOnly(publicKey)
-  });
+  psbtWithFee.addInput(inputData);
 
-  psbtWithFee.addOutput({
-    script: embed.output!,
-    value: 0,
-  });
+  psbtWithFee.addOutput(outputEncodedData);
 
-  psbtWithFee.addOutput({
-    address: transferRequestData.depositAddress,
-    value: transferRequestData.amount - feeValue
-  });
+  psbtWithFee.addOutput(outputData);
 
   psbtWithFee.signInput(0, tweakedSigner);
   psbtWithFee.finalizeAllInputs();
