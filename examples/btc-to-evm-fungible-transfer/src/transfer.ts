@@ -93,7 +93,10 @@ async function btcToEvmTransfer(): Promise<void> {
 
   psbtWithFee.addOutput(outputEncodedData);
 
-  psbtWithFee.addOutput(outputData);
+  psbtWithFee.addOutput({
+    ...outputData,
+    value: outputData.value - feeValue
+  });
 
   psbtWithFee.signInput(0, tweakedSigner);
   psbtWithFee.finalizeAllInputs();
