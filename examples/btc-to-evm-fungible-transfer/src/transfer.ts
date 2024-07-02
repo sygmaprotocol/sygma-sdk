@@ -90,7 +90,7 @@ async function btcToEvmTransfer(): Promise<void> {
 
   const embed = payments.embed({ data: [data] });
 
-  const amount = transferRequestData.amount - (16183 + 1000)
+  const amount = transferRequestData.amount - 1e4;
   const amountMinusBridgeFee = amount - FEE_AMOUNT;
 
   const outputEncodedData = {
