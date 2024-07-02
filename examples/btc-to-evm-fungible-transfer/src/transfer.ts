@@ -17,12 +17,12 @@ const DESTINATION_DOMAIN_ID = Number(process.env.DESTINATION_DOMAIN_ID);
 const BLOCKSTREAM_URL = process.env.BLOCKSTREAM_URL;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const RESOURCE_ID = process.env.RESOURCE_ID;
-const SOURCE_DOMAIN_ID = Number(process.env.SOURCE_DOMAIN_ID);
+const SOURCE_DOMAIN_CAIPID = process.env.SOURCE_DOMAIN_CAIPID
 const FEE_ADDRESS = 'tb1p0r2w3ugreaggd7nakw2wd04up6rl8k0cce8eetxwmhnrelgqx87s4zdkd7'
 const FEE_AMOUNT = 1000000;
 const EXPLORER_URL = process.env.EXPLORER_URL;
 
-if (!DESTINATION_ADDRESS || !PRIVATE_KEY || !DESTINATION_DOMAIN_ID || !BLOCKSTREAM_URL || !RESOURCE_ID || !SOURCE_DOMAIN_ID) {
+if (!DESTINATION_ADDRESS || !PRIVATE_KEY || !DESTINATION_DOMAIN_ID || !BLOCKSTREAM_URL || !RESOURCE_ID || !SOURCE_DOMAIN_CAIPID) {
   throw new Error('Please provided needed env variavles in .env file');
 }
 
@@ -70,7 +70,7 @@ async function btcToEvmTransfer(): Promise<void> {
   };
 
   const params = {
-    sourceDomain: SOURCE_DOMAIN_ID,
+    sourceDomain: SOURCE_DOMAIN_CAIPID,
     destinationAddress: DESTINATION_ADDRESS,
     amount: inputData.witnessUtxo.value,
     resource: RESOURCE_ID
