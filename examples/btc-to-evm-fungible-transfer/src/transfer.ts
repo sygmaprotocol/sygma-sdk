@@ -8,7 +8,7 @@ import {
   Psbt
 } from "bitcoinjs-lib";
 import * as tinysecp from 'tiny-secp256k1';
-import { Utxo, broadcastTransaction, calculateFee, getFeeEstimates, getLastConfirmedUTXO, getTweakedSigner, toXOnly } from './utils';
+import { broadcastTransaction, calculateFee, getFeeEstimates, getTweakedSigner, toXOnly } from './utils';
 
 dotenv.config();
 
@@ -18,10 +18,20 @@ const BLOCKSTREAM_URL = process.env.BLOCKSTREAM_URL;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const RESOURCE_ID = process.env.RESOURCE_ID;
 const SOURCE_DOMAIN_ID = Number(process.env.SOURCE_DOMAIN_ID);
+const FEE_ADDRESS = 'tb1p0r2w3ugreaggd7nakw2wd04up6rl8k0cce8eetxwmhnrelgqx87s4zdkd7'
+const FEE_AMOUNT = 1000000;
+const EXPLORER_URL = process.env.EXPLORER_URL;
 
 if (!DESTINATION_ADDRESS || !PRIVATE_KEY || !DESTINATION_DOMAIN_ID || !BLOCKSTREAM_URL || !RESOURCE_ID || !SOURCE_DOMAIN_ID) {
   throw new Error('Please provided needed env variavles in .env file');
 }
+
+type InputData = {
+  hash: string;
+  index: number;
+  witnessUtxo: { value: number; script: Buffer };
+  tapInternalKey: Buffer;
+};
 
 async function btcToEvmTransfer(): Promise<void> {
   // pre setup
@@ -29,7 +39,6 @@ async function btcToEvmTransfer(): Promise<void> {
   initEccLib(tinysecp as any);
   const ECPair: ECPairAPI = ECPairFactory(tinysecp);
 
-  // Transfer BTC to EVM
   console.log('Transfer BTC to EVM');
 
   // tweaking signer
@@ -45,22 +54,35 @@ async function btcToEvmTransfer(): Promise<void> {
   // address here should match the one that you generated for your private key
   console.log('Taproot address to use', p2pktrAdddress)
 
-  // Get for UTXO
-  const utxoData: Utxo = await getLastConfirmedUTXO(BLOCKSTREAM_URL!, p2pktrAdddress);
   const feeEstimatesPerBlockConfirmation = await getFeeEstimates(BLOCKSTREAM_URL!);
+
+  /**
+   * Get UTXO to use for the transfer
+   * You can get UTXO from any source, for this example we are using Blockstream API
+   * Add the txid and vout of the UTXO to the inputData. Also add the value of the UTXO to the witnessUtxo value field
+   */
+
+  const inputData: InputData = {
+    hash: '', // utxo tx id
+    index: 0, // utxo index
+    witnessUtxo: { value: 0, script: p2pktr.output! }, // utxo value
+    tapInternalKey: toXOnly(publicKey)
+  };
 
   const params = {
     sourceDomain: SOURCE_DOMAIN_ID,
     destinationAddress: DESTINATION_ADDRESS,
-    amount: utxoData.value,
+    amount: inputData.witnessUtxo.value,
     resource: RESOURCE_ID
   }
+
   const transfer = await createBitcoinFungibleTransfer(params);
 
   const transferRequestData = transfer.getBTCTransferRequest();
 
   const psbt = new Psbt({ network: testnet });
 
+  // encoded data
   const data = Buffer.from(
     `${DESTINATION_ADDRESS}_${DESTINATION_DOMAIN_ID}`, // EMV ADDRESS + DESTINATION DOMAIN ID HERE
     "utf8",
@@ -68,34 +90,39 @@ async function btcToEvmTransfer(): Promise<void> {
 
   const embed = payments.embed({ data: [data] });
 
-  const inputData = {
-    hash: utxoData.txid,
-    index: utxoData.vout,
-    witnessUtxo: { value: utxoData.value, script: p2pktr.output! },
-    tapInternalKey: toXOnly(publicKey)
-  };
+  const amount = transferRequestData.amount - (16183 + 1000)
+  const amountMinusBridgeFee = amount - FEE_AMOUNT;
 
   const outputEncodedData = {
     script: embed.output!,
     value: 0,
   };
-
+  
   const outputData = {
     address: transferRequestData.depositAddress,
-    value: utxoData.value - transferRequestData.amount
+    value: amountMinusBridgeFee
   };
-
-  const feeValue = calculateFee(psbt, feeEstimatesPerBlockConfirmation, inputData, outputEncodedData, outputData, tweakedSigner);
+  
+  const outputDataFee = {
+    address: FEE_ADDRESS,
+    value: FEE_AMOUNT
+  };
+  
+  const feeValue = calculateFee(psbt, feeEstimatesPerBlockConfirmation, inputData, outputEncodedData, outputData, outputDataFee, tweakedSigner);
 
   const psbtWithFee = new Psbt({ network: testnet });
 
+  const amountWitFeeApplied = amount - feeValue - FEE_AMOUNT;
+  
   psbtWithFee.addInput(inputData);
 
   psbtWithFee.addOutput(outputEncodedData);
 
+  psbtWithFee.addOutput(outputDataFee);
+
   psbtWithFee.addOutput({
-    ...outputData,
-    value: outputData.value - feeValue
+    address: transferRequestData.depositAddress,
+    value: amountWitFeeApplied
   });
 
   psbtWithFee.signInput(0, tweakedSigner);
@@ -106,7 +133,7 @@ async function btcToEvmTransfer(): Promise<void> {
   console.log(`Broadcasting Transaction Hex: ${tx.toHex()}`);
   const txid = await broadcastTransaction(BLOCKSTREAM_URL!, tx.toHex());
 
-  console.log(`Transaction ID: ${txid}`);
+  console.log(`Transaction ID: ${EXPLORER_URL}/${txid}`);
 }
 
 btcToEvmTransfer().finally(() => { })

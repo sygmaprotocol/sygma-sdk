@@ -1,19 +1,8 @@
 import { Signer, networks, crypto, Psbt } from "bitcoinjs-lib";
 import { ECPairAPI, TinySecp256k1Interface } from "ecpair";
 
-export type Utxo = {
-  txid: string;
-  vout: number;
-  status: {
-    confirmed: boolean;
-    block_height: number;
-    block_hash: string;
-    block_time: number;
-  };
-  value: number;
-};
 
-type InputData =  { hash: string, index: number, witnessUtxo: { value: number, script: Buffer }, tapInternalKey: Buffer }
+type InputData = { hash: string, index: number, witnessUtxo: { value: number, script: Buffer }, tapInternalKey: Buffer }
 
 type OutputData = { value: number, script: Buffer, address: string }
 
@@ -56,28 +45,6 @@ export function getTweakedSigner(ECPair: ECPairAPI, tinysecp: TinySecp256k1Inter
   };
 }
 
-export async function getLastConfirmedUTXO(blockstreamUrl: string, bitcoinAddress: string): Promise<Utxo> {
-  try {
-    const response = await fetch(`${blockstreamUrl}/address/${bitcoinAddress}/utxo`);
-
-    const data = await response.json();
-
-    if (data.length === 0) {
-      throw new Error('No UTXO found');
-    }
-
-    const confirmedUtxos = data.filter((utxo: Utxo) => utxo.status.confirmed);
-
-    if (confirmedUtxos.length === 0) {
-      throw new Error('No confirmed UTXO found');
-    }
-
-    return confirmedUtxos[0];
-  } catch (error) {
-    throw error;
-  }
-}
-
 export async function getFeeEstimates(blockstreamUrl: string): Promise<number> {
   try {
     const response = await fetch(`${blockstreamUrl}/fee-estimates`);
@@ -96,22 +63,22 @@ export async function broadcastTransaction(blockstreamUrl: string, txHex: string
       method: 'POST',
       body: txHex,
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'text/plain'
       }
     });
 
-    const data = await response.json();
-
-    return data;
+    return await response.text();
   } catch (error) {
+    console.log('error', error)
     throw new Error('Failed to broadcast transaction');
   }
 }
 
-export function calculateFee(psbt: Psbt, feeRate: number, inputData: InputData, bridgeOutputData: Pick<OutputData, "script" | "value">, valueOutputData: Pick<OutputData, "address" | "value">, tweakedSigner: Signer): number {
+export function calculateFee(psbt: Psbt, feeRate: number, inputData: InputData, bridgeOutputData: Pick<OutputData, "script" | "value">, valueOutputData: Pick<OutputData, "address" | "value">, outputFeeData: Pick<OutputData, "address" | "value">, tweakedSigner: Signer): number {
   psbt.addInput(inputData);
   psbt.addOutput(bridgeOutputData);
   psbt.addOutput(valueOutputData);
+  psbt.addOutput(outputFeeData);
 
   psbt.signInput(0, tweakedSigner);
   psbt.finalizeAllInputs();

@@ -31,7 +31,7 @@ export async function erc20Transfer(): Promise<void> {
     destination: BITCOIN_DOMAIN_ID,
     sourceNetworkProvider: web3Provider,
     resource: RESOURCE_ID,
-    amount: BigInt(1) * BigInt(1e8),
+    amount: BigInt(1) * BigInt(1e8), // or any amount to send
     destinationAddress: BTC_DESTINATION_ADDRESS,
     environment: Environment.DEVNET,
     sourceAddress: await wallet.getAddress(),
