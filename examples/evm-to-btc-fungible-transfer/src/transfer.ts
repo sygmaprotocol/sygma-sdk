@@ -13,7 +13,7 @@ if (!privateKey) {
 }
 
 const SEPOLIA_CHAIN_ID = 11155111;
-const BITCOIN_DOMAIN_ID = 3; 
+const BITCOIN_DOMAIN_CAIPID = "bip122:000000000933ea01ad0ee984209779ba";
 const RESOURCE_ID = "0x0000000000000000000000000000000000000000000000000000000000000300";
 const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "https://eth-sepolia-public.unifra.io"
 const BTC_DESTINATION_ADDRESS = process.env.BTC_DESTINATION_ADDRESS;
@@ -28,7 +28,7 @@ export async function erc20Transfer(): Promise<void> {
 
   const params = {
     source: SEPOLIA_CHAIN_ID,
-    destination: BITCOIN_DOMAIN_ID,
+    destination: BITCOIN_DOMAIN_CAIPID,
     sourceNetworkProvider: web3Provider,
     resource: RESOURCE_ID,
     amount: BigInt(1) * BigInt(1e8), // or any amount to send
@@ -53,4 +53,4 @@ export async function erc20Transfer(): Promise<void> {
   console.log(`Depositted, transaction:  ${getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID })}`);
 }
 
-erc20Transfer().finally(() => {});
+erc20Transfer().finally(() => { });
