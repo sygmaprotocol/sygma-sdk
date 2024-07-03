@@ -15,10 +15,10 @@ if (!privateKey) {
   throw new Error("Missing environment variable: PRIVATE_KEY");
 }
 
-const SOURCE_CHAIN_ID = Number(process.env.SOURCE_CHAIN_ID) || 11155111;
+const DESTINATION_CHAIN_ID = Number(process.env.DESTINATION_CHAIN_ID) || 11155111;
 const RESOURCE_ID = process.env.RESOURCE_ID ||
   "0x0000000000000000000000000000000000000000000000000000000000000300";
-const DESTINATION_RPC_URL = process.env.DESTINATION_RPC_URL || "https://ethereum-holesky-rpc.publicnode.com"
+const SOURCE_RPC_URL = process.env.SOURCE_RPC_URL || "https://ethereum-holesky-rpc.publicnode.com"
 const getStatus = async (
   txHash: string
 ): Promise<TransferStatusResponse[]> => {
@@ -27,7 +27,7 @@ const getStatus = async (
 };
 
 export async function erc20Transfer(): Promise<void> {
-  const provider = new providers.JsonRpcProvider(DESTINATION_RPC_URL);
+  const provider = new providers.JsonRpcProvider(SOURCE_RPC_URL);
   const wallet = new Wallet(privateKey ?? "", provider);
   const assetTransfer = new EVMAssetTransfer();
   // @ts-ignore-next-line
@@ -35,7 +35,7 @@ export async function erc20Transfer(): Promise<void> {
 
   const transfer = await assetTransfer.createFungibleTransfer(
     await wallet.getAddress(),
-    SOURCE_CHAIN_ID,
+    DESTINATION_CHAIN_ID,
     await wallet.getAddress(), // Sending to the same address on a different chain
     RESOURCE_ID,
     "5000000000000000000" // 18 decimal places

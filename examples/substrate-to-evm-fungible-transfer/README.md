@@ -70,7 +70,7 @@ Replace the placeholder values in the `.env` file with your own Substrate wallet
 
 **Note**
 
-To replace default transfer from  Rhala to sepolia use env variables:
+Replace the default environment variables defined with your own using env variables from your `.env` file: 
 - `DESTINATION_CHAIN_ID="RHALA_RPC_URL_HERE"`
 - `RESOURCE_ID="RESOURCE_ID_HERE"`
 - `RECIPIENT="RECIPIENT_HERE"`

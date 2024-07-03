@@ -69,7 +69,7 @@ Replace the placeholder values in the `.env` file with your own Ethereum wallet 
 
 **Note**
 
-To replace default transfer from base-sepolia to sepolia use env variables:
+Replace the default environment variables defined with your own using env variables from your `.env` file: 
 - `SOURCE_CHAIN_RPC_URL="SOURCE_CHAIN_RPC_URL_HERE"`
 - `RESOURCE_ID="RESOURCE_ID_HERE"`
 - `DESTINATION_CHAIN_RPC_URL="DESTINATION_CHAIN_RPC_URL_HERE"`

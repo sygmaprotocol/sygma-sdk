@@ -71,7 +71,7 @@ Replace the placeholder values in the `.env` file with your own Ethereum wallet 
 
 **Note**
 
-To replace default transfer from Sepolia to rhala use env variables:
+Replace the default environment variables defined with your own using env variables from your `.env` file: 
 - `DESTINATION_CHAIN_ID="DESTINATION_CHAIN_ID_HERE"`
 - `RECIPIENT_ADDRESS="RECIPIENT_ADDRESS_HERE"`
 - `RESOURCE_ID="RESOURCE_ID_HERE"`
