@@ -46,6 +46,7 @@ export function getTweakedSigner(ECPair: ECPairAPI, tinysecp: TinySecp256k1Inter
 }
 
 export async function getFeeEstimates(blockstreamUrl: string): Promise<number> {
+  if(!blockstreamUrl) throw new Error('Blockstream url is required');
   try {
     const response = await fetch(`${blockstreamUrl}/fee-estimates`);
 

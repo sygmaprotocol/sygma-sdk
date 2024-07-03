@@ -21,6 +21,7 @@ const SOURCE_DOMAIN_CAIPID = process.env.SOURCE_DOMAIN_CAIPID
 const FEE_ADDRESS = 'tb1p0r2w3ugreaggd7nakw2wd04up6rl8k0cce8eetxwmhnrelgqx87s4zdkd7'
 const FEE_AMOUNT = 1000000;
 const EXPLORER_URL = process.env.EXPLORER_URL;
+const FIXED_TRANSACTION_FEE = Number(process.env.FIXED_TRANSACTION_FEE);
 
 if (!DESTINATION_ADDRESS || !PRIVATE_KEY || !DESTINATION_DOMAIN_ID || !BLOCKSTREAM_URL || !RESOURCE_ID || !SOURCE_DOMAIN_CAIPID) {
   throw new Error('Please provided needed env variavles in .env file');
@@ -36,7 +37,7 @@ type InputData = {
 async function btcToEvmTransfer(): Promise<void> {
   // pre setup
   const testnet = networks.testnet;
-  initEccLib(tinysecp as any);
+  initEccLib(tinysecp);
   const ECPair: ECPairAPI = ECPairFactory(tinysecp);
 
   console.log('Transfer BTC to EVM');
@@ -90,7 +91,7 @@ async function btcToEvmTransfer(): Promise<void> {
 
   const embed = payments.embed({ data: [data] });
 
-  const amount = transferRequestData.amount - 1e4;
+  const amount = transferRequestData.amount - FIXED_TRANSACTION_FEE;
   const amountMinusBridgeFee = amount - FEE_AMOUNT;
 
   const outputEncodedData = {
