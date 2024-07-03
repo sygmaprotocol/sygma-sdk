@@ -18,7 +18,7 @@ if (!privateKey) {
 const DESTINATION_CHAIN_ID = Number(process.env.DESTINATION_CHAIN_ID) || 11155111;
 const RESOURCE_ID = process.env.RESOURCE_ID ||
   "0x0000000000000000000000000000000000000000000000000000000000000300";
-const SOURCE_RPC_URL = process.env.SOURCE_RPC_URL || "https://ethereum-holesky-rpc.publicnode.com"
+const SOURCE_CHAIN_RPC_URL = process.env.SOURCE_CHAIN_RPC_URL || "https://ethereum-holesky-rpc.publicnode.com"
 const getStatus = async (
   txHash: string
 ): Promise<TransferStatusResponse[]> => {
@@ -27,7 +27,7 @@ const getStatus = async (
 };
 
 export async function erc20Transfer(): Promise<void> {
-  const provider = new providers.JsonRpcProvider(SOURCE_RPC_URL);
+  const provider = new providers.JsonRpcProvider(SOURCE_CHAIN_RPC_URL);
   const wallet = new Wallet(privateKey ?? "", provider);
   const assetTransfer = new EVMAssetTransfer();
   // @ts-ignore-next-line

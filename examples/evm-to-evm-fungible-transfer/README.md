@@ -72,7 +72,7 @@ Replace the placeholder values in the `.env` file with your own Ethereum wallet 
 
 To replace default transfers from Sepolia to Holesky use env variables:
 - `DESTINATION_CHAIN_ID="DESTINATION_CHAIN_ID_HERE"`
-- `SOURCE_RPC_URL="SOURCE_RPC_URL_HERE"`
+- `SOURCE_CHAIN_RPC_URL="SOURCE_CHAIN_RPC_URL_HERE"`
 - `RESOURCE_ID="RESOURCE_ID_HERE"`
 
 ## Script Functionality
