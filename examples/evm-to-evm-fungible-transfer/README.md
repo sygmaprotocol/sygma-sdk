@@ -70,9 +70,11 @@ Replace the placeholder values in the `.env` file with your own Ethereum wallet 
 
 **Note**
 
-To replace default rpc Cronos and Sepolia urls use env variables:
-- `CRONOS_RPC_URL="CRONOS_RPC_URL_HERE"`
-- `SEPOLIA_RPC_URL="SEPOLIA_RPC_URL_HERE"`
+To replace default transfers from Sepolia to Holesky use env variables:
+- `DESTINATION_CHAIN_ID="DESTINATION_CHAIN_ID_HERE"`
+- `SOURCE_CHAIN_RPC_URL="SOURCE_CHAIN_RPC_URL_HERE"`
+- `RESOURCE_ID="RESOURCE_ID_HERE"`
+
 ## Script Functionality
 
 This example script performs the following steps:

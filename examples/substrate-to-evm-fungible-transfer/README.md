@@ -70,8 +70,11 @@ Replace the placeholder values in the `.env` file with your own Substrate wallet
 
 **Note**
 
-To replace default rpc Rhala urls use env variables:
-- `RHALA_RPC_URL="SEPOLIA_RPC_URL_HERE"`
+Replace the default environment variables defined with your own using env variables from your `.env` file: 
+- `DESTINATION_CHAIN_ID="RHALA_RPC_URL_HERE"`
+- `RESOURCE_ID="RESOURCE_ID_HERE"`
+- `RECIPIENT="RECIPIENT_HERE"`
+- `SOURCE_CHAIN_RPC_URL="SOURCE_CHAIN_RPC_URL_HERE"`
 
 ## Script Functionality
 
