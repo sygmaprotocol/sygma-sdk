@@ -69,9 +69,13 @@ Replace the placeholder values in the `.env` file with your own Ethereum wallet 
 
 **Note**
 
-To replace default rpc Base-Sepolia and Sepolia urls use env variables:
-- `BASE_SEPOLIA_RPC_URL="BASE_SEPOLIA_RPC_URL_HERE"`
-- `SEPOLIA_RPC_URL="SEPOLIA_RPC_URL_HERE"`
+To replace default transfer from base-sepolia to sepolia use env variables:
+- `SOURCE_CHAIN_RPC_URL="SOURCE_CHAIN_RPC_URL_HERE"`
+- `RESOURCE_ID="RESOURCE_ID_HERE"`
+- `DESTINATION_CHAIN_RPC_URL="DESTINATION_CHAIN_RPC_URL_HERE"`
+- `DESTINATION_CHAIN_ID="DESTINATION_CHAIN_ID_HERE"`
+- `EXECUTE_CONTRACT_ADDRESS="EXECUTE_CONTRACT_ADDRESS_HERE"`
+- `EXECUTE_FUNCTION_SIGNATURE="EXECUTE_FUNCTION_SIGNATURE_HERE"`
 
 ## Script Functionality
 

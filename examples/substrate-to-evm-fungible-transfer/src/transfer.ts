@@ -13,12 +13,12 @@ dotenv.config();
 
 const { SubstrateAssetTransfer } = Substrate;
 
-const SEPOLIA_CHAIN_ID = 11155111;
-const RESOURCE_ID =
+const DESTINATION_CHAIN_ID = Number(process.env.DESTINATION_CHAIN_ID) || 11155111;
+const RESOURCE_ID = process.env.RESOURCE_ID ||
   "0x0000000000000000000000000000000000000000000000000000000000001100";
 const MNEMONIC = process.env.PRIVATE_MNEMONIC;
-const recipient = "0xD31E89feccCf6f2DE10EaC92ADffF48D802b695C";
-const RHALA_RPC_URL = process.env.RHALA_RPC_URL || "wss://rhala-node.phala.network/ws"
+const recipient = process.env.RECIPIENT || "0xD31E89feccCf6f2DE10EaC92ADffF48D802b695C";
+const SOURCE_CHAIN_RPC_URL = process.env.SOURCE_CHAIN_RPC_URL || "wss://rhala-node.phala.network/ws"
 if (!MNEMONIC) {
   throw new Error("Missing environment variable: PRIVATE_MNEMONIC");
 }
@@ -39,7 +39,7 @@ const substrateTransfer = async (): Promise<void> => {
 
   const account = keyring.addFromUri(MNEMONIC);
 
-  const wsProvider = new WsProvider(RHALA_RPC_URL);
+  const wsProvider = new WsProvider(SOURCE_CHAIN_RPC_URL);
   const api = await ApiPromise.create({ provider: wsProvider });
 
   const assetTransfer = new SubstrateAssetTransfer();
@@ -48,7 +48,7 @@ const substrateTransfer = async (): Promise<void> => {
 
   const transfer = await assetTransfer.createFungibleTransfer(
     account.address,
-    SEPOLIA_CHAIN_ID,
+    DESTINATION_CHAIN_ID,
     recipient,
     RESOURCE_ID,
     "5000000" // 6 decimal places

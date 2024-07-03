@@ -14,11 +14,11 @@ if (!privateKey) {
   throw new Error("Missing environment variable: PRIVATE_KEY");
 }
 
-const ROCOCO_PHALA_CHAIN_ID = 5231;
-const DESTINATION_ADDRESS = "5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt";
-const RESOURCE_ID =
+const DESTINATION_CHAIN_ID = Number(process.env.SUBSTRATE_CHAIN_ID) || 5231;
+const RECIPIENT_ADDRESS = process.env.RECIPIENT_ADDRESS || "5CDQJk6kxvBcjauhrogUc9B8vhbdXhRscp1tGEUmniryF1Vt";
+const RESOURCE_ID = process.env.RESOURCE_ID ||
   "0x0000000000000000000000000000000000000000000000000000000000001100";
-const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "https://gateway.tenderly.co/public/sepolia"
+const SOURCE_CHAIN_RPC_URL = process.env.SOURCE_CHAIN_RPC_URL || "https://gateway.tenderly.co/public/sepolia"
 const getStatus = async (
   txHash: string
 ): Promise<TransferStatusResponse[]> => {
@@ -27,15 +27,15 @@ const getStatus = async (
 };
 
 export async function erc20Transfer(): Promise<void> {
-  const provider = new providers.JsonRpcProvider(SEPOLIA_RPC_URL);
+  const provider = new providers.JsonRpcProvider(SOURCE_CHAIN_RPC_URL);
   const wallet = new Wallet(privateKey ?? "", provider);
   const assetTransfer = new EVMAssetTransfer();
   await assetTransfer.init(provider, Environment.TESTNET);
 
   const transfer = await assetTransfer.createFungibleTransfer(
     await wallet.getAddress(),
-    ROCOCO_PHALA_CHAIN_ID,
-    DESTINATION_ADDRESS,
+    DESTINATION_CHAIN_ID,
+    RECIPIENT_ADDRESS,
     RESOURCE_ID,
     "500000000000000000" // 18 decimal places
     // optional parachainID (e.g. KusamaParachain.SHIDEN)
