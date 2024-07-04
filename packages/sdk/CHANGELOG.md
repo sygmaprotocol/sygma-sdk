@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.11.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.10.0...sygma-sdk-core-v2.11.0) (2024-07-04)
+
+
+### Features
+
+* fix grammar ([#398](https://github.com/sygmaprotocol/sygma-sdk/issues/398)) ([0b46b26](https://github.com/sygmaprotocol/sygma-sdk/commit/0b46b269f812163e6a034eada98f4873eae810f9))
+
 ## [2.10.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.9.0...sygma-sdk-core-v2.10.0) (2024-03-28)
 
 
