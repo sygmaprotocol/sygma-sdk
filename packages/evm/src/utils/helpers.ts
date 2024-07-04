@@ -142,5 +142,8 @@ export const toHex = (covertThis: string | number | BigNumber, padding: number):
 };
 
 export const addressToHex = (address: string): string => {
-  return address.split('').map((_, idx) => address.charCodeAt(idx).toString(16)).join('');
-}
+  return address
+    .split('')
+    .map((_, idx) => address.charCodeAt(idx).toString(16))
+    .join('');
+};
