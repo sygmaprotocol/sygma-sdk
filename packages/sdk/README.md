@@ -27,6 +27,8 @@ A Typescript SDK allowing users to easily add cross-chain capabilities such as b
 Currently supported:
 
 - Transfering fungible assets between **Substrate** and **EVM** chains
+- Transfering nonfungible assets between **EVM** and **EVM** chains
+- Transfering GMP(general message passing) between **EVM** and **EVM** chains
 
 ## Installation
 
