@@ -1,7 +1,6 @@
-import type { EvmResource } from '@buildwithsygma/core';
+import type { Eip1193Provider, EvmResource } from '@buildwithsygma/core';
 import type { Bridge } from '@buildwithsygma/sygma-contracts';
 
-import type { Eip1193Provider } from '../../types.js';
 import { getEvmErc20Balance, getEvmHandlerBalance } from '../balances.js';
 
 jest.mock('@buildwithsygma/sygma-contracts', () => {

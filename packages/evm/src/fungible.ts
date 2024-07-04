@@ -1,9 +1,9 @@
-import type { Domainlike, EvmResource } from '@buildwithsygma/core';
+import type { Domainlike, Eip1193Provider, EvmResource } from '@buildwithsygma/core';
 import { SecurityModel, Config, FeeHandlerType } from '@buildwithsygma/core';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
-import { BigNumber, providers, type PopulatedTransaction, constants, utils } from 'ethers';
-import type { Eip1193Provider, EvmFee, TransactionRequest } from 'types.js';
+import { BigNumber, constants, providers, utils, type PopulatedTransaction } from 'ethers';
+import type { EvmFee, TransactionRequest } from 'types.js';
 
 import { BaseTransfer } from './base-transfer.js';
 import { BasicFeeCalculator } from './fee/BasicFee.js';

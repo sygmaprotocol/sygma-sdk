@@ -1,7 +1,9 @@
 import { enableFetchMocks } from 'jest-fetch-mock';
-import { Environment } from '../src/types.js';
-import { Config } from '../src/index.js';
+
 import { ConfigUrl } from '../src/constants.js';
+import { Config } from '../src/index.js';
+import { Environment } from '../src/types.js';
+
 import { mockedDevnetConfig } from './constants.js';
 
 enableFetchMocks();
