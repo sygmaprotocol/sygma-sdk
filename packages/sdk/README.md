@@ -38,7 +38,7 @@ yarn add @buildwithsygma/sygma-sdk-core
 
 ## Example
 
-For examples of usage go the [`examples`](./examples/) folder
+For examples of usage, go to the [`examples`](./examples/) folder.
 
 ## Contracts
 
