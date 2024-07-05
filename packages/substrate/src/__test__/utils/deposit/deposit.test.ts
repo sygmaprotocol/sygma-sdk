@@ -3,11 +3,10 @@ import { Environment } from '@buildwithsygma/core';
 import type { ApiPromise } from '@polkadot/api';
 import { numberToHex } from '@polkadot/util';
 
-import { createDestIdMultilocationData, deposit } from '../../../utils/deposit/deposit.js';
+import { createDestIdMultilocationData, deposit } from '../../../utils/index.js';
 
 describe('createDestIdMultilocationData', () => {
   it('should create multilocation data for LOCAL environment', () => {
-    process.env.SYGMA_ENV = Environment.LOCAL;
     const address = '0x123abc';
     const domainId = '42';
     const data = createDestIdMultilocationData(address, domainId);
@@ -44,7 +43,6 @@ describe('createDestIdMultilocationData', () => {
 
 describe('deposit', () => {
   it('should create a deposit transaction', () => {
-    process.env.SYGMA_ENV = Environment.LOCAL;
     const xcmMultiAssetId: XcmMultiAssetIdType = {
       concrete: {
         parents: 1,

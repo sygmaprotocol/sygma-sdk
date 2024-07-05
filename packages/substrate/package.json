@@ -61,6 +61,7 @@
     "@polkadot/api": "^11.2.1",
     "@polkadot/types": "^11.2.1",
     "@polkadot/util": "^12.6.2",
+    "@polkadot/util-crypto": "^12.6.2",
     "dotenv": "^16.4.5"
   }
 }
