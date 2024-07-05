@@ -1,3 +1,8 @@
+import { decodeAddress, encodeAddress } from '@polkadot/keyring';
+import { hexToU8a, isHex } from '@polkadot/util';
+import * as bitcoin from 'bitcoinjs-lib';
+import { ethers } from 'ethers';
+
 import { ExplorerUrl, IndexerUrl } from './constants.js';
 import { getFeeHandlerAddressesOfRoutes, getFeeHandlerTypeOfRoutes } from './multicall.js';
 import type {
@@ -253,4 +258,59 @@ export async function getRawConfiguration(
     throw new Error(`Unable to fetch configuration for environment: ${environment}`);
   }
   return sygmaConfig;
+}
+
+/**
+ * Validate Substrate address.
+ * @param {string} address
+ */
+export function isValidSubstrateAddress(address: string): boolean {
+  try {
+    encodeAddress(isHex(address) ? hexToU8a(address) : decodeAddress(address));
+    return true;
+  } catch (error) {
+    throw new Error(`Invalid Substrate address`);
+  }
+}
+
+/**
+ * Validate EVM address.
+ * @param {string} address
+ * @returns {boolean}
+ */
+export function isValidEvmAddress(address: string): boolean {
+  if (ethers.utils.isAddress(address)) return true;
+
+  throw new Error(`Invalid EVM address`);
+}
+
+/**
+ * Validate Bitcoin address.
+ * @param {string} address
+ * @returns {boolean}
+ */
+export function isValidBitcoinAddress(address: string): boolean {
+  try {
+    bitcoin.address.toOutputScript(address, bitcoin.networks.bitcoin);
+    return true;
+  } catch (error) {
+    throw new Error(`Invalid Bitcoin address`);
+  }
+}
+
+/**
+ * Validate Address based on network.
+ * @param {string} address
+ * @param {Network} network
+ * @returns {boolean}
+ */
+export function isValidAddressForNetwork(address: string, network: Network): boolean {
+  if (network === Network.EVM) {
+    return isValidEvmAddress(address);
+  } else if (network === Network.SUBSTRATE) {
+    return isValidSubstrateAddress(address);
+  } else if (network === Network.BITCOIN) {
+    return isValidBitcoinAddress(address);
+  }
+  return false;
 }
