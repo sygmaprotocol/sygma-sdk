@@ -2,19 +2,17 @@ import { FeeHandlerType } from '@buildwithsygma/core';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import { BN } from '@polkadot/util';
-import { isAddress } from '@polkadot/util-crypto';
 
 import type { SubstrateAssetTransferRequest } from '../fungible.js';
 import { createSubstrateFungibleAssetTransfer } from '../fungible.js';
 import { deposit, getBasicFee, getFeeHandler, getPercentageFee } from '../utils/index.js';
 
-jest.mock('@polkadot/util-crypto');
 jest.mock('../utils/index.js');
 
 describe('SubstrateFungibleAssetTransfer', () => {
   const transferRequest: SubstrateAssetTransferRequest = {
     sourceDomain: 5,
-    destinationDomain: 1337,
+    destinationDomain: 1337, //
     sourceNetworkProvider: {} as ApiPromise,
     resource: '0x0000000000000000000000000000000000000000000000000000000000000300',
     amount: BigInt(1000),
@@ -36,11 +34,10 @@ describe('SubstrateFungibleAssetTransfer', () => {
     expect(transfer.amount).toBe(BigInt(2000));
   });
 
-  test('should set the destination address', async () => {
-    (isAddress as unknown as jest.Mock).mockReturnValue(true);
+  test('should set another EVM destination address', async () => {
     const transfer = await createSubstrateFungibleAssetTransfer(transferRequest);
-    transfer.setDestinationAddress('5DAAnrj7VHTznn4X9W4g5aPKMhVt6T3QhuxD9aTy4bqdS7uN');
-    expect(transfer.destinationAddress).toBe('5DAAnrj7VHTznn4X9W4g5aPKMhVt6T3QhuxD9aTy4bqdS7uN');
+    transfer.setDestinationAddress('0x742d35Cc6634C0532925a3b844Bc454e4438f44e');
+    expect(transfer.destinationAddress).toBe('0x742d35Cc6634C0532925a3b844Bc454e4438f44e');
   });
 
   test('should calculate the basic fee', async () => {
