@@ -5,6 +5,7 @@
     "target": "es2020"
   },
   "include": ["./src/**/*.ts", "./test/**/*.ts", "substrate-asset-transfer.ts"],
+  "exclude": ["test/setupJest.js"],
   "ts-node": {
     "esm": true,
     "experimentalSpecifierResolution": "node"
