@@ -4,7 +4,9 @@
     "emitDeclarationOnly": true,
     "outDir": "types",
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "module": "CommonJS",
+    "target": "ESNext"
   },
   "exclude": ["test"]
 }
