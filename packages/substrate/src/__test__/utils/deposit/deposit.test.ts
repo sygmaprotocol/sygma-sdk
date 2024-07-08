@@ -5,6 +5,8 @@ import { numberToHex } from '@polkadot/util';
 
 import { createDestIdMultilocationData, deposit } from '../../../utils/index.js';
 
+process.env.SYGMA_ENV = Environment.LOCAL;
+
 describe('createDestIdMultilocationData', () => {
   it('should create multilocation data for LOCAL environment', () => {
     const address = '0x123abc';
@@ -42,8 +44,8 @@ describe('createDestIdMultilocationData', () => {
 });
 
 describe('deposit', () => {
-  process.env.SYGMA_ENV = Environment.LOCAL;
   it('should create a deposit transaction', () => {
+    process.env.SYGMA_ENV = Environment.LOCAL;
     const xcmMultiAssetId: XcmMultiAssetIdType = {
       concrete: {
         parents: 1,
