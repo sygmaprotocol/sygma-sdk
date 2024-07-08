@@ -42,6 +42,7 @@ describe('createDestIdMultilocationData', () => {
 });
 
 describe('deposit', () => {
+  process.env.SYGMA_ENV = Environment.LOCAL;
   it('should create a deposit transaction', () => {
     const xcmMultiAssetId: XcmMultiAssetIdType = {
       concrete: {
@@ -79,7 +80,7 @@ describe('deposit', () => {
       {
         parents: 0,
         interior: {
-          x3: [
+          x2: [
             {
               generalKey: [
                 (destinationAddress.length - 2) / 2,
