@@ -57,7 +57,7 @@ describe('deposit', () => {
     };
     const amount = '1000';
     const destinationDomainId = '1';
-    const destinationAddress = '0x123abc';
+    const destinationAddress = '0x7379676d610';
 
     const mockApi = {
       tx: {
@@ -79,9 +79,12 @@ describe('deposit', () => {
       {
         parents: 0,
         interior: {
-          x2: [
+          x3: [
             {
-              generalKey: [(destinationAddress.length - 2) / 2, destinationAddress.padEnd(66, '0')],
+              generalKey: [
+                (destinationAddress.length - 2) / 2,
+                '0x7379676d61000000000000000000000000000000000000000000000000000000',
+              ],
             },
             { generalKey: [1, numberToHex(Number(destinationDomainId)).padEnd(66, '0')] },
           ],
