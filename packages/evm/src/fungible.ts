@@ -96,8 +96,7 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     const sourceDomainConfig = this.config.getDomainConfig(this.source);
     const web3Provider = new Web3Provider(this.sourceNetworkProvider);
     const bridge = Bridge__factory.connect(sourceDomainConfig.bridge, web3Provider);
-    const { resourceId } = this.resource;
-    const handlerAddress = await bridge._resourceIDToHandlerAddress(resourceId);
+    const handlerAddress = await bridge._resourceIDToHandlerAddress(this.resource.resourceId);
     return utils.isAddress(handlerAddress) && handlerAddress !== constants.AddressZero;
   }
 

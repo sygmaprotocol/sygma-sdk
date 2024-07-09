@@ -484,7 +484,7 @@ __metadata:
   resolution: "@buildwithsygma/evm@workspace:packages/evm"
   dependencies:
     "@buildwithsygma/core": "workspace:^"
-    "@buildwithsygma/sygma-contracts": "npm:2.6.1"
+    "@buildwithsygma/sygma-contracts": "npm:^2.8.0"
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/bytes": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
@@ -569,6 +569,18 @@ __metadata:
   peerDependencies:
     ethers: ">= 5.0.0"
   checksum: 3955af36c816324d7e9c65fd7f8ea46d2c2c1c79bb476e511ef3df3d6248a10df745f3c5dde6d4a9d3e62b47bc0368cebc10ad63a4f59d7c03e7b9dccb3198ab
+  languageName: node
+  linkType: hard
+
+"@buildwithsygma/sygma-contracts@npm:^2.8.0":
+  version: 2.8.0
+  resolution: "@buildwithsygma/sygma-contracts@npm:2.8.0"
+  dependencies:
+    "@openzeppelin/contracts": "npm:4.5.0"
+    "@uniswap/v3-periphery": "npm:^1.4.4"
+  peerDependencies:
+    ethers: ">= 5.0.0"
+  checksum: eb4e7d619c4817e77acf3fb49e66dc2109ac4ffd7f100ce3f3df4b50ef624040e6759d482d1f2ff2123142bd61e7693302b9c66583f1eb6b13cea14778d20866
   languageName: node
   linkType: hard
 

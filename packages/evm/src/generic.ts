@@ -1,4 +1,9 @@
-import type { Domainlike, Eip1193Provider, EvmResource } from '@buildwithsygma/core';
+import type {
+  Domainlike,
+  Eip1193Provider,
+  EthereumConfig,
+  EvmResource,
+} from '@buildwithsygma/core';
 import { Config, Network, ResourceType } from '@buildwithsygma/core';
 import { Bridge__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
@@ -8,7 +13,6 @@ import type {
   ExtractAbiFunction,
   ExtractAbiFunctionNames,
 } from 'abitype';
-// import type { BaseTransferParams } from 'base-transfer';
 import { constants, ethers } from 'ethers';
 
 import { BaseTransfer } from './baseTransfer.js';
@@ -16,6 +20,7 @@ import { getFeeInformation } from './fee/getFeeInformation.js';
 import type { TransactionRequest } from './types.js';
 import { genericMessageTransfer } from './utils/index.js';
 import { createTransactionRequest } from './utils/transaction.js';
+import { createPermissionlessGenericDepositData } from './utils/helpers.js';
 /**
  * Required parameters for initiating
  * a generic message transfer request
@@ -108,11 +113,10 @@ class GenericMessageTransfer<
     ) {
       return false;
     }
-
     // Destination domain for a generic
     // transfer is only EVM supported for now
     // from EVM
-    const destinationDomain = this.config.getDomainConfig(this.destination);
+    const destinationDomain = this.config.getDomainConfig(this.destination) as EthereumConfig;
     if (destinationDomain.type !== Network.EVM) {
       return false;
     }
@@ -130,11 +134,7 @@ class GenericMessageTransfer<
       this.resource.resourceId,
     );
 
-    if (feeInformation.feeHandlerAddress === constants.AddressZero) {
-      return false;
-    }
-
-    return true;
+    return feeInformation.feeHandlerAddress !== constants.AddressZero;
   }
   /**
    * Sets the destination contract address
@@ -152,7 +152,7 @@ class GenericMessageTransfer<
     this.destinationContractAbi = contractAbi;
   }
   /**
-   * Sets the exectuion function name
+   * Sets the execution function name
    * @param {FunctionName} name
    */
   setExecutionFunctionName(name: FunctionName): void {
@@ -181,10 +181,20 @@ class GenericMessageTransfer<
     const contractInterface = new ethers.utils.Interface(
       JSON.stringify(this.destinationContractAbi),
     );
-    const executionData = contractInterface.encodeFunctionData(
-      this.functionName,
+
+    const functionName = Object.keys(contractInterface.functions).find(functionName => {
+      const withoutParamTypes = functionName.split('(');
+      const name = withoutParamTypes[0].toLowerCase();
+      return name === this.functionName.toLowerCase();
+    });
+
+    if (!functionName) throw new Error('Unable to find Function.');
+
+    const executionData = contractInterface._encodeParams(
+      contractInterface.functions[functionName].inputs,
       this.functionParameters as unknown[],
     );
+
     const executeFunctionSignature = contractInterface.getSighash(this.functionName);
     return { executionData, executeFunctionSignature };
   }
@@ -224,5 +234,16 @@ class GenericMessageTransfer<
     });
 
     return createTransactionRequest(transaction);
+  }
+
+  protected getDepositData(): string {
+    const { executeFunctionSignature, executionData } = this.prepareFunctionCallEncodings();
+    return createPermissionlessGenericDepositData(
+      executeFunctionSignature,
+      this.destinationContractAddress,
+      this.maxFee.toString(),
+      this.sourceAddress,
+      executionData,
+    );
   }
 }

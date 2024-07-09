@@ -65,6 +65,7 @@ export const executeDeposit = async (
   overrides?: ethers.PayableOverrides,
 ): Promise<PopulatedTransaction> => {
   const transactionSettings = {
+    // TODO: change this based on "twap"
     value: feeData.type == FeeHandlerType.PERCENTAGE ? 0 : feeData.fee,
     gasLimit: ASSET_TRANSFER_GAS_LIMIT,
   };
@@ -81,6 +82,7 @@ export const executeDeposit = async (
     feeData.fee ? BigNumber.from(feeData.fee).toHexString() : '0x00',
     payableOverrides,
   );
+
   return depositTransaction;
 };
 

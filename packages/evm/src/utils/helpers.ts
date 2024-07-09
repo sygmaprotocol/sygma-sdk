@@ -164,7 +164,7 @@ export const createPermissionlessGenericDepositData = (
     executeContractAddress.substr(2) + // bytes
     toHex(depositor.substr(2).length / 2, 1).substr(2) + // uint8
     depositor.substr(2) +
-    executionData.substr(2)
+    executionData.substr(10)
   ) // bytes
     .toLowerCase();
 };

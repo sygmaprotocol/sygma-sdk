@@ -5,12 +5,13 @@ import type {
   EvmResource,
   Eip1193Provider,
 } from '@buildwithsygma/core';
-import { providers } from 'ethers';
+import { providers, utils } from 'ethers';
 
 import { BasicFeeCalculator } from './fee/BasicFee.js';
 import { PercentageFeeCalculator } from './fee/PercentageFee.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
 import type { EvmFee } from './types.js';
+import { TwapFeeCalculator } from './fee/TwapFee.js';
 
 export interface BaseTransferParams {
   source: Domainlike;
@@ -27,6 +28,10 @@ export abstract class BaseTransfer {
   protected config: Config;
   protected source: Domain;
   protected resource: EvmResource;
+
+  protected getDepositData(): string {
+    return utils.formatBytes32String('');
+  }
 
   constructor(transfer: BaseTransferParams, config: Config) {
     this.sourceAddress = transfer.sourceAddress;
@@ -65,7 +70,8 @@ export abstract class BaseTransfer {
 
     const basicFeeCalculator = new BasicFeeCalculator();
     const percentageFeeCalculator = new PercentageFeeCalculator();
-    basicFeeCalculator.setNextHandler(percentageFeeCalculator);
+    const twapFeeCalculator = new TwapFeeCalculator();
+    basicFeeCalculator.setNextHandler(percentageFeeCalculator).setNextHandler(twapFeeCalculator);
 
     return await basicFeeCalculator.calculateFee({
       provider,
@@ -75,6 +81,7 @@ export abstract class BaseTransfer {
       resourceSygmaId: this.resource.resourceId,
       feeHandlerAddress,
       feeHandlerType,
+      depositData: this.getDepositData(),
     });
   }
   /**
