@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.11.1](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.11.0...sygma-sdk-core-v2.11.1) (2024-07-10)
+
+
+### Bug Fixes
+
+* broken release ([#401](https://github.com/sygmaprotocol/sygma-sdk/issues/401)) ([ac6aa0c](https://github.com/sygmaprotocol/sygma-sdk/commit/ac6aa0c66d5ff18e2f2dd0096c11a67aa1181eae))
+
 ## [2.11.0](https://github.com/sygmaprotocol/sygma-sdk/compare/sygma-sdk-core-v2.10.0...sygma-sdk-core-v2.11.0) (2024-07-04)
 
 
