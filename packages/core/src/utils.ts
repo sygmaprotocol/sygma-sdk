@@ -312,5 +312,6 @@ export function isValidAddressForNetwork(address: string, network: Network): boo
   } else if (network === Network.BITCOIN) {
     return isValidBitcoinAddress(address);
   }
-  return false;
+
+  throw new Error('Provided network is not supported');
 }
