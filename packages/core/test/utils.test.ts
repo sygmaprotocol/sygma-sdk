@@ -148,7 +148,9 @@ describe('Address Validation Utils', () => {
 
     it('should return false for an unsupported network', () => {
       const validAddress = '5F3sa2TJAWMqDhXG6jhV4N8ko9rC2WbCVx2YQ92FsXgnAUx2';
-      expect(isValidAddressForNetwork(validAddress, 'unsupportedNetwork' as Network)).toBe(false);
+      expect(() => isValidAddressForNetwork(validAddress, 'unsupportedNetwork' as Network)).toThrow(
+        'Provided network is not supported',
+      );
     });
   });
 });
