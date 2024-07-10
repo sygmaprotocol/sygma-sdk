@@ -45,7 +45,10 @@ export async function genericMessage(): Promise<void> {
     "store"
   >({
     gasLimit: BigInt(0),
-    functionParameters: [walletAddress as `0x${string}`, BigInt(5)],
+    functionParameters: [
+      "0xc86355Ef01291A2e31145cda94B69dB194F3F63c" as `0x${string}`,
+      BigInt(0x100),
+    ],
     functionName: "store",
     destinationContractAbi:
       sepoliaBase0x4E35021ec1B3Dc1279492B9140735c4Ad0dc4191,
@@ -59,10 +62,11 @@ export async function genericMessage(): Promise<void> {
   });
 
   const transaction = await transfer.buildTransaction();
-  console.log("transaction: ", transaction);
-
   const tx = await wallet.sendTransaction(transaction);
-  console.log(`Sent transaction: ${tx.hash}`);
+  console.log("Sent transaction: ", tx.hash);
+
+  await tx.wait();
+  console.log("Transaction Processed: ", tx.hash);
 }
 
 genericMessage()

@@ -79,7 +79,7 @@ export const executeDeposit = async (
     domainId,
     resourceId,
     depositData,
-    feeData.fee ? BigNumber.from(feeData.fee).toHexString() : '0x00',
+    '0x',
     payableOverrides,
   );
 
