@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import { createCrossChainContractCall } from "@buildwithsygma/evm";
 import { Wallet, ethers, providers } from "ethers";
-import { sepoliaBase0x4E35021ec1B3Dc1279492B9140735c4Ad0dc4191 } from "./contracts";
+import { sepoliaBase0x4bE595ab5A070663B314970Fc10C049BBA0ad489 } from "./contracts";
 import { Eip1193Provider } from "@buildwithsygma/core";
 import Web3HttpProvider from "web3-providers-http";
 
@@ -17,7 +17,7 @@ const DESTINATION_CHAIN_ID = 84532;
 const SEPOLIA_CHAIN_ID = 11155111;
 const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000000600";
-const EXECUTE_CONTRACT_ADDRESS = "0x4E35021ec1B3Dc1279492B9140735c4Ad0dc4191";
+const EXECUTE_CONTRACT_ADDRESS = "0x4bE595ab5A070663B314970Fc10C049BBA0ad489";
 const MAX_FEE = "3000000";
 const BASE_SEPOLIA_RPC_URL =
   process.env.BASE_SEPOLIA_RPC_URL || "https://sepolia.base.org";
@@ -33,7 +33,7 @@ export async function genericMessage(): Promise<void> {
   const walletAddress = await wallet.getAddress();
   const destinationStorageContract = new ethers.Contract(
     EXECUTE_CONTRACT_ADDRESS,
-    sepoliaBase0x4E35021ec1B3Dc1279492B9140735c4Ad0dc4191,
+    sepoliaBase0x4bE595ab5A070663B314970Fc10C049BBA0ad489,
     destinationProvider
   );
   const valueBeforeBridging =
@@ -41,17 +41,20 @@ export async function genericMessage(): Promise<void> {
   console.log(`Value before update: ${valueBeforeBridging}`);
 
   const transfer = await createCrossChainContractCall<
-    typeof sepoliaBase0x4E35021ec1B3Dc1279492B9140735c4Ad0dc4191,
+    typeof sepoliaBase0x4bE595ab5A070663B314970Fc10C049BBA0ad489,
     "store"
   >({
     gasLimit: BigInt(0),
     functionParameters: [
-      "0xc86355Ef01291A2e31145cda94B69dB194F3F63c" as `0x${string}`,
-      BigInt(0x100),
-    ],
+      "0x98729c03c4D5e820F5e8c45558ae07aE63F97461" as `0x${string}`,
+      BigInt(0x100) as any,
+      // the bridge executor add first parameter by
+      // itself so I had to type this as any
+      // TODO: find a workaround and keep strict typing
+    ] as any,
     functionName: "store",
     destinationContractAbi:
-      sepoliaBase0x4E35021ec1B3Dc1279492B9140735c4Ad0dc4191,
+      sepoliaBase0x4bE595ab5A070663B314970Fc10C049BBA0ad489,
     destinationContractAddress: EXECUTE_CONTRACT_ADDRESS,
     maxFee: BigInt(MAX_FEE),
     source: SEPOLIA_CHAIN_ID,
