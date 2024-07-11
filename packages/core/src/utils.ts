@@ -269,7 +269,7 @@ export function isValidSubstrateAddress(address: string): boolean {
     encodeAddress(isHex(address) ? hexToU8a(address) : decodeAddress(address));
     return true;
   } catch (error) {
-    throw new Error(`Invalid Substrate address`);
+    return false;
   }
 }
 
@@ -279,9 +279,7 @@ export function isValidSubstrateAddress(address: string): boolean {
  * @returns {boolean}
  */
 export function isValidEvmAddress(address: string): boolean {
-  if (ethers.utils.isAddress(address)) return true;
-
-  throw new Error(`Invalid EVM address`);
+  return !!ethers.utils.isAddress(address);
 }
 
 /**
@@ -294,7 +292,7 @@ export function isValidBitcoinAddress(address: string): boolean {
     bitcoin.address.toOutputScript(address, bitcoin.networks.bitcoin);
     return true;
   } catch (error) {
-    throw new Error(`Invalid Bitcoin address`);
+    return false;
   }
 }
 

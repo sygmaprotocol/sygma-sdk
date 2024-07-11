@@ -29,8 +29,7 @@
     "build:typedocs:markdown": "typedoc --options typedoc.markdown.json",
     "build:typedocs:asjson": "typedoc --options typedoc.asjson.json",
     "lint": "eslint 'src/**/*.ts'",
-    "lint:fix": "yarn run lint --fix",
-    "run:nodes": "docker-compose -f docker-compose.yml up"
+    "lint:fix": "yarn run lint --fix"
   },
   "keywords": [
     "sygma",

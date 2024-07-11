@@ -100,9 +100,9 @@ describe('Address Validation Utils', () => {
       expect(isValidSubstrateAddress(validAddress)).toBe(true);
     });
 
-    it('should throw an error for an invalid Substrate address', () => {
+    it('should return false for an invalid Substrate address', () => {
       const invalidAddress = 'invalidAddress';
-      expect(() => isValidSubstrateAddress(invalidAddress)).toThrow('Invalid Substrate address');
+      expect(isValidSubstrateAddress(invalidAddress)).toBe(false);
     });
   });
 
@@ -112,9 +112,9 @@ describe('Address Validation Utils', () => {
       expect(isValidEvmAddress(validAddress)).toBe(true);
     });
 
-    it('should throw an error for an invalid EVM address', () => {
+    it('should return false for an invalid EVM address', () => {
       const invalidAddress = 'invalidAddress';
-      expect(() => isValidEvmAddress(invalidAddress)).toThrow('Invalid EVM address');
+      expect(isValidEvmAddress(invalidAddress)).toBe(false);
     });
   });
 
@@ -124,9 +124,9 @@ describe('Address Validation Utils', () => {
       expect(isValidBitcoinAddress(validAddress)).toBe(true);
     });
 
-    it('should throw an error for an invalid Bitcoin address', () => {
+    it('should return false for an invalid Bitcoin address', () => {
       const invalidAddress = 'invalidAddress';
-      expect(() => isValidBitcoinAddress(invalidAddress)).toThrow('Invalid Bitcoin address');
+      expect(isValidBitcoinAddress(invalidAddress)).toBe(false);
     });
   });
 
