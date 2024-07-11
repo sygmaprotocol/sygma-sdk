@@ -123,7 +123,6 @@ class GenericMessageTransfer<
       destinationDomain.id,
       this.resource.resourceId,
     );
-
     return feeInformation.feeHandlerAddress !== constants.AddressZero;
   }
   /**
