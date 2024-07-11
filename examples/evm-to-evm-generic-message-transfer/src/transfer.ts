@@ -47,11 +47,9 @@ export async function genericMessage(): Promise<void> {
     gasLimit: BigInt(0),
     functionParameters: [
       "0x98729c03c4D5e820F5e8c45558ae07aE63F97461" as `0x${string}`,
-      BigInt(0x100) as any,
-      // the bridge executor add first parameter by
-      // itself so I had to type this as any
-      // TODO: find a workaround and keep strict typing
-    ] as any,
+      "0x98729c03c4D5e820F5e8c45558ae07aE63F97461" as `0x${string}`,
+      BigInt(100),
+    ],
     functionName: "store",
     destinationContractAbi:
       sepoliaBase0x4bE595ab5A070663B314970Fc10C049BBA0ad489,

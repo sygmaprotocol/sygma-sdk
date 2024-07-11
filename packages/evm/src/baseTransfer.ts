@@ -9,9 +9,9 @@ import { providers, utils } from 'ethers';
 
 import { BasicFeeCalculator } from './fee/BasicFee.js';
 import { PercentageFeeCalculator } from './fee/PercentageFee.js';
+import { TwapFeeCalculator } from './fee/TwapFee.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
 import type { EvmFee } from './types.js';
-import { TwapFeeCalculator } from './fee/TwapFee.js';
 
 export interface BaseTransferParams {
   source: Domainlike;

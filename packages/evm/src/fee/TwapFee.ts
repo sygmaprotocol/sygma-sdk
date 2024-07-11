@@ -1,8 +1,11 @@
-import { EvmFee } from 'types';
-import { BaseEvmTransferFeeCalculator, EvmFeeCalculationParams } from './types';
-import { TwapGenericFeeHandler__factory } from '@buildwithsygma/sygma-contracts';
 import { FeeHandlerType } from '@buildwithsygma/core';
+import { TwapGenericFeeHandler__factory } from '@buildwithsygma/sygma-contracts';
 import { utils } from 'ethers';
+
+import type { EvmFee } from '../types.js';
+
+import { BaseEvmTransferFeeCalculator } from './types.js';
+import type { EvmFeeCalculationParams } from './types.js';
 
 export class TwapFeeCalculator extends BaseEvmTransferFeeCalculator {
   constructor() {

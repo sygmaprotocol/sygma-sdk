@@ -18,9 +18,9 @@ import { constants, ethers } from 'ethers';
 import { BaseTransfer } from './baseTransfer.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
 import type { TransactionRequest } from './types.js';
+import { createPermissionlessGenericDepositData, toHex } from './utils/helpers.js';
 import { genericMessageTransfer } from './utils/index.js';
 import { createTransactionRequest } from './utils/transaction.js';
-import { createPermissionlessGenericDepositData, toHex } from './utils/helpers.js';
 
 /**
  * Required parameters for initiating
@@ -183,26 +183,30 @@ class GenericMessageTransfer<
       JSON.stringify(this.destinationContractAbi),
     );
 
-    // const functionName = Object.keys(contractInterface.functions).find(functionName => {
-    //   const withoutParamTypes = functionName.split('(');
-    //   const name = withoutParamTypes[0].toLowerCase();
-    //   return name === this.functionName.toLowerCase();
-    // });
+    const executionData = ``;
+    const defaultPadding = 32;
 
-    // if (!functionName) throw new Error('Unable to find Function.');
-
-    // const executionData = contractInterface._encodeParams(
-    //   contractInterface.functions[functionName].inputs,
-    //   this.functionParameters as unknown[],
-    // );
-
-    let executionData = ``;
-    if (Array.isArray(this.functionParameters)) {
-      executionData = this.functionParameters
-        .map((value: unknown) => {
-          return toHex(value as unknown as any, 32).substring(2);
-        })
-        .join('');
+    // Slice first param, it should be always depositer
+    // address in the contract
+    if (Array.isArray(this.functionParameters.slice(1))) {
+      this.functionParameters.map(param => {
+        const paramType = typeof param;
+        switch (paramType) {
+          case 'bigint':
+            return toHex((param as bigint).toString(), defaultPadding);
+          case 'string':
+            return toHex((param as string).toString(), defaultPadding);
+          case 'number':
+            return toHex((param as number).toString(), defaultPadding);
+          case 'boolean':
+            return toHex(Number(param as boolean), defaultPadding);
+          case 'object':
+          case 'undefined':
+          case 'function':
+          case 'symbol':
+            throw new Error('Unsupported parameter type.');
+        }
+      });
     }
 
     const executeFunctionSignature = contractInterface.getSighash(this.functionName);
