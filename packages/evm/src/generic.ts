@@ -186,10 +186,10 @@ class GenericMessageTransfer<
     const executionData = ``;
     const defaultPadding = 32;
 
-    // Slice first param, it should be always depositer
-    // address in the contract
-    if (Array.isArray(this.functionParameters.slice(1))) {
-      this.functionParameters.map(param => {
+    if (Array.isArray(this.functionParameters)) {
+      // Slice first param, it should be always depositer
+      // address in the contract
+      this.functionParameters.slice(1).map((param: unknown) => {
         const paramType = typeof param;
         switch (paramType) {
           case 'bigint':
