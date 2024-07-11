@@ -10,7 +10,8 @@ import type {
 } from 'abitype';
 import { constants, ethers } from 'ethers';
 
-import { BaseTransfer, BaseTransferParams } from './baseTransfer.js';
+import type { BaseTransferParams } from './baseTransfer.js';
+import { BaseTransfer } from './baseTransfer.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
 import type { TransactionRequest } from './types.js';
 import { createPermissionlessGenericDepositData, toHex } from './utils/helpers.js';
