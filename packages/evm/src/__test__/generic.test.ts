@@ -1,16 +1,19 @@
-import { Config, Eip1193Provider, Network, ResourceType } from '@buildwithsygma/core';
+import type { Eip1193Provider } from '@buildwithsygma/core';
+import { Config, Network, ResourceType } from '@buildwithsygma/core';
+
 import { createCrossChainContractCall } from '../generic.js';
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 jest.mock('@buildwithsygma/core', () => ({
   ...jest.requireActual('@buildwithsygma/core'),
   Config: jest.fn(),
 }));
-
+// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 jest.mock('@ethersproject/providers', () => ({
   ...jest.requireActual('@ethersproject/providers'),
   Web3Provider: jest.fn(),
 }));
-
+// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 jest.mock('@buildwithsygma/sygma-contracts', () => ({
   ...jest.requireActual('@buildwithsygma/sygma-contracts'),
   BasicFeeHandler__factory: {
