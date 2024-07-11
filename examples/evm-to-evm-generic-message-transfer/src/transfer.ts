@@ -26,7 +26,7 @@ const SEPOLIA_RPC_URL =
 
 const sourceProvider = new Web3HttpProvider(SEPOLIA_RPC_URL);
 const ethersProvider = new ethers.providers.Web3Provider(sourceProvider);
-const wallet = new Wallet(privateKey ?? "", ethersProvider);
+const wallet = new Wallet(privateKey, ethersProvider);
 const destinationProvider = new providers.JsonRpcProvider(BASE_SEPOLIA_RPC_URL);
 
 export async function genericMessage(): Promise<void> {
