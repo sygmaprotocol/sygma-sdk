@@ -146,10 +146,31 @@ describe('Address Validation Utils', () => {
       expect(isValidAddressForNetwork(validAddress, Network.BITCOIN)).toBe(true);
     });
 
-    it('should return false for an unsupported network', () => {
+    it('should throw an error for an unsupported network', () => {
       const validAddress = '5F3sa2TJAWMqDhXG6jhV4N8ko9rC2WbCVx2YQ92FsXgnAUx2';
       expect(() => isValidAddressForNetwork(validAddress, 'unsupportedNetwork' as Network)).toThrow(
         'Provided network is not supported',
+      );
+    });
+
+    it('should throw an error for the wrong EVM address', () => {
+      const invalidAddress = 'invalidAddress';
+      expect(() => isValidAddressForNetwork(invalidAddress, Network.EVM)).toThrow(
+        'Invalid EVM Address',
+      );
+    });
+
+    it('should throw an error for the wrong Substrate address', () => {
+      const invalidAddress = 'invalidAddress';
+      expect(() => isValidAddressForNetwork(invalidAddress, Network.SUBSTRATE)).toThrow(
+        'Invalid Substrate Address',
+      );
+    });
+
+    it('should throw an error for the wrong Bitcoin address', () => {
+      const invalidAddress = 'invalidAddress';
+      expect(() => isValidAddressForNetwork(invalidAddress, Network.BITCOIN)).toThrow(
+        'Invalid Bitcoin Address',
       );
     });
   });

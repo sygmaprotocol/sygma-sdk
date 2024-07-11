@@ -303,13 +303,17 @@ export function isValidBitcoinAddress(address: string): boolean {
  * @returns {boolean}
  */
 export function isValidAddressForNetwork(address: string, network: Network): boolean {
-  if (network === Network.EVM) {
-    return isValidEvmAddress(address);
-  } else if (network === Network.SUBSTRATE) {
-    return isValidSubstrateAddress(address);
-  } else if (network === Network.BITCOIN) {
-    return isValidBitcoinAddress(address);
+  switch (network) {
+    case Network.EVM:
+      if (isValidEvmAddress(address)) return true;
+      throw new Error('Invalid EVM Address');
+    case Network.SUBSTRATE:
+      if (isValidSubstrateAddress(address)) return true;
+      throw new Error('Invalid Substrate Address');
+    case Network.BITCOIN:
+      if (isValidBitcoinAddress(address)) return true;
+      throw new Error('Invalid Bitcoin Address');
+    default:
+      throw new Error('Provided network is not supported');
   }
-
-  throw new Error('Provided network is not supported');
 }
