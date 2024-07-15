@@ -1,140 +1,118 @@
-import dotenv from 'dotenv';
-import { createBitcoinFungibleTransfer } from '@buildwithsygma/btc';
-import { ECPairFactory, ECPairAPI } from 'ecpair';
+import type { BaseTransferParams } from "@buildwithsygma/btc";
 import {
-  initEccLib,
-  networks,
-  payments,
-  Psbt
-} from "bitcoinjs-lib";
-import * as tinysecp from 'tiny-secp256k1';
-import { broadcastTransaction, calculateFee, getFeeEstimates, getTweakedSigner, toXOnly } from './utils';
+  createBitcoinFungibleTransfer,
+  TypeOfAddress,
+} from "@buildwithsygma/btc";
+import { BIP32Factory } from "bip32";
+import { mnemonicToSeed } from "bip39";
+import { crypto, initEccLib, networks } from "bitcoinjs-lib";
+import { toXOnly } from "bitcoinjs-lib/src/psbt/bip371";
+import dotenv from "dotenv";
+import * as tinysecp from "tiny-secp256k1";
+import { broadcastTransaction } from "./utils";
 
 dotenv.config();
 
+const SOURCE_DOMAIN_CAIPID = process.env.SOURCE_DOMAIN_CAIPID;
 const DESTINATION_ADDRESS = process.env.DESTINATION_ADDRESS;
-const DESTINATION_DOMAIN_ID = Number(process.env.DESTINATION_DOMAIN_ID);
-const BLOCKSTREAM_URL = process.env.BLOCKSTREAM_URL;
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const DESTINATION_DOMAIN_CHAIN_ID = Number(
+  process.env.DESTINATION_DOMAIN_CHAIN_ID,
+);
 const RESOURCE_ID = process.env.RESOURCE_ID;
-const SOURCE_DOMAIN_CAIPID = process.env.SOURCE_DOMAIN_CAIPID
-const FEE_ADDRESS = 'tb1p0r2w3ugreaggd7nakw2wd04up6rl8k0cce8eetxwmhnrelgqx87s4zdkd7'
-const FEE_AMOUNT = 1000000;
+const BLOCKSTREAM_URL = process.env.BLOCKSTREAM_URL;
 const EXPLORER_URL = process.env.EXPLORER_URL;
-const FIXED_TRANSACTION_FEE = Number(process.env.FIXED_TRANSACTION_FEE);
+const MNEMONIC = process.env.MNEMONIC;
+const MINER_FEE = Number(process.env.MINER_FEE);
+const UTXO_TX_ID = process.env.UTXO_TX_ID;
+const UTXO_AMOUNT = Number(process.env.UTXO_AMOUNT);
+const UTXO_OUTPUT_INDEX = Number(process.env.UTXO_OUTPUT_INDEX);
+const DERIVATION_PATH = process.env.DERIVATION_PATH;
+const CHANGE_ADDRESS = process.env.CHANGE_ADDRESS;
 
-if (!DESTINATION_ADDRESS || !PRIVATE_KEY || !DESTINATION_DOMAIN_ID || !BLOCKSTREAM_URL || !RESOURCE_ID || !SOURCE_DOMAIN_CAIPID) {
-  throw new Error('Please provided needed env variavles in .env file');
+// TODO: remove this log
+console.table({
+  SOURCE_DOMAIN_CAIPID,
+  DESTINATION_ADDRESS,
+  DESTINATION_DOMAIN_CHAIN_ID,
+  RESOURCE_ID,
+  MNEMONIC,
+  MINER_FEE,
+  UTXO_TX_ID,
+  UTXO_AMOUNT,
+  UTXO_OUTPUT_INDEX,
+  DERIVATION_PATH,
+  CHANGE_ADDRESS,
+  BLOCKSTREAM_URL,
+});
+
+if (
+  !SOURCE_DOMAIN_CAIPID ||
+  !DESTINATION_ADDRESS ||
+  !DESTINATION_DOMAIN_CHAIN_ID ||
+  !RESOURCE_ID ||
+  !MNEMONIC ||
+  !MINER_FEE ||
+  !UTXO_TX_ID ||
+  !UTXO_AMOUNT ||
+  !UTXO_OUTPUT_INDEX ||
+  !DERIVATION_PATH ||
+  !CHANGE_ADDRESS ||
+  !BLOCKSTREAM_URL
+) {
+  throw new Error(
+    "Please provided needed env variables needed into the .env file",
+  );
 }
 
-type InputData = {
-  hash: string;
-  index: number;
-  witnessUtxo: { value: number; script: Buffer };
-  tapInternalKey: Buffer;
-};
+initEccLib(tinysecp);
+const bip32 = BIP32Factory(tinysecp);
 
 async function btcToEvmTransfer(): Promise<void> {
   // pre setup
   const testnet = networks.testnet;
-  initEccLib(tinysecp);
-  const ECPair: ECPairAPI = ECPairFactory(tinysecp);
+  console.log("Transfer BTC to EVM");
+  const seed = await mnemonicToSeed(MNEMONIC);
+  const rootKey = bip32.fromSeed(seed, testnet);
+  const derivedNode = rootKey.derivePath(DERIVATION_PATH);
 
-  console.log('Transfer BTC to EVM');
+  // Note: default example is going to run P2TR transfer
+  const publicKeyDropedDERHeader = toXOnly(derivedNode.publicKey);
 
-  // tweaking signer
-  const { tweakedSigner, publicKey } = getTweakedSigner(ECPair, tinysecp, testnet, PRIVATE_KEY!);
-
-  // Generate an address from the tweaked public key
-  const p2pktr = payments.p2tr({
-    pubkey: toXOnly(tweakedSigner.publicKey),
-    network: testnet,
-  });
-
-  const p2pktrAdddress = p2pktr.address as string;
-  // address here should match the one that you generated for your private key
-  console.log('Taproot address to use', p2pktrAdddress)
-
-  const feeEstimatesPerBlockConfirmation = await getFeeEstimates(BLOCKSTREAM_URL!);
-
-  /**
-   * Get UTXO to use for the transfer
-   * You can get UTXO from any source, for this example we are using Blockstream API
-   * Add the txid and vout of the UTXO to the inputData. Also add the value of the UTXO to the witnessUtxo value field
-   */
-
-  const inputData: InputData = {
-    hash: '', // utxo tx id
-    index: 0, // utxo index
-    witnessUtxo: { value: 0, script: p2pktr.output! }, // utxo value
-    tapInternalKey: toXOnly(publicKey)
-  };
-
-  const params = {
-    sourceDomain: SOURCE_DOMAIN_CAIPID,
-    destinationAddress: DESTINATION_ADDRESS,
-    amount: inputData.witnessUtxo.value,
-    resource: RESOURCE_ID
-  }
-
-  const transfer = await createBitcoinFungibleTransfer(params);
-
-  const transferRequestData = transfer.getBTCTransferRequest();
-
-  const psbt = new Psbt({ network: testnet });
-
-  // encoded data
-  const data = Buffer.from(
-    `${DESTINATION_ADDRESS}_${DESTINATION_DOMAIN_ID}`, // EMV ADDRESS + DESTINATION DOMAIN ID HERE
-    "utf8",
+  const tweakedSigner = derivedNode.tweak(
+    crypto.taggedHash("TapTweak", publicKeyDropedDERHeader),
   );
 
-  const embed = payments.embed({ data: [data] });
-
-  const amount = transferRequestData.amount - FIXED_TRANSACTION_FEE;
-  const amountMinusBridgeFee = amount - FEE_AMOUNT;
-
-  const outputEncodedData = {
-    script: embed.output!,
-    value: 0,
+  const transferParams: BaseTransferParams = {
+    source: SOURCE_DOMAIN_CAIPID,
+    destination: DESTINATION_DOMAIN_CHAIN_ID,
+    destinationAddress: DESTINATION_ADDRESS,
+    amount: 0,
+    resource: RESOURCE_ID,
+    utxoTxId: UTXO_TX_ID,
+    utxoOutputIndex: UTXO_OUTPUT_INDEX,
+    utxoAmount: UTXO_AMOUNT,
+    publicKey: tweakedSigner.publicKey,
+    typeOfAddress: TypeOfAddress.P2TR,
+    minerFee: MINER_FEE,
+    network: testnet,
+    changeAddress: CHANGE_ADDRESS,
   };
-  
-  const outputData = {
-    address: transferRequestData.depositAddress,
-    value: amountMinusBridgeFee
-  };
-  
-  const outputDataFee = {
-    address: FEE_ADDRESS,
-    value: FEE_AMOUNT
-  };
-  
-  const feeValue = calculateFee(psbt, feeEstimatesPerBlockConfirmation, inputData, outputEncodedData, outputData, outputDataFee, tweakedSigner);
 
-  const psbtWithFee = new Psbt({ network: testnet });
+  const transfer = await createBitcoinFungibleTransfer(transferParams);
 
-  const amountWitFeeApplied = amount - feeValue - FEE_AMOUNT;
-  
-  psbtWithFee.addInput(inputData);
+  const psbt = transfer.getTransferTransaction();
 
-  psbtWithFee.addOutput(outputEncodedData);
+  console.log("Signing the transaction");
 
-  psbtWithFee.addOutput(outputDataFee);
+  psbt.signInput(0, tweakedSigner);
+  psbt.finalizeAllInputs();
 
-  psbtWithFee.addOutput({
-    address: transferRequestData.depositAddress,
-    value: amountWitFeeApplied
-  });
+  console.log("Extracting the transaction");
+  const tx = psbt.extractTransaction(true);
+  console.log("Transaction hex", tx.toHex());
 
-  psbtWithFee.signInput(0, tweakedSigner);
-  psbtWithFee.finalizeAllInputs();
-
-  const tx = psbtWithFee.extractTransaction(true);
-
-  console.log(`Broadcasting Transaction Hex: ${tx.toHex()}`);
-  const txid = await broadcastTransaction(BLOCKSTREAM_URL!, tx.toHex());
-
-  console.log(`Transaction ID: ${EXPLORER_URL}/${txid}`);
+  const txId = await broadcastTransaction(BLOCKSTREAM_URL, tx.toHex());
+  console.log("Transaction broadcasted", `${EXPLORER_URL}/tx/${txId}`);
 }
 
-btcToEvmTransfer().finally(() => { })
+btcToEvmTransfer().finally(() => {});

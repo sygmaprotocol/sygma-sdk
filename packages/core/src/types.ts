@@ -31,6 +31,7 @@ export type Domain = {
   iconUrl?: string;
   type: Network;
   parachainId?: ParachainId;
+  feeAddress?: string;
 };
 
 export type Resource = EvmResource | SubstrateResource | BitcoinResource;
@@ -78,6 +79,7 @@ export type BitcoinResource = BaseResource & {
   address: string;
   script: string;
   tweak: string;
+  feeAmount?: number;
 };
 
 export type SubstrateResource = BaseResource & {
@@ -136,6 +138,10 @@ export interface SubstrateConfig extends BaseConfig<Network.SUBSTRATE> {
   parachainId: ParachainId;
 }
 
+export interface BitcoinConfig extends BaseConfig<Network.BITCOIN> {
+  feeAddress: string;
+}
+
 export type IndexerRoutesResponse = { routes: RouteIndexerType[] };
 
 export type Handler = {
@@ -144,7 +150,7 @@ export type Handler = {
 };
 
 export interface SygmaConfig {
-  domains: Array<EthereumConfig | SubstrateConfig>;
+  domains: Array<EthereumConfig | SubstrateConfig | BitcoinConfig>;
 }
 
 export type RouteIndexerType = {

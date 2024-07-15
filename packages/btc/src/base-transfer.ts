@@ -1,24 +1,31 @@
 import type { BitcoinResource } from '@buildwithsygma/core/src';
-import type { Config, Domain } from '@buildwithsygma/core/types';
+import type { BitcoinConfig, Config, Domain } from '@buildwithsygma/core/types';
 import type { BaseTransferParams } from 'types';
 
 export abstract class BaseTransfer {
   protected destinationAddress: string;
-  protected amount: bigint;
+  protected amount: number;
   protected config: Config;
   protected resource: BitcoinResource;
   protected sourceDomain: Domain;
+  protected destinationDomain: Domain;
+  protected feeAmount: number;
+  protected feeAddress: string;
 
   constructor(transfer: BaseTransferParams, config: Config) {
     this.destinationAddress = transfer.destinationAddress;
     this.amount = transfer.amount;
-    this.sourceDomain = config.getDomain(transfer.sourceDomain);
+    this.sourceDomain = config.getDomain(transfer.source);
+    this.destinationDomain = config.getDomain(transfer.destination);
+
+    this.feeAddress = (this.sourceDomain as BitcoinConfig).feeAddress;
 
     const resources = config.getResources(this.sourceDomain) as BitcoinResource[];
     const resource = this.findResource(resources, transfer.resource);
 
     if (resource) {
       this.resource = resource;
+      this.feeAmount = resource.feeAmount as number;
     } else {
       throw new Error('Resource not found.');
     }

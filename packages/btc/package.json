@@ -58,6 +58,7 @@
     "typescript": "5.0.4"
   },
   "dependencies": {
-    "@buildwithsygma/core": "workspace:^"
+    "@buildwithsygma/core": "workspace:^",
+    "bitcoinjs-lib": "^6.1.6"
   }
 }
