@@ -40,7 +40,6 @@ export function getPsbt(
   depositAddress: string,
   feeAmount: number,
 ): BitcoinTransferRequest {
-  console.log("params", params);
   if (!['P2WPKH', 'P2TR'].includes(params.typeOfAddress)) {
     throw new Error('Unsuported address type');
   }
