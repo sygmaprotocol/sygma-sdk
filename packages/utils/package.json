@@ -61,6 +61,7 @@
     "@buildwithsygma/substrate": "workspace:^",
     "@buildwithsygma/sygma-contracts": "2.6.1",
     "@polkadot/api": "^11.2.1",
+    "@polkadot/rpc-provider": "^12.2.1",
     "@polkadot/types": "^11.2.1",
     "@polkadot/util": "^12.6.2",
     "web3-providers-http": "1.10.4"

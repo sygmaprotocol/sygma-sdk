@@ -1,5 +1,5 @@
-import { Config } from './config/config.js';
-import { Domainlike, EvmResource, Domain, SubstrateResource } from './types.js';
+import type { Config } from './config/config.js';
+import type { Domainlike, EvmResource, Domain, SubstrateResource } from './types.js';
 
 export interface BaseTransferParams {
   source: Domainlike;
@@ -62,8 +62,9 @@ export abstract class BaseTransfer {
    * the bridge
    * @returns {boolean}
    */
+  // eslint-disable-next-line @typescript-eslint/require-await
   async isValidTransfer(): Promise<boolean> {
-    return false;
+    throw new Error('Method not implemented.');
   }
   /**
    * Set resource to be transferred

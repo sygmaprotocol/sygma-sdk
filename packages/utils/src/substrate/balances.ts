@@ -1,9 +1,8 @@
+import type { SubstrateResource } from '@buildwithsygma/core';
 import { ApiPromise } from '@polkadot/api';
 import { WsProvider } from '@polkadot/rpc-provider';
-import type { SubstrateResource } from '@buildwithsygma/core';
 import type { Option } from '@polkadot/types';
-import type { AssetBalance } from '@polkadot/types/interfaces';
-import type { AccountData, AccountInfo } from '@polkadot/types/interfaces';
+import type { AssetBalance, AccountData, AccountInfo } from '@polkadot/types/interfaces';
 
 /**
  * Retrieves the asset balance of a given account.

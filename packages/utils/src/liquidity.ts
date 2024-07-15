@@ -1,13 +1,10 @@
-import { createEvmFungibleAssetTransfer, getEvmHandlerBalance } from '@buildwithsygma/evm';
-import {
-  Network,
-  ResourceType,
-  EvmResource,
-  SubstrateResource,
-  Eip1193Provider,
-} from '@buildwithsygma/core';
-import { createSubstrateFungibleAssetTransfer } from '@buildwithsygma/substrate';
+import type { EvmResource, SubstrateResource, Eip1193Provider } from '@buildwithsygma/core';
+import { Network, ResourceType } from '@buildwithsygma/core';
+import type { createEvmFungibleAssetTransfer } from '@buildwithsygma/evm';
+import { getEvmHandlerBalance } from '@buildwithsygma/evm';
+import type { createSubstrateFungibleAssetTransfer } from '@buildwithsygma/substrate';
 import { HttpProvider } from 'web3-providers-http';
+
 import { getSubstrateHandlerBalance } from './substrate/balances.js';
 
 export async function hasEnoughLiquidity(
@@ -25,7 +22,7 @@ export async function hasEnoughLiquidity(
   if (!handler) return false;
 
   switch (destination.type) {
-    case Network.EVM:
+    case Network.EVM: {
       const evmResource = domainConfig.resources.find(
         resource => transferResource.resourceId === resource.resourceId,
       ) as EvmResource;
@@ -42,7 +39,8 @@ export async function hasEnoughLiquidity(
       }
 
       return true;
-    case Network.SUBSTRATE:
+    }
+    case Network.SUBSTRATE: {
       const substrateResource = domainConfig.resources.find(
         resource => transferResource.resourceId === resource.resourceId,
       ) as SubstrateResource;
@@ -58,6 +56,7 @@ export async function hasEnoughLiquidity(
       }
 
       return true;
+    }
     default:
       return false;
   }

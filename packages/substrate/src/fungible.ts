@@ -1,10 +1,9 @@
 import type { BaseTransferParams, SubstrateResource } from '@buildwithsygma/core';
-import { Config, FeeHandlerType, ResourceType } from '@buildwithsygma/core';
+import { Config, FeeHandlerType, ResourceType, BaseTransfer } from '@buildwithsygma/core';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import { BN } from '@polkadot/util';
 
-import { BaseTransfer } from '@buildwithsygma/core';
 import type { SubstrateFee } from './types.js';
 import { getBasicFee, getFeeHandler, getPercentageFee, deposit } from './utils/index.js';
 
