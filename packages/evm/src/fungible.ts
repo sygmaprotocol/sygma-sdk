@@ -1,11 +1,10 @@
-import type { Domainlike, Eip1193Provider, EvmResource } from '@buildwithsygma/core';
-import { SecurityModel, Config, FeeHandlerType } from '@buildwithsygma/core';
+import type { BaseTransferParams, Eip1193Provider, EvmResource } from '@buildwithsygma/core';
+import { SecurityModel, Config, FeeHandlerType, BaseTransfer } from '@buildwithsygma/core';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber, constants, providers, utils, type PopulatedTransaction } from 'ethers';
 import type { EvmFee, TransactionRequest } from 'types.js';
 
-import { BaseTransfer } from './base-transfer.js';
 import { BasicFeeCalculator } from './fee/BasicFee.js';
 import { PercentageFeeCalculator } from './fee/PercentageFee.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
@@ -13,16 +12,13 @@ import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
 import { erc20Transfer } from './utils/depositFns.js';
 import { createTransactionRequest } from './utils/transaction.js';
 
-type EvmFungibleTransferRequest = {
-  source: Domainlike;
-  destination: Domainlike;
+interface EvmFungibleTransferRequest extends BaseTransferParams {
   sourceAddress: string;
   sourceNetworkProvider: Eip1193Provider;
-  resource: string | EvmResource;
   amount: bigint;
   destinationAddress: string;
   securityModel?: SecurityModel;
-};
+}
 
 /**
  * @internal only
@@ -87,14 +83,33 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
   protected destinationAddress: string;
   protected securityModel: SecurityModel;
   protected _amount: bigint;
+  protected sourceNetworkProvider: Eip1193Provider;
 
   get amount(): bigint {
     return this._amount;
   }
 
+  public setResource(resource: EvmResource): void {
+    this._resource = resource;
+  }
+
+  public getSourceNetworkProvider(): Eip1193Provider {
+    return this.sourceNetworkProvider;
+  }
+
+  async isValidTransfer(): Promise<boolean> {
+    const sourceDomainConfig = this.config.getDomainConfig(this.source);
+    const web3Provider = new Web3Provider(this.sourceNetworkProvider);
+    const bridge = Bridge__factory.connect(sourceDomainConfig.bridge, web3Provider);
+    const { resourceId } = this.resource;
+    const handlerAddress = await bridge._resourceIDToHandlerAddress(resourceId);
+    return utils.isAddress(handlerAddress) && handlerAddress !== constants.AddressZero;
+  }
+
   constructor(transfer: EvmFungibleTransferRequest, config: Config) {
     super(transfer, config);
     this._amount = transfer.amount;
+    this.sourceNetworkProvider = transfer.sourceNetworkProvider;
     this.destinationAddress = transfer.destinationAddress;
     this.securityModel = transfer.securityModel ?? SecurityModel.MPC;
   }
@@ -155,8 +170,9 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     const sourceDomainConfig = this.config.getDomainConfig(this.source);
     const bridge = Bridge__factory.connect(sourceDomainConfig.bridge, provider);
     const handlerAddress = await bridge._resourceIDToHandlerAddress(this.resource.resourceId);
+    const resource = this.resource as EvmResource;
 
-    const erc20 = ERC20__factory.connect(this.resource.address, provider);
+    const erc20 = ERC20__factory.connect(resource.address, provider);
     const fee = await this.getFee();
     const feeHandlerAllowance = await getERC20Allowance(
       erc20,
