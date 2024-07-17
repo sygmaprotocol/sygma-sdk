@@ -65,7 +65,7 @@ export async function genericMessage(): Promise<void> {
     functionParameters: [
       "0x98729c03c4D5e820F5e8c45558ae07aE63F97461" as `0x${string}`,
       "0x98729c03c4D5e820F5e8c45558ae07aE63F97461" as `0x${string}`,
-      BigInt(100),
+      BigInt(0x500),
     ],
     functionName: "store",
     destinationContractAbi:

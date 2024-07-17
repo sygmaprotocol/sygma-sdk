@@ -171,30 +171,33 @@ class GenericMessageTransfer<
       JSON.stringify(this.destinationContractAbi),
     );
 
-    const executionData = ``;
+    let executionData = ``;
     const defaultPadding = 32;
 
     if (Array.isArray(this.functionParameters)) {
       // Slice first param, it should be always depositer
       // address in the contract
-      this.functionParameters.slice(1).map((param: unknown) => {
-        const paramType = typeof param;
-        switch (paramType) {
-          case 'bigint':
-            return toHex((param as bigint).toString(), defaultPadding);
-          case 'string':
-            return toHex((param as string).toString(), defaultPadding);
-          case 'number':
-            return toHex((param as number).toString(), defaultPadding);
-          case 'boolean':
-            return toHex(Number(param as boolean), defaultPadding);
-          case 'object':
-          case 'undefined':
-          case 'function':
-          case 'symbol':
-            throw new Error('Unsupported parameter type.');
-        }
-      });
+      executionData = this.functionParameters
+        .slice(1)
+        .map((param: unknown) => {
+          const paramType = typeof param;
+          switch (paramType) {
+            case 'bigint':
+              return toHex((param as bigint).toString(), defaultPadding).substring(2);
+            case 'string':
+              return toHex((param as string).toString(), defaultPadding).substring(2);
+            case 'number':
+              return toHex((param as number).toString(), defaultPadding).substring(2);
+            case 'boolean':
+              return toHex(Number(param as boolean), defaultPadding).substring(2);
+            case 'object':
+            case 'undefined':
+            case 'function':
+            case 'symbol':
+              throw new Error('Unsupported parameter type.');
+          }
+        })
+        .join('');
     }
 
     const executeFunctionSignature = contractInterface.getSighash(this.functionName);
