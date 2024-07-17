@@ -39,11 +39,6 @@ class BitcoinTransfer extends BaseTransfer {
     this.changeAddress = transfer.changeAddress;
   }
 
-  getUriEncodedUtxoRequest(): string {
-    const { address } = this.resource;
-    return `bitcoin:${address}?amount=${this.amount}&message=${this.destinationAddress}`;
-  }
-
   getTransferTransaction(): BitcoinTransferRequest {
     return getPsbt(
       {
