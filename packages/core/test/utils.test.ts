@@ -195,6 +195,7 @@ describe('Address Validation Utils', () => {
     });
 
     it('should validate a correct Bitcoin address for the Bitcoin network', () => {
+      process.env.SYGMA_ENV = Environment.MAINNET;
       const validAddress = '33TbzA5AMiTKUCmeVEdsnTj3GiVXuavCAH';
       expect(isValidAddressForNetwork(validAddress, Network.BITCOIN)).toBe(true);
     });
