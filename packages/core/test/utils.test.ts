@@ -17,6 +17,7 @@ import {
 } from '../src/utils.js';
 
 import { mockedDevnetConfig } from './constants.js';
+import * as process from 'node:process';
 
 type RouteIndexerType = {
   fromDomainId: string;
@@ -119,34 +120,66 @@ describe('Address Validation Utils', () => {
   });
 
   describe('isValidBitcoinAddress', () => {
-    it('should validate a correct P2WPKH Bitcoin address', () => {
-      const p2wpkhAddress = 'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4';
-      expect(isValidBitcoinAddress(p2wpkhAddress)).toBe(true);
+    describe('For Bitcoin mainnet', () => {
+      beforeEach(() => {
+        process.env.SYGMA_ENV = Environment.MAINNET;
+      });
+
+      it('should validate a correct P2TR Bitcoin address', () => {
+        const p2trAddress = 'bc1p5d7rjq7g6rdk2yhzks9smlaqtedr4dekq08ge8ztwac72sfr9rusxg3297';
+        expect(isValidBitcoinAddress(p2trAddress)).toBe(true);
+      });
+
+      it('should validate a correct P2WPKH Bitcoin address', () => {
+        const p2wpkh = 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq';
+        expect(isValidBitcoinAddress(p2wpkh)).toBe(true);
+      });
+
+      it('should validate a correct P2SH Bitcoin address', () => {
+        const p2sh = '3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy';
+        expect(isValidBitcoinAddress(p2sh)).toBe(true);
+      });
+
+      it('should validate a correct P2PKH Bitcoin address', () => {
+        const p2sh = '1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2';
+        expect(isValidBitcoinAddress(p2sh)).toBe(true);
+      });
+
+      it('should return false for an invalid Bitcoin address', () => {
+        const invalidAddress = 'invalidAddress';
+        expect(isValidBitcoinAddress(invalidAddress)).toBe(false);
+      });
     });
 
-    it('should validate a correct P2TR Bitcoin address', () => {
-      const p2trAddress = 'bc1p5d7rjq7g6rdk2yhzks9smlaqtedr4dekq08ge8ztwac72sfr9rusxg3297';
-      expect(isValidBitcoinAddress(p2trAddress)).toBe(true);
-    });
+    describe('For Bitcoin Testnet', () => {
+      beforeEach(() => {
+        process.env.SYGMA_ENV = Environment.DEVNET;
+      });
 
-    it('should validate a correct P2WPKH Bitcoin address', () => {
-      const p2wpkh = 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq';
-      expect(isValidBitcoinAddress(p2wpkh)).toBe(true);
-    });
+      it('should validate a correct P2WPKH Bitcoin address', () => {
+        const p2wpkhAddress = 'tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx';
+        expect(isValidBitcoinAddress(p2wpkhAddress)).toBe(true);
+      });
 
-    it('should validate a correct P2SH Bitcoin address', () => {
-      const p2sh = '3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy';
-      expect(isValidBitcoinAddress(p2sh)).toBe(true);
-    });
+      it('should validate a correct P2TR Bitcoin address', () => {
+        const p2trAddress = 'tb1p84x2ryuyfevgnlpnxt9f39gm7r68gwtvllxqe5w2n5ru00s9aquslzggwq';
+        expect(isValidBitcoinAddress(p2trAddress)).toBe(true);
+      });
 
-    it('should validate a correct P2PKH Bitcoin address', () => {
-      const p2sh = '1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2';
-      expect(isValidBitcoinAddress(p2sh)).toBe(true);
-    });
+      it('should validate a correct P2SH Bitcoin address', () => {
+        const p2sh = '2MzQwSSnBHWHqSAqtTVQ6v47XtaisrJa1Vc';
+        expect(isValidBitcoinAddress(p2sh)).toBe(true);
+      });
 
-    it('should return false for an invalid Bitcoin address', () => {
-      const invalidAddress = 'invalidAddress';
-      expect(isValidBitcoinAddress(invalidAddress)).toBe(false);
+      it('should validate a correct P2PKH Bitcoin address', () => {
+        const p2pkh = 'mipcBbFg9gMiCh81Kj8tqqdgoZub1ZJRfn';
+        expect(isValidBitcoinAddress(p2pkh)).toBe(true);
+      });
+
+      it('should return false for an invalid Bitcoin address', () => {
+        const invalidAddress = 'invalidAddress';
+        expect(isValidBitcoinAddress(invalidAddress)).toBe(false);
+      });
     });
   });
 

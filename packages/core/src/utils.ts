@@ -1,6 +1,6 @@
 import { decodeAddress, encodeAddress } from '@polkadot/keyring';
 import { hexToU8a, isHex } from '@polkadot/util';
-import validate from 'bitcoin-address-validation';
+import validate, { Network as BitcoinNetwork } from 'bitcoin-address-validation';
 import { ethers } from 'ethers';
 
 import { ExplorerUrl, IndexerUrl } from './constants.js';
@@ -286,11 +286,13 @@ export function isValidEvmAddress(address: string): boolean {
 /**
  * Validate Bitcoin address.
  * @param {string} address
- * @param network
  * @returns {boolean}
  */
 export function isValidBitcoinAddress(address: string): boolean {
-  return validate(address);
+  if (process.env.SYGMA_ENV === Environment.TESTNET || process.env.SYGMA_ENV === Environment.DEVNET)
+    return validate(address, BitcoinNetwork.testnet);
+
+  return validate(address, BitcoinNetwork.mainnet);
 }
 
 /**
