@@ -1,13 +1,16 @@
 import dotenv from "dotenv";
 import { createCrossChainContractCall } from "@buildwithsygma/evm";
 import { Wallet, ethers, providers } from "ethers";
-import { sepoliaBase0x4bE595ab5A070663B314970Fc10C049BBA0ad489 } from "./contracts";
-import { Eip1193Provider } from "@buildwithsygma/core";
+import { sepoliaBaseContract } from "./contracts";
+import { Eip1193Provider, Environment } from "@buildwithsygma/core";
 import Web3HttpProvider from "web3-providers-http";
+import { getSygmaScanLink } from "@buildwithsygma/core/types/utils";
 
 dotenv.config();
 
+const sygmaEnv = process.env.SYGMA_ENV as Environment;
 const privateKey = process.env.PRIVATE_KEY;
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 if (!privateKey) {
   throw new Error("Missing environment variable: PRIVATE_KEY");
@@ -15,7 +18,7 @@ if (!privateKey) {
 
 // Base Sepolia
 const DESTINATION_CHAIN_ID = 84532;
-// Sepoolia
+// Sepolia
 const SEPOLIA_CHAIN_ID = 11155111;
 // Permissionless Generic Transfer
 const RESOURCE_ID =
@@ -38,6 +41,7 @@ const ethersProvider = new ethers.providers.Web3Provider(sourceProvider);
 const wallet = new Wallet(privateKey, ethersProvider);
 // destination ethers JsonRpcProvider
 const destinationProvider = new providers.JsonRpcProvider(BASE_SEPOLIA_RPC_URL);
+const paramAddress = "0x98729c03c4D5e820F5e8c45558ae07aE63F97461" as const;
 
 export async function genericMessage(): Promise<void> {
   // Wallet address from the specified
@@ -46,7 +50,7 @@ export async function genericMessage(): Promise<void> {
   // ethers contract on destination chain
   const destinationStorageContract = new ethers.Contract(
     EXECUTE_CONTRACT_ADDRESS,
-    sepoliaBase0x4bE595ab5A070663B314970Fc10C049BBA0ad489,
+    sepoliaBaseContract,
     destinationProvider
   );
   // value set inside the contract before
@@ -58,18 +62,13 @@ export async function genericMessage(): Promise<void> {
   // to initiate a cross chain contract
   // call
   const transfer = await createCrossChainContractCall<
-    typeof sepoliaBase0x4bE595ab5A070663B314970Fc10C049BBA0ad489,
+    typeof sepoliaBaseContract,
     "store"
   >({
     gasLimit: BigInt(0),
-    functionParameters: [
-      "0x98729c03c4D5e820F5e8c45558ae07aE63F97461" as `0x${string}`,
-      "0x98729c03c4D5e820F5e8c45558ae07aE63F97461" as `0x${string}`,
-      BigInt(3052070251),
-    ],
+    functionParameters: [paramAddress, paramAddress, BigInt(3052070251)],
     functionName: "store",
-    destinationContractAbi:
-      sepoliaBase0x4bE595ab5A070663B314970Fc10C049BBA0ad489,
+    destinationContractAbi: sepoliaBaseContract,
     destinationContractAddress: EXECUTE_CONTRACT_ADDRESS,
     maxFee: BigInt(MAX_FEE),
     source: SEPOLIA_CHAIN_ID,
@@ -83,8 +82,11 @@ export async function genericMessage(): Promise<void> {
   // sending the transaction using ethers js
   const tx = await wallet.sendTransaction(transaction);
   console.log("Sent transaction: ", tx.hash);
+  const scannerUrl = getSygmaScanLink(tx.hash, sygmaEnv);
   await tx.wait();
-  console.log("Transaction Processed: ", tx.hash);
+  console.log("waiting for transaction indexing", tx.hash);
+  await sleep(5000);
+  console.log("Transaction link: ", scannerUrl);
 }
 
 genericMessage()

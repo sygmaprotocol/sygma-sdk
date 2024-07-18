@@ -65,7 +65,7 @@ export const executeDeposit = async (
   overrides?: ethers.PayableOverrides,
 ): Promise<PopulatedTransaction> => {
   const transactionSettings = {
-    // TODO: change this based on "twap"
+    // * "twap" and "basic" both deduct in native currency
     value: feeData.type == FeeHandlerType.PERCENTAGE ? 0 : feeData.fee,
     gasLimit: ASSET_TRANSFER_GAS_LIMIT,
   };

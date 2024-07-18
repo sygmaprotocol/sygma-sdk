@@ -157,14 +157,14 @@ export const createPermissionlessGenericDepositData = (
 ): string => {
   return (
     '0x' +
-    toHex(maxFee, 32).substr(2) + // uint256
-    toHex(executeFunctionSignature.substr(2).length / 2, 2).substr(2) + // uint16
-    executeFunctionSignature.substr(2) + // bytes
-    toHex(executeContractAddress.substr(2).length / 2, 1).substr(2) + // uint8
-    executeContractAddress.substr(2) + // bytes
-    toHex(depositor.substr(2).length / 2, 1).substr(2) + // uint8
-    depositor.substr(2) +
-    executionData.substr(2)
+    toHex(maxFee, 32).substring(2) + // uint256
+    toHex(executeFunctionSignature.substring(2).length / 2, 2).substring(2) + // uint16
+    executeFunctionSignature.substring(2) + // bytes
+    toHex(executeContractAddress.substring(2).length / 2, 1).substring(2) + // uint8
+    executeContractAddress.substring(2) + // bytes
+    toHex(depositor.substring(2).length / 2, 1).substring(2) + // uint8
+    depositor.substring(2) +
+    executionData.substring(2)
   ) // bytes
     .toLowerCase();
 };

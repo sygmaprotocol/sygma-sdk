@@ -177,7 +177,6 @@ describe('createCrossChainContractCall', () => {
     });
 
     const transfer = await createCrossChainContractCall<typeof mockContract, 'store'>(params);
-
-    expect(transfer).toBeTruthy();
+    expect(transfer.functionName).toEqual('store');
   });
 });
