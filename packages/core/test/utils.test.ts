@@ -17,7 +17,6 @@ import {
 } from '../src/utils.js';
 
 import { mockedDevnetConfig } from './constants.js';
-import * as process from 'node:process';
 
 type RouteIndexerType = {
   fromDomainId: string;
