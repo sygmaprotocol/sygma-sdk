@@ -1,6 +1,6 @@
 import { decodeAddress, encodeAddress } from '@polkadot/keyring';
 import { hexToU8a, isHex } from '@polkadot/util';
-import * as bitcoin from 'bitcoinjs-lib';
+import validate from 'bitcoin-address-validation';
 import { ethers } from 'ethers';
 
 import { ExplorerUrl, IndexerUrl } from './constants.js';
@@ -22,6 +22,7 @@ import type {
 import { Environment, Network } from './types.js';
 
 import { Config } from './index.js';
+import * as process from 'node:process';
 
 function getIndexerTransferUrl(
   env: Environment = process.env.SYGMA_ENV,
@@ -285,15 +286,11 @@ export function isValidEvmAddress(address: string): boolean {
 /**
  * Validate Bitcoin address.
  * @param {string} address
+ * @param network
  * @returns {boolean}
  */
 export function isValidBitcoinAddress(address: string): boolean {
-  try {
-    bitcoin.address.toOutputScript(address, bitcoin.networks.bitcoin);
-    return true;
-  } catch (error) {
-    return false;
-  }
+  return validate(address);
 }
 
 /**

@@ -64,6 +64,7 @@
     "@ethersproject/providers": "^5.7.2",
     "@polkadot/keyring": "^12.6.2",
     "@polkadot/util": "^12.6.2",
+    "bitcoin-address-validation": "^2.2.3",
     "bitcoinjs-lib": "^6.1.6",
     "ethers": "5.6.2"
   }
