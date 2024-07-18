@@ -12,6 +12,7 @@ import { getFeeInformation } from './fee/getFeeInformation.js';
 import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
 import { erc20Transfer } from './utils/depositFns.js';
 import { createTransactionRequest } from './utils/transaction.js';
+import { createERCDepositData } from './utils/helpers.js';
 
 type EvmFungibleTransferRequest = {
   source: Domainlike;
@@ -92,6 +93,10 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     return this._amount;
   }
 
+  getDepositData(): string {
+    return createERCDepositData(this.amount, this.destinationAddress, this.destination.parachainId);
+  }
+
   constructor(transfer: EvmFungibleTransferRequest, config: Config) {
     super(transfer, config);
     this._amount = transfer.amount;
@@ -143,6 +148,7 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
       resourceSygmaId: this.resource.resourceId,
       feeHandlerAddress,
       feeHandlerType,
+      depositData: this.getDepositData(),
     });
   }
   /**
@@ -197,6 +203,7 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
       domainId: this.destination.id.toString(),
       resourceId: this.resource.resourceId,
       feeData: fee,
+      depositData: this.getDepositData(),
     });
 
     return createTransactionRequest(transferTx);

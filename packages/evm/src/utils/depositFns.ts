@@ -2,10 +2,7 @@ import { FeeHandlerType } from '@buildwithsygma/core';
 import type { Bridge } from '@buildwithsygma/sygma-contracts';
 import type { PopulatedTransaction, ethers } from 'ethers';
 import { BigNumber } from 'ethers';
-
 import type { EvmFee, FungibleTransferParams } from '../types.js';
-
-import { createERCDepositData } from './helpers.js';
 
 export const ASSET_TRANSFER_GAS_LIMIT: BigNumber = BigNumber.from(300000);
 
@@ -35,11 +32,9 @@ export const erc20Transfer = async ({
   domainId,
   resourceId,
   feeData,
+  depositData,
   overrides,
 }: FungibleTransferParams): Promise<PopulatedTransaction> => {
-  // construct the deposit data
-  const depositData = createERCDepositData(amount, recipientAddress, parachainId);
-
   // pass data to smartcontract function and create a transaction
   return executeDeposit(domainId, resourceId, depositData, feeData, bridgeInstance, overrides);
 };

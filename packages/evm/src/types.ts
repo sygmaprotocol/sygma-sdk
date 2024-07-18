@@ -53,6 +53,8 @@ export type FungibleTransferParams = {
   bridgeInstance: Bridge;
   /** The fee data associated with the ERC20 token transfer, including the gas price and gas limit. */
   feeData: EvmFee;
+  /** Deposit data including amount of tokens, length and recipient address */
+  depositData: string;
   /** Optional overrides for the transaction, such as gas price, gas limit, or value. */
   overrides?: ethers.PayableOverrides;
 };
