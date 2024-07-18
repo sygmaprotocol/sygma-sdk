@@ -41,14 +41,8 @@ export type EvmResourceish = string | EvmResource;
 export type FungibleTransferParams = {
   /** The unique identifier for the destination network on the bridge. */
   domainId: string;
-  /** Identifier of the substrate destination parachain */
-  parachainId?: number;
   /** The unique identifier for the resource being transferred. */
   resourceId: string;
-  /** The amount of tokens to transfer */
-  amount: bigint;
-  /** The recipient's address to receive the tokens. */
-  recipientAddress: string;
   /** The bridge instance used for the transfer. */
   bridgeInstance: Bridge;
   /** The fee data associated with the ERC20 token transfer, including the gas price and gas limit. */

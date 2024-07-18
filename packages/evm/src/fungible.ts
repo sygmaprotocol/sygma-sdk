@@ -11,8 +11,8 @@ import { PercentageFeeCalculator } from './fee/PercentageFee.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
 import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
 import { erc20Transfer } from './utils/depositFns.js';
-import { createTransactionRequest } from './utils/transaction.js';
 import { createERCDepositData } from './utils/helpers.js';
+import { createTransactionRequest } from './utils/transaction.js';
 
 type EvmFungibleTransferRequest = {
   source: Domainlike;
@@ -196,9 +196,6 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     const fee = await this.getFee();
 
     const transferTx = await erc20Transfer({
-      amount: this.amount,
-      recipientAddress: this.destinationAddress,
-      parachainId: this.destination.parachainId,
       bridgeInstance: bridge,
       domainId: this.destination.id.toString(),
       resourceId: this.resource.resourceId,
