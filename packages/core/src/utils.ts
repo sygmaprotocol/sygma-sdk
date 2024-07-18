@@ -1,3 +1,5 @@
+import * as process from 'node:process';
+
 import { decodeAddress, encodeAddress } from '@polkadot/keyring';
 import { hexToU8a, isHex } from '@polkadot/util';
 import validate, { Network as BitcoinNetwork } from 'bitcoin-address-validation';
@@ -22,7 +24,6 @@ import type {
 import { Environment, Network } from './types.js';
 
 import { Config } from './index.js';
-import * as process from 'node:process';
 
 function getIndexerTransferUrl(
   env: Environment = process.env.SYGMA_ENV,
