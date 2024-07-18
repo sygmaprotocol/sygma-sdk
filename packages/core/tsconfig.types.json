@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
     "declaration": true,
+    "moduleResolution": "node",
     "emitDeclarationOnly": true,
     "outDir": "types",
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "module": "CommonJS",
+    "module": "ES2022",
     "target": "ESNext"
   },
   "exclude": ["test"]
