@@ -91,7 +91,7 @@ async function btcToEvmTransfer(): Promise<void> {
     utxoTxId: UTXO_TX_ID,
     utxoOutputIndex: UTXO_OUTPUT_INDEX,
     utxoAmount: UTXO_AMOUNT,
-    publicKey: tweakedSigner.publicKey,
+    publicKey: publicKeyDropedDERHeader,
     typeOfAddress: TypeOfAddress.P2TR,
     minerFee: MINER_FEE,
     network: testnet,
