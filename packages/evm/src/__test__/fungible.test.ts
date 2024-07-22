@@ -1,4 +1,5 @@
-import { Config, Eip1193Provider, ResourceType } from '@buildwithsygma/core';
+import type { Eip1193Provider } from '@buildwithsygma/core';
+import { Config, ResourceType } from '@buildwithsygma/core';
 import {
   BasicFeeHandler__factory,
   Bridge__factory,
@@ -6,9 +7,11 @@ import {
   FeeHandlerRouter__factory,
   PercentageERC20FeeHandlerEVM__factory,
 } from '@buildwithsygma/sygma-contracts';
-import { createEvmFungibleAssetTransfer } from '../fungible.js';
 import { BigNumber } from 'ethers';
 import { parseEther } from 'ethers/lib/utils.js';
+
+import { createEvmFungibleAssetTransfer } from '../fungible.js';
+import type { TransactionRequest } from '../types.js';
 
 const TRANSFER_PARAMS = {
   source: 1,
@@ -33,16 +36,19 @@ const MOCKED_CONFIG = {
   findDomainConfigBySygmaId: jest.fn().mockReturnValue({ id: 1 }),
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 jest.mock('@buildwithsygma/core', () => ({
   ...jest.requireActual('@buildwithsygma/core'),
   Config: jest.fn(),
 }));
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 jest.mock('@ethersproject/providers', () => ({
   ...jest.requireActual('@ethersproject/providers'),
   Web3Provider: jest.fn(),
 }));
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 jest.mock('@buildwithsygma/sygma-contracts', () => ({
   ...jest.requireActual('@buildwithsygma/sygma-contracts'),
   Bridge__factory: { connect: jest.fn() },
@@ -221,9 +227,10 @@ describe('Fungible - Deposit', () => {
       populateTransaction: {
         deposit: jest.fn().mockReturnValue({
           to: '',
-          from: '',
+          value: BigInt(0),
           data: '',
-        }),
+          gasLimit: BigInt(0),
+        } as TransactionRequest),
       },
       _resourceIDToHandlerAddress: jest
         .fn()
