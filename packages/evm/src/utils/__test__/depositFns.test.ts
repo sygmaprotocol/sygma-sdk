@@ -163,6 +163,7 @@ describe('deposit functions', () => {
         domainId,
         resourceId,
         feeData,
+        depositData,
       };
       await EVM.erc20Transfer(erc20Params);
 

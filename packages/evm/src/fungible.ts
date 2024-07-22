@@ -11,6 +11,7 @@ import { PercentageFeeCalculator } from './fee/PercentageFee.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
 import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
 import { erc20Transfer } from './utils/depositFns.js';
+import { createERCDepositData } from './utils/helpers.js';
 import { createTransactionRequest } from './utils/transaction.js';
 
 type EvmFungibleTransferRequest = {
@@ -92,6 +93,10 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     return this._amount;
   }
 
+  getDepositData(): string {
+    return createERCDepositData(this.amount, this.destinationAddress, this.destination.parachainId);
+  }
+
   constructor(transfer: EvmFungibleTransferRequest, config: Config) {
     super(transfer, config);
     this._amount = transfer.amount;
@@ -143,6 +148,7 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
       resourceSygmaId: this.resource.resourceId,
       feeHandlerAddress,
       feeHandlerType,
+      depositData: this.getDepositData(),
     });
   }
   /**
@@ -190,13 +196,11 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     const fee = await this.getFee();
 
     const transferTx = await erc20Transfer({
-      amount: this.amount,
-      recipientAddress: this.destinationAddress,
-      parachainId: this.destination.parachainId,
       bridgeInstance: bridge,
       domainId: this.destination.id.toString(),
       resourceId: this.resource.resourceId,
       feeData: fee,
+      depositData: this.getDepositData(),
     });
 
     return createTransactionRequest(transferTx);
