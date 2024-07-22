@@ -4,7 +4,7 @@ import {
   Bridge__factory,
   ERC20__factory,
   FeeHandlerRouter__factory,
-  PercentageERC20FeeHandler__factory,
+  PercentageERC20FeeHandlerEVM__factory,
 } from '@buildwithsygma/sygma-contracts';
 import { createEvmFungibleAssetTransfer } from '../fungible.js';
 import { BigNumber } from 'ethers';
@@ -48,7 +48,7 @@ jest.mock('@buildwithsygma/sygma-contracts', () => ({
   Bridge__factory: { connect: jest.fn() },
   ERC20__factory: { connect: jest.fn() },
   BasicFeeHandler__factory: { connect: jest.fn() },
-  PercentageERC20FeeHandler__factory: { connect: jest.fn() },
+  PercentageERC20FeeHandlerEVM__factory: { connect: jest.fn() },
   FeeHandlerRouter__factory: { connect: jest.fn() },
 }));
 
@@ -107,7 +107,7 @@ describe('Fungible - Fee', () => {
       calculateFee: jest.fn().mockResolvedValue([BigNumber.from(0)]),
     });
 
-    (PercentageERC20FeeHandler__factory.connect as jest.Mock).mockReturnValue({
+    (PercentageERC20FeeHandlerEVM__factory.connect as jest.Mock).mockReturnValue({
       feeHandlerType: jest.fn().mockResolvedValue('percentage'),
       calculateFee: jest.fn().mockResolvedValue([BigNumber.from(0)]),
       _resourceIDToFeeBounds: jest.fn().mockResolvedValue({
@@ -199,5 +199,47 @@ describe('Fungible - Approvals', () => {
     const approvals = await transfer.getApprovalTransactions();
 
     expect(approvals.length).toBeGreaterThan(0);
+  });
+});
+
+describe('Fungible - Deposit', () => {
+  beforeAll(() => {
+    (Config as jest.Mock).mockReturnValue(MOCKED_CONFIG);
+
+    (BasicFeeHandler__factory.connect as jest.Mock).mockReturnValue({
+      feeHandlerType: jest.fn().mockResolvedValue('basic'),
+      calculateFee: jest.fn().mockResolvedValue([BigNumber.from(0)]),
+    });
+
+    (FeeHandlerRouter__factory.connect as jest.Mock).mockReturnValue({
+      _domainResourceIDToFeeHandlerAddress: jest
+        .fn()
+        .mockResolvedValue('0x98729c03c4D5e820F5e8c45558ae07aE63F97461'),
+    });
+
+    (Bridge__factory.connect as jest.Mock).mockReturnValue({
+      populateTransaction: {
+        deposit: jest.fn().mockReturnValue({
+          to: '',
+          from: '',
+          data: '',
+        }),
+      },
+      _resourceIDToHandlerAddress: jest
+        .fn()
+        .mockResolvedValue('0x98729c03c4D5e820F5e8c45558ae07aE63F97461'),
+      _feeHandler: jest.fn().mockResolvedValue('0x98729c03c4D5e820F5e8c45558ae07aE63F97461'),
+    });
+  });
+
+  beforeEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('should return deposit transaction', async () => {
+    const transfer = await createEvmFungibleAssetTransfer(TRANSFER_PARAMS);
+    const depositTransaction = await transfer.getTransferTransaction();
+
+    expect(depositTransaction).toBeTruthy();
   });
 });

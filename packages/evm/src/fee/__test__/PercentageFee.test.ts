@@ -12,7 +12,7 @@ jest.mock('@buildwithsygma/sygma-contracts', () => {
 
   return {
     ...jest.requireActual('@buildwithsygma/sygma-contracts'),
-    PercentageERC20FeeHandler__factory: {
+    PercentageERC20FeeHandlerEVM__factory: {
       connect: jest.fn().mockReturnValue({
         calculateFee: () => Promise.resolve([constants.Zero]),
         _resourceIDToFeeBounds: jest.fn().mockResolvedValue({
