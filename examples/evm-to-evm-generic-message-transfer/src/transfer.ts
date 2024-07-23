@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import { createCrossChainContractCall } from "@buildwithsygma/evm";
 import { Wallet, ethers, providers } from "ethers";
-import { sepoliaBaseContract } from "./contracts";
+import { sepoliaBaseStorageContract } from "./contracts";
 import { Eip1193Provider, Environment } from "@buildwithsygma/core";
 import Web3HttpProvider from "web3-providers-http";
 import { getSygmaScanLink } from "@buildwithsygma/core/types/utils";
@@ -50,7 +50,7 @@ export async function genericMessage(): Promise<void> {
   // ethers contract on destination chain
   const destinationStorageContract = new ethers.Contract(
     EXECUTE_CONTRACT_ADDRESS,
-    sepoliaBaseContract,
+    sepoliaBaseStorageContract,
     destinationProvider
   );
   // value set inside the contract before
@@ -62,13 +62,13 @@ export async function genericMessage(): Promise<void> {
   // to initiate a cross chain contract
   // call
   const transfer = await createCrossChainContractCall<
-    typeof sepoliaBaseContract,
+    typeof sepoliaBaseStorageContract,
     "store"
   >({
     gasLimit: BigInt(0),
     functionParameters: [paramAddress, paramAddress, BigInt(3052070251)],
     functionName: "store",
-    destinationContractAbi: sepoliaBaseContract,
+    destinationContractAbi: sepoliaBaseStorageContract,
     destinationContractAddress: EXECUTE_CONTRACT_ADDRESS,
     maxFee: BigInt(MAX_FEE),
     source: SEPOLIA_CHAIN_ID,

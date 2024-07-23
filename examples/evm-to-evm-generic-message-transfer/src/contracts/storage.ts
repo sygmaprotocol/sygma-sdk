@@ -1,4 +1,4 @@
-export const sepoliaBaseContract = [
+export const sepoliaBaseStorageContract = [
   {
     inputs: [
       {
