@@ -2,13 +2,18 @@ import type { EvmResource } from '@buildwithsygma/core';
 import { SecurityModel, Config, FeeHandlerType, ResourceType } from '@buildwithsygma/core';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
-import { BigNumber, constants, utils, type PopulatedTransaction } from 'ethers';
+import { BigNumber, constants, providers, utils, type PopulatedTransaction } from 'ethers';
 
 import type { BaseTransferParams } from './baseTransfer.js';
 import { BaseTransfer } from './baseTransfer.js';
+import { BasicFeeCalculator } from './fee/BasicFee.js';
+import { PercentageFeeCalculator } from './fee/PercentageFee.js';
+import { TwapFeeCalculator } from './fee/TwapFee.js';
+import { getFeeInformation } from './fee/getFeeInformation.js';
 import type { EvmFee, TransactionRequest } from './types.js';
 import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
 import { erc20Transfer } from './utils/depositFns.js';
+import { createERCDepositData } from './utils/helpers.js';
 import { createTransactionRequest } from './utils/transaction.js';
 
 export interface FungibleTokenTransferRequest extends BaseTransferParams {
@@ -100,6 +105,10 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     return utils.isAddress(handlerAddress) && handlerAddress !== constants.AddressZero;
   }
 
+  getDepositData(): string {
+    return createERCDepositData(this.amount, this.destinationAddress, this.destination.parachainId);
+  }
+
   constructor(transfer: FungibleTokenTransferRequest, config: Config) {
     super(transfer, config);
     this._amount = transfer.amount;
@@ -181,15 +190,41 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     const fee = await this.getFee();
 
     const transferTx = await erc20Transfer({
-      amount: this.amount,
-      recipientAddress: this.destinationAddress,
-      parachainId: this.destination.parachainId,
       bridgeInstance: bridge,
       domainId: this.destination.id.toString(),
       resourceId: this.resource.resourceId,
       feeData: fee,
+      depositData: this.getDepositData(),
     });
 
     return createTransactionRequest(transferTx);
+  }
+
+  async getFee(): Promise<EvmFee> {
+    const provider = new providers.Web3Provider(this.sourceNetworkProvider);
+
+    const { feeHandlerAddress, feeHandlerType } = await getFeeInformation(
+      this.config,
+      provider,
+      this.source.id,
+      this.destination.id,
+      this.resource.resourceId,
+    );
+
+    const basicFeeCalculator = new BasicFeeCalculator();
+    const percentageFeeCalculator = new PercentageFeeCalculator();
+    const twapFeeCalculator = new TwapFeeCalculator();
+    basicFeeCalculator.setNextHandler(percentageFeeCalculator).setNextHandler(twapFeeCalculator);
+
+    return await basicFeeCalculator.calculateFee({
+      provider,
+      sender: this.sourceAddress,
+      sourceSygmaId: this.source.id,
+      destinationSygmaId: this.destination.id,
+      resourceSygmaId: this.resource.resourceId,
+      feeHandlerAddress,
+      feeHandlerType,
+      depositData: this.getDepositData(),
+    });
   }
 }
