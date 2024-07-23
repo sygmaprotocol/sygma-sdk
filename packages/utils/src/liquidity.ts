@@ -19,18 +19,20 @@ export async function hasEnoughLiquidity(
   const domainConfig = config.findDomainConfig(destination);
   const handler = domainConfig.handlers.find(handler => handler.type === ResourceType.FUNGIBLE);
 
-  if (!handler) return false;
+  if (!handler) throw new Error('Handler not found or unregistered for resource.');
+
+  const resource = domainConfig.resources.find(
+    resource => transferResource.resourceId === resource.resourceId,
+  );
+
+  if (!resource) throw new Error('Resource not found or unregistered.');
 
   switch (destination.type) {
     case Network.EVM: {
-      const evmResource = domainConfig.resources.find(
-        resource => transferResource.resourceId === resource.resourceId,
-      ) as EvmResource;
-      if (!evmResource) throw new Error();
       const provider = new HttpProvider(destinationProviderUrl);
       const evmHandlerBalance = await getEvmHandlerBalance(
         provider as unknown as Eip1193Provider,
-        evmResource,
+        resource as EvmResource,
         handler.address,
       );
 
@@ -41,13 +43,9 @@ export async function hasEnoughLiquidity(
       return true;
     }
     case Network.SUBSTRATE: {
-      const substrateResource = domainConfig.resources.find(
-        resource => transferResource.resourceId === resource.resourceId,
-      ) as SubstrateResource;
-
       const substrateHandlerBalance = await getSubstrateHandlerBalance(
         destinationProviderUrl,
-        substrateResource,
+        resource as SubstrateResource,
         handler.address,
       );
 
