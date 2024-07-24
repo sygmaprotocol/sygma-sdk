@@ -1,4 +1,4 @@
-import type { Eip1193Provider } from '@buildwithsygma/core';
+import { Eip1193Provider, Network } from '@buildwithsygma/core';
 import { Config, ResourceType } from '@buildwithsygma/core';
 import {
   BasicFeeHandler__factory,
@@ -31,7 +31,7 @@ const TRANSFER_PARAMS = {
 const MOCKED_CONFIG = {
   init: jest.fn(),
   getDomainConfig: jest.fn().mockReturnValue({ bridge: '', id: 1 }),
-  getDomain: jest.fn().mockReturnValue({ id: 1 }),
+  getDomain: jest.fn().mockReturnValue({ id: 1, type: Network.EVM }),
   getResources: jest.fn().mockReturnValue([TRANSFER_PARAMS.resource]),
   findDomainConfigBySygmaId: jest.fn().mockReturnValue({ id: 1 }),
 };
