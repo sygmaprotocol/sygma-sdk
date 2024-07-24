@@ -5,6 +5,8 @@ import { BigNumber } from 'ethers';
 
 import type { EvmFee, FungibleTransferParams } from '../types.js';
 
+import { createPermissionlessGenericDepositData } from './helpers.js';
+
 export const ASSET_TRANSFER_GAS_LIMIT: BigNumber = BigNumber.from(300000);
 
 /**
@@ -58,6 +60,7 @@ export const executeDeposit = async (
   overrides?: ethers.PayableOverrides,
 ): Promise<PopulatedTransaction> => {
   const transactionSettings = {
+    // * "twap" and "basic" both deduct in native currency
     value: feeData.type == FeeHandlerType.PERCENTAGE ? 0 : feeData.fee,
     gasLimit: ASSET_TRANSFER_GAS_LIMIT,
   };
@@ -71,8 +74,44 @@ export const executeDeposit = async (
     domainId,
     resourceId,
     depositData,
-    feeData.fee ? BigNumber.from(feeData.fee).toHexString() : '0x00',
+    '0x',
     payableOverrides,
   );
+
   return depositTransaction;
+};
+
+type GenericMessageParams = {
+  executeFunctionSignature: string;
+  executeContractAddress: string;
+  maxFee: string;
+  depositor: string;
+  executionData: string;
+  domainId: string;
+  resourceId: string;
+  bridgeInstance: Bridge;
+  feeData: EvmFee;
+  overrides?: ethers.PayableOverrides;
+};
+
+export const genericMessageTransfer = async ({
+  executeFunctionSignature,
+  executeContractAddress,
+  maxFee,
+  depositor,
+  executionData,
+  bridgeInstance,
+  domainId,
+  resourceId,
+  feeData,
+  overrides,
+}: GenericMessageParams): Promise<PopulatedTransaction> => {
+  const depositData = createPermissionlessGenericDepositData(
+    executeFunctionSignature,
+    executeContractAddress,
+    maxFee,
+    depositor,
+    executionData,
+  );
+  return executeDeposit(domainId, resourceId, depositData, feeData, bridgeInstance, overrides);
 };

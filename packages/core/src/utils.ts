@@ -45,6 +45,17 @@ function getIndexerTransferUrl(
   return { url, explorerUrl };
 }
 
+export function getSygmaScanLink(sourceHash: string, environment: Environment): string {
+  switch (environment) {
+    case Environment.DEVNET:
+    case Environment.LOCAL:
+      throw new Error(`Scanner unavailable for environment: ${environment}`);
+    case Environment.MAINNET:
+      return `https://scan.buildwithsygma.com/transfer/${sourceHash}`;
+    case Environment.TESTNET:
+      return `https://scan.test.buildwithsygma.com/transfer/${sourceHash}`;
+  }
+}
 /**
  * Retrieves the environment metadata
  *

@@ -1,29 +1,27 @@
-import type { Domainlike, Eip1193Provider, EvmResource } from '@buildwithsygma/core';
-import { SecurityModel, Config, FeeHandlerType } from '@buildwithsygma/core';
+import type { EvmResource } from '@buildwithsygma/core';
+import { SecurityModel, Config, FeeHandlerType, ResourceType } from '@buildwithsygma/core';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber, constants, providers, utils, type PopulatedTransaction } from 'ethers';
-import type { EvmFee, TransactionRequest } from 'types.js';
 
-import { BaseTransfer } from './base-transfer.js';
+import type { BaseTransferParams } from './baseTransfer.js';
+import { BaseTransfer } from './baseTransfer.js';
 import { BasicFeeCalculator } from './fee/BasicFee.js';
 import { PercentageFeeCalculator } from './fee/PercentageFee.js';
+import { TwapFeeCalculator } from './fee/TwapFee.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
+import type { EvmFee, TransactionRequest } from './types.js';
 import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
 import { erc20Transfer } from './utils/depositFns.js';
 import { createERCDepositData } from './utils/helpers.js';
 import { createTransactionRequest } from './utils/transaction.js';
 
-type EvmFungibleTransferRequest = {
-  source: Domainlike;
-  destination: Domainlike;
-  sourceAddress: string;
-  sourceNetworkProvider: Eip1193Provider;
+export interface FungibleTokenTransferRequest extends BaseTransferParams {
   resource: string | EvmResource;
   amount: bigint;
   destinationAddress: string;
   securityModel?: SecurityModel;
-};
+}
 
 /**
  * @internal only
@@ -66,7 +64,7 @@ function calculateAdjustedAmount(transfer: EvmFungibleAssetTransfer, fee: EvmFee
 }
 
 export async function createEvmFungibleAssetTransfer(
-  params: EvmFungibleTransferRequest,
+  params: FungibleTokenTransferRequest,
 ): Promise<EvmFungibleAssetTransfer> {
   const config = new Config();
   await config.init(process.env.SYGMA_ENV);
@@ -93,15 +91,40 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     return this._amount;
   }
 
+  /**
+   * Method that checks whether the transfer
+   * is valid and route has been registered on
+   * the bridge
+   * @returns {boolean}
+   */
+  async isValidTransfer(): Promise<boolean> {
+    const sourceDomainConfig = this.config.getDomainConfig(this.source);
+    const web3Provider = new Web3Provider(this.sourceNetworkProvider);
+    const bridge = Bridge__factory.connect(sourceDomainConfig.bridge, web3Provider);
+    const handlerAddress = await bridge._resourceIDToHandlerAddress(this.resource.resourceId);
+    return utils.isAddress(handlerAddress) && handlerAddress !== constants.AddressZero;
+  }
+
   getDepositData(): string {
     return createERCDepositData(this.amount, this.destinationAddress, this.destination.parachainId);
   }
 
-  constructor(transfer: EvmFungibleTransferRequest, config: Config) {
+  constructor(transfer: FungibleTokenTransferRequest, config: Config) {
     super(transfer, config);
     this._amount = transfer.amount;
     this.destinationAddress = transfer.destinationAddress;
     this.securityModel = transfer.securityModel ?? SecurityModel.MPC;
+  }
+  /**
+   * Set resource to be transferred
+   * @param {EvmResource} resource
+   * @returns {BaseTransfer}
+   */
+  setResource(resource: EvmResource): void {
+    if (resource.type !== ResourceType.FUNGIBLE) {
+      throw new Error('Resource type unsupported.');
+    }
+    this.resource = resource;
   }
   /**
    * Set amount to be transferred
@@ -121,36 +144,7 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
   setDestinationAddress(destinationAddress: string): void {
     this.destinationAddress = destinationAddress;
   }
-  /**
-   * Returns fee based on transfer amount.
-   * @param amount By default it is original amount passed in constructor
-   */
-  async getFee(): Promise<EvmFee> {
-    const provider = new providers.Web3Provider(this.sourceNetworkProvider);
 
-    const { feeHandlerAddress, feeHandlerType } = await getFeeInformation(
-      this.config,
-      provider,
-      this.source.id,
-      this.destination.id,
-      this.resource.resourceId,
-    );
-
-    const basicFeeCalculator = new BasicFeeCalculator();
-    const percentageFeeCalculator = new PercentageFeeCalculator();
-    basicFeeCalculator.setNextHandler(percentageFeeCalculator);
-
-    return await basicFeeCalculator.calculateFee({
-      provider,
-      sender: this.sourceAddress,
-      sourceSygmaId: this.source.id,
-      destinationSygmaId: this.destination.id,
-      resourceSygmaId: this.resource.resourceId,
-      feeHandlerAddress,
-      feeHandlerType,
-      depositData: this.getDepositData(),
-    });
-  }
   /**
    * Returns array of required approval transactions
    * @dev with permit2 we would add TypedData in the array to be signed and signature will be mandatory param into getTransaferTransaction
@@ -204,5 +198,33 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     });
 
     return createTransactionRequest(transferTx);
+  }
+
+  async getFee(): Promise<EvmFee> {
+    const provider = new providers.Web3Provider(this.sourceNetworkProvider);
+
+    const { feeHandlerAddress, feeHandlerType } = await getFeeInformation(
+      this.config,
+      provider,
+      this.source.id,
+      this.destination.id,
+      this.resource.resourceId,
+    );
+
+    const basicFeeCalculator = new BasicFeeCalculator();
+    const percentageFeeCalculator = new PercentageFeeCalculator();
+    const twapFeeCalculator = new TwapFeeCalculator();
+    basicFeeCalculator.setNextHandler(percentageFeeCalculator).setNextHandler(twapFeeCalculator);
+
+    return await basicFeeCalculator.calculateFee({
+      provider,
+      sender: this.sourceAddress,
+      sourceSygmaId: this.source.id,
+      destinationSygmaId: this.destination.id,
+      resourceSygmaId: this.resource.resourceId,
+      feeHandlerAddress,
+      feeHandlerType,
+      depositData: this.getDepositData(),
+    });
   }
 }
