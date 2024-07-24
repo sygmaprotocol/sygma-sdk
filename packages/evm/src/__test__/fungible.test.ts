@@ -1,5 +1,5 @@
-import { Eip1193Provider, Network } from '@buildwithsygma/core';
-import { Config, ResourceType } from '@buildwithsygma/core';
+import type { Eip1193Provider } from '@buildwithsygma/core';
+import { Network, Config, ResourceType } from '@buildwithsygma/core';
 import {
   BasicFeeHandler__factory,
   Bridge__factory,
