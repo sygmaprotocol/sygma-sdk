@@ -147,3 +147,35 @@ export const addressToHex = (address: string): string => {
     .map((_, idx) => address.charCodeAt(idx).toString(16))
     .join('');
 };
+
+/**
+ * Creates the data for permissionless generic handler
+ *
+ * @category Helpers
+ * @param executeFunctionSignature - execution function signature
+ * @param executeContractAddress - execution contract address
+ * @param maxFee - max fee defined
+ * @param depositor - address of depositor on source chain
+ * @param executionData - the data to pass as parameter of the function being called on destination chain
+ * @returns {string}
+ */
+export const createPermissionlessGenericDepositData = (
+  executeFunctionSignature: string,
+  executeContractAddress: string,
+  maxFee: string,
+  depositor: string,
+  executionData: string,
+): string => {
+  return (
+    '0x' +
+    toHex(maxFee, 32).substring(2) + // uint256
+    toHex(executeFunctionSignature.substring(2).length / 2, 2).substring(2) + // uint16
+    executeFunctionSignature.substring(2) + // bytes
+    toHex(executeContractAddress.substring(2).length / 2, 1).substring(2) + // uint8
+    executeContractAddress.substring(2) + // bytes
+    toHex(depositor.substring(2).length / 2, 1).substring(2) + // uint8
+    depositor.substring(2) +
+    executionData.substring(2)
+  ) // bytes
+    .toLowerCase();
+};

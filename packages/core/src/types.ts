@@ -60,6 +60,7 @@ export type EvmResource = BaseResource & {
 };
 
 export enum FeeHandlerType {
+  TWAP = 'twap',
   BASIC = 'basic',
   PERCENTAGE = 'percentage',
 }
