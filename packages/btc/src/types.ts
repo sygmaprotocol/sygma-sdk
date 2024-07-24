@@ -13,13 +13,16 @@ export type BaseTransferParams = {
   destinationAddress: string;
   amount: number;
   resource: BitcoinResource | string;
-  utxoTxId: string;
-  utxoAmount: number;
-  utxoOutputIndex: number;
+  utxoData: {
+    utxoTxId: string;
+    utxoAmount: number;
+    utxoOutputIndex: number;
+  };
   publicKey: Buffer;
   typeOfAddress: TypeOfAddress;
-  minerFee: number;
   network: networks.Network;
+  feeRate: number;
+  minerFee: number;
   changeAddress?: string;
 };
 
@@ -27,4 +30,12 @@ export type BitcoinTransferRequest = Psbt;
 
 export type PaymentReturnData = {
   output: Buffer;
+  address?: string;
+};
+
+export type BitcoinTransferInputData = {
+  hash: string | Buffer;
+  index: number;
+  witnessUtxo: { value: number; script: Buffer };
+  tapInternalKey?: Buffer;
 };

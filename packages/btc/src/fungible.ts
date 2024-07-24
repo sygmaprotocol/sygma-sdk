@@ -16,27 +16,25 @@ export async function createBitcoinFungibleTransfer(
 class BitcoinTransfer extends BaseTransfer {
   protected destinationAddress: string;
   protected amount: number;
-  protected utxoTxId: string;
-  protected utxoOutputIndex: number;
-  protected utxoAmount: number;
   protected publicKey: Buffer;
   protected typeOfAddress: TypeOfAddress;
   protected minerFee: number;
   protected network: networks.Network;
   protected changeAddress?: string;
+  protected feeRate: number;
+  protected utxoData: { utxoTxId: string; utxoAmount: number; utxoOutputIndex: number };
 
   constructor(transfer: BaseTransferParams, config: Config) {
     super(transfer, config);
     this.destinationAddress = transfer.destinationAddress;
     this.amount = transfer.amount;
-    this.utxoTxId = transfer.utxoTxId;
-    this.utxoOutputIndex = transfer.utxoOutputIndex;
-    this.utxoAmount = transfer.utxoAmount;
     this.publicKey = transfer.publicKey;
     this.typeOfAddress = transfer.typeOfAddress;
     this.minerFee = transfer.minerFee;
     this.network = transfer.network;
     this.changeAddress = transfer.changeAddress;
+    this.feeRate = transfer.feeRate;
+    this.utxoData = transfer.utxoData;
   }
 
   getTransferTransaction(): BitcoinTransferRequest {
@@ -47,14 +45,13 @@ class BitcoinTransfer extends BaseTransfer {
         destinationAddress: this.destinationAddress,
         amount: this.amount,
         resource: this.resource.resourceId,
-        utxoTxId: this.utxoTxId,
-        utxoAmount: this.utxoAmount,
-        utxoOutputIndex: this.utxoOutputIndex,
+        utxoData: this.utxoData,
         publicKey: this.publicKey,
         typeOfAddress: this.typeOfAddress,
-        minerFee: this.minerFee,
         network: this.network,
+        feeRate: this.feeRate,
         changeAddress: this.changeAddress,
+        minerFee: this.minerFee,
       },
       this.feeAddress,
       this.resource.address,

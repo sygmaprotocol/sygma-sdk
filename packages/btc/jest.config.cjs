@@ -6,7 +6,7 @@ module.exports = {
     moduleNameMapper: {
       '^(\\.{1,2}/.*)\\.js$': '$1',
     },
-    testEnvironment: 'jsdom',
+    testEnvironment: 'node',
     testTimeout: 15000,
     transform: {
       '^.+\\.(ts|tsx)?$': ['ts-jest', { useESM: true }],
@@ -14,6 +14,6 @@ module.exports = {
     testPathIgnorePatterns: ['./dist'],
     automock: false,
     setupFiles: [
-      "./test/setupJest.js"
+      "<rootDir>/test/setupJest.js"
     ]
   };

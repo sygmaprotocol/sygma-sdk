@@ -1,8 +1,22 @@
-import type { networks, Payment } from 'bitcoinjs-lib';
+import type { networks, Payment, Signer } from 'bitcoinjs-lib';
 import { payments, Psbt } from 'bitcoinjs-lib';
 
 import { TypeOfAddress } from '../types.js';
-import type { BaseTransferParams, BitcoinTransferRequest, PaymentReturnData } from '../types.js';
+import type {
+  BaseTransferParams,
+  BitcoinTransferInputData,
+  BitcoinTransferRequest,
+  PaymentReturnData,
+} from '../types.js';
+
+type InputData = {
+  hash: string;
+  index: number;
+  witnessUtxo: { value: number; script: Buffer };
+  tapInternalKey: Buffer;
+};
+
+type OutputData = { value: number; script: Buffer; address: string };
 
 export function getScriptPubkey(
   typeOfAddress: TypeOfAddress,
@@ -19,10 +33,12 @@ export function getScriptPubkey(
 
     return { scriptPubKey: output };
   } else {
-    const { output } = payments.p2tr({
+    const { output, address } = payments.p2tr({
       internalPubkey: publicKey,
       network,
     }) as PaymentReturnData;
+
+    console.log('address', address, output.toString('hex'));
 
     return { scriptPubKey: output };
   }
@@ -34,48 +50,89 @@ function encodeDepositAddress(depositAddress: string, destinationDomainId: numbe
   });
 }
 
+// TODO: this needs to be used first
+export function calculateFee({
+  psbt,
+  feeRate,
+  inputData,
+  bridgeOutputData,
+  valueOutputData,
+  outputFeeData,
+  signer,
+}: {
+  feeRate: number;
+  psbt: Psbt;
+  inputData: InputData;
+  bridgeOutputData: Pick<OutputData, 'script' | 'value'>;
+  valueOutputData: Pick<OutputData, 'address' | 'value'>;
+  outputFeeData: Pick<OutputData, 'address' | 'value'>;
+  signer: Signer;
+}): number {
+  psbt.addInput(inputData);
+  psbt.addOutput(bridgeOutputData);
+  psbt.addOutput(valueOutputData);
+  psbt.addOutput(outputFeeData);
+  psbt.signInput(0, signer);
+  psbt.finalizeAllInputs();
+
+  const tx = psbt.extractTransaction(true);
+
+  const virtualSize = tx.virtualSize();
+
+  return Math.round(virtualSize * feeRate);
+}
+
+export function createInputData({
+  utxoData: { utxoTxId, utxoOutputIndex, utxoAmount },
+  publicKey,
+  network,
+  typeOfAddress,
+}: Pick<
+  BaseTransferParams,
+  'utxoData' | 'publicKey' | 'network' | 'typeOfAddress'
+>): BitcoinTransferInputData {
+  if (typeOfAddress !== TypeOfAddress.P2TR) {
+    return {
+      hash: utxoTxId as unknown as Buffer,
+      index: utxoOutputIndex,
+      witnessUtxo: {
+        script: getScriptPubkey(typeOfAddress, publicKey, network).scriptPubKey,
+        value: utxoAmount,
+      },
+    };
+  }
+  return {
+    hash: utxoTxId,
+    index: utxoOutputIndex,
+    witnessUtxo: {
+      script: getScriptPubkey(typeOfAddress, publicKey, network).scriptPubKey as unknown as Buffer,
+      value: utxoAmount,
+    },
+    tapInternalKey: publicKey,
+  };
+}
+
 export function getPsbt(
   params: BaseTransferParams,
   feeAddress: string,
   depositAddress: string,
   feeAmount: number,
 ): BitcoinTransferRequest {
-  if (!['P2WPKH', 'P2TR'].includes(params.typeOfAddress)) {
+  if (!['P2WPKH', 'P2TR'].includes(params.typeOfAddress.toString())) {
     throw new Error('Unsuported address type');
+  }
+  if (Object.keys(params.utxoData).length !== 3) {
+    throw new Error('UTXO data is required');
+  }
+
+  if (params.amount > params.utxoData.utxoAmount) {
+    throw new Error('Not enough funds to spend from the UTXO');
   }
 
   // TODO: to remove the address parameter being returned
-  const { scriptPubKey } = getScriptPubkey(params.typeOfAddress, params.publicKey, params.network);
-
   const psbt = new Psbt({ network: params.network });
 
-  let amountToSpent; // TODO: this condition is temporary since there is no fee on testnet
-  if (feeAmount) {
-    amountToSpent = params.utxoAmount - feeAmount - params.minerFee;
-  } else {
-    amountToSpent = params.utxoAmount - params.minerFee;
-  }
-
-  if (params.typeOfAddress !== TypeOfAddress.P2TR) {
-    psbt.addInput({
-      hash: params.utxoTxId,
-      index: params.utxoOutputIndex,
-      witnessUtxo: {
-        script: scriptPubKey,
-        value: params.utxoAmount,
-      },
-    });
-  } else {
-    psbt.addInput({
-      hash: params.utxoTxId,
-      index: params.utxoOutputIndex,
-      witnessUtxo: {
-        script: scriptPubKey as unknown as Buffer,
-        value: params.utxoAmount,
-      },
-      tapInternalKey: params.publicKey,
-    });
-  }
+  psbt.addInput(createInputData(params));
 
   // OP_RETURN output
   psbt.addOutput({
@@ -84,13 +141,27 @@ export function getPsbt(
     value: 0,
   });
 
-
   // just because there is no fee on testnet
   if (feeAmount) {
     psbt.addOutput({
       address: feeAddress,
       value: Number(feeAmount),
     });
+  }
+
+  const size = 303; // this is the size on testnet with fee handler
+  const minerFee = Math.floor(params.feeRate * size);
+  console.log('minerFee', minerFee);
+
+  let amountToSpent; // TODO: this condition is temporary since there is no fee on testnet
+  if (feeAmount) {
+    amountToSpent = params.utxoData.utxoAmount - Number(feeAmount) - minerFee;
+  } else {
+    amountToSpent = params.utxoData.utxoAmount - minerFee;
+  }
+
+  if (amountToSpent < params.amount) {
+    throw new Error('Not enough funds');
   }
 
   // Amount to bridge
@@ -104,7 +175,7 @@ export function getPsbt(
 
     psbt.addOutput({
       address: params.changeAddress,
-      value: change
+      value: change,
     });
   }
 
