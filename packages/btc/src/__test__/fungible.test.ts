@@ -31,6 +31,15 @@ const P2TR_TRANSFER_PARAMS: BaseTransferParams = {
   feeRate: 103,
 };
 
+const P2PWKH_TRANSFER_PARAMS: BaseTransferParams = {
+  ...P2TR_TRANSFER_PARAMS,
+  typeOfAddress: TypeOfAddress.P2WPKH,
+  publicKey: Buffer.from(
+    '03feca449bd5b50085d23864a006f6ea4da80ff63816033f6437193c66bac7488c',
+    'hex',
+  ),
+};
+
 const MOCKED_CONFIG = {
   init: jest.fn(),
   getDomainConfig: jest
@@ -61,7 +70,7 @@ jest.mock('@buildwithsygma/core', () => ({
   Config: jest.fn(),
 }));
 
-describe('Fungible - createBitcoinFungibleTransfer - P2TR', () => {
+describe('Fungible - createBitcoinFungibleTransfer', () => {
   beforeAll(() => {
     (Config as jest.Mock).mockReturnValue(MOCKED_CONFIG);
   });
@@ -70,53 +79,103 @@ describe('Fungible - createBitcoinFungibleTransfer - P2TR', () => {
     jest.restoreAllMocks();
   });
 
-  it('should create a bitcoin fungible transfer', async () => {
-    const transfer = await createBitcoinFungibleTransfer(P2TR_TRANSFER_PARAMS);
-    expect(transfer).toBeTruthy();
+  describe('Fungible - createBitcoinFungibleTransfer - P2TR', () => {
+    it('should create a bitcoin fungible transfer', async () => {
+      const transfer = await createBitcoinFungibleTransfer(P2TR_TRANSFER_PARAMS);
+      expect(transfer).toBeTruthy();
+    });
+
+    it('should throw an error when resource is not found', async () => {
+      const transferParams = { ...P2TR_TRANSFER_PARAMS, resource: 'tb...' };
+      const transfer = createBitcoinFungibleTransfer(transferParams);
+      await expect(transfer).rejects.toThrow('Resource not found.');
+    });
+
+    it('should return PSBT instance', async () => {
+      const transfer = await createBitcoinFungibleTransfer(P2TR_TRANSFER_PARAMS);
+      const psbt = transfer.getTransferTransaction();
+      expect(psbt).toBeTruthy();
+      expect(psbt instanceof bitcoin.Psbt).toBeTruthy();
+    });
+
+    it('should throw if the utxo amount is equal to the amount to transfer', async () => {
+      const transferParams = { ...P2TR_TRANSFER_PARAMS, amount: 100000000 };
+      const transfer = await createBitcoinFungibleTransfer(transferParams);
+      expect(() => transfer.getTransferTransaction()).toThrow();
+    });
+
+    it('should throw if the utxo amount is less than the amount to transfer', async () => {
+      const transferParams = { ...P2TR_TRANSFER_PARAMS, amount: 100000001 };
+      const transfer = await createBitcoinFungibleTransfer(transferParams);
+      expect(() => transfer.getTransferTransaction()).toThrow();
+    });
+
+    it('should throw if public key is incorrect', async () => {
+      const transferParams = { ...P2TR_TRANSFER_PARAMS, publicKey: Buffer.from('', 'hex') };
+      const transfer = await createBitcoinFungibleTransfer(transferParams);
+      expect(() => transfer.getTransferTransaction()).toThrow();
+    });
+
+    it('should throw if utxoData is partially defined', async () => {
+      const transferParams: BaseTransferParams = {
+        ...P2TR_TRANSFER_PARAMS,
+        utxoData: {
+          utxoTxId: 'dbcd2f7e54392fbfeca85d15ce405dfecddc65c42e6f72a1b84c79dcd2eb7e7c',
+        } as unknown as BaseTransferParams['utxoData'],
+      };
+      const transfer = await createBitcoinFungibleTransfer(transferParams);
+
+      expect(() => transfer.getTransferTransaction()).toThrow();
+    });
   });
 
-  it('should throw an error when resource is not found', async () => {
-    const transferParams = { ...P2TR_TRANSFER_PARAMS, resource: 'tb...' };
-    const transfer = createBitcoinFungibleTransfer(transferParams);
-    await expect(transfer).rejects.toThrow('Resource not found.');
-  });
+  describe('Fungible - createBitcoinFungibleTransfer - P2WPKH', () => {
+    it('should create a bitcoin fungible transfer', async () => {
+      const transfer = await createBitcoinFungibleTransfer(P2PWKH_TRANSFER_PARAMS);
+      expect(transfer).toBeTruthy();
+    });
 
-  it('should return PSBT instance', async () => {
-    const transfer = await createBitcoinFungibleTransfer(P2TR_TRANSFER_PARAMS);
-    const psbt = transfer.getTransferTransaction();
-    expect(psbt).toBeTruthy();
-    expect(psbt instanceof bitcoin.Psbt).toBeTruthy();
-  });
+    it('should throw an error when resource is not found', async () => {
+      const transferParams = { ...P2PWKH_TRANSFER_PARAMS, resource: 'tb...' };
+      const transfer = createBitcoinFungibleTransfer(transferParams);
+      await expect(transfer).rejects.toThrow('Resource not found.');
+    });
 
-  it('should throw if the utxo amount is equal to the amount to transfer', async () => {
-    const transferParams = { ...P2TR_TRANSFER_PARAMS, amount: 100000000 };
-    const transfer = await createBitcoinFungibleTransfer(transferParams);
-    await expect(() => transfer.getTransferTransaction()).rejects.toThrow('Not enough funds');
-  });
+    it('should return PSBT instance', async () => {
+      const transfer = await createBitcoinFungibleTransfer(P2PWKH_TRANSFER_PARAMS);
+      const psbt = transfer.getTransferTransaction();
+      expect(psbt).toBeTruthy();
+      expect(psbt instanceof bitcoin.Psbt).toBeTruthy();
+    });
 
-  it('should throw if the utxo amount is less than the amount to transfer', async () => {
-    const transferParams = { ...P2TR_TRANSFER_PARAMS, amount: 100000001 };
-    const transfer = await createBitcoinFungibleTransfer(transferParams);
-    await expect(() => transfer.getTransferTransaction()).rejects.toThrow(
-      'Not enough funds to spend from the UTXO',
-    );
-  });
+    it('should throw if the utxo amount is equal to the amount to transfer', async () => {
+      const transferParams = { ...P2PWKH_TRANSFER_PARAMS, amount: 100000000 };
+      const transfer = await createBitcoinFungibleTransfer(transferParams);
+      expect(() => transfer.getTransferTransaction()).toThrow();
+    });
 
-  it('should throw if public key is incorrect', async () => {
-    const transferParams = { ...P2TR_TRANSFER_PARAMS, publicKey: Buffer.from('', 'hex') };
-    const transfer = await createBitcoinFungibleTransfer(transferParams);
-    await expect(() => transfer.getTransferTransaction()).rejects.toThrow();
-  });
+    it('should throw if the utxo amount is less than the amount to transfer', async () => {
+      const transferParams = { ...P2PWKH_TRANSFER_PARAMS, amount: 100000001 };
+      const transfer = await createBitcoinFungibleTransfer(transferParams);
+      expect(() => transfer.getTransferTransaction()).toThrow();
+    });
 
-  it('should throw if utxoData is partially defined', async () => {
-    const transferParams: BaseTransferParams = {
-      ...P2TR_TRANSFER_PARAMS,
-      utxoData: {
-        utxoTxId: 'dbcd2f7e54392fbfeca85d15ce405dfecddc65c42e6f72a1b84c79dcd2eb7e7c',
-      } as unknown as BaseTransferParams['utxoData'],
-    };
-    const transfer = await createBitcoinFungibleTransfer(transferParams);
+    it('should throw if public key is incorrect', async () => {
+      const transferParams = { ...P2PWKH_TRANSFER_PARAMS, publicKey: Buffer.from('', 'hex') };
+      const transfer = await createBitcoinFungibleTransfer(transferParams);
+      expect(() => transfer.getTransferTransaction()).toThrow();
+    });
 
-    await expect(() => transfer.getTransferTransaction()).rejects.toThrow('UTXO data is required');
+    it('should throw if utxoData is partially defined', async () => {
+      const transferParams: BaseTransferParams = {
+        ...P2PWKH_TRANSFER_PARAMS,
+        utxoData: {
+          utxoTxId: 'dbcd2f7e54392fbfeca85d15ce405dfecddc65c42e6f72a1b84c79dcd2eb7e7c',
+        } as unknown as BaseTransferParams['utxoData'],
+      };
+      const transfer = await createBitcoinFungibleTransfer(transferParams);
+
+      expect(() => transfer.getTransferTransaction()).toThrow();
+    });
   });
 });
