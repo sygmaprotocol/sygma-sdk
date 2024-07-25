@@ -6,8 +6,10 @@ import {
   SecurityModel,
 } from '@buildwithsygma/core';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
-import { TransactionRequest, Web3Provider } from '@ethersproject/providers';
+import type { TransactionRequest } from '@ethersproject/providers';
+import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber, constants, type PopulatedTransaction, utils } from 'ethers';
+import type { EvmFee } from 'types.js';
 
 import type { EvmTransferParams } from './evmTransfer.js';
 import { EvmTransfer } from './evmTransfer.js';
@@ -15,7 +17,6 @@ import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
 import { erc20Transfer } from './utils/depositFns.js';
 import { createERCDepositData } from './utils/helpers.js';
 import { createTransactionRequest } from './utils/transaction.js';
-import { EvmFee } from 'types.js';
 
 interface EvmFungibleTransferRequest extends EvmTransferParams {
   sourceAddress: string;

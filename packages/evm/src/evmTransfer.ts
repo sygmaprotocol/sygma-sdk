@@ -2,9 +2,9 @@ import type { BaseTransferParams, Config, Eip1193Provider } from '@buildwithsygm
 import { BaseTransfer } from '@buildwithsygma/core';
 import { providers } from 'ethers';
 
+import { TwapFeeCalculator } from './fee/TwapFee.js';
 import { getFeeInformation, BasicFeeCalculator, PercentageFeeCalculator } from './fee/index.js';
 import type { EvmFee } from './types.js';
-import { TwapFeeCalculator } from './fee/TwapFee.js';
 
 export interface EvmTransferParams extends BaseTransferParams {
   sourceNetworkProvider: Eip1193Provider;

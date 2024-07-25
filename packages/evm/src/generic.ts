@@ -9,9 +9,9 @@ import type {
   ExtractAbiFunctionNames,
 } from 'abitype';
 import { constants, ethers } from 'ethers';
+
 import type { EvmTransferParams } from './evmTransfer.js';
 import { EvmTransfer } from './evmTransfer.js';
-
 import { getFeeInformation } from './fee/getFeeInformation.js';
 import type { TransactionRequest } from './types.js';
 import { createPermissionlessGenericDepositData, toHex } from './utils/helpers.js';

@@ -32,8 +32,7 @@ describe('getAssetBalance', () => {
   });
 
   it('should return the asset balance when present', async () => {
-    // TODO: fix type issue (as any)
-    const mockOption = new Option(registry as any, 'AssetBalance', mockAssetBalance);
+    const mockOption = new Option(registry, 'AssetBalance', mockAssetBalance);
     unwrapOrDefaultSpy.mockReturnValue(mockAssetBalance);
     (mockApi.query.assets.account as unknown as jest.Mock).mockResolvedValue(mockOption);
 
