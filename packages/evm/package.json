@@ -58,13 +58,14 @@
   },
   "dependencies": {
     "@buildwithsygma/core": "workspace:^",
-    "@buildwithsygma/sygma-contracts": "2.6.1",
+    "@buildwithsygma/sygma-contracts": "^2.8.0",
     "@ethersproject/abi": "^5.7.0",
     "@ethersproject/bytes": "^5.7.0",
     "@ethersproject/contracts": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",
     "@polkadot/types": "^11.2.1",
     "@polkadot/util-crypto": "^12.6.2",
+    "abitype": "^1.0.4",
     "ethers": "5.7.2"
   }
 }

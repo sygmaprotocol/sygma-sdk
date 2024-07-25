@@ -21,8 +21,9 @@ export interface EvmTransferFeeCalculationHandler {
 export abstract class BaseEvmTransferFeeCalculator implements EvmTransferFeeCalculationHandler {
   nextHandler: EvmTransferFeeCalculationHandler | undefined;
 
-  setNextHandler(handler: EvmTransferFeeCalculationHandler): void {
+  setNextHandler(handler: EvmTransferFeeCalculationHandler): EvmTransferFeeCalculationHandler {
     this.nextHandler = handler;
+    return this.nextHandler;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
