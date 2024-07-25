@@ -11,8 +11,9 @@ jest.mock('../utils/index.js');
 
 describe('SubstrateFungibleAssetTransfer', () => {
   const transferRequest: SubstrateAssetTransferRequest = {
-    sourceDomain: 5, // Substrate
-    destinationDomain: 1337, // Ethereum
+    sourceAddress: '',
+    source: 5, // Substrate
+    destination: 1337, // Ethereum
     sourceNetworkProvider: {} as ApiPromise,
     resource: '0x0000000000000000000000000000000000000000000000000000000000000300',
     amount: BigInt(1000),
