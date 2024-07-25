@@ -13,19 +13,19 @@ export async function hasEnoughLiquidity(
     | Awaited<ReturnType<typeof createSubstrateFungibleAssetTransfer>>,
   destinationProviderUrl: string,
 ): Promise<boolean> {
-  const destination = transfer.destination;
-  const transferResource = transfer.resource;
-  const config = transfer.config;
-  const domainConfig = config.findDomainConfig(destination);
-  const handler = domainConfig.handlers.find(handler => handler.type === ResourceType.FUNGIBLE);
+  const { destination, resource, config } = transfer;
+  const destinationDomainConfig = config.findDomainConfig(destination);
+  const handler = destinationDomainConfig.handlers.find(
+    handler => handler.type === ResourceType.FUNGIBLE,
+  );
 
   if (!handler) throw new Error('Handler not found or unregistered for resource.');
 
-  const resource = domainConfig.resources.find(
-    resource => transferResource.resourceId === resource.resourceId,
+  const destinationResource = destinationDomainConfig.resources.find(
+    _resource => resource.resourceId === _resource.resourceId,
   );
 
-  if (!resource) throw new Error('Resource not found or unregistered.');
+  if (!destinationResource) throw new Error('Resource not found or unregistered.');
 
   switch (destination.type) {
     case Network.EVM: {
