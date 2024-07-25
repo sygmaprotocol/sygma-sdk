@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { BitcoinResource } from "@buildwithsygma/core/src";
-import { Config } from "@buildwithsygma/core/types";
+import type { BitcoinResource } from "@buildwithsygma/core/src";
+import type { Config } from "@buildwithsygma/core/types";
 
 type BaseTransferParams = {
   destinationAddress: string;
@@ -14,7 +14,9 @@ type BitcoinTransferRequest = {
   depositAddress: string;
 };
 
-export async function createBitcoinTransferRequest(params: BaseTransferParams): Promise<BaseTransfer> {
+export function createBitcoinTransferRequest(
+  params: BaseTransferParams,
+): Promise<BaseTransfer> {
   throw new Error("Method not implemented");
 }
 

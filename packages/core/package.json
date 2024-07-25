@@ -17,6 +17,7 @@
     "url": "https://github.com/sygmaprotocol/sygma-sdk"
   },
   "scripts": {
+    "clean": "rm -rf ./dist ./dist-cjs ./dist-esm ./types",
     "test": "jest --watchAll --detectOpenHandles --silent",
     "test:unit": "jest --detectOpenHandles",
     "run:all": "concurrently \"yarn run prepareNodes\" \"yarn run test\"",
@@ -28,9 +29,7 @@
     "build:typedocs:markdown": "typedoc --options typedoc.markdown.json",
     "build:typedocs:asjson": "typedoc --options typedoc.asjson.json",
     "lint": "eslint 'src/**/*.ts'",
-    "lint:fix": "yarn run lint --fix",
-    "run:nodes": "docker-compose -f docker-compose.yml up",
-    "clean": "rm -rf ./dist ./dist-cjs ./dist-esm ./types"
+    "lint:fix": "yarn run lint --fix"
   },
   "keywords": [
     "sygma",
@@ -63,6 +62,9 @@
     "@ethersproject/bytes": "^5.7.0",
     "@ethersproject/contracts": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",
+    "@polkadot/keyring": "^12.6.2",
+    "@polkadot/util": "^12.6.2",
+    "bitcoin-address-validation": "^2.2.3",
     "ethers": "5.6.2"
   }
 }

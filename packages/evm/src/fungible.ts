@@ -1,8 +1,14 @@
 import type { EvmResource } from '@buildwithsygma/core';
-import { SecurityModel, Config, FeeHandlerType, ResourceType } from '@buildwithsygma/core';
+import {
+  Config,
+  FeeHandlerType,
+  isValidAddressForNetwork,
+  ResourceType,
+  SecurityModel,
+} from '@buildwithsygma/core';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
-import { BigNumber, constants, providers, utils, type PopulatedTransaction } from 'ethers';
+import { BigNumber, constants, type PopulatedTransaction, providers, utils } from 'ethers';
 
 import type { BaseTransferParams } from './baseTransfer.js';
 import { BaseTransfer } from './baseTransfer.js';
@@ -83,7 +89,7 @@ export async function createEvmFungibleAssetTransfer(
  * @dev User should not instance this directly. All the (async) checks should be done in `createEvmFungibleAssetTransfer`
  */
 class EvmFungibleAssetTransfer extends BaseTransfer {
-  protected destinationAddress: string;
+  protected destinationAddress: string = '';
   protected securityModel: SecurityModel;
   protected _amount: bigint;
 
@@ -112,9 +118,11 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
   constructor(transfer: FungibleTokenTransferRequest, config: Config) {
     super(transfer, config);
     this._amount = transfer.amount;
-    this.destinationAddress = transfer.destinationAddress;
+    if (isValidAddressForNetwork(transfer.destinationAddress, this.destination.type))
+      this.destinationAddress = transfer.destinationAddress;
     this.securityModel = transfer.securityModel ?? SecurityModel.MPC;
   }
+
   /**
    * Set resource to be transferred
    * @param {EvmResource} resource
@@ -126,6 +134,7 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     }
     this.resource = resource;
   }
+
   /**
    * Set amount to be transferred
    * @param {BigInt} amount
@@ -136,13 +145,15 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     const fee = await this.getFee();
     this._amount = calculateAdjustedAmount(this, fee);
   }
+
   /**
    * Sets the destination address
    * @param destinationAddress
    * @returns {void}
    */
   setDestinationAddress(destinationAddress: string): void {
-    this.destinationAddress = destinationAddress;
+    if (isValidAddressForNetwork(destinationAddress, this.destination.type))
+      this.destinationAddress = destinationAddress;
   }
 
   /**
@@ -179,6 +190,7 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
 
     return approvals.map(approval => createTransactionRequest(approval));
   }
+
   /**
    * Returns transaction to be signed by the user
    * @dev potentially add optional param to override transaction params

@@ -1,12 +1,17 @@
 import type { Domainlike, SubstrateResource } from '@buildwithsygma/core';
-import { Config, FeeHandlerType, ResourceType } from '@buildwithsygma/core';
+import {
+  Config,
+  FeeHandlerType,
+  isValidAddressForNetwork,
+  ResourceType,
+} from '@buildwithsygma/core';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import { BN } from '@polkadot/util';
 
 import { BaseTransfer } from './base-transfer.js';
 import type { SubstrateFee } from './types.js';
-import { getBasicFee, getFeeHandler, getPercentageFee, deposit } from './utils/index.js';
+import { deposit, getBasicFee, getFeeHandler, getPercentageFee } from './utils/index.js';
 
 export type SubstrateAssetTransferRequest = {
   sourceDomain: Domainlike;
@@ -23,18 +28,19 @@ export async function createSubstrateFungibleAssetTransfer(
   const config = new Config();
   await config.init(process.env.SYGMA_ENV);
 
-  const transfer = new SubstrateFungibleAssetTransfer(transferRequestParams, config);
-  return transfer;
+  return new SubstrateFungibleAssetTransfer(transferRequestParams, config);
 }
 
 class SubstrateFungibleAssetTransfer extends BaseTransfer {
   amount: bigint;
-  destinationAddress: string;
+  destinationAddress: string = '';
 
   constructor(transfer: SubstrateAssetTransferRequest, config: Config) {
     super(transfer, config);
     this.amount = transfer.amount;
-    this.destinationAddress = transfer.destinationAddress;
+
+    if (isValidAddressForNetwork(transfer.destinationAddress, this.destinationDomain.type))
+      this.destinationAddress = transfer.destinationAddress;
   }
 
   /**
@@ -50,7 +56,8 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
    * @param {string} destinationAddress
    */
   setDestinationAddress(destinationAddress: string): void {
-    this.destinationAddress = destinationAddress;
+    if (isValidAddressForNetwork(destinationAddress, this.destinationDomain.type))
+      this.destinationAddress = destinationAddress;
   }
 
   /**

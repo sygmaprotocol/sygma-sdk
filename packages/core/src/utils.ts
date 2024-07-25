@@ -1,3 +1,10 @@
+import * as process from 'node:process';
+
+import { decodeAddress, encodeAddress } from '@polkadot/keyring';
+import { hexToU8a, isHex } from '@polkadot/util';
+import validate, { Network as BitcoinNetwork } from 'bitcoin-address-validation';
+import { ethers } from 'ethers';
+
 import { ExplorerUrl, IndexerUrl } from './constants.js';
 import { getFeeHandlerAddressesOfRoutes, getFeeHandlerTypeOfRoutes } from './multicall.js';
 import type {
@@ -253,4 +260,60 @@ export async function getRawConfiguration(
     throw new Error(`Unable to fetch configuration for environment: ${environment}`);
   }
   return sygmaConfig;
+}
+
+/**
+ * Validate Substrate address.
+ * @param {string} address
+ */
+export function isValidSubstrateAddress(address: string): boolean {
+  try {
+    encodeAddress(isHex(address) ? hexToU8a(address) : decodeAddress(address));
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+/**
+ * Validate EVM address.
+ * @param {string} address
+ * @returns {boolean}
+ */
+export function isValidEvmAddress(address: string): boolean {
+  return !!ethers.utils.isAddress(address);
+}
+
+/**
+ * Validate Bitcoin address.
+ * @param {string} address
+ * @returns {boolean}
+ */
+export function isValidBitcoinAddress(address: string): boolean {
+  if (process.env.SYGMA_ENV === Environment.TESTNET || process.env.SYGMA_ENV === Environment.DEVNET)
+    return validate(address, BitcoinNetwork.testnet);
+
+  return validate(address, BitcoinNetwork.mainnet);
+}
+
+/**
+ * Validate Address based on network.
+ * @param {string} address
+ * @param {Network} network
+ * @returns {boolean}
+ */
+export function isValidAddressForNetwork(address: string, network: Network): boolean {
+  switch (network) {
+    case Network.EVM:
+      if (isValidEvmAddress(address)) return true;
+      throw new Error('Invalid EVM Address');
+    case Network.SUBSTRATE:
+      if (isValidSubstrateAddress(address)) return true;
+      throw new Error('Invalid Substrate Address');
+    case Network.BITCOIN:
+      if (isValidBitcoinAddress(address)) return true;
+      throw new Error('Invalid Bitcoin Address');
+    default:
+      throw new Error('Provided network is not supported');
+  }
 }
