@@ -3,11 +3,10 @@ import { Environment } from '@buildwithsygma/core';
 import type { ApiPromise } from '@polkadot/api';
 import { numberToHex } from '@polkadot/util';
 
-import { createDestIdMultilocationData, deposit } from '../../../utils/deposit/deposit.js';
+import { createDestIdMultilocationData, deposit } from '../../../utils/index.js';
 
 describe('createDestIdMultilocationData', () => {
   it('should create multilocation data for LOCAL environment', () => {
-    process.env.SYGMA_ENV = Environment.LOCAL;
     const address = '0x123abc';
     const domainId = '42';
     const data = createDestIdMultilocationData(address, domainId);
@@ -59,7 +58,7 @@ describe('deposit', () => {
     };
     const amount = '1000';
     const destinationDomainId = '1';
-    const destinationAddress = '0x123abc';
+    const destinationAddress = '0x7379676d610';
 
     const mockApi = {
       tx: {
@@ -83,7 +82,10 @@ describe('deposit', () => {
         interior: {
           x2: [
             {
-              generalKey: [(destinationAddress.length - 2) / 2, destinationAddress.padEnd(66, '0')],
+              generalKey: [
+                (destinationAddress.length - 2) / 2,
+                '0x7379676d61000000000000000000000000000000000000000000000000000000',
+              ],
             },
             { generalKey: [1, numberToHex(Number(destinationDomainId)).padEnd(66, '0')] },
           ],

@@ -1,11 +1,17 @@
 import type { BaseTransferParams, SubstrateResource } from '@buildwithsygma/core';
-import { Config, FeeHandlerType, ResourceType, BaseTransfer } from '@buildwithsygma/core';
+import {
+  Config,
+  FeeHandlerType,
+  isValidAddressForNetwork,
+  BaseTransfer,
+  ResourceType,
+} from '@buildwithsygma/core';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import { BN } from '@polkadot/util';
 
 import type { SubstrateFee } from './types.js';
-import { getBasicFee, getFeeHandler, getPercentageFee, deposit } from './utils/index.js';
+import { deposit, getBasicFee, getFeeHandler, getPercentageFee } from './utils/index.js';
 
 export interface SubstrateAssetTransferRequest extends BaseTransferParams {
   sourceNetworkProvider: ApiPromise;
@@ -19,8 +25,7 @@ export async function createSubstrateFungibleAssetTransfer(
   const config = new Config();
   await config.init(process.env.SYGMA_ENV);
 
-  const transfer = new SubstrateFungibleAssetTransfer(transferRequestParams, config);
-  return transfer;
+  return new SubstrateFungibleAssetTransfer(transferRequestParams, config);
 }
 
 class SubstrateFungibleAssetTransfer extends BaseTransfer {
@@ -33,6 +38,9 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
     this.amount = transfer.amount;
     this.sourceNetworkProvider = transfer.sourceNetworkProvider;
     this.destinationAddress = transfer.destinationAddress;
+
+    if (isValidAddressForNetwork(transfer.destinationAddress, this._destination.type))
+      this.destinationAddress = transfer.destinationAddress;
   }
   public setResource(resource: SubstrateResource): void {
     this._resource = resource;
@@ -55,7 +63,8 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
    * @param {string} destinationAddress
    */
   setDestinationAddress(destinationAddress: string): void {
-    this.destinationAddress = destinationAddress;
+    if (isValidAddressForNetwork(destinationAddress, this._destination.type))
+      this.destinationAddress = destinationAddress;
   }
 
   /**
