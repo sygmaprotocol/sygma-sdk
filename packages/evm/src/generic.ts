@@ -9,9 +9,9 @@ import type {
   ExtractAbiFunctionNames,
 } from 'abitype';
 import { constants, ethers } from 'ethers';
+import type { EvmTransferParams } from './evmTransfer.js';
+import { EvmTransfer } from './evmTransfer.js';
 
-import type { BaseTransferParams } from './baseTransfer.js';
-import { BaseTransfer } from './baseTransfer.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
 import type { TransactionRequest } from './types.js';
 import { createPermissionlessGenericDepositData, toHex } from './utils/helpers.js';
@@ -25,7 +25,7 @@ import { createTransactionRequest } from './utils/transaction.js';
 export interface GenericMessageTransferRequest<
   ContractAbi extends Abi,
   FunctionName extends ExtractAbiFunctionNames<ContractAbi, 'nonpayable' | 'payable'>,
-> extends BaseTransferParams {
+> extends EvmTransferParams {
   gasLimit: bigint;
   functionParameters: AbiParametersToPrimitiveTypes<
     ExtractAbiFunction<ContractAbi, FunctionName>['inputs'],
@@ -66,7 +66,7 @@ export async function createCrossChainContractCall<
 class GenericMessageTransfer<
   ContractAbi extends Abi,
   FunctionName extends ExtractAbiFunctionNames<ContractAbi, 'nonpayable' | 'payable'>,
-> extends BaseTransfer {
+> extends EvmTransfer {
   maxFee: bigint;
   destinationContractAddress: string;
   gasLimit: bigint;

@@ -2403,9 +2403,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/rpc-augment@npm:11.2.1":
-  version: 11.2.1
-  resolution: "@polkadot/rpc-augment@npm:11.2.1"
+"@polkadot/rpc-augment@npm:11.3.1":
+  version: 11.3.1
+  resolution: "@polkadot/rpc-augment@npm:11.3.1"
   dependencies:
     "@polkadot/rpc-core": "npm:11.3.1"
     "@polkadot/types": "npm:11.3.1"
@@ -2478,9 +2478,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/types-augment@npm:11.2.1":
-  version: 11.2.1
-  resolution: "@polkadot/types-augment@npm:11.2.1"
+"@polkadot/types-augment@npm:11.3.1":
+  version: 11.3.1
+  resolution: "@polkadot/types-augment@npm:11.3.1"
   dependencies:
     "@polkadot/types": "npm:11.3.1"
     "@polkadot/types-codec": "npm:11.3.1"
@@ -2502,9 +2502,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/types-codec@npm:11.2.1":
-  version: 11.2.1
-  resolution: "@polkadot/types-codec@npm:11.2.1"
+"@polkadot/types-codec@npm:11.3.1":
+  version: 11.3.1
+  resolution: "@polkadot/types-codec@npm:11.3.1"
   dependencies:
     "@polkadot/util": "npm:^12.6.2"
     "@polkadot/x-bigint": "npm:^12.6.2"
@@ -2524,9 +2524,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/types-create@npm:11.2.1":
-  version: 11.2.1
-  resolution: "@polkadot/types-create@npm:11.2.1"
+"@polkadot/types-create@npm:11.3.1":
+  version: 11.3.1
+  resolution: "@polkadot/types-create@npm:11.3.1"
   dependencies:
     "@polkadot/types-codec": "npm:11.3.1"
     "@polkadot/util": "npm:^12.6.2"
@@ -2546,9 +2546,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/types-known@npm:11.2.1":
-  version: 11.2.1
-  resolution: "@polkadot/types-known@npm:11.2.1"
+"@polkadot/types-known@npm:11.3.1":
+  version: 11.3.1
+  resolution: "@polkadot/types-known@npm:11.3.1"
   dependencies:
     "@polkadot/networks": "npm:^12.6.2"
     "@polkadot/types": "npm:11.3.1"
@@ -2580,9 +2580,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/types@npm:11.2.1, @polkadot/types@npm:^11.2.1":
-  version: 11.2.1
-  resolution: "@polkadot/types@npm:11.2.1"
+"@polkadot/types@npm:11.3.1":
+  version: 11.3.1
+  resolution: "@polkadot/types@npm:11.3.1"
   dependencies:
     "@polkadot/keyring": "npm:^12.6.2"
     "@polkadot/types-augment": "npm:11.3.1"
@@ -2609,6 +2609,22 @@ __metadata:
     rxjs: "npm:^7.8.1"
     tslib: "npm:^2.6.2"
   checksum: 9773c8bbe5af8b20292a94691d4f791dff5cb75da063b0dfc76a9615e8ea102274dcd0295744782d1462fac31cb0365c20a06b039698cdc410a82b8d03ec52a8
+  languageName: node
+  linkType: hard
+
+"@polkadot/types@npm:^11.2.1":
+  version: 11.2.1
+  resolution: "@polkadot/types@npm:11.2.1"
+  dependencies:
+    "@polkadot/keyring": "npm:^12.6.2"
+    "@polkadot/types-augment": "npm:11.3.1"
+    "@polkadot/types-codec": "npm:11.3.1"
+    "@polkadot/types-create": "npm:11.3.1"
+    "@polkadot/util": "npm:^12.6.2"
+    "@polkadot/util-crypto": "npm:^12.6.2"
+    rxjs: "npm:^7.8.1"
+    tslib: "npm:^2.6.2"
+  checksum: 2754f81b06421747632c1deef011698323673c8769cc6b9af8bfdd368a5a3c011fec442ee405bea81ac0834af78fc360645c3c4071250224ffeba2950d1f2d54
   languageName: node
   linkType: hard
 
@@ -3097,14 +3113,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@substrate/ss58-registry@npm:^1.44.0":
-  version: 1.49.0
-  resolution: "@substrate/ss58-registry@npm:1.49.0"
-  checksum: b50f32e2f4632b31b3e09cec026fef557b1b72f61b6811673f5b0fbe311c5394c2f19fc4c23f97b014c77eb2d0f535a8f079dfd3fb22d5a1d7b043ceeac0d9ac
-  languageName: node
-  linkType: hard
-
-"@substrate/ss58-registry@npm:^1.46.0":
+"@substrate/ss58-registry@npm:^1.44.0, @substrate/ss58-registry@npm:^1.46.0":
   version: 1.49.0
   resolution: "@substrate/ss58-registry@npm:1.49.0"
   checksum: b50f32e2f4632b31b3e09cec026fef557b1b72f61b6811673f5b0fbe311c5394c2f19fc4c23f97b014c77eb2d0f535a8f079dfd3fb22d5a1d7b043ceeac0d9ac
@@ -11344,7 +11353,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web3-providers-http@npm:1.10.4, web3-providers-http@npm:^1.2.7":
+"web3-providers-http@npm:1.10.4":
   version: 1.10.4
   resolution: "web3-providers-http@npm:1.10.4"
   dependencies:

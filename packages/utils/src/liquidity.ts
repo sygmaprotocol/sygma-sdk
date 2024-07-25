@@ -2,10 +2,10 @@ import type { EvmResource, SubstrateResource, Eip1193Provider } from '@buildwith
 import { Network, ResourceType } from '@buildwithsygma/core';
 import type { createEvmFungibleAssetTransfer } from '@buildwithsygma/evm';
 import { getEvmHandlerBalance } from '@buildwithsygma/evm';
-import type { createSubstrateFungibleAssetTransfer } from '@buildwithsygma/substrate';
 import { HttpProvider } from 'web3-providers-http';
 
 import { getSubstrateHandlerBalance } from './substrate/balances.js';
+import { createSubstrateFungibleAssetTransfer } from '@buildwithsygma/substrate';
 
 export async function hasEnoughLiquidity(
   transfer:

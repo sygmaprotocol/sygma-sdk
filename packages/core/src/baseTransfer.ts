@@ -17,15 +17,15 @@ export abstract class BaseTransfer {
   protected sourceAddress: string;
 
   public get source(): Domain {
-    return this.source;
+    return this._source;
   }
 
   public get destination(): Domain {
-    return this.destination;
+    return this._destination;
   }
 
   public get resource(): EvmResource | SubstrateResource {
-    return this.resource;
+    return this._resource;
   }
 
   public get config(): Config {
@@ -43,6 +43,7 @@ export abstract class BaseTransfer {
   }
 
   constructor(transfer: BaseTransferParams, config: Config) {
+    this._config = config;
     this.sourceAddress = transfer.sourceAddress;
     this._source = config.getDomain(transfer.source);
     this._destination = config.getDomain(transfer.destination);
