@@ -20,14 +20,14 @@ if (!privateKey) {
 }
 
 // Base Sepolia
-const DESTINATION_CHAIN_ID = 84532;
+const DESTINATION_CHAIN_ID = 17000;
 // Sepolia
 const SEPOLIA_CHAIN_ID = 11155111;
 // Permissionless Generic Transfer
 const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000000600";
 // Contract address on destination chain (Base Sepolia)
-const EXECUTE_CONTRACT_ADDRESS = "0x4bE595ab5A070663B314970Fc10C049BBA0ad489";
+const EXECUTE_CONTRACT_ADDRESS = "0x1f519c705a442f06a0A7F21001c50e07dA7ecD0D";
 // Maximum Fee to be paid for this transfer
 const MAX_FEE = "3000000";
 // Destination RPC Url
@@ -71,7 +71,7 @@ export async function genericMessage(): Promise<void> {
     "store"
   >({
     gasLimit: BigInt(0),
-    functionParameters: [paramAddress, paramAddress, BigInt(3052070251)],
+    functionParameters: [paramAddress, BigInt(3052070251)],
     functionName: "store",
     destinationContractAbi: sepoliaBaseStorageContract,
     destinationContractAddress: EXECUTE_CONTRACT_ADDRESS,
