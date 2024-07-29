@@ -1,10 +1,10 @@
 import type { BaseTransferParams, SubstrateResource } from '@buildwithsygma/core';
 import {
+  Network,
   BaseTransfer,
   Config,
   FeeHandlerType,
   isValidAddressForNetwork,
-  Network,
   ResourceType,
 } from '@buildwithsygma/core';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
@@ -14,17 +14,18 @@ import { BN } from '@polkadot/util';
 import type { SubstrateFee } from './types.js';
 import {
   deposit,
+  getAssetBalance,
   getBasicFee,
   getFeeHandler,
-  getPercentageFee,
-  getAssetBalance,
   getNativeTokenBalance,
+  getPercentageFee,
 } from './utils/index.js';
 
 export interface SubstrateAssetTransferRequest extends BaseTransferParams {
   sourceNetworkProvider: ApiPromise;
   amount: bigint;
   destinationAddress: string;
+  senderAddress: string;
 }
 
 export async function createSubstrateFungibleAssetTransfer(
@@ -40,10 +41,12 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
   amount: bigint;
   destinationAddress: string = '';
   sourceNetworkProvider: ApiPromise;
+  senderAddress: string;
 
   constructor(transfer: SubstrateAssetTransferRequest, config: Config) {
     super(transfer, config);
     this.amount = transfer.amount;
+    this.senderAddress = transfer.senderAddress;
     this.sourceNetworkProvider = transfer.sourceNetworkProvider;
 
     if (isValidAddressForNetwork(transfer.destinationAddress, this.destination.type))
