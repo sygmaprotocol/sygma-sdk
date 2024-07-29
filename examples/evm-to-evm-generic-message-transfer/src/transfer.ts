@@ -1,16 +1,19 @@
-import dotenv from "dotenv";
+import type { Eip1193Provider, Environment } from "@buildwithsygma/core";
+import { getSygmaScanLink } from "@buildwithsygma/core";
 import { createCrossChainContractCall } from "@buildwithsygma/evm";
+import dotenv from "dotenv";
+import type { BigNumber } from "ethers";
 import { Wallet, ethers, providers } from "ethers";
-import { sepoliaBaseStorageContract } from "./contracts";
-import { Eip1193Provider, Environment } from "@buildwithsygma/core";
 import Web3HttpProvider from "web3-providers-http";
-import { getSygmaScanLink } from "@buildwithsygma/core/types/utils";
+
+import { sepoliaBaseStorageContract } from "./contracts/index.js";
 
 dotenv.config();
 
 const sygmaEnv = process.env.SYGMA_ENV as Environment;
 const privateKey = process.env.PRIVATE_KEY;
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const sleep = (ms: number): Promise<unknown> =>
+  new Promise((r) => setTimeout(r, ms));
 
 if (!privateKey) {
   throw new Error("Missing environment variable: PRIVATE_KEY");
@@ -51,13 +54,15 @@ export async function genericMessage(): Promise<void> {
   const destinationStorageContract = new ethers.Contract(
     EXECUTE_CONTRACT_ADDRESS,
     sepoliaBaseStorageContract,
-    destinationProvider
+    destinationProvider,
   );
   // value set inside the contract before
   // cross chain tranfer
   const valueBeforeBridging =
-    await destinationStorageContract.callStatic.retrieve(walletAddress);
-  console.log(`Value before update: ${valueBeforeBridging}`);
+    (await destinationStorageContract.callStatic.retrieve(
+      walletAddress,
+    )) as BigNumber;
+  console.log(`Value before update: ${valueBeforeBridging.toString()}`);
   // Specification of parameters
   // to initiate a cross chain contract
   // call
