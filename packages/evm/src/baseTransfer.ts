@@ -7,11 +7,11 @@ import type {
 } from '@buildwithsygma/core';
 import { providers, utils } from 'ethers';
 
-import type { EvmFee } from './types.js';
-import { getFeeInformation } from './fee/getFeeInformation.js';
 import { BasicFeeCalculator } from './fee/BasicFee.js';
 import { PercentageFeeCalculator } from './fee/PercentageFee.js';
 import { TwapFeeCalculator } from './fee/TwapFee.js';
+import { getFeeInformation } from './fee/getFeeInformation.js';
+import type { EvmFee } from './types.js';
 
 export interface BaseTransferParams {
   source: Domainlike;
@@ -57,7 +57,7 @@ export abstract class BaseTransfer {
    * Returns fee based on transfer amount.
    * @param amount By default it is original amount passed in constructor
    */
-  // eslint-disable-next-line @typescript-eslint/require-await
+
   async getFee(): Promise<EvmFee> {
     const provider = new providers.Web3Provider(this.sourceNetworkProvider);
 
