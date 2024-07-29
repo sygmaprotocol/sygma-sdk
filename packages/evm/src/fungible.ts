@@ -8,14 +8,10 @@ import {
 } from '@buildwithsygma/core';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
-import { BigNumber, constants, type PopulatedTransaction, providers, utils } from 'ethers';
+import { BigNumber, constants, type PopulatedTransaction, utils } from 'ethers';
 
 import type { BaseTransferParams } from './baseTransfer.js';
 import { BaseTransfer } from './baseTransfer.js';
-import { BasicFeeCalculator } from './fee/BasicFee.js';
-import { PercentageFeeCalculator } from './fee/PercentageFee.js';
-import { TwapFeeCalculator } from './fee/TwapFee.js';
-import { getFeeInformation } from './fee/getFeeInformation.js';
 import type { EvmFee, TransactionRequest } from './types.js';
 import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
 import { erc20Transfer } from './utils/depositFns.js';
@@ -210,33 +206,5 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     });
 
     return createTransactionRequest(transferTx);
-  }
-
-  async getFee(): Promise<EvmFee> {
-    const provider = new providers.Web3Provider(this.sourceNetworkProvider);
-
-    const { feeHandlerAddress, feeHandlerType } = await getFeeInformation(
-      this.config,
-      provider,
-      this.source.id,
-      this.destination.id,
-      this.resource.resourceId,
-    );
-
-    const basicFeeCalculator = new BasicFeeCalculator();
-    const percentageFeeCalculator = new PercentageFeeCalculator();
-    const twapFeeCalculator = new TwapFeeCalculator();
-    basicFeeCalculator.setNextHandler(percentageFeeCalculator).setNextHandler(twapFeeCalculator);
-
-    return await basicFeeCalculator.calculateFee({
-      provider,
-      sender: this.sourceAddress,
-      sourceSygmaId: this.source.id,
-      destinationSygmaId: this.destination.id,
-      resourceSygmaId: this.resource.resourceId,
-      feeHandlerAddress,
-      feeHandlerType,
-      depositData: this.getDepositData(),
-    });
   }
 }

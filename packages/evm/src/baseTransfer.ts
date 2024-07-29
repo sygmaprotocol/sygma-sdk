@@ -5,8 +5,12 @@ import type {
   EvmResource,
   Eip1193Provider,
 } from '@buildwithsygma/core';
-import { utils } from 'ethers';
+import { providers, utils } from 'ethers';
 
+import { BasicFeeCalculator } from './fee/BasicFee.js';
+import { PercentageFeeCalculator } from './fee/PercentageFee.js';
+import { TwapFeeCalculator } from './fee/TwapFee.js';
+import { getFeeInformation } from './fee/getFeeInformation.js';
 import type { EvmFee } from './types.js';
 
 export interface BaseTransferParams {
@@ -53,9 +57,33 @@ export abstract class BaseTransfer {
    * Returns fee based on transfer amount.
    * @param amount By default it is original amount passed in constructor
    */
-  // eslint-disable-next-line @typescript-eslint/require-await
+
   async getFee(): Promise<EvmFee> {
-    throw new Error('Method not implemented.');
+    const provider = new providers.Web3Provider(this.sourceNetworkProvider);
+
+    const { feeHandlerAddress, feeHandlerType } = await getFeeInformation(
+      this.config,
+      provider,
+      this.source.id,
+      this.destination.id,
+      this.resource.resourceId,
+    );
+
+    const basicFeeCalculator = new BasicFeeCalculator();
+    const percentageFeeCalculator = new PercentageFeeCalculator();
+    const twapFeeCalculator = new TwapFeeCalculator();
+    basicFeeCalculator.setNextHandler(percentageFeeCalculator).setNextHandler(twapFeeCalculator);
+
+    return await basicFeeCalculator.calculateFee({
+      provider,
+      sender: this.sourceAddress,
+      sourceSygmaId: this.source.id,
+      destinationSygmaId: this.destination.id,
+      resourceSygmaId: this.resource.resourceId,
+      feeHandlerAddress,
+      feeHandlerType,
+      depositData: this.getDepositData(),
+    });
   }
   /**
    *
