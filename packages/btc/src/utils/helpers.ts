@@ -179,13 +179,11 @@ export function getPsbt(
     value: 0,
   });
 
-  // just because there is no fee on testnet
-  if (feeAmount) {
-    psbt.addOutput({
-      address: feeAddress,
-      value: Number(feeAmount),
-    });
-  }
+  // Fee output
+  psbt.addOutput({
+    address: feeAddress,
+    value: Number(feeAmount),
+  });
 
   const size = 303; // this is the size on testnet with fee handler
   const minerFee = Math.floor(params.feeRate * size);
