@@ -6,6 +6,7 @@ import {
   createERCDepositData,
   toHex,
   constructSubstrateRecipient,
+  addressToHex,
 } from '../helpers.js';
 
 describe('createERCDepositData', () => {
@@ -28,6 +29,16 @@ describe('createERCDepositData', () => {
 
     const depositData = createERCDepositData(tokenAmount, recipientAddress, 2004);
 
+    expect(depositData).toEqual(expectedDepositData);
+  });
+
+  it('should return the correct deposit data - bitcoin', () => {
+    const tokenAmount = BigInt(100);
+    const recipientAddress = 'tb1qsfyzl92pv7wkyaj0tfjdtwvcsj840p004jglvp';
+    const expectedDepositData =
+      '0x0000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000000000000000000000000000000000002a746231717366797a6c3932707637776b79616a3074666a6474777663736a383430703030346a676c7670';
+
+    const depositData = createERCDepositData(tokenAmount, recipientAddress);
     expect(depositData).toEqual(expectedDepositData);
   });
 });
@@ -110,5 +121,25 @@ describe('toHex', () => {
     const num = BigNumber.from('900000000000000000000000');
     const result = toHex(num, 32);
     expect(result).toBe('0x00000000000000000000000000000000000000000000be951906eba2aa800000');
+  });
+});
+
+describe('addressToHex', () => {
+  test('should convert p2tr address to hex', () => {
+    const address = 'tb1pnyh5nayrmwux72guec3xy7qryjjww6tu9mev3d5347lqcwgus4jsd95d2r';
+    const expectedHex =
+      '746231706e7968356e6179726d777578373267756563337879377172796a6a7777367475396d65763364353334376c716377677573346a73643935643272';
+
+    const result = addressToHex(address, address.length);
+    expect(result).toEqual(expectedHex);
+  });
+
+  test('should convert p2wpkh address to hex', () => {
+    const address = 'tb1qsfyzl92pv7wkyaj0tfjdtwvcsj840p004jglvp';
+    const expectedHex =
+      '746231717366797a6c3932707637776b79616a3074666a6474777663736a383430703030346a676c7670';
+
+    const result = addressToHex(address, address.length);
+    expect(result).toEqual(expectedHex);
   });
 });
