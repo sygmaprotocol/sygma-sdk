@@ -18,6 +18,15 @@ type InputData = {
 
 type OutputData = { value: number; script: Buffer; address: string };
 
+/**
+ * Get the scriptPubKey for the given public key and network
+ *
+ * @category Helpers
+ * @param typeOfAddress - type of address to use: currently p2wpkh or p2tr
+ * @param publicKey - public of the signer
+ * @param network - network to use
+ * @returns {scriptPubKey: Buffer}
+ */
 export function getScriptPubkey(
   typeOfAddress: TypeOfAddress,
   publicKey: Buffer,
@@ -44,6 +53,14 @@ export function getScriptPubkey(
   }
 }
 
+/**
+ * Encode the deposit address and the domain id to pass into the OP_RETURN output
+ *
+ * @category Helpers
+ * @param depositAddress - address to deposit
+ * @param destinationDomainId - destination domain id
+ * @returns {Payment}
+ */
 function encodeDepositAddress(depositAddress: string, destinationDomainId: number): Payment {
   return payments.embed({
     data: [Buffer.from(`${depositAddress}_${destinationDomainId}`)],
@@ -82,6 +99,16 @@ export function calculateFee({
   return Math.round(virtualSize * feeRate);
 }
 
+/**
+ * Create the input data for the PSBT
+ *
+ * @category Helpers
+ * @param utxoData - UTXO data
+ * @param publicKey - public key of the signer
+ * @param network - network to use
+ * @param typeOfAddress - type of address to use
+ * @returns {BitcoinTransferInputData}
+ */
 export function createInputData({
   utxoData: { utxoTxId, utxoOutputIndex, utxoAmount },
   publicKey,
@@ -112,6 +139,16 @@ export function createInputData({
   };
 }
 
+/**
+ * Create the PSBT for the transfer using the input data supplied and adding the ouputs to use for the transaction
+ *
+ * @category Helpers
+ * @param params - params to create the PSBT
+ * @param feeAddress - fee handler address on BTC
+ * @param depositAddress - bridge address on BTC
+ * @param feeAmount - fee amount to be paid
+ * @returns {BitcoinTransferRequest}
+ */
 export function getPsbt(
   params: BaseTransferParams,
   feeAddress: string,
@@ -121,6 +158,7 @@ export function getPsbt(
   if (!['P2WPKH', 'P2TR'].includes(params.typeOfAddress.toString())) {
     throw new Error('Unsuported address type');
   }
+
   if (Object.keys(params.utxoData).length !== 3) {
     throw new Error('UTXO data is required');
   }
