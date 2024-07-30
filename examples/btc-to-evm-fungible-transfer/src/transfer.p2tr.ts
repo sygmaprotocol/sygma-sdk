@@ -23,7 +23,6 @@ const RESOURCE_ID = process.env.RESOURCE_ID;
 const BLOCKSTREAM_URL = process.env.BLOCKSTREAM_URL;
 const EXPLORER_URL = process.env.EXPLORER_URL;
 const MNEMONIC = process.env.MNEMONIC;
-const MINER_FEE = Number(process.env.MINER_FEE);
 const UTXO_TX_ID = process.env.UTXO_TX_ID;
 const UTXO_AMOUNT = Number(process.env.UTXO_AMOUNT);
 const UTXO_OUTPUT_INDEX = Number(process.env.UTXO_OUTPUT_INDEX);
@@ -36,7 +35,6 @@ if (
   !DESTINATION_DOMAIN_CHAIN_ID ||
   !RESOURCE_ID ||
   !MNEMONIC ||
-  !MINER_FEE ||
   !UTXO_TX_ID ||
   !UTXO_AMOUNT ||
   !UTXO_OUTPUT_INDEX ||
@@ -73,7 +71,7 @@ async function btcToEvmTransfer(): Promise<void> {
     source: SOURCE_DOMAIN_CAIPID,
     destination: DESTINATION_DOMAIN_CHAIN_ID,
     destinationAddress: DESTINATION_ADDRESS,
-    amount: 100000000,
+    amount: 0,
     resource: RESOURCE_ID,
     utxoData: {
       utxoTxId: UTXO_TX_ID,
@@ -83,7 +81,6 @@ async function btcToEvmTransfer(): Promise<void> {
     feeRate,
     publicKey: publicKeyDropedDERHeader,
     typeOfAddress: TypeOfAddress.P2TR,
-    minerFee: MINER_FEE,
     network: testnet,
     changeAddress: CHANGE_ADDRESS,
   };

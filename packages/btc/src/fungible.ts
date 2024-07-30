@@ -18,7 +18,6 @@ class BitcoinTransfer extends BaseTransfer {
   protected amount: number;
   protected publicKey: Buffer;
   protected typeOfAddress: TypeOfAddress;
-  protected minerFee: number;
   protected network: networks.Network;
   protected changeAddress?: string;
   protected feeRate: number;
@@ -30,7 +29,6 @@ class BitcoinTransfer extends BaseTransfer {
     this.amount = transfer.amount;
     this.publicKey = transfer.publicKey;
     this.typeOfAddress = transfer.typeOfAddress;
-    this.minerFee = transfer.minerFee;
     this.network = transfer.network;
     this.changeAddress = transfer.changeAddress;
     this.feeRate = transfer.feeRate;
@@ -51,7 +49,6 @@ class BitcoinTransfer extends BaseTransfer {
         network: this.network,
         feeRate: this.feeRate,
         changeAddress: this.changeAddress,
-        minerFee: this.minerFee,
       },
       this.feeAddress,
       this.resource.address,

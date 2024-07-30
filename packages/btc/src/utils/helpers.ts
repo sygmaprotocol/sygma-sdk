@@ -143,7 +143,6 @@ export function getPsbt(
 
   const size = 303; // this is the size on testnet with fee handler
   const minerFee = Math.floor(params.feeRate * size);
-  console.log('minerFee', minerFee);
 
   let amountToSpent; // TODO: this condition is temporary since there is no fee on testnet
   if (feeAmount) {

@@ -22,7 +22,6 @@ export type BaseTransferParams = {
   typeOfAddress: TypeOfAddress;
   network: networks.Network;
   feeRate: number;
-  minerFee: number;
   changeAddress?: string;
 };
 
