@@ -1,4 +1,4 @@
-import type { networks, Payment, Signer } from 'bitcoinjs-lib';
+import type { networks, Payment } from 'bitcoinjs-lib';
 import { payments, Psbt } from 'bitcoinjs-lib';
 
 import { TypeOfAddress } from '../types.js';
@@ -33,12 +33,10 @@ export function getScriptPubkey(
 
     return { scriptPubKey: output };
   } else {
-    const { output, address } = payments.p2tr({
+    const { output } = payments.p2tr({
       internalPubkey: publicKey,
       network,
     }) as PaymentReturnData;
-
-    console.log('address', address, output.toString('hex'));
 
     return { scriptPubKey: output };
   }
