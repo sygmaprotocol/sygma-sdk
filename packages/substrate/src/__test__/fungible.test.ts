@@ -10,6 +10,7 @@ import { deposit, getBasicFee, getFeeHandler, getPercentageFee } from '../utils/
 
 jest.mock('../utils/index.js');
 jest.mock('@polkadot/api', () => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const originalModule = jest.requireActual('@polkadot/api');
   const mockBalance = {
     data: {
@@ -24,6 +25,7 @@ jest.mock('@polkadot/api', () => {
     tokenSymbol: ['DOT'],
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return {
     ...originalModule,
     ApiPromise: {
