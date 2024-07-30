@@ -43,15 +43,13 @@ jest.mock('@polkadot/api', () => {
   };
 });
 
-const RHALA_RPC_URL = 'wss://rhala-node.phala.network/ws';
-const wsProvider = new WsProvider(RHALA_RPC_URL);
-
 describe('SubstrateFungibleAssetTransfer', () => {
   let api: jest.Mocked<ApiPromise>;
   let transferRequest: SubstrateAssetTransferRequest;
 
-  beforeEach(async () => {
-    jest.clearAllMocks();
+  beforeAll(async () => {
+    const RHALA_RPC_URL = 'wss://rhala-node.phala.network/ws';
+    const wsProvider = new WsProvider(RHALA_RPC_URL);
     api = (await ApiPromise.create({ provider: wsProvider })) as jest.Mocked<ApiPromise>;
     transferRequest = {
       sourceAddress: '',
@@ -59,10 +57,14 @@ describe('SubstrateFungibleAssetTransfer', () => {
       destination: 1337, // Ethereum
       sourceNetworkProvider: api,
       resource: '0x0000000000000000000000000000000000000000000000000000000000000300',
-      amount: BigInt(1000),
+      amount: BigInt(100),
       destinationAddress: '0x98729c03c4D5e820F5e8c45558ae07aE63F97461',
       senderAddress: '5E75Q88u1Hw2VouCiRWoEfKXJMFtqLSUzhqzsH6yWjhd8cem',
     };
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
   test('should validate Substrate address', async () => {
@@ -103,16 +105,6 @@ describe('SubstrateFungibleAssetTransfer', () => {
     expect(fee).toEqual({ fee: new BN(50), type: FeeHandlerType.PERCENTAGE });
   });
 
-  test('should throw error if transfer amount is less than the fee', async () => {
-    (getFeeHandler as jest.Mock).mockResolvedValue(FeeHandlerType.BASIC);
-    (getBasicFee as jest.Mock).mockResolvedValue({ fee: new BN(2000), type: FeeHandlerType.BASIC });
-
-    const transfer = await createSubstrateFungibleAssetTransfer(transferRequest);
-    await expect(transfer.getTransferTransaction()).rejects.toThrow(
-      'Transfer amount should be higher than transfer fee',
-    );
-  });
-
   test('should return a valid transfer transaction', async () => {
     (getFeeHandler as jest.Mock).mockResolvedValue(FeeHandlerType.BASIC);
     (getBasicFee as jest.Mock).mockResolvedValue({ fee: new BN(100), type: FeeHandlerType.BASIC });
@@ -125,7 +117,7 @@ describe('SubstrateFungibleAssetTransfer', () => {
     expect(tx).toBeDefined();
   });
 
-  test('should return ERROR - when Amount is less than transfer fee', async () => {
+  test('should throw ERROR - when transfer amount is less than the fee - basic', async () => {
     (getFeeHandler as jest.Mock).mockResolvedValue(FeeHandlerType.BASIC);
     (getBasicFee as jest.Mock).mockResolvedValue({ fee: new BN(2000), type: FeeHandlerType.BASIC });
 
@@ -135,7 +127,20 @@ describe('SubstrateFungibleAssetTransfer', () => {
     );
   });
 
-  test('should return ERROR - when account balance is not sufficient', async () => {
+  test('should throw ERROR - when Amount is less than transfer fee - percentage', async () => {
+    (getFeeHandler as jest.Mock).mockResolvedValue(FeeHandlerType.BASIC);
+    (getBasicFee as jest.Mock).mockResolvedValue({
+      fee: new BN(2000),
+      type: FeeHandlerType.PERCENTAGE,
+    });
+
+    const transfer = await createSubstrateFungibleAssetTransfer(transferRequest);
+    await expect(transfer.getTransferTransaction()).rejects.toThrow(
+      'Transfer amount should be higher than transfer fee',
+    );
+  });
+
+  test('should throw ERROR - when account balance is not sufficient', async () => {
     (getFeeHandler as jest.Mock).mockResolvedValue(FeeHandlerType.BASIC);
     (getBasicFee as jest.Mock).mockResolvedValue({ fee: new BN(100), type: FeeHandlerType.BASIC });
 
