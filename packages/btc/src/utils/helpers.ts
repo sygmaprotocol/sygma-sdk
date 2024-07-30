@@ -124,7 +124,6 @@ export function getPsbt(
     throw new Error('Not enough funds to spend from the UTXO');
   }
 
-  // TODO: to remove the address parameter being returned
   const psbt = new Psbt({ network: params.network });
 
   psbt.addInput(createInputData(params));
