@@ -1,4 +1,4 @@
-name: Publish Sygma SDK EVM packge to GitHub Package Registry
+name: Publish Sygma SDK EVM package to GitHub Package Registry
 
 on:
   push:
