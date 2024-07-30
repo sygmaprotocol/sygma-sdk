@@ -28,6 +28,7 @@ jest.mock('@polkadot/api', () => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return {
     ...originalModule,
+    WsProvider: jest.fn().mockImplementation(() => ({})),
     ApiPromise: {
       create: jest.fn().mockResolvedValue({
         query: {
