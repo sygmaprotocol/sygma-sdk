@@ -9,15 +9,6 @@ import type {
   PaymentReturnData,
 } from '../types.js';
 
-type InputData = {
-  hash: string;
-  index: number;
-  witnessUtxo: { value: number; script: Buffer };
-  tapInternalKey: Buffer;
-};
-
-type OutputData = { value: number; script: Buffer; address: string };
-
 /**
  * Get the scriptPubKey for the given public key and network
  *
@@ -65,38 +56,6 @@ function encodeDepositAddress(depositAddress: string, destinationDomainId: numbe
   return payments.embed({
     data: [Buffer.from(`${depositAddress}_${destinationDomainId}`)],
   });
-}
-
-// TODO: this needs to be used first
-export function calculateFee({
-  psbt,
-  feeRate,
-  inputData,
-  bridgeOutputData,
-  valueOutputData,
-  outputFeeData,
-  signer,
-}: {
-  feeRate: number;
-  psbt: Psbt;
-  inputData: InputData;
-  bridgeOutputData: Pick<OutputData, 'script' | 'value'>;
-  valueOutputData: Pick<OutputData, 'address' | 'value'>;
-  outputFeeData: Pick<OutputData, 'address' | 'value'>;
-  signer: Signer;
-}): number {
-  psbt.addInput(inputData);
-  psbt.addOutput(bridgeOutputData);
-  psbt.addOutput(valueOutputData);
-  psbt.addOutput(outputFeeData);
-  psbt.signInput(0, signer);
-  psbt.finalizeAllInputs();
-
-  const tx = psbt.extractTransaction(true);
-
-  const virtualSize = tx.virtualSize();
-
-  return Math.round(virtualSize * feeRate);
 }
 
 /**
