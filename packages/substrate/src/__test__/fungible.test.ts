@@ -75,6 +75,10 @@ describe('SubstrateFungibleAssetTransfer', () => {
     jest.clearAllMocks();
   });
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   test('should validate Substrate address', async () => {
     const transfer = await createSubstrateFungibleAssetTransfer(transferRequest);
     expect(transfer.destinationAddress).toBe(transferRequest.destinationAddress);
@@ -171,7 +175,7 @@ describe('SubstrateFungibleAssetTransfer', () => {
     );
   });
 
-  test('should return ERROR - when Amount is less than transfer fee', async () => {
+  test('should throw ERROR - when transfer amount is less than the fee - basic', async () => {
     (getFeeHandler as jest.Mock).mockResolvedValue(FeeHandlerType.BASIC);
     (getBasicFee as jest.Mock).mockResolvedValue({ fee: new BN(2000), type: FeeHandlerType.BASIC });
 
@@ -181,7 +185,20 @@ describe('SubstrateFungibleAssetTransfer', () => {
     );
   });
 
-  test('should return ERROR - when account balance is not sufficient', async () => {
+  test('should throw ERROR - when Amount is less than transfer fee - percentage', async () => {
+    (getFeeHandler as jest.Mock).mockResolvedValue(FeeHandlerType.BASIC);
+    (getBasicFee as jest.Mock).mockResolvedValue({
+      fee: new BN(2000),
+      type: FeeHandlerType.PERCENTAGE,
+    });
+
+    const transfer = await createSubstrateFungibleAssetTransfer(transferRequest);
+    await expect(transfer.getTransferTransaction()).rejects.toThrow(
+      'Transfer amount should be higher than transfer fee',
+    );
+  });
+
+  test('should throw ERROR - when account balance is not sufficient', async () => {
     (getFeeHandler as jest.Mock).mockResolvedValue(FeeHandlerType.BASIC);
     (getBasicFee as jest.Mock).mockResolvedValue({ fee: new BN(100), type: FeeHandlerType.BASIC });
 
