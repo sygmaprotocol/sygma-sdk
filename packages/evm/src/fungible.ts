@@ -12,12 +12,6 @@ import { BigNumber, constants, type PopulatedTransaction, utils } from 'ethers';
 import type { EvmFee } from 'types.js';
 
 import {
-  BasicFeeCalculator,
-  getFeeInformation,
-  PercentageFeeCalculator,
-  TwapFeeCalculator,
-} from './fee/index.js';
-import {
   approve,
   createERCDepositData,
   createTransactionRequest,
@@ -220,33 +214,5 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
     const costs = BigNumber.from(this.amount).add(fee.fee);
 
     if (accountBalance.lt(costs)) throw new Error('Insufficient account balance');
-  }
-
-  async getFee(): Promise<EvmFee> {
-    const provider = new providers.Web3Provider(this.sourceNetworkProvider);
-
-    const { feeHandlerAddress, feeHandlerType } = await getFeeInformation(
-      this.config,
-      provider,
-      this.source.id,
-      this.destination.id,
-      this.resource.resourceId,
-    );
-
-    const basicFeeCalculator = new BasicFeeCalculator();
-    const percentageFeeCalculator = new PercentageFeeCalculator();
-    const twapFeeCalculator = new TwapFeeCalculator();
-    basicFeeCalculator.setNextHandler(percentageFeeCalculator).setNextHandler(twapFeeCalculator);
-
-    return await basicFeeCalculator.calculateFee({
-      provider,
-      sender: this.sourceAddress,
-      sourceSygmaId: this.source.id,
-      destinationSygmaId: this.destination.id,
-      resourceSygmaId: this.resource.resourceId,
-      feeHandlerAddress,
-      feeHandlerType,
-      depositData: this.getDepositData(),
-    });
   }
 }
