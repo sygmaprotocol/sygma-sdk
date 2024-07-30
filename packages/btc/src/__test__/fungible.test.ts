@@ -24,7 +24,6 @@ const P2TR_TRANSFER_PARAMS: BaseTransferParams = {
     Buffer.from('03feca449bd5b50085d23864a006f6ea4da80ff63816033f6437193c66bac7488c', 'hex'),
   ),
   typeOfAddress: TypeOfAddress.P2TR,
-  minerFee: 1000,
   network: bitcoin.networks.testnet,
   changeAddress: 'tb1pxmrzd94rs6wtg6ewdjfmuu7s88n2kdqc20vzfmadanfaem3n9sdq0vagu0',
   environment: Environment.DEVNET,
