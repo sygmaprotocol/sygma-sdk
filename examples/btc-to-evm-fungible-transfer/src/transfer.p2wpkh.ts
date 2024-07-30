@@ -52,8 +52,8 @@ const bip32 = BIP32Factory(tinysecp);
 
 async function btcToEvmTransfer(): Promise<void> {
   // pre setup
-  const testnet = networks.testnet;
   console.log("Transfer BTC to EVM");
+  const testnet = networks.testnet;
   const seed = await mnemonicToSeed(MNEMONIC);
   const rootKey = bip32.fromSeed(seed, testnet);
   const derivedNode = rootKey.derivePath(DERIVATION_PATH);
