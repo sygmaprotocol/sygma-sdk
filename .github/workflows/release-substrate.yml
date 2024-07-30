@@ -1,4 +1,4 @@
-name: Publish Sygma SDK Subsrate packge to GitHub Package Registry
+name: Publish Sygma SDK Subsrate package to GitHub Package Registry
 
 on:
   push:
