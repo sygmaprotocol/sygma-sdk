@@ -8,7 +8,7 @@ import { mnemonicToSeed } from "bip39";
 import { initEccLib, networks } from "bitcoinjs-lib";
 import dotenv from "dotenv";
 import * as tinysecp from "tiny-secp256k1";
-import { broadcastTransaction } from "./utils";
+import { broadcastTransaction, getFeeEstimates } from "./utils";
 
 dotenv.config();
 
@@ -27,22 +27,6 @@ const UTXO_AMOUNT = Number(process.env.UTXO_AMOUNT);
 const UTXO_OUTPUT_INDEX = Number(process.env.UTXO_OUTPUT_INDEX);
 const DERIVATION_PATH = process.env.DERIVATION_PATH;
 const CHANGE_ADDRESS = process.env.CHANGE_ADDRESS;
-
-// TODO: remove this log
-console.table({
-  SOURCE_DOMAIN_CAIPID,
-  DESTINATION_ADDRESS,
-  DESTINATION_DOMAIN_CHAIN_ID,
-  RESOURCE_ID,
-  MNEMONIC,
-  MINER_FEE,
-  UTXO_TX_ID,
-  UTXO_AMOUNT,
-  UTXO_OUTPUT_INDEX,
-  DERIVATION_PATH,
-  CHANGE_ADDRESS,
-  BLOCKSTREAM_URL,
-});
 
 if (
   !SOURCE_DOMAIN_CAIPID ||
@@ -74,20 +58,25 @@ async function btcToEvmTransfer(): Promise<void> {
   const rootKey = bip32.fromSeed(seed, testnet);
   const derivedNode = rootKey.derivePath(DERIVATION_PATH);
 
+  const feeRate = await getFeeEstimates(BLOCKSTREAM_URL);
+
   const transferParams: BaseTransferParams = {
     source: SOURCE_DOMAIN_CAIPID,
     destination: DESTINATION_DOMAIN_CHAIN_ID,
     destinationAddress: DESTINATION_ADDRESS,
-    amount: 0,
+    amount: 150000000,
     resource: RESOURCE_ID,
-    utxoTxId: UTXO_TX_ID,
-    utxoOutputIndex: UTXO_OUTPUT_INDEX,
-    utxoAmount: UTXO_AMOUNT,
+    utxoData: {
+      utxoTxId: UTXO_TX_ID,
+      utxoOutputIndex: UTXO_OUTPUT_INDEX,
+      utxoAmount: UTXO_AMOUNT,
+    },
     publicKey: derivedNode.publicKey,
     typeOfAddress: TypeOfAddress.P2WPKH,
     minerFee: MINER_FEE,
     network: testnet,
     changeAddress: CHANGE_ADDRESS,
+    feeRate,
   };
 
   const transfer = await createBitcoinFungibleTransfer(transferParams);

@@ -9,7 +9,8 @@ import { crypto, initEccLib, networks } from "bitcoinjs-lib";
 import { toXOnly } from "bitcoinjs-lib/src/psbt/bip371";
 import dotenv from "dotenv";
 import * as tinysecp from "tiny-secp256k1";
-import { broadcastTransaction } from "./utils";
+
+import { broadcastTransaction, getFeeEstimates } from "./utils.js";
 
 dotenv.config();
 
@@ -28,22 +29,6 @@ const UTXO_AMOUNT = Number(process.env.UTXO_AMOUNT);
 const UTXO_OUTPUT_INDEX = Number(process.env.UTXO_OUTPUT_INDEX);
 const DERIVATION_PATH = process.env.DERIVATION_PATH;
 const CHANGE_ADDRESS = process.env.CHANGE_ADDRESS;
-
-// TODO: remove this log
-console.table({
-  SOURCE_DOMAIN_CAIPID,
-  DESTINATION_ADDRESS,
-  DESTINATION_DOMAIN_CHAIN_ID,
-  RESOURCE_ID,
-  MNEMONIC,
-  MINER_FEE,
-  UTXO_TX_ID,
-  UTXO_AMOUNT,
-  UTXO_OUTPUT_INDEX,
-  DERIVATION_PATH,
-  CHANGE_ADDRESS,
-  BLOCKSTREAM_URL,
-});
 
 if (
   !SOURCE_DOMAIN_CAIPID ||
@@ -69,8 +54,8 @@ const bip32 = BIP32Factory(tinysecp);
 
 async function btcToEvmTransfer(): Promise<void> {
   // pre setup
-  const testnet = networks.testnet;
   console.log("Transfer BTC to EVM");
+  const testnet = networks.testnet;
   const seed = await mnemonicToSeed(MNEMONIC);
   const rootKey = bip32.fromSeed(seed, testnet);
   const derivedNode = rootKey.derivePath(DERIVATION_PATH);
@@ -82,15 +67,20 @@ async function btcToEvmTransfer(): Promise<void> {
     crypto.taggedHash("TapTweak", publicKeyDropedDERHeader),
   );
 
+  const feeRate = await getFeeEstimates(BLOCKSTREAM_URL);
+
   const transferParams: BaseTransferParams = {
     source: SOURCE_DOMAIN_CAIPID,
     destination: DESTINATION_DOMAIN_CHAIN_ID,
     destinationAddress: DESTINATION_ADDRESS,
-    amount: 0,
+    amount: 100000000,
     resource: RESOURCE_ID,
-    utxoTxId: UTXO_TX_ID,
-    utxoOutputIndex: UTXO_OUTPUT_INDEX,
-    utxoAmount: UTXO_AMOUNT,
+    utxoData: {
+      utxoTxId: UTXO_TX_ID,
+      utxoOutputIndex: UTXO_OUTPUT_INDEX,
+      utxoAmount: UTXO_AMOUNT,
+    },
+    feeRate,
     publicKey: publicKeyDropedDERHeader,
     typeOfAddress: TypeOfAddress.P2TR,
     minerFee: MINER_FEE,
