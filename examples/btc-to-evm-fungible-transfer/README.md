@@ -54,14 +54,65 @@ cd examples/btc-to-evm-fungible-transfer
 touch .env
 ```
 
-Replace between the quotation marks your taproot address private key:
-
-`PRIVATE_KEY="YOUR_PRIVATE_KEY_HERE"`
-
-To send Testnet BTC to your EVM account on Sepolia run:
+Replace the values that are defined in the `.env.sample` file:
 
 ```bash
-yarn run transfer
+SYGMA_ENV=testnet
+BLOCKSTREAM_URL="your blockstream url"
+DESTINATION_ADDRESS="your evm destination address"
+DESTINATION_CHAIN_ID="destination domain chain id"
+RESOURCE_ID="resource id"
+SOURCE_CAIPID="source domain caip id"
+EXPLORER_URL="your bitcoin explorer url"
+MNEMONIC="your 12 or 24 mnemonic"
+DERIVATION_PATH="your derivation path"
+UTXO_TX_ID="your utxo tx id"
+UTXO_AMOUNT="your utxo amount"
+UTXO_OUTPUT_INDEX="your utxo output index"
+CHANGE_ADDRESS="your change address"
+AMOUNT="your amount to transfer"
+```
+
+* `DESTINATION_ADDRESS`: your `evm` destination address where you want your funds to be relayed
+* `DESTINATION_CHAIN_ID`: this is the chainId of the network where you want to receive the funds
+* `RESOURCE_ID`: the bitcoin resource id that can be found in our `shared-config` repository
+* `SOURCE_CAIPID`: caipId of the bitcoin domain
+* `MNEMONIC`: your testnet wallet mnemonic
+* `DERIVATION_PATH`: derivation path for your mnemonic. Use derivation path for either P2TR address or P2WPKH one
+* `UTXO_TX_ID`: transaction id of your available utxos for your address
+* `UTXO_AMOUNT`: the amount available at your utxo
+* `UTXO_OUTPUT_INDEX`: the vout index of your utxo
+* `CHANGE_ADDRESS`: the address where you want to receive back your unspent funds
+* `AMOUNT`: the actual amount to transfer
+
+Take into consideration that a typical response when query the utxos of your address look like this:
+
+```json
+{
+  "txid": "7bdf2ce472ee3c9cba6d2944b0ca6bcdceb4b893c7d2163678a0b688a8315d74",
+  "vout": 3,
+  "status": {
+      "confirmed": true,
+      "block_height": 2869535,
+      "block_hash": "",
+      "block_time": 1721666904
+  },
+  "value": 936396`
+}
+```
+
+Where `value` is the amount you have at your disposal and `vout` is the transaction output index.
+
+To send Testnet BTC to your EVM account on Sepolia using Taproot address run:
+
+```bash
+yarn run transfer:p2tr
+```
+
+To send Testnet BTC to your EVM account on Sepolia using P2WPKH address run:
+
+```bash
+yarn run transfer:p2wpkh
 ```
 
 Replace the placeholder values in the `.env` file with your own Testnet BTC Taproot private key as well as the other env variables needed such as DESTINATION_ADDRESS, DESTINATION_DOMAIN_ID, RESOURCE_ID and SOURCE_DOMAIN_ID.

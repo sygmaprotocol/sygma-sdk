@@ -14,9 +14,7 @@ dotenv.config();
 
 const SOURCE_CAIPID = process.env.SOURCE_CAIPID;
 const DESTINATION_ADDRESS = process.env.DESTINATION_ADDRESS;
-const DESTINATION_CHAIN_ID = Number(
-  process.env.DESTINATION_CHAIN_ID,
-);
+const DESTINATION_CHAIN_ID = 11155111;
 const RESOURCE_ID = process.env.RESOURCE_ID;
 const BLOCKSTREAM_URL = process.env.BLOCKSTREAM_URL;
 const EXPLORER_URL = process.env.EXPLORER_URL;
@@ -31,7 +29,6 @@ const AMOUNT = Number(process.env.AMOUNT);
 if (
   !SOURCE_CAIPID ||
   !DESTINATION_ADDRESS ||
-  !DESTINATION_CHAIN_ID ||
   !RESOURCE_ID ||
   !MNEMONIC ||
   !UTXO_TX_ID ||
@@ -60,8 +57,8 @@ async function btcToEvmTransfer(): Promise<void> {
   const feeRate = await getFeeEstimates(BLOCKSTREAM_URL);
 
   const transferParams: BaseTransferParams = {
-    source: SOURCE_DOMAIN_CAIPID,
-    destination: DESTINATION_DOMAIN_CHAIN_ID,
+    source: SOURCE_CAIPID,
+    destination: DESTINATION_CHAIN_ID,
     destinationAddress: DESTINATION_ADDRESS,
     amount: AMOUNT,
     resource: RESOURCE_ID,
