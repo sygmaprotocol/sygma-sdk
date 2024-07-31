@@ -9,8 +9,7 @@ import { crypto, initEccLib, networks } from "bitcoinjs-lib";
 import { toXOnly } from "bitcoinjs-lib/src/psbt/bip371";
 import dotenv from "dotenv";
 import * as tinysecp from "tiny-secp256k1";
-
-import { broadcastTransaction, getFeeEstimates } from "./utils.js";
+import { broadcastTransaction, getFeeEstimates } from "./blockstream-api";
 
 dotenv.config();
 

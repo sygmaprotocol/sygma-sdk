@@ -8,7 +8,7 @@ import { mnemonicToSeed } from "bip39";
 import { initEccLib, networks } from "bitcoinjs-lib";
 import dotenv from "dotenv";
 import * as tinysecp from "tiny-secp256k1";
-import { broadcastTransaction, getFeeEstimates } from "./utils";
+import { broadcastTransaction, getFeeEstimates } from "./blockstream-api";
 
 dotenv.config();
 
