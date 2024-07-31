@@ -1,6 +1,6 @@
 import { Config } from '@buildwithsygma/core';
 import type { networks } from 'bitcoinjs-lib';
-import type { BitcoinTransferParams, BitcoinTransferRequest, TypeOfAddress } from 'types';
+import type { BitcoinTransferParams, BitcoinTransferRequest, TypeOfAddress, UTXOData } from 'types';
 
 import { BaseTransfer } from './base-transfer.js';
 import { getPsbt } from './utils/index.js';
@@ -18,8 +18,8 @@ class BitcoinTransfer extends BaseTransfer {
   protected typeOfAddress: TypeOfAddress;
   protected network: networks.Network;
   protected changeAddress?: string;
-  protected feeRate: number;
-  protected utxoData: { utxoTxId: string; utxoAmount: number; utxoOutputIndex: number };
+  protected feeRate: bigint;
+  protected utxoData: UTXOData;
 
   constructor(transfer: BitcoinTransferParams, config: Config) {
     super(transfer, config);

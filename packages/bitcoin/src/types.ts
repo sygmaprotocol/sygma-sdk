@@ -6,22 +6,24 @@ export enum TypeOfAddress {
   P2TR = 'P2TR',
 }
 
+export type UTXOData = {
+  utxoTxId: string;
+  utxoAmount: bigint;
+  utxoOutputIndex: number;
+};
+
 export type BitcoinTransferParams = {
   environment?: Environment;
   source: Domainlike;
   destination: Domainlike;
   destinationAddress: string;
-  amount: number;
+  amount: bigint;
   resource: BitcoinResource | string;
-  utxoData: {
-    utxoTxId: string;
-    utxoAmount: number;
-    utxoOutputIndex: number;
-  };
+  utxoData: UTXOData;
   publicKey: Buffer;
   typeOfAddress: TypeOfAddress;
   network: networks.Network;
-  feeRate: number;
+  feeRate: bigint;
   changeAddress?: string;
 };
 

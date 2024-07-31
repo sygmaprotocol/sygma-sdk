@@ -81,7 +81,7 @@ export function createInputData({
       index: utxoOutputIndex,
       witnessUtxo: {
         script: getScriptPubkey(typeOfAddress, publicKey, network).scriptPubKey,
-        value: utxoAmount,
+        value: Number(utxoAmount),
       },
     };
   }
@@ -90,7 +90,7 @@ export function createInputData({
     index: utxoOutputIndex,
     witnessUtxo: {
       script: getScriptPubkey(typeOfAddress, publicKey, network).scriptPubKey as unknown as Buffer,
-      value: utxoAmount,
+      value: Number(utxoAmount),
     },
     tapInternalKey: publicKey,
   };
@@ -110,7 +110,7 @@ export function getPsbt(
   params: BitcoinTransferParams,
   feeAddress: string,
   depositAddress: string,
-  feeAmount: number,
+  feeAmount: bigint,
 ): BitcoinTransferRequest {
   if (!['P2WPKH', 'P2TR'].includes(params.typeOfAddress.toString())) {
     throw new Error('Unsuported address type');
@@ -142,9 +142,9 @@ export function getPsbt(
   });
 
   const size = 303;
-  const minerFee = Math.floor(params.feeRate * size);
+  const minerFee = Math.floor(Number(params.feeRate) * size);
 
-  const amountToSpent = params.utxoData.utxoAmount - Number(feeAmount) - minerFee;
+  const amountToSpent = Number(params.utxoData.utxoAmount) - Number(feeAmount) - minerFee;
 
   if (amountToSpent < params.amount) {
     throw new Error('Not enough funds');
@@ -153,11 +153,11 @@ export function getPsbt(
   // Amount to bridge
   psbt.addOutput({
     address: depositAddress,
-    value: params.amount,
+    value: Number(params.amount),
   });
 
   if (params.changeAddress && amountToSpent > params.amount) {
-    const change = amountToSpent - params.amount;
+    const change = Number(amountToSpent) - Number(params.amount);
 
     psbt.addOutput({
       address: params.changeAddress,

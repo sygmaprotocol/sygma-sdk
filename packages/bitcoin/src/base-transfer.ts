@@ -4,12 +4,12 @@ import type { BitcoinTransferParams } from 'types';
 
 export abstract class BaseTransfer {
   protected destinationAddress: string;
-  protected amount: number;
+  protected amount: bigint;
   protected config: Config;
   protected resource: BitcoinResource;
   protected sourceDomain: Domain;
   protected destinationDomain: Domain;
-  protected feeAmount: number;
+  protected feeAmount: bigint;
   protected feeAddress: string;
 
   constructor(transfer: BitcoinTransferParams, config: Config) {
@@ -25,7 +25,7 @@ export abstract class BaseTransfer {
 
     if (resource) {
       this.resource = resource;
-      this.feeAmount = resource.feeAmount as number;
+      this.feeAmount = BigInt(resource.feeAmount as number);
     } else {
       throw new Error('Resource not found.');
     }
