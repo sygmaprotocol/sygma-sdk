@@ -34,7 +34,6 @@
     "btc:test": "yarn workspace @buildwithsygma/bitcoin test",
     "btc:lint": "yarn workspace @buildwithsygma/bitcoin lint",
     "btc:lint:fix": "yarn workspace @buildwithsygma/bitcoin lint:fix",
-    "build:all": "yarn workspace @buildwithsygma/core build:all; yarn workspace @buildwithsygma/evm build:all; yarn workspace @buildwithsygma/bitcoin build:all",
     "clean:all": "yarn workspace @buildwithsygma/core clean; yarn workspace @buildwithsygma/evm clean",
     "substrate:build": "yarn workspace @buildwithsygma/substrate build:all",
     "substrate:cleanDist": "yarn workspace @buildwithsygma/substrate clean",
