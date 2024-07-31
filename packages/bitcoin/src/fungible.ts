@@ -14,8 +14,6 @@ export async function createBitcoinFungibleTransfer(
 }
 
 class BitcoinTransfer extends BaseTransfer {
-  protected destinationAddress: string;
-  protected amount: number;
   protected publicKey: Buffer;
   protected typeOfAddress: TypeOfAddress;
   protected network: networks.Network;

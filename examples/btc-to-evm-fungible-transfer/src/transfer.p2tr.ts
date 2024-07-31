@@ -26,6 +26,7 @@ const UTXO_AMOUNT = Number(process.env.UTXO_AMOUNT);
 const UTXO_OUTPUT_INDEX = Number(process.env.UTXO_OUTPUT_INDEX);
 const DERIVATION_PATH = process.env.DERIVATION_PATH;
 const CHANGE_ADDRESS = process.env.CHANGE_ADDRESS;
+const AMOUNT = Number(process.env.AMOUNT);
 
 if (
   !SOURCE_CAIPID ||
@@ -38,7 +39,8 @@ if (
   !UTXO_OUTPUT_INDEX ||
   !DERIVATION_PATH ||
   !CHANGE_ADDRESS ||
-  !BLOCKSTREAM_URL
+  !BLOCKSTREAM_URL ||
+  !AMOUNT
 ) {
   throw new Error(
     "Please provided needed env variables needed into the .env file",
@@ -68,7 +70,7 @@ async function btcToEvmTransfer(): Promise<void> {
     source: SOURCE_DOMAIN_CAIPID,
     destination: DESTINATION_DOMAIN_CHAIN_ID,
     destinationAddress: DESTINATION_ADDRESS,
-    amount: 0,
+    amount: AMOUNT,
     resource: RESOURCE_ID,
     utxoData: {
       utxoTxId: UTXO_TX_ID,
