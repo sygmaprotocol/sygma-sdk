@@ -14,11 +14,9 @@ import { broadcastTransaction, getFeeEstimates } from "./utils.js";
 
 dotenv.config();
 
-const SOURCE_DOMAIN_CAIPID = process.env.SOURCE_DOMAIN_CAIPID;
+const SOURCE_CAIPID = process.env.SOURCE_CAIPID;
 const DESTINATION_ADDRESS = process.env.DESTINATION_ADDRESS;
-const DESTINATION_DOMAIN_CHAIN_ID = Number(
-  process.env.DESTINATION_DOMAIN_CHAIN_ID,
-);
+const DESTINATION_CHAIN_ID = Number(process.env.DESTINATION_CHAIN_ID);
 const RESOURCE_ID = process.env.RESOURCE_ID;
 const BLOCKSTREAM_URL = process.env.BLOCKSTREAM_URL;
 const EXPLORER_URL = process.env.EXPLORER_URL;
@@ -30,9 +28,9 @@ const DERIVATION_PATH = process.env.DERIVATION_PATH;
 const CHANGE_ADDRESS = process.env.CHANGE_ADDRESS;
 
 if (
-  !SOURCE_DOMAIN_CAIPID ||
+  !SOURCE_CAIPID ||
   !DESTINATION_ADDRESS ||
-  !DESTINATION_DOMAIN_CHAIN_ID ||
+  !DESTINATION_CHAIN_ID ||
   !RESOURCE_ID ||
   !MNEMONIC ||
   !UTXO_TX_ID ||
@@ -47,15 +45,14 @@ if (
   );
 }
 
-initEccLib(tinysecp);
-const bip32 = BIP32Factory(tinysecp);
 
 async function btcToEvmTransfer(): Promise<void> {
   // pre setup
+  initEccLib(tinysecp);
+  const bip32 = BIP32Factory(tinysecp);
   console.log("Transfer BTC to EVM");
-  const testnet = networks.testnet;
   const seed = await mnemonicToSeed(MNEMONIC);
-  const rootKey = bip32.fromSeed(seed, testnet);
+  const rootKey = bip32.fromSeed(seed, networks.testnet);
   const derivedNode = rootKey.derivePath(DERIVATION_PATH);
 
   // Note: default example is going to run P2TR transfer
@@ -81,7 +78,7 @@ async function btcToEvmTransfer(): Promise<void> {
     feeRate,
     publicKey: publicKeyDropedDERHeader,
     typeOfAddress: TypeOfAddress.P2TR,
-    network: testnet,
+    network: networks.testnet,
     changeAddress: CHANGE_ADDRESS,
   };
 

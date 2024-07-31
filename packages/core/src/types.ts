@@ -143,6 +143,8 @@ export interface BitcoinConfig extends BaseConfig<Network.BITCOIN> {
   feeAddress: string;
 }
 
+export type SygmaDomainConfig = EthereumConfig | SubstrateConfig | BitcoinConfig;
+
 export type IndexerRoutesResponse = { routes: RouteIndexerType[] };
 
 export type Handler = {

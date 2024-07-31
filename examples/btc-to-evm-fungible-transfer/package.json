@@ -29,7 +29,7 @@
     "typescript": "5.0.4"
   },
   "dependencies": {
-    "@buildwithsygma/btc": "workspace:^",
+    "@buildwithsygma/bitcoin": "workspace:^",
     "@buildwithsygma/core": "workspace:^",
     "bip32": "^4.0.0",
     "bip39": "^3.1.0",

@@ -1,5 +1,5 @@
 {
-  "name": "@buildwithsygma/btc",
+  "name": "@buildwithsygma/bitcoin",
   "version": "0.0.1",
   "description": "Core primitives for bridging and message passing",
   "main": "dist-esm/index.js",
@@ -17,7 +17,7 @@
     "url": "https://github.com/sygmaprotocol/sygma-sdk"
   },
   "scripts": {
-    "test": "jest --watchAll --detectOpenHandles --silent",
+    "test": "jest --watchAll --detectOpenHandles",
     "test:unit": "jest --detectOpenHandles",
     "run:all": "concurrently \"yarn run prepareNodes\" \"yarn run test\"",
     "build:esm": "tsc -p tsconfig.esm.json && echo '{\"type\": \"module\"}' > ./dist-esm/package.json",
@@ -30,7 +30,8 @@
     "lint": "eslint 'src/**/*.ts'",
     "lint:fix": "yarn run lint --fix",
     "run:nodes": "docker-compose -f docker-compose.yml up",
-    "clean": "rm -rf ./dist ./dist-cjs ./dist-esm ./types"
+    "clean": "rm -rf ./dist ./dist-cjs ./dist-esm ./types",
+    "watch": "tsc -w -p tsconfig.esm.json && echo '{\"type\": \"module\"}' > ./dist-esm/package.json"
   },
   "keywords": [
     "sygma",
