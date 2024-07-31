@@ -1,6 +1,6 @@
 import type { BitcoinResource } from '@buildwithsygma/core/src';
 import type { BitcoinConfig, Config, Domain } from '@buildwithsygma/core/types';
-import type { BaseTransferParams } from 'types';
+import type { BitcoinTransferParams } from 'types';
 
 export abstract class BaseTransfer {
   protected destinationAddress: string;
@@ -12,7 +12,7 @@ export abstract class BaseTransfer {
   protected feeAmount: number;
   protected feeAddress: string;
 
-  constructor(transfer: BaseTransferParams, config: Config) {
+  constructor(transfer: BitcoinTransferParams, config: Config) {
     this.destinationAddress = transfer.destinationAddress;
     this.amount = transfer.amount;
     this.sourceDomain = config.getDomain(transfer.source);

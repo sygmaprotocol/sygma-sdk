@@ -3,7 +3,7 @@ import { payments, Psbt } from 'bitcoinjs-lib';
 
 import { TypeOfAddress } from '../types.js';
 import type {
-  BaseTransferParams,
+  BitcoinTransferParams,
   BitcoinTransferInputData,
   BitcoinTransferRequest,
   PaymentReturnData,
@@ -72,7 +72,7 @@ export function createInputData({
   network,
   typeOfAddress,
 }: Pick<
-  BaseTransferParams,
+  BitcoinTransferParams,
   'utxoData' | 'publicKey' | 'network' | 'typeOfAddress'
 >): BitcoinTransferInputData {
   if (typeOfAddress !== TypeOfAddress.P2TR) {
@@ -107,7 +107,7 @@ export function createInputData({
  * @returns {BitcoinTransferRequest}
  */
 export function getPsbt(
-  params: BaseTransferParams,
+  params: BitcoinTransferParams,
   feeAddress: string,
   depositAddress: string,
   feeAmount: number,

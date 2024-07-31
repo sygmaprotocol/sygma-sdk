@@ -6,7 +6,7 @@ export enum TypeOfAddress {
   P2TR = 'P2TR',
 }
 
-export type BaseTransferParams = {
+export type BitcoinTransferParams = {
   environment?: Environment;
   source: Domainlike;
   destination: Domainlike;
