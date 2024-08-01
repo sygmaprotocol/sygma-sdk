@@ -14,7 +14,10 @@ import type { EvmTransferParams } from './evmTransfer.js';
 import { EvmTransfer } from './evmTransfer.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
 import type { TransactionRequest } from './types.js';
-import { createPermissionlessGenericDepositData, serializeGenericCallParameters } from './utils/helpers.js';
+import {
+  createPermissionlessGenericDepositData,
+  serializeGenericCallParameters,
+} from './utils/helpers.js';
 import { genericMessageTransfer } from './utils/index.js';
 import { createTransactionRequest } from './utils/transaction.js';
 

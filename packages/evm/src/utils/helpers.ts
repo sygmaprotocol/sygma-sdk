@@ -132,7 +132,10 @@ export const getSubstrateRecipientAddressInBytes = (
  * @param padding - number to padd the data
  * @returns {string}
  */
-export const toHex = (covertThis: string | number | BigNumber | bigint, padding: number): string => {
+export const toHex = (
+  covertThis: string | number | BigNumber | bigint,
+  padding: number,
+): string => {
   const amount = covertThis instanceof BigNumber ? covertThis : BigNumber.from(covertThis);
   return utils.hexZeroPad(utils.hexlify(amount), padding);
 };
@@ -144,7 +147,7 @@ export const toHex = (covertThis: string | number | BigNumber | bigint, padding:
  * @returns {`0x{string}`}
  */
 function createGenericCallParameter(param: string | BigNumber | number | boolean | bigint): string {
-  let DEFAULT_PADDING = 32;
+  const DEFAULT_PADDING = 32;
   switch (typeof param) {
     case 'boolean':
       return toHex(Number(param), DEFAULT_PADDING).substring(2);
@@ -164,19 +167,24 @@ function createGenericCallParameter(param: string | BigNumber | number | boolean
   }
 }
 /**
- * 
- * @param params 
- * @returns 
+ *
+ * @param params
+ * @returns
  */
-export function serializeGenericCallParameters(params: Array<string | BigNumber | number | boolean | bigint>): string {
+export function serializeGenericCallParameters(
+  params: Array<string | BigNumber | number | boolean | bigint>,
+): string {
   // .slice(1) is used because first parameter will always
   // be an address by default, and this parameter is not specified
-  // by the user, relayers add it 
+  // by the user, relayers add it
   // so this param is discarded by SDK
   // However, this param should still be
-  // part of ABI otherwise messages won't 
+  // part of ABI otherwise messages won't
   // be passed correctly
-  let serialized = params.slice(1).map((item) => createGenericCallParameter(item)).join('');
+  const serialized = params
+    .slice(1)
+    .map(item => createGenericCallParameter(item))
+    .join('');
   return `0x${serialized}`;
 }
 
