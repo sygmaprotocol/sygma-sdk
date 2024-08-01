@@ -177,7 +177,7 @@ class GenericMessageTransfer<
     }
 
     const executeFunctionSignature = contractInterface.getSighash(this.functionName);
-    return { executionData: `0x${executionData}`, executeFunctionSignature };
+    return { executionData, executeFunctionSignature };
   }
   /**
    * Creates the transaction that can be
