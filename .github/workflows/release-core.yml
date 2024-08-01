@@ -2,8 +2,9 @@ name: Publish Sygma SDK to GitHub Package Registry
 
 on:
   push:
-    branches:
-      - main
+    branches: ['main']
+    paths: ['packages/core/**']
+
 jobs:
   maybe-release:
     name: release
@@ -11,7 +12,8 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
         # you should probably do this after your regular CI checks passes
-      - uses: google-github-actions/release-please-action@v3 # it will analyze commits and create PR with new version and updated CHANGELOG:md file. On merging it will create github release page with changelog
+        # it will analyze commits and create PR with new version and updated CHANGELOG:md file. On merging it will create github release page with changelog
+      - uses: google-github-actions/release-please-action@v3
         id: release
         with:
           command: manifest
@@ -21,12 +23,12 @@ jobs:
           default-branch: main
           changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false},{"type":"revert","hidden":true}]'
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         # these if statements ensure that a publication only occurs when
         # a new release is created:
         if: ${{ steps.release.outputs.releases_created }}
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           cache: 'yarn'
           node-version: 18
