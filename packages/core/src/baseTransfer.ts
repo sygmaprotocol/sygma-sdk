@@ -9,53 +9,51 @@ export interface BaseTransferParams {
 }
 
 export abstract class BaseTransfer {
-  protected _destination: Domain;
-  protected _resource: EvmResource | SubstrateResource;
-  protected _source: Domain;
-  protected _config: Config;
+  protected destinationDomain: Domain;
+  protected sourceDomain: Domain;
+  protected transferResource: EvmResource | SubstrateResource;
+  protected sygmaConfiguration: Config;
 
   protected sourceAddress: string;
 
   public get source(): Domain {
-    return this._source;
+    return this.sourceDomain;
   }
 
   public get destination(): Domain {
-    return this._destination;
+    return this.destinationDomain;
   }
 
   public get resource(): EvmResource | SubstrateResource {
-    return this._resource;
+    return this.transferResource;
   }
 
   public get config(): Config {
-    return this._config;
+    return this.sygmaConfiguration;
   }
 
   private findResource(
     resource: string | EvmResource | SubstrateResource,
   ): EvmResource | SubstrateResource | undefined {
-    return this._config.getResources(this.source).find(_resource => {
+    return this.sygmaConfiguration.getResources(this.source).find(_resource => {
       return typeof resource === 'string'
         ? resource === _resource.resourceId
         : resource.resourceId === _resource.resourceId;
     });
   }
 
-  constructor(transfer: BaseTransferParams, config: Config) {
-    this._config = config;
+  protected constructor(transfer: BaseTransferParams, config: Config) {
+    this.sygmaConfiguration = config;
     this.sourceAddress = transfer.sourceAddress;
-    this._source = config.getDomain(transfer.source);
-    this._destination = config.getDomain(transfer.destination);
-    const __resource = this.findResource(transfer.resource);
+    this.sourceDomain = config.getDomain(transfer.source);
+    this.destinationDomain = config.getDomain(transfer.destination);
+    const resource = this.findResource(transfer.resource);
 
-    if (__resource) {
-      this._resource = __resource;
+    if (resource) {
+      this.transferResource = resource;
     } else {
       throw new Error('Resource not found.');
     }
-
-    this._config = config;
   }
   /**
    * Method that checks whether the transfer
@@ -73,7 +71,7 @@ export abstract class BaseTransfer {
    * @returns {BaseTransfer}
    */
   setResource(resource: EvmResource | SubstrateResource): void {
-    this._resource = resource;
+    this.transferResource = resource;
   }
   /**
    *
@@ -82,6 +80,6 @@ export abstract class BaseTransfer {
    */
   setDesinationDomain(destination: Domainlike): void {
     const domain = this.config.getDomain(destination);
-    this._destination = domain;
+    this.destinationDomain = domain;
   }
 }

@@ -19,7 +19,7 @@ export class EvmTransfer extends BaseTransfer {
   }
 
   protected getDepositData(): string {
-    return '';
+    throw new Error('Method not implemented.');
   }
 
   /**

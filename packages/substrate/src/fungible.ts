@@ -39,7 +39,7 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
     this.sourceNetworkProvider = transfer.sourceNetworkProvider;
     this.destinationAddress = transfer.destinationAddress;
 
-    if (isValidAddressForNetwork(transfer.destinationAddress, this._destination.type))
+    if (isValidAddressForNetwork(transfer.destinationAddress, this.destination.type))
       this.destinationAddress = transfer.destinationAddress;
   }
   public setResource(resource: SubstrateResource): void {
@@ -63,7 +63,7 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
    * @param {string} destinationAddress
    */
   setDestinationAddress(destinationAddress: string): void {
-    if (isValidAddressForNetwork(destinationAddress, this._destination.type))
+    if (isValidAddressForNetwork(destinationAddress, this.destination.type))
       this.destinationAddress = destinationAddress;
   }
 

@@ -36,11 +36,7 @@ export async function hasEnoughLiquidity(
         handler.address,
       );
 
-      if (transfer.amount > evmHandlerBalance) {
-        return false;
-      }
-
-      return true;
+      return transfer.amount <= evmHandlerBalance;
     }
     case Network.SUBSTRATE: {
       const substrateHandlerBalance = await getSubstrateHandlerBalance(
@@ -49,11 +45,7 @@ export async function hasEnoughLiquidity(
         handler.address,
       );
 
-      if (transfer.amount > substrateHandlerBalance) {
-        return false;
-      }
-
-      return true;
+      return transfer.amount <= substrateHandlerBalance;
     }
     default:
       return false;
