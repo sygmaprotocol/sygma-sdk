@@ -2,6 +2,10 @@ import type { FeeHandlerType } from '@buildwithsygma/core';
 import type { ethers } from 'ethers';
 import type { EvmFee } from 'types';
 
+/**
+ * Parameters that are required to
+ * calculate fee for a Sygma transfer.
+ */
 export interface EvmFeeCalculationParams {
   provider: ethers.providers.Provider;
   sender: string;
@@ -26,6 +30,13 @@ export abstract class BaseEvmTransferFeeCalculator implements EvmTransferFeeCalc
     return this.nextHandler;
   }
 
+  /**
+   * @category EvmFee
+   *
+   * Calculate transfer fee
+   * @param {EvmFeeCalculationParams} params
+   * @returns {Promise<EvmFee>}
+   */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   calculateFee(_params: EvmFeeCalculationParams): Promise<EvmFee> {
     throw new Error('Fee Calculation method not specified or undefined');

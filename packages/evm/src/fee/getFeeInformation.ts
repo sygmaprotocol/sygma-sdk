@@ -6,17 +6,19 @@ import {
 } from '@buildwithsygma/sygma-contracts';
 import { utils, ethers } from 'ethers';
 /**
- * @category EvmFee
- * Retrieves fee information
- * configured on chain for a specific
- * route
- * @param {Config} config
- * @param {ethers.providers.BaseProvider} sourceProvider 
- * @param {number} sygmaSourceId 
- * @param {number} sygmaDestinationDomainId 
- * @param {string} sygmaResourceId 
- * @returns {Promise<{feeHandlerAddress: string; feeHandlerType: FeeHandlerType;}>}
  * @internal
+ * @category EVM Fee
+ *
+ *
+ * Retrieves fee information
+ * configured on chain for a specific route
+ * Throws error if feeHandler is not registered
+ * @param {Config} config
+ * @param {ethers.providers.BaseProvider} sourceProvider
+ * @param {number} sygmaSourceId
+ * @param {number} sygmaDestinationDomainId
+ * @param {string} sygmaResourceId
+ * @returns {Promise<{feeHandlerAddress: string; feeHandlerType: FeeHandlerType;}>}
  */
 export async function getFeeInformation(
   config: Config,

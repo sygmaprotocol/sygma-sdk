@@ -21,19 +21,16 @@ import { createTransactionRequest } from './utils/transaction.js';
 export interface FungibleTokenTransferRequest extends BaseTransferParams {
   resource: string | EvmResource;
   amount: bigint;
-  /** Destination address that will recieve the tokens */
   destinationAddress: string;
-  /** Security model */
   securityModel?: SecurityModel;
 }
 
 /**
+ * @internal only
  * This method is used to adjust transfer amount
- * based on percentage fee calculations to provide
- * a similar user experience to substrate token transfers.
+ * based on percentage fee calculations
  * @param {EvmFungibleAssetTransfer} transfer
  * @param {EvmFee} fee
- * @internal
  */
 function calculateAdjustedAmount(transfer: EvmFungibleAssetTransfer, fee: EvmFee): bigint {
   //in case of percentage fee handler, we are calculating what amount + fee will result int user inputed amount
@@ -68,11 +65,9 @@ function calculateAdjustedAmount(transfer: EvmFungibleAssetTransfer, fee: EvmFee
   return transfer.amount;
 }
 /**
- * Returns an EVMFungibleAssetTransfer
- * instance that will provide approval
- * and bridge transfer transactions.
- * @param {EvmFungibleTransferRequest} params
- * @returns {EvmFungibleAssetTransfer}
+ * Prepare a Sygma fungible token transfer
+ * @param {FungibleTokenTransferRequest} params
+ * @returns {Promise<EvmFungibleAssetTransfer>}
  */
 export async function createEvmFungibleAssetTransfer(
   params: FungibleTokenTransferRequest,
@@ -90,17 +85,18 @@ export async function createEvmFungibleAssetTransfer(
   return transfer;
 }
 /**
- * @dev User should not instance this directly. All the (async) checks should be done in `createEvmFungibleAssetTransfer`
+ * @internal
+ * @class EvmFungibleAssetTransfer
+ *
+ * Class that encapsulates logic
+ * for transferring fungible tokens
+ * using Sygma protocol
  */
 class EvmFungibleAssetTransfer extends BaseTransfer {
   protected destinationAddress: string = '';
   protected securityModel: SecurityModel;
   protected _amount: bigint;
-  /**
-   * Get the amount of
-   * fungible tokens that will
-   * be transferred.
-   */
+
   get amount(): bigint {
     return this._amount;
   }
@@ -119,7 +115,7 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     return utils.isAddress(handlerAddress) && handlerAddress !== constants.AddressZero;
   }
 
-  getDepositData(): string {
+  protected getDepositData(): string {
     return createERCDepositData(this.amount, this.destinationAddress, this.destination.parachainId);
   }
 
@@ -130,11 +126,10 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
       this.destinationAddress = transfer.destinationAddress;
     this.securityModel = transfer.securityModel ?? SecurityModel.MPC;
   }
-
   /**
-   * Set resource to be transferred
+   * Set transfer resource
    * @param {EvmResource} resource
-   * @returns {BaseTransfer}
+   * @returns {void}
    */
   setResource(resource: EvmResource): void {
     if (resource.type !== ResourceType.FUNGIBLE) {
@@ -142,10 +137,8 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     }
     this.resource = resource;
   }
-
   /**
-   * @async
-   * Set amount to be transferred
+   * @async Set amount to be transferred
    * @param {BigInt} amount
    * @returns {Promise<void>}
    */
@@ -154,7 +147,6 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     const fee = await this.getFee();
     this._amount = calculateAdjustedAmount(this, fee);
   }
-
   /**
    * Sets the destination address
    * @param destinationAddress
@@ -164,11 +156,10 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     if (isValidAddressForNetwork(destinationAddress, this.destination.type))
       this.destinationAddress = destinationAddress;
   }
-
   /**
-   * Returns array of required approval transactions
-   * @dev with permit2 we would add TypedData in the array to be signed and signature will be mandatory param into getTransaferTransaction
-   * @dev potentially add optional param to override transaction params
+   * Get array of approval transactions
+   * associated with fungible transfer
+   * @returns {Promise<Array<TransactionRequest>>}
    */
   async getApprovalTransactions(): Promise<Array<TransactionRequest>> {
     const provider = new Web3Provider(this.sourceNetworkProvider);
@@ -199,10 +190,9 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
 
     return approvals.map(approval => createTransactionRequest(approval));
   }
-
   /**
-   * Returns transaction to be signed by the user
-   * @dev potentially add optional param to override transaction params
+   * Get the fungible token transfer transaction
+   * @returns {Promise<TransactionRequest>}
    */
   async getTransferTransaction(): Promise<TransactionRequest> {
     const domainConfig = this.config.getDomainConfig(this.source);

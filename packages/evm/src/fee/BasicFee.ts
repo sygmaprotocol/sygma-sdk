@@ -7,12 +7,13 @@ import type { EvmFee } from '../types.js';
 import type { EvmFeeCalculationParams } from './types.js';
 import { BaseEvmTransferFeeCalculator } from './types.js';
 /**
- * @category EvmFee
- * BaseFeeCalculator
- * BaseFeeCalculator provides
- * ability to calculate fee for a route
- * that uses basic calculation.
  * @internal
+ * @category EVM Fee
+ *
+ *
+ * Wrapper class to calculate
+ * fee for a route that uses
+ * basic calculation.
  */
 export class BasicFeeCalculator extends BaseEvmTransferFeeCalculator {
   constructor() {
@@ -20,8 +21,8 @@ export class BasicFeeCalculator extends BaseEvmTransferFeeCalculator {
   }
   /**
    * @category EvmFee
-   * Returns fee for a transfer
-   * originating from an EVM chain
+   *
+   * Calculate transfer fee
    * @param {EvmFeeCalculationParams} params
    * @returns {Promise<EvmFee>}
    */

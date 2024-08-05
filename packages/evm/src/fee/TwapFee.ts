@@ -7,11 +7,26 @@ import type { EvmFee } from '../types.js';
 import { BaseEvmTransferFeeCalculator } from './types.js';
 import type { EvmFeeCalculationParams } from './types.js';
 
+/**
+ * @internal
+ * @category EVM Fee
+ *
+ *
+ * Wrapper class to calculate
+ * fee for a route that uses
+ * TWAP/dynamic fee calculation.
+ */
 export class TwapFeeCalculator extends BaseEvmTransferFeeCalculator {
   constructor() {
     super();
   }
-
+  /**
+   * @category EvmFee
+   *
+   * Calculate transfer fee
+   * @param {EvmFeeCalculationParams} params
+   * @returns {Promise<EvmFee>}
+   */
   async calculateFee(_params: EvmFeeCalculationParams): Promise<EvmFee> {
     if (_params.feeHandlerType === FeeHandlerType.TWAP) {
       const TwapGenericFeeHandler = TwapGenericFeeHandler__factory.connect(

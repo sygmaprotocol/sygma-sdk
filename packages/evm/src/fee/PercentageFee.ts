@@ -8,11 +8,13 @@ import type { EvmFeeCalculationParams } from './types.js';
 import { BaseEvmTransferFeeCalculator } from './types.js';
 
 /**
- * @category EvmFee
- * PercentageFeeCalculator provides
- * ability to calculate fee for a route
- * that uses percentage calculation.
  * @internal
+ * @category EVM Fee
+ *
+ *
+ * Wrapper class to calculate
+ * fee for a route that uses
+ * percentage fee calculation.
  */
 export class PercentageFeeCalculator extends BaseEvmTransferFeeCalculator {
   constructor() {
@@ -20,8 +22,8 @@ export class PercentageFeeCalculator extends BaseEvmTransferFeeCalculator {
   }
   /**
    * @category EvmFee
-   * Returns fee for a transfer
-   * originating from an EVM chain
+   *
+   * Calculate transfer fee
    * @param {EvmFeeCalculationParams} params
    * @returns {Promise<EvmFee>}
    */

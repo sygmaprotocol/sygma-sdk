@@ -2,8 +2,9 @@ import type { PopulatedTransaction } from 'ethers';
 
 import type { TransactionRequest } from '../types.js';
 /**
- * Creates a simple, library agnostic transaction type
- * @param {PopulatedTransaction} transaction ethers transaction object
+ * Create a library agnostic transaction type
+ * that can be sent to an EVM node
+ * @param {PopulatedTransaction} transaction Ethers `PopulatedTransaction` object
  * @returns {TransactionRequest}
  */
 export function createTransactionRequest(transaction: PopulatedTransaction): TransactionRequest {
