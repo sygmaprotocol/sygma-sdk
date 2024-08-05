@@ -83,13 +83,12 @@ describe('hasEnoughLiquidity - EVM', () => {
       .mockReturnValue({ handlers: [], resources: [mockedResource] });
 
     await expect(
-      async () =>
-        await hasEnoughLiquidity(
-          mockedTransferClone as unknown as Awaited<
-            ReturnType<typeof createEvmFungibleAssetTransfer>
-          >,
-          destinationProviderUrl,
-        ),
+      hasEnoughLiquidity(
+        mockedTransferClone as unknown as Awaited<
+          ReturnType<typeof createEvmFungibleAssetTransfer>
+        >,
+        destinationProviderUrl,
+      ),
     ).rejects.toThrow('Handler not found or unregistered for resource.');
   });
   it('should throw error if resource is not found', async () => {
@@ -99,13 +98,12 @@ describe('hasEnoughLiquidity - EVM', () => {
       .mockReturnValue({ handlers: [mockedHandler], resources: [] });
 
     await expect(
-      async () =>
-        await hasEnoughLiquidity(
-          mockedTransferClone as unknown as Awaited<
-            ReturnType<typeof createEvmFungibleAssetTransfer>
-          >,
-          destinationProviderUrl,
-        ),
+      hasEnoughLiquidity(
+        mockedTransferClone as unknown as Awaited<
+          ReturnType<typeof createEvmFungibleAssetTransfer>
+        >,
+        destinationProviderUrl,
+      ),
     ).rejects.toThrow('Resource not found or unregistered.');
   });
 });

@@ -42,9 +42,6 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
     if (isValidAddressForNetwork(transfer.destinationAddress, this.destination.type))
       this.destinationAddress = transfer.destinationAddress;
   }
-  public setResource(resource: SubstrateResource): void {
-    this._resource = resource;
-  }
 
   public getSourceNetworkProvider(): ApiPromise {
     return this.sourceNetworkProvider;
