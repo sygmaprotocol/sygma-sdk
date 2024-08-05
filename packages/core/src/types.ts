@@ -12,14 +12,10 @@ export enum Environment {
   MAINNET = 'mainnet',
 }
 
-export enum FeeHandlerType {
-  BASIC = 'basic',
-  PERCENTAGE = 'percentage',
-}
-
 export enum Network {
   EVM = 'evm',
   SUBSTRATE = 'substrate',
+  BITCOIN = 'bitcoin',
 }
 
 export enum SecurityModel {
@@ -62,6 +58,12 @@ export type EvmResource = BaseResource & {
   address: string;
 };
 
+export enum FeeHandlerType {
+  TWAP = 'twap',
+  BASIC = 'basic',
+  PERCENTAGE = 'percentage',
+}
+
 export type XcmMultiAssetIdType = {
   concrete: {
     parents: number;
@@ -71,6 +73,11 @@ export type XcmMultiAssetIdType = {
           x3: Array<{ parachain: number } | { generalKey: [number, string] }>; // This is a tuple of length and value
         };
   };
+};
+
+export type BitcoinResource = BaseResource & {
+  script: string;
+  tweak: string;
 };
 
 export type SubstrateResource = BaseResource & {

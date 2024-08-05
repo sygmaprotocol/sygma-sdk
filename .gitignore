@@ -32,6 +32,7 @@ public/chainbridge-runtime-config.js
 
 # IDE
 .idea/
+.vscode/
 
 .yarn/*
 !.yarn/patches

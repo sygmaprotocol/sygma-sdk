@@ -1,6 +1,6 @@
 import {
-  Bridge__factory,
   BasicFeeHandler__factory,
+  Bridge__factory,
   FeeHandlerRouter__factory,
 } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';

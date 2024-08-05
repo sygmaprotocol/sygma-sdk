@@ -29,7 +29,6 @@
         "build:typedocs:asjson": "typedoc --options typedoc.asjson.json",
         "lint": "eslint 'src/**/*.ts'",
         "lint:fix": "yarn run lint --fix",
-        "run:nodes": "docker-compose -f docker-compose.yml up",
         "clean": "rm -rf ./dist ./dist-cjs ./dist-esm ./types"
     },
     "keywords": [
@@ -43,8 +42,6 @@
     "author": "Sygmaprotocol Product Team",
     "license": "LGPL-3.0-or-later",
     "devDependencies": {
-        "@polkadot/types": "10.7.2",
-        "@types/jest": "^29.4.0",
         "concurrently": "7.0.0",
         "eslint": "8",
         "hardhat": "2.8.2",
@@ -60,19 +57,14 @@
     },
     "dependencies": {
         "@buildwithsygma/core": "workspace:^",
-        "@buildwithsygma/sygma-contracts": "2.6.1",
+        "@buildwithsygma/sygma-contracts": "^2.8.0",
         "@ethersproject/abi": "^5.7.0",
         "@ethersproject/bytes": "^5.7.0",
         "@ethersproject/contracts": "^5.7.0",
         "@ethersproject/providers": "^5.7.2",
-        "@polkadot/api": "10.7.2",
-        "@polkadot/api-augment": "10.7.2",
-        "@polkadot/extension-inject": "0.46.3",
-        "@polkadot/keyring": "12.2.1",
-        "@polkadot/rpc-provider": "10.7.2",
-        "@polkadot/ui-keyring": "3.4.1",
-        "@polkadot/util": "12.2.1",
-        "@polkadot/util-crypto": "12.2.1",
+        "@polkadot/types": "^11.2.1",
+        "@polkadot/util-crypto": "^12.6.2",
+        "abitype": "^1.0.4",
         "ethers": "5.7.2"
     }
 }

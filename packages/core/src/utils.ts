@@ -1,20 +1,27 @@
+import * as process from 'node:process';
+
+import { decodeAddress, encodeAddress } from '@polkadot/keyring';
+import { hexToU8a, isHex } from '@polkadot/util';
+import validate, { Network as BitcoinNetwork } from 'bitcoin-address-validation';
+import { ethers } from 'ethers';
+
 import { ExplorerUrl, IndexerUrl } from './constants.js';
 import { getFeeHandlerAddressesOfRoutes, getFeeHandlerTypeOfRoutes } from './multicall.js';
 import type {
-  Route,
-  TransferStatus,
-  TransferStatusResponse,
-  RouteIndexerType,
-  EnvironmentMetadata,
   Domain,
-  RouteType,
-  SygmaConfig,
   Domainlike,
   Eip1193Provider,
+  EnvironmentMetadata,
   FeeHandlerType,
   IndexerRoutesResponse,
+  Route,
+  RouteIndexerType,
+  RouteType,
+  SygmaConfig,
+  TransferStatus,
+  TransferStatusResponse,
 } from './types.js';
-import { Network, Environment } from './types.js';
+import { Environment, Network } from './types.js';
 
 import { Config } from './index.js';
 
@@ -45,6 +52,17 @@ function getIndexerTransferUrl(
   return { url, explorerUrl };
 }
 
+export function getSygmaScanLink(sourceHash: string, environment: Environment): string {
+  switch (environment) {
+    case Environment.DEVNET:
+    case Environment.LOCAL:
+      throw new Error(`Scanner unavailable for environment: ${environment}`);
+    case Environment.MAINNET:
+      return `https://scan.buildwithsygma.com/transfer/${sourceHash}`;
+    case Environment.TESTNET:
+      return `https://scan.test.buildwithsygma.com/transfer/${sourceHash}`;
+  }
+}
 /**
  * Retrieves the environment metadata
  *
@@ -104,6 +122,7 @@ export async function getDomains(options: {
 /**
  * Returns  supported routes originating from given source domain.
  * @param source Either caip2 identifier, chainId or sygmaId
+ * @param environment
  * @param options Allows selecting bridge instance (mainnet by default) and filtering routes by type.
  */
 export async function getRoutes(
@@ -184,6 +203,7 @@ export async function getRoutes(
 /**
  * TODO: why isn't txHash unique identifier
  * @param txHash
+ * @param environment
  */
 export async function getTransferStatus(
   txHash: string,
@@ -228,7 +248,7 @@ export async function getTransferStatus(
 
 /**
  * End users shouldn't really need that but lets expose for power users
- * @param env
+ * @param environment
  */
 export async function getRawConfiguration(
   environment: Environment = process.env.SYGMA_ENV,
@@ -240,4 +260,60 @@ export async function getRawConfiguration(
     throw new Error(`Unable to fetch configuration for environment: ${environment}`);
   }
   return sygmaConfig;
+}
+
+/**
+ * Validate Substrate address.
+ * @param {string} address
+ */
+export function isValidSubstrateAddress(address: string): boolean {
+  try {
+    encodeAddress(isHex(address) ? hexToU8a(address) : decodeAddress(address));
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+/**
+ * Validate EVM address.
+ * @param {string} address
+ * @returns {boolean}
+ */
+export function isValidEvmAddress(address: string): boolean {
+  return !!ethers.utils.isAddress(address);
+}
+
+/**
+ * Validate Bitcoin address.
+ * @param {string} address
+ * @returns {boolean}
+ */
+export function isValidBitcoinAddress(address: string): boolean {
+  if (process.env.SYGMA_ENV === Environment.TESTNET || process.env.SYGMA_ENV === Environment.DEVNET)
+    return validate(address, BitcoinNetwork.testnet);
+
+  return validate(address, BitcoinNetwork.mainnet);
+}
+
+/**
+ * Validate Address based on network.
+ * @param {string} address
+ * @param {Network} network
+ * @returns {boolean}
+ */
+export function isValidAddressForNetwork(address: string, network: Network): boolean {
+  switch (network) {
+    case Network.EVM:
+      if (isValidEvmAddress(address)) return true;
+      throw new Error('Invalid EVM Address');
+    case Network.SUBSTRATE:
+      if (isValidSubstrateAddress(address)) return true;
+      throw new Error('Invalid Substrate Address');
+    case Network.BITCOIN:
+      if (isValidBitcoinAddress(address)) return true;
+      throw new Error('Invalid Bitcoin Address');
+    default:
+      throw new Error('Provided network is not supported');
+  }
 }

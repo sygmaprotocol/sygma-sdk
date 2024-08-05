@@ -1,5 +1,5 @@
 import { FeeHandlerType } from '@buildwithsygma/core';
-import { PercentageERC20FeeHandlerEVM__factory } from '@buildwithsygma/sygma-contracts';
+import { PercentageERC20FeeHandler__factory } from '@buildwithsygma/sygma-contracts';
 import { utils } from 'ethers';
 
 import type { EvmFee } from '../types.js';
@@ -38,7 +38,7 @@ export class PercentageFeeCalculator extends BaseEvmTransferFeeCalculator {
     } = params;
 
     if (feeHandlerType === FeeHandlerType.PERCENTAGE) {
-      const percentageFeeHandlerContract = PercentageERC20FeeHandlerEVM__factory.connect(
+      const percentageFeeHandlerContract = PercentageERC20FeeHandler__factory.connect(
         feeHandlerAddress,
         provider,
       );
