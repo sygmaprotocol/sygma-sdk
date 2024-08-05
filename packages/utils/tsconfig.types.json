@@ -27,7 +27,7 @@
     "outDir": "types"
   },
   "exclude": ["node_modules/**", "src/**/__test__/**", "test/**"],
-  "include": ["./src/**/*.ts", "./test/**/*.ts", "substrate-asset-transfer.ts"],
+  "include": ["./src/**/*.ts"],
   "ts-node": {
     "esm": true,
     "experimentalSpecifierResolution": "node"
