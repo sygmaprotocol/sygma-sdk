@@ -19,14 +19,14 @@
     "preserveWatchOutput": true,
     "pretty": false,
     "strict": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "target": "es2020",
     "skipLibCheck": true,
     "baseUrl": "./src",
     "resolveJsonModule": true,
     "outDir": "types"
   },
-  "exclude": ["node_modules/**"],
+  "exclude": ["node_modules/**", "src/**/__test__/**", "test/**"],
   "include": ["./src/**/*.ts", "./test/**/*.ts", "substrate-asset-transfer.ts"],
   "ts-node": {
     "esm": true,
