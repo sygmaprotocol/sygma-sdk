@@ -23,6 +23,6 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: corepack enable
       - run: yarn install --immutable
-      - run: yarn run lint
       - run: yarn run build
+      - run: yarn run lint
       - run: yarn run test
