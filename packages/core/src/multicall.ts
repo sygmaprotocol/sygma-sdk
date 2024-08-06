@@ -204,7 +204,7 @@ export async function getFeeHandlerAddressesOfRoutes(params: {
 
   const multicallAddress = getMulticallAddress(params.chainId);
   const multicall = new Contract(multicallAddress, JSON.stringify(MulticallAbi), web3Provider);
-  let feeHandlerAddressesMap: Map<string, Map<string, Map<string, string>>> = new Map();
+  const feeHandlerAddressesMap: Map<string, Map<string, Map<string, string>>> = new Map();
 
   const calls = params.routes.map(route => ({
     target: feeHandlerRouterAddress,
@@ -250,10 +250,15 @@ export async function getFeeHandlerTypeOfRoutes(params: {
   const multicall = new Contract(multicallAddress, JSON.stringify(MulticallAbi), web3Provider);
   const basicFeeHandlerInterface = BasicFeeHandler__factory.createInterface();
 
+  let feeHandlerAddress: string | undefined;
   const calls = routes.map(route => {
     const source = feeHandlerAddressesMap.get(route.fromDomainId);
-    const destination = source?.get(route.toDomainId);
-    const feeHandlerAddress = destination?.get(route.resourceId)!;
+    if (source) {
+      const destination = source.get(route.toDomainId);
+      if (destination) {
+        feeHandlerAddress = destination.get(route.resourceId);
+      }
+    }
 
     return {
       target: feeHandlerAddress,
@@ -265,8 +270,13 @@ export async function getFeeHandlerTypeOfRoutes(params: {
 
   return params.routes.map((route, idx) => {
     const source = feeHandlerAddressesMap.get(route.fromDomainId);
-    const destination = source?.get(route.toDomainId)!;
-    const feeHandlerAddress = destination?.get(route.resourceId)!;
+    if (source) {
+      const destination = source.get(route.toDomainId);
+      if (destination) {
+        feeHandlerAddress = destination.get(route.resourceId);
+      }
+    }
+
     const feeHandlerType = defaultAbiCoder.decode(
       ['string'],
       results.returnData[idx],
@@ -274,7 +284,7 @@ export async function getFeeHandlerTypeOfRoutes(params: {
 
     return {
       ...route,
-      feeHandlerAddress: feeHandlerAddress,
+      feeHandlerAddress: feeHandlerAddress ?? '',
       feeHandlerType,
     };
   });

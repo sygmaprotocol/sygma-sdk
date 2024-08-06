@@ -186,7 +186,7 @@ export async function getRoutes(
         };
       }
 
-      let toDomain = config.findDomainConfigBySygmaId(Number(route.toDomainId));
+      const toDomain = config.findDomainConfigBySygmaId(Number(route.toDomainId));
 
       return {
         fromDomain: config.getDomain(domainConfig.chainId),
