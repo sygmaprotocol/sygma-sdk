@@ -213,7 +213,10 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
     const balance = await erc20.balanceOf(this.sourceAddress);
 
     // TODO: check cost calculation
-    const totalCost = BigNumber.from(this.amount).add(fee.fee);
+    let totalCost: BigNumber = BigNumber.from(this.amount);
+    if (fee.type === FeeHandlerType.PERCENTAGE) {
+      totalCost = totalCost.add(BigNumber.from(fee.fee));
+    }
 
     if (balance.lt(totalCost)) throw new Error('Insufficient account balance');
   }
