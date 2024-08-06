@@ -34,7 +34,7 @@ interface EvmFungibleTransferRequest extends EvmTransferParams {
  * @param {EvmFee} fee
  */
 function calculateAdjustedAmount(transfer: EvmFungibleAssetTransfer, fee: EvmFee): bigint {
-  //in case of percentage fee handler, we are calculating what amount + fee will result int user inputed amount
+  //in case of percentage fee handler, we are calculating what amount + fee will result int user inputted amount
   //in case of fixed(basic) fee handler, fee is taken from native token
   if (fee.type === FeeHandlerType.PERCENTAGE) {
     const minFee = fee.minFee!;
@@ -161,6 +161,8 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
     const erc20 = ERC20__factory.connect(resource.address, provider);
     const fee = await this.getFee();
 
+    await this.verifyAccountBalance(fee);
+
     const feeHandlerAllowance = await getERC20Allowance(
       erc20,
       this.sourceAddress,
@@ -208,11 +210,11 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
   async verifyAccountBalance(fee: EvmFee): Promise<void> {
     const provider = new Web3Provider(this.sourceNetworkProvider);
     const erc20 = ERC20__factory.connect(this.resource.address, provider);
-    const accountBalance = await erc20.balanceOf(this.sourceAddress);
+    const balance = await erc20.balanceOf(this.sourceAddress);
 
     // TODO: check cost calculation
-    const costs = BigNumber.from(this.amount).add(fee.fee);
+    const totalCost = BigNumber.from(this.amount).add(fee.fee);
 
-    if (accountBalance.lt(costs)) throw new Error('Insufficient account balance');
+    if (balance.lt(totalCost)) throw new Error('Insufficient account balance');
   }
 }
