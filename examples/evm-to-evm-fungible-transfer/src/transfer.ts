@@ -41,7 +41,7 @@ export async function erc20Transfer(): Promise<void> {
     resource: RESOURCE_ID,
     amount: BigInt(1) * BigInt(1e18),
     destinationAddress: destinationAddress,
-    environment: (process.env.SYGMA_ENV as Environment) || Environment.DEVNET,
+    environment: (process.env.SYGMA_ENV as Environment) || Environment.TESTNET,
     sourceAddress: destinationAddress,
   };
 
