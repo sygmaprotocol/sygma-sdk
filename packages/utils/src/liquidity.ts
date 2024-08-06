@@ -47,6 +47,7 @@ export async function hasEnoughLiquidity(
 
       return transfer.amount <= substrateHandlerBalance;
     }
+    // TODO: Bitcoin?
     default:
       return false;
   }
