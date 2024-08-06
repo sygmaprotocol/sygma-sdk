@@ -12,6 +12,13 @@ export type UTXOData = {
   utxoOutputIndex: number;
 };
 
+export type CreateInputData = {
+  utxoData: UTXOData;
+  publicKey: Buffer;
+  network: networks.Network;
+  typeOfAddress: TypeOfAddress;
+};
+
 export type BitcoinTransferParams = {
   environment?: Environment;
   source: Domainlike;
@@ -19,12 +26,13 @@ export type BitcoinTransferParams = {
   destinationAddress: string;
   amount: bigint;
   resource: BitcoinResource | string;
-  utxoData: UTXOData;
+  utxoData: UTXOData[];
   publicKey: Buffer;
   typeOfAddress: TypeOfAddress;
   network: networks.Network;
   feeRate: bigint;
   changeAddress?: string;
+  size: bigint;
 };
 
 export type BitcoinTransferRequest = Psbt;

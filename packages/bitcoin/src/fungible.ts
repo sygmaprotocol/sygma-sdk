@@ -19,7 +19,8 @@ class BitcoinTransfer extends BaseTransfer {
   protected network: networks.Network;
   protected changeAddress?: string;
   protected feeRate: bigint;
-  protected utxoData: UTXOData;
+  protected utxoData: UTXOData[];
+  protected size: bigint;
 
   constructor(transfer: BitcoinTransferParams, config: Config) {
     super(transfer, config);
@@ -31,6 +32,7 @@ class BitcoinTransfer extends BaseTransfer {
     this.changeAddress = transfer.changeAddress;
     this.feeRate = transfer.feeRate;
     this.utxoData = transfer.utxoData;
+    this.size = transfer.size;
   }
 
   getTransferTransaction(): BitcoinTransferRequest {
@@ -47,6 +49,7 @@ class BitcoinTransfer extends BaseTransfer {
         network: this.network,
         feeRate: this.feeRate,
         changeAddress: this.changeAddress,
+        size: this.size,
       },
       this.feeAddress,
       this.resource.address,

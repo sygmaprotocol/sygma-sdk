@@ -7,6 +7,8 @@ import type {
   BitcoinTransferInputData,
   BitcoinTransferRequest,
   PaymentReturnData,
+  UTXOData,
+  CreateInputData,
 } from '../types.js';
 
 /**
@@ -71,10 +73,7 @@ export function createInputData({
   publicKey,
   network,
   typeOfAddress,
-}: Pick<
-  BitcoinTransferParams,
-  'utxoData' | 'publicKey' | 'network' | 'typeOfAddress'
->): BitcoinTransferInputData {
+}: CreateInputData): BitcoinTransferInputData {
   if (typeOfAddress !== TypeOfAddress.P2TR) {
     return {
       hash: utxoTxId as unknown as Buffer,
@@ -97,6 +96,21 @@ export function createInputData({
 }
 
 /**
+ * Check if the amount to transfer is valid
+ * @category Helpers
+ * @param amount - amount to transfer
+ * @param utxoData - UTXO data
+ * @returns {boolean}
+ */
+const invalidAmount = (amount: bigint, utxoData: UTXOData[]): boolean => {
+  if (utxoData.length === 1) {
+    return amount > Number(utxoData[0].utxoAmount);
+  }
+
+  return utxoData.reduce((acc, curr) => acc + curr.utxoAmount, BigInt(0)) < amount;
+};
+
+/**
  * Create the PSBT for the transfer using the input data supplied and adding the ouputs to use for the transaction
  *
  * @category Helpers
@@ -116,17 +130,37 @@ export function getPsbt(
     throw new Error('Unsuported address type');
   }
 
-  if (Object.keys(params.utxoData).length !== 3) {
+  if (params.utxoData.length === 0) {
     throw new Error('UTXO data is required');
   }
 
-  if (params.amount > params.utxoData.utxoAmount) {
+  if (invalidAmount(params.amount, params.utxoData)) {
     throw new Error('Not enough funds to spend from the UTXO');
   }
 
   const psbt = new Psbt({ network: params.network });
 
-  psbt.addInput(createInputData(params));
+  if (params.utxoData.length !== 1) {
+    params.utxoData.forEach(utxo => {
+      psbt.addInput(
+        createInputData({
+          utxoData: utxo,
+          publicKey: params.publicKey,
+          network: params.network,
+          typeOfAddress: params.typeOfAddress,
+        }),
+      );
+    });
+  } else {
+    psbt.addInput(
+      createInputData({
+        utxoData: params.utxoData[0],
+        publicKey: params.publicKey,
+        network: params.network,
+        typeOfAddress: params.typeOfAddress,
+      }),
+    );
+  }
 
   // OP_RETURN output
   psbt.addOutput({
@@ -141,10 +175,17 @@ export function getPsbt(
     value: Number(feeAmount),
   });
 
-  const size = 303;
-  const minerFee = Math.floor(Number(params.feeRate) * size);
+  const minerFee = Math.floor(Number(params.feeRate) * Number(params.size));
 
-  const amountToSpent = Number(params.utxoData.utxoAmount) - Number(feeAmount) - minerFee;
+  let amountToSpent: number;
+  if (params.utxoData.length !== 1) {
+    amountToSpent =
+      params.utxoData.reduce((acc, curr) => acc + Number(curr.utxoAmount), 0) -
+      Number(feeAmount) -
+      minerFee;
+  } else {
+    amountToSpent = Number(params.utxoData[0].utxoAmount) - Number(feeAmount) - minerFee;
+  }
 
   if (amountToSpent < params.amount) {
     throw new Error('Not enough funds');
