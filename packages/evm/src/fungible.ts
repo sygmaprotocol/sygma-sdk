@@ -1,11 +1,11 @@
 import {
   Config,
-  EvmResource,
   FeeHandlerType,
   isValidAddressForNetwork,
   ResourceType,
   SecurityModel,
 } from '@buildwithsygma/core';
+import type { EvmResource } from '@buildwithsygma/core';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber, constants, type PopulatedTransaction, utils } from 'ethers';
