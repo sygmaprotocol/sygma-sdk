@@ -1,6 +1,6 @@
-import type { EvmResource } from '@buildwithsygma/core';
 import {
   Config,
+  EvmResource,
   FeeHandlerType,
   isValidAddressForNetwork,
   ResourceType,
@@ -15,10 +15,10 @@ import { BaseTransfer } from './baseTransfer.js';
 import type { EvmFee, TransactionRequest } from './types.js';
 import {
   approve,
-  getERC20Allowance,
-  erc20Transfer,
   createERCDepositData,
   createTransactionRequest,
+  erc20Transfer,
+  getERC20Allowance,
 } from './utils/index.js';
 
 export interface FungibleTokenTransferRequest extends BaseTransferParams {
@@ -222,7 +222,10 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     const balance = await erc20.balanceOf(this.sourceAddress);
 
     // TODO: check cost calculation
-    const totalCost = BigNumber.from(this.amount).add(fee.fee);
+    let totalCost: BigNumber = BigNumber.from(this.amount);
+    if (fee.type === FeeHandlerType.PERCENTAGE) {
+      totalCost = totalCost.add(BigNumber.from(fee.fee));
+    }
 
     if (balance.lt(totalCost)) throw new Error('Insufficient account balance');
   }
