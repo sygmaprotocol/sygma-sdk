@@ -182,7 +182,7 @@ describe('Fungible - Approvals', () => {
     });
 
     (ERC20__factory.connect as jest.Mock).mockReturnValue({
-      balanceOf: jest.fn().mockResolvedValue(BigNumber.from(parseEther('5'))),
+      balanceOf: jest.fn().mockResolvedValue(BigNumber.from(parseEther('50'))),
       populateTransaction: {
         approve: jest.fn().mockResolvedValue({}),
       },
@@ -206,6 +206,17 @@ describe('Fungible - Approvals', () => {
     const approvals = await transfer.getApprovalTransactions();
 
     expect(approvals.length).toBeGreaterThan(0);
+  });
+
+  it('should throw an error if balance is not sufficient', async () => {
+    const transfer = await createEvmFungibleAssetTransfer({
+      ...TRANSFER_PARAMS,
+      amount: parseEther('100').toBigInt(),
+    });
+
+    await expect(transfer.getApprovalTransactions()).rejects.toThrow(
+      'Insufficient account balance',
+    );
   });
 });
 
