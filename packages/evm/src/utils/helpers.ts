@@ -167,20 +167,21 @@ function createGenericCallParameter(param: string | BigNumber | number | boolean
   }
 }
 /**
- *
- * @param params
- * @returns
+ * Convert JS primitive types to hex encoded
+ * strings for EVM function calls
+ * @param {Array<string | BigNumber | number | boolean | bigint>} params
+ * @returns {string}
  */
 export function serializeGenericCallParameters(
   params: Array<string | BigNumber | number | boolean | bigint>,
 ): string {
-  // .slice(1) is used because first parameter will always
-  // be an address by default, and this parameter is not specified
-  // by the user, relayers add it
-  // so this param is discarded by SDK
-  // However, this param should still be
-  // part of ABI otherwise messages won't
-  // be passed correctly
+  /**
+   * .slice(1) is used because first parameter will always be an
+   * address by default, and this parameter is not specified by
+   * the user, relayers add it so this param is discarded by SDK
+   * However, this param should still be part of ABI otherwise
+   * messages won't be passed correctly
+   */
   const serialized = params
     .slice(1)
     .map(item => createGenericCallParameter(item))
