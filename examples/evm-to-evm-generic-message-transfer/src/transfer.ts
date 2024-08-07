@@ -54,13 +54,13 @@ export async function genericMessage(): Promise<void> {
   const destinationStorageContract = new ethers.Contract(
     EXECUTE_CONTRACT_ADDRESS,
     sepoliaBaseStorageContract,
-    destinationProvider,
+    destinationProvider
   );
   // value set inside the contract before
   // cross chain tranfer
   const valueBeforeBridging =
     (await destinationStorageContract.callStatic.retrieve(
-      walletAddress,
+      walletAddress
     )) as BigNumber;
   console.log(`Value before update: ${valueBeforeBridging.toString()}`);
   // Specification of parameters
@@ -83,7 +83,7 @@ export async function genericMessage(): Promise<void> {
     resource: RESOURCE_ID,
   });
   // transaction that can be sent to the chain
-  const transaction = await transfer.buildTransaction();
+  const transaction = await transfer.getTransferTransaction();
   // sending the transaction using ethers js
   const tx = await wallet.sendTransaction(transaction);
   console.log("Sent transaction: ", tx.hash);

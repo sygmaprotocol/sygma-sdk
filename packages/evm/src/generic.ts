@@ -37,8 +37,7 @@ export interface GenericMessageTransferRequest<
   maxFee: bigint;
 }
 /**
- * Creates a cross chain contract
- * call object
+ * Prepare a Sygma cross chain contract call
  * @param {GenericMessageTransferRequest<ContractAbi, FunctionName>} request
  * @returns {Promise<GenericMessageTransfer<ContractAbi, FunctionName>>}
  */
@@ -58,10 +57,12 @@ export async function createCrossChainContractCall<
   return genericTransfer;
 }
 /**
- * GenericMessageTransfer contains
- * functionality that facilitates generic
- * transfers or contract calls between two
- * EVM chains (for now)
+ * @internal
+ * @class EvmFungibleAssetTransfer
+ *
+ * Class that encapsulates logic
+ * for transferring generic messages
+ * using Sygma protocol
  */
 class GenericMessageTransfer<
   ContractAbi extends Abi,
@@ -77,7 +78,7 @@ class GenericMessageTransfer<
     'inputs'
   >;
   /**
-   * Create a GenericMessageTransfer object
+   * Create `GenericMessageTransfer` instance
    * @param {GenericMessageTransferRequest<ContractAbi, FunctionName>} params
    * @param {Config} config
    */
@@ -91,8 +92,7 @@ class GenericMessageTransfer<
     this.maxFee = params.maxFee;
   }
   /**
-   * Checks whether the transfer is valid
-   * given all parameters
+   * Checks validity of the transfer
    * @returns {Promise<boolean>}
    */
   async isValidTransfer(): Promise<boolean> {
@@ -204,12 +204,12 @@ class GenericMessageTransfer<
     return { executionData: `0x${executionData}`, executeFunctionSignature };
   }
   /**
-   * Creates the transaction that can be
-   * sent to blockchain node
+   * Get the cross chain generic message transfer
+   * transaction
    * @param {ethers.Overrides} overrides
    * @returns {Promise<TransactionRequest>}
    */
-  async buildTransaction(overrides?: ethers.Overrides): Promise<TransactionRequest> {
+  async getTransferTransaction(overrides?: ethers.Overrides): Promise<TransactionRequest> {
     const isValid = await this.isValidTransfer();
     if (!isValid) throw new Error('Invalid Transfer.');
 
@@ -240,7 +240,11 @@ class GenericMessageTransfer<
 
     return createTransactionRequest(transaction);
   }
-
+  /**
+   * Get prepared additional deposit data
+   * in hex string format
+   * @returns {string}
+   */
   protected getDepositData(): string {
     const { executeFunctionSignature, executionData } = this.prepareFunctionCallEncodings();
     return createPermissionlessGenericDepositData(

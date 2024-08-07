@@ -54,10 +54,9 @@ export abstract class BaseTransfer {
     }
   }
   /**
-   * Returns fee based on transfer amount.
-   * @param amount By default it is original amount passed in constructor
+   * Calculate transfer fee
+   * @returns {Promise<EvmFee>}
    */
-
   async getFee(): Promise<EvmFee> {
     const provider = new providers.Web3Provider(this.sourceNetworkProvider);
 
@@ -86,9 +85,9 @@ export abstract class BaseTransfer {
     });
   }
   /**
-   *
-   * @param destination
-   * @returns
+   * Set destination network
+   * @param {Domainlike} destination
+   * @returns {void}
    */
   setDesinationDomain(destination: Domainlike): void {
     const domain = this.config.getDomain(destination);
