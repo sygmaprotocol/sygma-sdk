@@ -3,10 +3,12 @@ import {
   Config,
   FeeHandlerType,
   isValidAddressForNetwork,
+  Network,
   ResourceType,
 } from '@buildwithsygma/core';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
+import type { AccountData } from '@polkadot/types/interfaces';
 import { BN } from '@polkadot/util';
 
 import { BaseTransfer } from './base-transfer.js';
@@ -20,6 +22,7 @@ export type SubstrateAssetTransferRequest = {
   resource: string | SubstrateResource;
   amount: bigint;
   destinationAddress: string;
+  senderAddress: string;
 };
 
 export async function createSubstrateFungibleAssetTransfer(
@@ -34,10 +37,12 @@ export async function createSubstrateFungibleAssetTransfer(
 class SubstrateFungibleAssetTransfer extends BaseTransfer {
   amount: bigint;
   destinationAddress: string = '';
+  senderAddress: string;
 
   constructor(transfer: SubstrateAssetTransferRequest, config: Config) {
     super(transfer, config);
     this.amount = transfer.amount;
+    this.senderAddress = transfer.senderAddress;
 
     if (isValidAddressForNetwork(transfer.destinationAddress, this.destinationDomain.type))
       this.destinationAddress = transfer.destinationAddress;
@@ -94,21 +99,41 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
     }
   }
 
+  async verifyBalance(): Promise<void> {
+    const fee = await this.getFee();
+
+    if (!isValidAddressForNetwork(this.senderAddress, Network.SUBSTRATE))
+      throw new Error('Sender address is incorrect');
+
+    if (new BN(this.amount.toString()).lt(fee.fee)) {
+      throw new Error('Transfer amount should be higher than transfer fee');
+    }
+
+    const { data: balance } = (await this.sourceNetworkProvider.query.system.account(
+      this.senderAddress,
+    )) as unknown as {
+      data: AccountData;
+    };
+
+    // TODO: clarify if we extract fee from amount or add on top of it
+    const costs = new BN(this.amount.toString()).add(fee.fee);
+
+    if (new BN(balance.free).lt(costs)) {
+      throw new Error('Insufficient balance to perform the Transaction');
+    }
+  }
+
   /**
    * Returns the transaction to be signed by the user.
    * @dev potentially add optional param to override transaction params
    * @returns {Promise<SubmittableExtrinsic<'promise', SubmittableResult>>}
    */
   async getTransferTransaction(): Promise<SubmittableExtrinsic<'promise', SubmittableResult>> {
-    const fee = await this.getFee();
-
     if (this.resource.type !== ResourceType.FUNGIBLE) {
       throw new Error(`Resource type ${this.resource.type} not supported by asset transfer`);
     }
 
-    if (new BN(this.amount.toString()).lt(fee.fee)) {
-      throw new Error('Transfer amount should be higher than transfer fee');
-    }
+    await this.verifyBalance();
 
     return deposit(
       this.sourceNetworkProvider,

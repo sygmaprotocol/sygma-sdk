@@ -7,10 +7,12 @@ import type {
 } from '@buildwithsygma/core';
 import { providers, utils } from 'ethers';
 
-import { BasicFeeCalculator } from './fee/BasicFee.js';
-import { PercentageFeeCalculator } from './fee/PercentageFee.js';
-import { TwapFeeCalculator } from './fee/TwapFee.js';
-import { getFeeInformation } from './fee/getFeeInformation.js';
+import {
+  BasicFeeCalculator,
+  PercentageFeeCalculator,
+  TwapFeeCalculator,
+  getFeeInformation,
+} from './fee/index.js';
 import type { EvmFee } from './types.js';
 
 export interface BaseTransferParams {
@@ -33,7 +35,7 @@ export abstract class BaseTransfer {
     return utils.formatBytes32String('');
   }
 
-  constructor(transfer: BaseTransferParams, config: Config) {
+  protected constructor(transfer: BaseTransferParams, config: Config) {
     this.sourceAddress = transfer.sourceAddress;
     this.source = config.getDomain(transfer.source);
     this.destination = config.getDomain(transfer.destination);
@@ -55,7 +57,6 @@ export abstract class BaseTransfer {
   }
   /**
    * Returns fee based on transfer amount.
-   * @param amount By default it is original amount passed in constructor
    */
 
   async getFee(): Promise<EvmFee> {
@@ -90,7 +91,7 @@ export abstract class BaseTransfer {
    * @param destination
    * @returns
    */
-  setDesinationDomain(destination: Domainlike): void {
+  setDestinationDomain(destination: Domainlike): void {
     const domain = this.config.getDomain(destination);
     this.destination = domain;
   }

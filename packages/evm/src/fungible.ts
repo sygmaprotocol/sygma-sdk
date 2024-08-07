@@ -1,4 +1,3 @@
-import type { EvmResource } from '@buildwithsygma/core';
 import {
   Config,
   FeeHandlerType,
@@ -6,6 +5,7 @@ import {
   ResourceType,
   SecurityModel,
 } from '@buildwithsygma/core';
+import type { EvmResource } from '@buildwithsygma/core';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber, constants, type PopulatedTransaction, utils } from 'ethers';
@@ -13,10 +13,13 @@ import { BigNumber, constants, type PopulatedTransaction, utils } from 'ethers';
 import type { BaseTransferParams } from './baseTransfer.js';
 import { BaseTransfer } from './baseTransfer.js';
 import type { EvmFee, TransactionRequest } from './types.js';
-import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
-import { erc20Transfer } from './utils/depositFns.js';
-import { createERCDepositData } from './utils/helpers.js';
-import { createTransactionRequest } from './utils/transaction.js';
+import {
+  approve,
+  createERCDepositData,
+  createTransactionRequest,
+  erc20Transfer,
+  getERC20Allowance,
+} from './utils/index.js';
 
 export interface FungibleTokenTransferRequest extends BaseTransferParams {
   resource: string | EvmResource;
@@ -29,19 +32,19 @@ export interface FungibleTokenTransferRequest extends BaseTransferParams {
  * @internal only
  * This method is used to adjust transfer amount
  * based on percentage fee calculations
- * @param {EvmFungibleAssetTransfer} transfer
+ * @param transferAmount
  * @param {EvmFee} fee
  */
-function calculateAdjustedAmount(transfer: EvmFungibleAssetTransfer, fee: EvmFee): bigint {
-  //in case of percentage fee handler, we are calculating what amount + fee will result int user inputed amount
+function calculateAdjustedAmount(transferAmount: bigint, fee: EvmFee): bigint {
+  //in case of percentage fee handler, we are calculating what amount + fee will result int user inputted amount
   //in case of fixed(basic) fee handler, fee is taken from native token
   if (fee.type === FeeHandlerType.PERCENTAGE) {
     const minFee = fee.minFee!;
     const maxFee = fee.maxFee!;
     const percentage = fee.percentage!;
-    const userSpecifiedAmount = BigNumber.from(transfer.amount);
+    const userSpecifiedAmount = BigNumber.from(transferAmount);
 
-    let amount = transfer.amount;
+    let amount: bigint;
     //calculate amount without fee (percentage)
     const feelessAmount = userSpecifiedAmount
       .mul(constants.WeiPerEther)
@@ -50,19 +53,19 @@ function calculateAdjustedAmount(transfer: EvmFungibleAssetTransfer, fee: EvmFee
     const calculatedFee = userSpecifiedAmount.sub(feelessAmount);
     amount = feelessAmount.toBigInt();
 
-    //if calculated percentage fee is less than lower fee bound, substract lower bound from user input. If lower bound is 0, bound is ignored
+    //if calculated percentage fee is less than lower fee bound, subtract lower bound from user input. If lower bound is 0, bound is ignored
     if (calculatedFee.lt(minFee) && minFee > 0) {
-      amount = transfer.amount - minFee;
+      amount = transferAmount - minFee;
     }
-    //if calculated percentage fee is more than upper fee bound, substract upper bound from user input. If upper bound is 0, bound is ignored
+    //if calculated percentage fee is more than upper fee bound, subtract upper bound from user input. If upper bound is 0, bound is ignored
     if (calculatedFee.gt(maxFee) && maxFee > 0) {
-      amount = transfer.amount - maxFee;
+      amount = transferAmount - maxFee;
     }
 
     return amount;
   }
 
-  return transfer.amount;
+  return transferAmount;
 }
 
 export async function createEvmFungibleAssetTransfer(
@@ -87,7 +90,17 @@ export async function createEvmFungibleAssetTransfer(
 class EvmFungibleAssetTransfer extends BaseTransfer {
   protected destinationAddress: string = '';
   protected securityModel: SecurityModel;
-  protected _amount: bigint;
+  protected _amount: bigint = BigInt(0);
+  private transferAmount: bigint;
+
+  constructor(transfer: FungibleTokenTransferRequest, config: Config) {
+    super(transfer, config);
+    this.transferAmount = transfer.amount;
+
+    if (isValidAddressForNetwork(transfer.destinationAddress, this.destination.type))
+      this.destinationAddress = transfer.destinationAddress;
+    this.securityModel = transfer.securityModel ?? SecurityModel.MPC;
+  }
 
   get amount(): bigint {
     return this._amount;
@@ -111,14 +124,6 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     return createERCDepositData(this.amount, this.destinationAddress, this.destination.parachainId);
   }
 
-  constructor(transfer: FungibleTokenTransferRequest, config: Config) {
-    super(transfer, config);
-    this._amount = transfer.amount;
-    if (isValidAddressForNetwork(transfer.destinationAddress, this.destination.type))
-      this.destinationAddress = transfer.destinationAddress;
-    this.securityModel = transfer.securityModel ?? SecurityModel.MPC;
-  }
-
   /**
    * Set resource to be transferred
    * @param {EvmResource} resource
@@ -137,9 +142,10 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
    * @returns {void}
    */
   async setAmount(amount: bigint): Promise<void> {
-    this._amount = amount;
+    this.transferAmount = amount;
+
     const fee = await this.getFee();
-    this._amount = calculateAdjustedAmount(this, fee);
+    this._amount = calculateAdjustedAmount(amount, fee);
   }
 
   /**
@@ -165,6 +171,9 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
 
     const erc20 = ERC20__factory.connect(this.resource.address, provider);
     const fee = await this.getFee();
+
+    await this.verifyAccountBalance();
+
     const feeHandlerAllowance = await getERC20Allowance(
       erc20,
       this.sourceAddress,
@@ -197,6 +206,8 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     const bridge = Bridge__factory.connect(domainConfig.bridge, provider);
     const fee = await this.getFee();
 
+    await this.verifyAccountBalance();
+
     const transferTx = await erc20Transfer({
       bridgeInstance: bridge,
       domainId: this.destination.id.toString(),
@@ -206,5 +217,15 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     });
 
     return createTransactionRequest(transferTx);
+  }
+
+  async verifyAccountBalance(): Promise<void> {
+    const provider = new Web3Provider(this.sourceNetworkProvider);
+    const erc20 = ERC20__factory.connect(this.resource.address, provider);
+    const balance = await erc20.balanceOf(this.sourceAddress);
+
+    if (BigNumber.from(this.amount).lte(0)) throw new Error('Amount should be bigger than zero');
+
+    if (balance.lt(this.transferAmount)) throw new Error('Insufficient account balance');
   }
 }
