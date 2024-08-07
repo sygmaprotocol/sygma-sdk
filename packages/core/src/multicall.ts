@@ -8,7 +8,7 @@ import { Contract } from 'ethers';
 import { defaultAbiCoder } from 'ethers/lib/utils';
 
 import MulticallAbi from './abi/Multicall.json';
-import { type Eip1193Provider, type FeeHandlerType, type RouteIndexerType } from './types.js';
+import type { Eip1193Provider, FeeHandlerType, RouteIndexerType } from './types.js';
 
 enum MulticallDeployedNetworks {
   mainnet = 1,
@@ -191,12 +191,14 @@ type IndexerRouteWithFeeHandlerAddressAndType = IndexerRouteWithFeeHandlerAddres
   feeHandlerType: FeeHandlerType;
 };
 
+type FeeHandlerAddressesMap = Map<string, Map<string, Map<string, string>>>;
+
 export async function getFeeHandlerAddressesOfRoutes(params: {
   routes: RouteIndexerType[];
   chainId: number;
   bridgeAddress: string;
   provider: Eip1193Provider;
-}): Promise<Map<string, Map<string, Map<string, string>>>> {
+}): Promise<FeeHandlerAddressesMap> {
   const web3Provider = new Web3Provider(params.provider);
   const bridge = Bridge__factory.connect(params.bridgeAddress, web3Provider);
   const feeHandlerRouterAddress = await bridge._feeHandler();
@@ -204,7 +206,7 @@ export async function getFeeHandlerAddressesOfRoutes(params: {
 
   const multicallAddress = getMulticallAddress(params.chainId);
   const multicall = new Contract(multicallAddress, JSON.stringify(MulticallAbi), web3Provider);
-  const feeHandlerAddressesMap: Map<string, Map<string, Map<string, string>>> = new Map();
+  const feeHandlerAddressesMap: FeeHandlerAddressesMap = new Map();
 
   const calls = params.routes.map(route => ({
     target: feeHandlerRouterAddress,
@@ -239,7 +241,7 @@ export async function getFeeHandlerAddressesOfRoutes(params: {
 
 export async function getFeeHandlerTypeOfRoutes(params: {
   routes: RouteIndexerType[];
-  feeHandlerAddressesMap: Map<string, Map<string, Map<string, string>>>;
+  feeHandlerAddressesMap: FeeHandlerAddressesMap;
   chainId: number;
   provider: Eip1193Provider;
 }): Promise<Array<IndexerRouteWithFeeHandlerAddressAndType>> {
