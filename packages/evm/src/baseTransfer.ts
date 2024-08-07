@@ -35,7 +35,7 @@ export abstract class BaseTransfer {
     return utils.formatBytes32String('');
   }
 
-  constructor(transfer: BaseTransferParams, config: Config) {
+  protected constructor(transfer: BaseTransferParams, config: Config) {
     this.sourceAddress = transfer.sourceAddress;
     this.source = config.getDomain(transfer.source);
     this.destination = config.getDomain(transfer.destination);
