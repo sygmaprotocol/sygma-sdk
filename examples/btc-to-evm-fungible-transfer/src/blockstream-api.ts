@@ -17,6 +17,8 @@ type Utxo = {
 
 type FeeEstimates = Record<string, number>;
 
+const BLOCK_CONFIRMATION_INDEX = "5";
+
 export async function getFeeEstimates(blockstreamUrl: string): Promise<number> {
   if (!blockstreamUrl) throw new Error("Blockstream url is required");
   try {
@@ -24,7 +26,7 @@ export async function getFeeEstimates(blockstreamUrl: string): Promise<number> {
 
     const data = (await response.json()) as FeeEstimates;
 
-    return data["5"]; // fee for 5 blocks confirmation
+    return data[BLOCK_CONFIRMATION_INDEX]; // fee for 5 blocks confirmation
   } catch (error) {
     throw new Error("Failed to get fee estimates");
   }
