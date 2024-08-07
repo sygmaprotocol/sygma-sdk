@@ -1,15 +1,22 @@
-import type { BaseTransferParams } from "@buildwithsygma/btc";
 import {
   createBitcoinFungibleTransfer,
   TypeOfAddress,
-} from "@buildwithsygma/btc";
+} from "@buildwithsygma/bitcoin";
+import type { BitcoinTransferParams, UTXOData } from "@buildwithsygma/bitcoin";
 import { BIP32Factory } from "bip32";
 import { mnemonicToSeed } from "bip39";
 import { crypto, initEccLib, networks } from "bitcoinjs-lib";
 import { toXOnly } from "bitcoinjs-lib/src/psbt/bip371";
 import dotenv from "dotenv";
 import * as tinysecp from "tiny-secp256k1";
-import { broadcastTransaction, getFeeEstimates } from "./blockstream-api";
+
+import {
+  broadcastTransaction,
+  calculateSize,
+  fetchUTXOS,
+  getFeeEstimates,
+  processUtxos,
+} from "./blockstream-api.js";
 
 dotenv.config();
 
@@ -20,11 +27,8 @@ const RESOURCE_ID = process.env.RESOURCE_ID;
 const BLOCKSTREAM_URL = process.env.BLOCKSTREAM_URL;
 const EXPLORER_URL = process.env.EXPLORER_URL;
 const MNEMONIC = process.env.MNEMONIC;
-const UTXO_TX_ID = process.env.UTXO_TX_ID;
-const UTXO_AMOUNT = Number(process.env.UTXO_AMOUNT);
-const UTXO_OUTPUT_INDEX = Number(process.env.UTXO_OUTPUT_INDEX);
 const DERIVATION_PATH = process.env.DERIVATION_PATH;
-const CHANGE_ADDRESS = process.env.CHANGE_ADDRESS;
+const ADDRESS = process.env.ADDRESS;
 const AMOUNT = Number(process.env.AMOUNT);
 
 if (
@@ -32,11 +36,8 @@ if (
   !DESTINATION_ADDRESS ||
   !RESOURCE_ID ||
   !MNEMONIC ||
-  !UTXO_TX_ID ||
-  !UTXO_AMOUNT ||
-  !UTXO_OUTPUT_INDEX ||
   !DERIVATION_PATH ||
-  !CHANGE_ADDRESS ||
+  !ADDRESS ||
   !BLOCKSTREAM_URL ||
   !AMOUNT
 ) {
@@ -44,7 +45,6 @@ if (
     "Please provided needed env variables needed into the .env file",
   );
 }
-
 
 async function btcToEvmTransfer(): Promise<void> {
   // pre setup
@@ -63,23 +63,45 @@ async function btcToEvmTransfer(): Promise<void> {
   );
 
   const feeRate = await getFeeEstimates(BLOCKSTREAM_URL);
+  const utxos = await fetchUTXOS(
+    ADDRESS as unknown as string,
+    BLOCKSTREAM_URL as unknown as string,
+  );
 
-  const transferParams: BaseTransferParams = {
+  const processedUtxos = processUtxos(utxos, AMOUNT);
+
+  const mapedUtxos = processedUtxos.map((utxo) => ({
+    utxoTxId: utxo.txid,
+    utxoOutputIndex: utxo.vout,
+    utxoAmount: BigInt(utxo.value),
+  })) as unknown as UTXOData[];
+
+  const size = calculateSize(
+    mapedUtxos,
+    networks.testnet,
+    publicKeyDropedDERHeader,
+    ADDRESS as unknown as string,
+    DESTINATION_CHAIN_ID,
+    BigInt(AMOUNT),
+    BigInt(0),
+    ADDRESS as unknown as string,
+    tweakedSigner,
+    TypeOfAddress.P2TR,
+  );
+
+  const transferParams: BitcoinTransferParams = {
     source: SOURCE_CAIPID,
     destination: DESTINATION_CHAIN_ID,
     destinationAddress: DESTINATION_ADDRESS,
     amount: AMOUNT,
     resource: RESOURCE_ID,
-    utxoData: {
-      utxoTxId: UTXO_TX_ID,
-      utxoOutputIndex: UTXO_OUTPUT_INDEX,
-      utxoAmount: UTXO_AMOUNT,
-    },
-    feeRate,
+    utxoData: mapedUtxos,
+    feeRate: BigInt(Math.ceil(feeRate)),
     publicKey: publicKeyDropedDERHeader,
     typeOfAddress: TypeOfAddress.P2TR,
     network: networks.testnet,
-    changeAddress: CHANGE_ADDRESS,
+    changeAddress: ADDRESS,
+    size: BigInt(size),
   };
 
   const transfer = await createBitcoinFungibleTransfer(transferParams);
@@ -88,7 +110,7 @@ async function btcToEvmTransfer(): Promise<void> {
 
   console.log("Signing the transaction");
 
-  psbt.signInput(0, tweakedSigner);
+  psbt.signAllInputs(tweakedSigner);
   psbt.finalizeAllInputs();
 
   console.log("Extracting the transaction");
