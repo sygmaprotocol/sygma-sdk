@@ -132,10 +132,62 @@ export const getSubstrateRecipientAddressInBytes = (
  * @param padding - number to padd the data
  * @returns {string}
  */
-export const toHex = (covertThis: string | number | BigNumber, padding: number): string => {
+export const toHex = (
+  covertThis: string | number | BigNumber | bigint,
+  padding: number,
+): string => {
   const amount = covertThis instanceof BigNumber ? covertThis : BigNumber.from(covertThis);
   return utils.hexZeroPad(utils.hexlify(amount), padding);
 };
+/**
+ * JS types to 0x Hex string
+ * required to initiate contract
+ * calls on destination EVM chain
+ * @param {string | BigNumber | number | boolean | bigint} param
+ * @returns {`0x{string}`}
+ */
+function createGenericCallParameter(param: string | BigNumber | number | boolean | bigint): string {
+  const DEFAULT_PADDING = 32;
+  switch (typeof param) {
+    case 'boolean':
+      return toHex(Number(param), DEFAULT_PADDING).substring(2);
+    case 'bigint':
+    case 'number':
+    case 'string':
+      return toHex(param, DEFAULT_PADDING).substring(2);
+    case 'object':
+      if (param instanceof BigNumber) {
+        return toHex(param, DEFAULT_PADDING).substring(2);
+      }
+      throw new Error('Unsupported parameter type.');
+    case 'symbol':
+    case 'undefined':
+    case 'function':
+      throw new Error('Unsupported parameter type.');
+  }
+}
+/**
+ * Convert JS primitive types to hex encoded
+ * strings for EVM function calls
+ * @param {Array<string | BigNumber | number | boolean | bigint>} params
+ * @returns {string}
+ */
+export function serializeGenericCallParameters(
+  params: Array<string | BigNumber | number | boolean | bigint>,
+): string {
+  /**
+   * .slice(1) is used because first parameter will always be an
+   * address by default, and this parameter is not specified by
+   * the user, relayers add it so this param is discarded by SDK
+   * However, this param should still be part of ABI otherwise
+   * messages won't be passed correctly
+   */
+  const serialized = params
+    .slice(1)
+    .map(item => createGenericCallParameter(item))
+    .join('');
+  return `0x${serialized}`;
+}
 
 /**
  * Creates the data for permissionless generic handler

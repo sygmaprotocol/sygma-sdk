@@ -8,7 +8,7 @@ const mockedIndexerRoutes = [
   {
     fromDomainId: '1',
     toDomainId: '2',
-    resourceId: '',
+    resourceId: '0x00',
     type: RouteType.FUNGIBLE,
   },
 ];
@@ -71,15 +71,16 @@ describe('Multicall', () => {
       };
     });
 
-    const routes = await getFeeHandlerAddressesOfRoutes({
+    const feeHandlerAddressesMap = await getFeeHandlerAddressesOfRoutes({
       routes: mockedIndexerRoutes,
       chainId: 1,
       bridgeAddress: ZERO_ADDRESS,
       provider: {} as unknown as Eip1193Provider,
     });
 
-    routes.forEach(route => expect(route.feeHandlerAddress).toBeTruthy());
-    expect(routes.length).toEqual(mockedIndexerRoutes.length);
+    const source = mockedIndexerRoutes[0].fromDomainId;
+    expect(feeHandlerAddressesMap.get(source)?.size).toEqual(mockedIndexerRoutes.length);
+    expect(feeHandlerAddressesMap.get(source)).toBeTruthy();
   });
 
   it('getFeeHandlerAddressesOfRoutes - should throw an error if unable to fech data from the chain', async () => {
@@ -106,13 +107,23 @@ describe('Multicall', () => {
       return {
         callStatic: {
           aggregate: jest.fn().mockReturnValue({
-            returnData: ['percentage', 'basic'],
+            returnData: [
+              '0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000a70657263656e7461676500000000000000000000000000000000000000000000',
+            ],
           }),
         },
       };
     });
 
+    const resource = new Map();
+    resource.set(mockedIndexerRoutes[0].resourceId, ZERO_ADDRESS);
+    const destination = new Map();
+    destination.set(mockedIndexerRoutes[0].toDomainId, resource);
+    const source = new Map();
+    source.set(mockedIndexerRoutes[0].fromDomainId, destination);
+
     const routes = await getFeeHandlerTypeOfRoutes({
+      feeHandlerAddressesMap: source,
       routes: mockedIndexerRoutes.map(route => {
         return {
           ...route,
@@ -136,8 +147,16 @@ describe('Multicall', () => {
       };
     });
 
+    const resource = new Map();
+    resource.set(mockedIndexerRoutes[0].resourceId, ZERO_ADDRESS);
+    const destination = new Map();
+    destination.set(mockedIndexerRoutes[0].toDomainId, resource);
+    const source = new Map();
+    source.set(mockedIndexerRoutes[0].fromDomainId, destination);
+
     await expect(() =>
       getFeeHandlerTypeOfRoutes({
+        feeHandlerAddressesMap: source,
         routes: mockedIndexerRoutes.map(route => {
           return {
             ...route,

@@ -121,9 +121,9 @@ export async function getDomains(options: {
 
 /**
  * Returns  supported routes originating from given source domain.
- * @param source Either caip2 identifier, chainId or sygmaId
- * @param environment
- * @param options Allows selecting bridge instance (mainnet by default) and filtering routes by type.
+ * @param {Domainlike} source Either caip2 identifier or chainId or Domain Object from SDK
+ * @param {Environment} environment
+ * @param {{routeTypes?: RouteType[]; sourceProvider?: Eip1193Provider;}} options Allows selecting bridge instance (mainnet by default) and filtering routes by type.
  */
 export async function getRoutes(
   source: Domainlike,
@@ -148,7 +148,7 @@ export async function getRoutes(
     >;
 
     if (domainConfig.type === Network.EVM && options?.sourceProvider) {
-      const routesWithHandlerAddresses = await getFeeHandlerAddressesOfRoutes({
+      const feeHandlerAddressesMap = await getFeeHandlerAddressesOfRoutes({
         routes: data.routes,
         chainId: domainConfig.chainId,
         bridgeAddress: domainConfig.bridge,
@@ -156,7 +156,8 @@ export async function getRoutes(
       });
 
       routeFeeHandlerAddressesAndTypes = await getFeeHandlerTypeOfRoutes({
-        routes: routesWithHandlerAddresses,
+        feeHandlerAddressesMap,
+        routes: data.routes,
         chainId: domainConfig.chainId,
         provider: options.sourceProvider,
       });
@@ -169,11 +170,12 @@ export async function getRoutes(
 
       let routeWithTypeAndAddress;
       if (routeFeeHandlerAddressesAndTypes) {
-        routeWithTypeAndAddress = routeFeeHandlerAddressesAndTypes.find(_route => {
-          _route.fromDomainId === route.fromDomainId &&
+        routeWithTypeAndAddress = routeFeeHandlerAddressesAndTypes.find(
+          _route =>
+            _route.fromDomainId === route.fromDomainId &&
             _route.toDomainId === route.toDomainId &&
-            _route.resourceId === route.resourceId;
-        });
+            _route.resourceId === route.resourceId,
+        );
       }
 
       let feeHandler = undefined;
@@ -184,9 +186,11 @@ export async function getRoutes(
         };
       }
 
+      const toDomain = config.findDomainConfigBySygmaId(Number(route.toDomainId));
+
       return {
         fromDomain: config.getDomain(domainConfig.chainId),
-        toDomain: config.findDomainConfigBySygmaId(Number(route.toDomainId)),
+        toDomain: config.getDomain(toDomain.caipId),
         resource: resource,
         feeHandler,
       };

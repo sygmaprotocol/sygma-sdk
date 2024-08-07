@@ -10,11 +10,14 @@ import type {
 } from 'abitype';
 import { constants, ethers } from 'ethers';
 
-import type { BaseTransferParams } from './baseTransfer.js';
-import { BaseTransfer } from './baseTransfer.js';
+import type { EvmTransferParams } from './evmTransfer.js';
+import { EvmTransfer } from './evmTransfer.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
 import type { TransactionRequest } from './types.js';
-import { createPermissionlessGenericDepositData, toHex } from './utils/helpers.js';
+import {
+  createPermissionlessGenericDepositData,
+  serializeGenericCallParameters,
+} from './utils/helpers.js';
 import { genericMessageTransfer } from './utils/index.js';
 import { createTransactionRequest } from './utils/transaction.js';
 
@@ -25,7 +28,7 @@ import { createTransactionRequest } from './utils/transaction.js';
 export interface GenericMessageTransferRequest<
   ContractAbi extends Abi,
   FunctionName extends ExtractAbiFunctionNames<ContractAbi, 'nonpayable' | 'payable'>,
-> extends BaseTransferParams {
+> extends EvmTransferParams {
   gasLimit: bigint;
   functionParameters: AbiParametersToPrimitiveTypes<
     ExtractAbiFunction<ContractAbi, FunctionName>['inputs'],
@@ -67,7 +70,7 @@ export async function createCrossChainContractCall<
 class GenericMessageTransfer<
   ContractAbi extends Abi,
   FunctionName extends ExtractAbiFunctionNames<ContractAbi, 'nonpayable' | 'payable'>,
-> extends BaseTransfer {
+> extends EvmTransfer {
   maxFee: bigint;
   destinationContractAddress: string;
   gasLimit: bigint;
@@ -172,36 +175,12 @@ class GenericMessageTransfer<
     );
 
     let executionData = ``;
-    const defaultPadding = 32;
-
     if (Array.isArray(this.functionParameters)) {
-      // Slice first param, it should be always depositer
-      // address in the contract
-      executionData = this.functionParameters
-        .slice(1)
-        .map((param: unknown) => {
-          const paramType = typeof param;
-          switch (paramType) {
-            case 'bigint':
-              return toHex((param as bigint).toString(), defaultPadding).substring(2);
-            case 'string':
-              return toHex((param as string).toString(), defaultPadding).substring(2);
-            case 'number':
-              return toHex((param as number).toString(), defaultPadding).substring(2);
-            case 'boolean':
-              return toHex(Number(param as boolean), defaultPadding).substring(2);
-            case 'object':
-            case 'undefined':
-            case 'function':
-            case 'symbol':
-              throw new Error('Unsupported parameter type.');
-          }
-        })
-        .join('');
+      executionData = serializeGenericCallParameters(this.functionParameters);
     }
 
     const executeFunctionSignature = contractInterface.getSighash(this.functionName);
-    return { executionData: `0x${executionData}`, executeFunctionSignature };
+    return { executionData, executeFunctionSignature };
   }
   /**
    * Get the cross chain generic message transfer

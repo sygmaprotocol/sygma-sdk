@@ -19,7 +19,7 @@ export interface EvmFeeCalculationParams {
 
 export interface EvmTransferFeeCalculationHandler {
   calculateFee(params: EvmFeeCalculationParams): Promise<EvmFee>;
-  setNextHandler(handler: EvmTransferFeeCalculationHandler): void;
+  setNextHandler(handler: EvmTransferFeeCalculationHandler): EvmTransferFeeCalculationHandler;
 }
 
 export abstract class BaseEvmTransferFeeCalculator implements EvmTransferFeeCalculationHandler {

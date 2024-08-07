@@ -191,12 +191,14 @@ type IndexerRouteWithFeeHandlerAddressAndType = IndexerRouteWithFeeHandlerAddres
   feeHandlerType: FeeHandlerType;
 };
 
+type FeeHandlerAddressesMap = Map<string, Map<string, Map<string, string>>>;
+
 export async function getFeeHandlerAddressesOfRoutes(params: {
   routes: RouteIndexerType[];
   chainId: number;
   bridgeAddress: string;
   provider: Eip1193Provider;
-}): Promise<Array<IndexerRouteWithFeeHandlerAddress>> {
+}): Promise<FeeHandlerAddressesMap> {
   const web3Provider = new Web3Provider(params.provider);
   const bridge = Bridge__factory.connect(params.bridgeAddress, web3Provider);
   const feeHandlerRouterAddress = await bridge._feeHandler();
@@ -204,6 +206,7 @@ export async function getFeeHandlerAddressesOfRoutes(params: {
 
   const multicallAddress = getMulticallAddress(params.chainId);
   const multicall = new Contract(multicallAddress, JSON.stringify(MulticallAbi), web3Provider);
+  const feeHandlerAddressesMap: FeeHandlerAddressesMap = new Map();
 
   const calls = params.routes.map(route => ({
     target: feeHandlerRouterAddress,
@@ -214,36 +217,77 @@ export async function getFeeHandlerAddressesOfRoutes(params: {
   }));
 
   const results = (await multicall.callStatic.aggregate(calls)) as AggregateStaticCallResponse;
-  return params.routes.map((route, idx) => {
-    return {
-      ...route,
-      feeHandlerAddress: defaultAbiCoder.decode(['address'], results.returnData[idx]).toString(),
-    };
+  params.routes.map((route, idx) => {
+    let source = feeHandlerAddressesMap.get(route.fromDomainId);
+    if (!source) {
+      source = new Map();
+      feeHandlerAddressesMap.set(route.fromDomainId, source);
+    }
+
+    let destination = source.get(route.toDomainId);
+    if (!destination) {
+      destination = new Map();
+      source.set(route.toDomainId, destination);
+    }
+
+    destination.set(
+      route.resourceId,
+      defaultAbiCoder.decode(['address'], results.returnData[idx]).toString(),
+    );
   });
+
+  return feeHandlerAddressesMap;
 }
 
 export async function getFeeHandlerTypeOfRoutes(params: {
-  routes: Array<IndexerRouteWithFeeHandlerAddress>;
+  routes: RouteIndexerType[];
+  feeHandlerAddressesMap: FeeHandlerAddressesMap;
   chainId: number;
   provider: Eip1193Provider;
 }): Promise<Array<IndexerRouteWithFeeHandlerAddressAndType>> {
-  const web3Provider = new Web3Provider(params.provider);
-  const multicallAddress = getMulticallAddress(params.chainId);
+  const { routes, feeHandlerAddressesMap, chainId, provider } = params;
+
+  const web3Provider = new Web3Provider(provider);
+  const multicallAddress = getMulticallAddress(chainId);
   const multicall = new Contract(multicallAddress, JSON.stringify(MulticallAbi), web3Provider);
   const basicFeeHandlerInterface = BasicFeeHandler__factory.createInterface();
 
-  const calls = params.routes.map(route => ({
-    target: route.feeHandlerAddress,
-    callData: basicFeeHandlerInterface.encodeFunctionData('feeHandlerType'),
-  }));
+  let feeHandlerAddress: string | undefined;
+  const calls = routes.map(route => {
+    const source = feeHandlerAddressesMap.get(route.fromDomainId);
+    if (source) {
+      const destination = source.get(route.toDomainId);
+      if (destination) {
+        feeHandlerAddress = destination.get(route.resourceId);
+      }
+    }
+
+    return {
+      target: feeHandlerAddress,
+      callData: basicFeeHandlerInterface.encodeFunctionData('feeHandlerType'),
+    };
+  });
 
   const results = (await multicall.callStatic.aggregate(calls)) as AggregateStaticCallResponse;
 
   return params.routes.map((route, idx) => {
+    const source = feeHandlerAddressesMap.get(route.fromDomainId);
+    if (source) {
+      const destination = source.get(route.toDomainId);
+      if (destination) {
+        feeHandlerAddress = destination.get(route.resourceId);
+      }
+    }
+
+    const feeHandlerType = defaultAbiCoder.decode(
+      ['string'],
+      results.returnData[idx],
+    )[0] as unknown as FeeHandlerType;
+
     return {
       ...route,
-      feeHandlerAddress: route.feeHandlerAddress,
-      feeHandlerType: results.returnData[idx].toString() as FeeHandlerType,
+      feeHandlerAddress: feeHandlerAddress ?? '',
+      feeHandlerType,
     };
   });
 }

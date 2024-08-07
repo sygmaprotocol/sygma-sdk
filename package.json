@@ -35,6 +35,12 @@
     "substrate:lint": "yarn workspace @buildwithsygma/substrate lint",
     "substrate:lint:fix": "yarn workspace @buildwithsygma/substrate lint:fix",
     "substrate:test:unit": "yarn workspace @buildwithsygma/substrate test:unit",
+    "utils:build": "yarn workspace @buildwithsygma/utils build:all",
+    "utils:cleanDist": "yarn workspace @buildwithsygma/utils clean",
+    "utils:test": "yarn workspace @buildwithsygma/utils test",
+    "utils:lint": "yarn workspace @buildwithsygma/utils lint",
+    "utils:lint:fix": "yarn workspace @buildwithsygma/utils lint:fix",
+    "utils:test:unit": "yarn workspace @buildwithsygma/utils test:unit",
     "docs": "typedoc"
   },
   "keywords": [],
