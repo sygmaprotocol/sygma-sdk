@@ -85,7 +85,10 @@ export const processUtxos = (utxo: Utxo[], amount: number): Utxo[] => {
   return dataToReturn;
 };
 
-// we calculate the size of the transaction by using a tx with zero fee => input amount == output amount
+/**
+ * Ee calculate the size of the transaction by using a tx with zero fee => input amount == output amount
+ * Correctnes of the data is not relevant here, we need to know what's the size is going to be for the amount of inputs passed and the 4 outputs (deposit, change, fee, encoded data) we use to relay the funds
+ */
 export const calculateSize = (
   utxoData: BitcoinTransferParams["utxoData"][],
   network: Network,

@@ -66,10 +66,7 @@ SOURCE_CAIPID="source domain caip id"
 EXPLORER_URL="your bitcoin explorer url"
 MNEMONIC="your 12 or 24 mnemonic"
 DERIVATION_PATH="your derivation path"
-UTXO_TX_ID="your utxo tx id"
-UTXO_AMOUNT="your utxo amount"
-UTXO_OUTPUT_INDEX="your utxo output index"
-CHANGE_ADDRESS="your change address"
+ADDRESS="your change address"
 AMOUNT="your amount to transfer"
 ```
 
@@ -79,10 +76,7 @@ AMOUNT="your amount to transfer"
 * `SOURCE_CAIPID`: caipId of the bitcoin domain
 * `MNEMONIC`: your testnet wallet mnemonic
 * `DERIVATION_PATH`: derivation path for your mnemonic. Use derivation path for either P2TR address or P2WPKH one
-* `UTXO_TX_ID`: transaction id of your available utxos for your address
-* `UTXO_AMOUNT`: the amount available at your utxo
-* `UTXO_OUTPUT_INDEX`: the vout index of your utxo
-* `CHANGE_ADDRESS`: the address where you want to receive back your unspent funds
+* `ADDRESS`: the address from which we get the UTXO's and to which we send the change
 * `AMOUNT`: the actual amount to transfer
 
 Take into consideration that a typical response when query the utxos of your address look like this:
