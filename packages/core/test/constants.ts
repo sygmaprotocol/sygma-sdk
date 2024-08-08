@@ -3,7 +3,7 @@ export const mockedDevnetConfig = {
     {
       chainId: 111,
       id: 112,
-      caipId: 113,
+      caipId: 'ethereum',
       name: 'ethereum',
       type: 'evm',
       bridge: '0xb36C801f644908bAAe89b7C28ad57Af18638A6a9',

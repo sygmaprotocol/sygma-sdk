@@ -1,23 +1,25 @@
-import type { EvmResource } from '@buildwithsygma/core';
-import { SecurityModel, Config, FeeHandlerType, ResourceType } from '@buildwithsygma/core';
+import type { Eip1193Provider, EvmResource } from '@buildwithsygma/core';
+import {
+  Config,
+  FeeHandlerType,
+  isValidAddressForNetwork,
+  SecurityModel,
+} from '@buildwithsygma/core';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
+import type { TransactionRequest } from '@ethersproject/providers';
 import { Web3Provider } from '@ethersproject/providers';
-import { BigNumber, constants, providers, utils, type PopulatedTransaction } from 'ethers';
+import { BigNumber, constants, type PopulatedTransaction, utils } from 'ethers';
+import type { EvmFee } from 'types.js';
 
-import type { BaseTransferParams } from './baseTransfer.js';
-import { BaseTransfer } from './baseTransfer.js';
-import { BasicFeeCalculator } from './fee/BasicFee.js';
-import { PercentageFeeCalculator } from './fee/PercentageFee.js';
-import { TwapFeeCalculator } from './fee/TwapFee.js';
-import { getFeeInformation } from './fee/getFeeInformation.js';
-import type { EvmFee, TransactionRequest } from './types.js';
+import type { EvmTransferParams } from './evmTransfer.js';
+import { EvmTransfer } from './evmTransfer.js';
 import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
 import { erc20Transfer } from './utils/depositFns.js';
 import { createERCDepositData } from './utils/helpers.js';
 import { createTransactionRequest } from './utils/transaction.js';
 
-export interface FungibleTokenTransferRequest extends BaseTransferParams {
-  resource: string | EvmResource;
+interface EvmFungibleTransferRequest extends EvmTransferParams {
+  sourceAddress: string;
   amount: bigint;
   destinationAddress: string;
   securityModel?: SecurityModel;
@@ -62,9 +64,13 @@ function calculateAdjustedAmount(transfer: EvmFungibleAssetTransfer, fee: EvmFee
 
   return transfer.amount;
 }
-
+/**
+ * Prepare a Sygma fungible token transfer
+ * @param {FungibleTokenTransferRequest} params
+ * @returns {Promise<EvmFungibleAssetTransfer>}
+ */
 export async function createEvmFungibleAssetTransfer(
-  params: FungibleTokenTransferRequest,
+  params: EvmFungibleTransferRequest,
 ): Promise<EvmFungibleAssetTransfer> {
   const config = new Config();
   await config.init(process.env.SYGMA_ENV);
@@ -78,12 +84,16 @@ export async function createEvmFungibleAssetTransfer(
   await transfer.setAmount(params.amount);
   return transfer;
 }
-
 /**
- * @dev User should not instance this directly. All the (async) checks should be done in `createEvmFungibleAssetTransfer`
+ * @internal
+ * @class EvmFungibleAssetTransfer
+ *
+ * Class that encapsulates logic
+ * for transferring fungible tokens
+ * using Sygma protocol
  */
-class EvmFungibleAssetTransfer extends BaseTransfer {
-  protected destinationAddress: string;
+class EvmFungibleAssetTransfer extends EvmTransfer {
+  protected destinationAddress: string = '';
   protected securityModel: SecurityModel;
   protected _amount: bigint;
 
@@ -91,45 +101,34 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     return this._amount;
   }
 
-  /**
-   * Method that checks whether the transfer
-   * is valid and route has been registered on
-   * the bridge
-   * @returns {boolean}
-   */
+  public getSourceNetworkProvider(): Eip1193Provider {
+    return this.sourceNetworkProvider;
+  }
+
   async isValidTransfer(): Promise<boolean> {
     const sourceDomainConfig = this.config.getDomainConfig(this.source);
     const web3Provider = new Web3Provider(this.sourceNetworkProvider);
     const bridge = Bridge__factory.connect(sourceDomainConfig.bridge, web3Provider);
-    const handlerAddress = await bridge._resourceIDToHandlerAddress(this.resource.resourceId);
+    const { resourceId } = this.resource;
+    const handlerAddress = await bridge._resourceIDToHandlerAddress(resourceId);
     return utils.isAddress(handlerAddress) && handlerAddress !== constants.AddressZero;
   }
 
-  getDepositData(): string {
+  protected getDepositData(): string {
     return createERCDepositData(this.amount, this.destinationAddress, this.destination.parachainId);
   }
 
-  constructor(transfer: FungibleTokenTransferRequest, config: Config) {
+  constructor(transfer: EvmFungibleTransferRequest, config: Config) {
     super(transfer, config);
     this._amount = transfer.amount;
-    this.destinationAddress = transfer.destinationAddress;
+    if (isValidAddressForNetwork(transfer.destinationAddress, this.destination.type))
+      this.destinationAddress = transfer.destinationAddress;
     this.securityModel = transfer.securityModel ?? SecurityModel.MPC;
-  }
-  /**
-   * Set resource to be transferred
-   * @param {EvmResource} resource
-   * @returns {BaseTransfer}
-   */
-  setResource(resource: EvmResource): void {
-    if (resource.type !== ResourceType.FUNGIBLE) {
-      throw new Error('Resource type unsupported.');
-    }
-    this.resource = resource;
   }
   /**
    * Set amount to be transferred
    * @param {BigInt} amount
-   * @returns {void}
+   * @returns {Promise<void>}
    */
   async setAmount(amount: bigint): Promise<void> {
     this._amount = amount;
@@ -142,21 +141,22 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
    * @returns {void}
    */
   setDestinationAddress(destinationAddress: string): void {
-    this.destinationAddress = destinationAddress;
+    if (isValidAddressForNetwork(destinationAddress, this.destination.type))
+      this.destinationAddress = destinationAddress;
   }
-
   /**
-   * Returns array of required approval transactions
-   * @dev with permit2 we would add TypedData in the array to be signed and signature will be mandatory param into getTransaferTransaction
-   * @dev potentially add optional param to override transaction params
+   * Get array of approval transactions
+   * associated with fungible transfer
+   * @returns {Promise<Array<TransactionRequest>>}
    */
   async getApprovalTransactions(): Promise<Array<TransactionRequest>> {
     const provider = new Web3Provider(this.sourceNetworkProvider);
     const sourceDomainConfig = this.config.getDomainConfig(this.source);
     const bridge = Bridge__factory.connect(sourceDomainConfig.bridge, provider);
     const handlerAddress = await bridge._resourceIDToHandlerAddress(this.resource.resourceId);
+    const resource = this.resource as EvmResource;
 
-    const erc20 = ERC20__factory.connect(this.resource.address, provider);
+    const erc20 = ERC20__factory.connect(resource.address, provider);
     const fee = await this.getFee();
     const feeHandlerAllowance = await getERC20Allowance(
       erc20,
@@ -180,8 +180,8 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     return approvals.map(approval => createTransactionRequest(approval));
   }
   /**
-   * Returns transaction to be signed by the user
-   * @dev potentially add optional param to override transaction params
+   * Get the fungible token transfer transaction
+   * @returns {Promise<TransactionRequest>}
    */
   async getTransferTransaction(): Promise<TransactionRequest> {
     const domainConfig = this.config.getDomainConfig(this.source);
@@ -190,41 +190,13 @@ class EvmFungibleAssetTransfer extends BaseTransfer {
     const fee = await this.getFee();
 
     const transferTx = await erc20Transfer({
+      depositData: this.getDepositData(),
       bridgeInstance: bridge,
       domainId: this.destination.id.toString(),
       resourceId: this.resource.resourceId,
       feeData: fee,
-      depositData: this.getDepositData(),
     });
 
     return createTransactionRequest(transferTx);
-  }
-
-  async getFee(): Promise<EvmFee> {
-    const provider = new providers.Web3Provider(this.sourceNetworkProvider);
-
-    const { feeHandlerAddress, feeHandlerType } = await getFeeInformation(
-      this.config,
-      provider,
-      this.source.id,
-      this.destination.id,
-      this.resource.resourceId,
-    );
-
-    const basicFeeCalculator = new BasicFeeCalculator();
-    const percentageFeeCalculator = new PercentageFeeCalculator();
-    const twapFeeCalculator = new TwapFeeCalculator();
-    basicFeeCalculator.setNextHandler(percentageFeeCalculator).setNextHandler(twapFeeCalculator);
-
-    return await basicFeeCalculator.calculateFee({
-      provider,
-      sender: this.sourceAddress,
-      sourceSygmaId: this.source.id,
-      destinationSygmaId: this.destination.id,
-      resourceSygmaId: this.resource.resourceId,
-      feeHandlerAddress,
-      feeHandlerType,
-      depositData: this.getDepositData(),
-    });
   }
 }

@@ -21,11 +21,12 @@ const recipient = "0x98729c03c4D5e820F5e8c45558ae07aE63F97461";
 const RHALA_RPC_URL =
   process.env.RHALA_RPC_URL ?? "wss://rhala-node.phala.network/ws";
 
-const SYGMA_EXPLORER_URL = 'https://scan.test.buildwithsygma.com';
+const SYGMA_EXPLORER_URL = "https://scan.test.buildwithsygma.com";
 const getSygmaExplorerTransferUrl = (params: {
   blockNumber: number;
   extrinsicIndex: number;
-}) => `${SYGMA_EXPLORER_URL}/transfer/${params.blockNumber}-${params.extrinsicIndex}`
+}): string =>
+  `${SYGMA_EXPLORER_URL}/transfer/${params.blockNumber}-${params.extrinsicIndex}`;
 
 const substrateTransfer = async (): Promise<void> => {
   // Make sure to account with native tokens
@@ -52,13 +53,19 @@ const substrateTransfer = async (): Promise<void> => {
     console.log(`Current status is ${status.toString()}`);
 
     if (status.isInBlock) {
-      console.log(`Transaction included at blockHash ${status.asInBlock.toString()}`);
+      console.log(
+        `Transaction included at blockHash ${status.asInBlock.toString()}`,
+      );
     } else if (status.isFinalized) {
-      const blockNumber = results.blockNumber!.toNumber();
-      const extrinsicIndex = results.txIndex!;
+      const blockNumber = results.blockNumber.toNumber();
+      const extrinsicIndex = results.txIndex;
 
-      console.log(`Transaction finalized at blockHash ${status.asFinalized.toString()}`);
-      console.log(`Explorer URL: ${getSygmaExplorerTransferUrl({ blockNumber, extrinsicIndex })}`);
+      console.log(
+        `Transaction finalized at blockHash ${status.asFinalized.toString()}`,
+      );
+      console.log(
+        `Explorer URL: ${getSygmaExplorerTransferUrl({ blockNumber, extrinsicIndex })}`,
+      );
       unsub();
       process.exit(0);
     }

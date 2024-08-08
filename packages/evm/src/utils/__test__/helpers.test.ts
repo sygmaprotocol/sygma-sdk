@@ -7,6 +7,7 @@ import {
   toHex,
   constructSubstrateRecipient,
   addressToHex,
+  serializeGenericCallParameters,
 } from '../helpers.js';
 
 describe('createERCDepositData', () => {
@@ -58,6 +59,25 @@ describe('constructSubstrateRecipient', () => {
     const expectedResult =
       '{"parents":0,"interior":{"X1":{"AccountId32":{"network":{"any":null},"id":"0x06a220edf5f82b84fc5f9270f8a30a17636bf29c05a5c16279405ca20918aa39"}}}}';
     expect(result).toEqual(expectedResult);
+  });
+});
+
+describe('serializeGenericCallParameters', () => {
+  it('should seriailze parameters correctly', () => {
+    const result =
+      '0x0000000000000000000000000000000000000000000000000000000000000032000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000064';
+
+    const params = [
+      '0x98729c03c4D5e820F5e8c45558ae07aE63F97461',
+      BigInt(50),
+      true,
+      false,
+      BigNumber.from(100),
+    ];
+
+    const serialized = serializeGenericCallParameters(params);
+
+    expect(serialized).toEqual(result);
   });
 });
 

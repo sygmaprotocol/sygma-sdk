@@ -29,7 +29,6 @@
     "build:typedocs:asjson": "typedoc --options typedoc.asjson.json",
     "lint": "eslint 'src/**/*.ts'",
     "lint:fix": "yarn run lint --fix",
-    "run:nodes": "docker-compose -f docker-compose.yml up",
     "clean": "rm -rf ./dist ./dist-cjs ./dist-esm ./types"
   },
   "keywords": [
@@ -58,8 +57,9 @@
   "dependencies": {
     "@buildwithsygma/core": "workspace:^",
     "@buildwithsygma/sygma-contracts": "2.5.1",
-    "@polkadot/api": "^11.2.1",
-    "@polkadot/types": "^11.2.1",
+    "@polkadot/api": "^12.2.1",
+    "@polkadot/api-base": "^12.2.2",
+    "@polkadot/types": "^12.2.1",
     "@polkadot/util": "^12.6.2",
     "dotenv": "^16.4.5"
   }

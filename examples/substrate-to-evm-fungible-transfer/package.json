@@ -30,7 +30,7 @@
   "dependencies": {
     "@buildwithsygma/core": "workspace:*",
     "@buildwithsygma/substrate": "workspace:*",
-    "@polkadot/api": "^11.2.1",
+    "@polkadot/api": "^12.2.1",
     "@polkadot/keyring": "^12.6.2",
     "@polkadot/util-crypto": "^12.6.2",
     "tsx": "^4.15.4"

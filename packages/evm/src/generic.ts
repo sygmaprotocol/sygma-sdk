@@ -10,11 +10,14 @@ import type {
 } from 'abitype';
 import { constants, ethers } from 'ethers';
 
-import type { BaseTransferParams } from './baseTransfer.js';
-import { BaseTransfer } from './baseTransfer.js';
+import type { EvmTransferParams } from './evmTransfer.js';
+import { EvmTransfer } from './evmTransfer.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
 import type { TransactionRequest } from './types.js';
-import { createPermissionlessGenericDepositData, toHex } from './utils/helpers.js';
+import {
+  createPermissionlessGenericDepositData,
+  serializeGenericCallParameters,
+} from './utils/helpers.js';
 import { genericMessageTransfer } from './utils/index.js';
 import { createTransactionRequest } from './utils/transaction.js';
 
@@ -25,7 +28,7 @@ import { createTransactionRequest } from './utils/transaction.js';
 export interface GenericMessageTransferRequest<
   ContractAbi extends Abi,
   FunctionName extends ExtractAbiFunctionNames<ContractAbi, 'nonpayable' | 'payable'>,
-> extends BaseTransferParams {
+> extends EvmTransferParams {
   gasLimit: bigint;
   functionParameters: AbiParametersToPrimitiveTypes<
     ExtractAbiFunction<ContractAbi, FunctionName>['inputs'],
@@ -37,8 +40,7 @@ export interface GenericMessageTransferRequest<
   maxFee: bigint;
 }
 /**
- * Creates a cross chain contract
- * call object
+ * Prepare a Sygma cross chain contract call
  * @param {GenericMessageTransferRequest<ContractAbi, FunctionName>} request
  * @returns {Promise<GenericMessageTransfer<ContractAbi, FunctionName>>}
  */
@@ -58,15 +60,17 @@ export async function createCrossChainContractCall<
   return genericTransfer;
 }
 /**
- * GenericMessageTransfer contains
- * functionality that facilitates generic
- * transfers or contract calls between two
- * EVM chains (for now)
+ * @internal
+ * @class EvmFungibleAssetTransfer
+ *
+ * Class that encapsulates logic
+ * for transferring generic messages
+ * using Sygma protocol
  */
 class GenericMessageTransfer<
   ContractAbi extends Abi,
   FunctionName extends ExtractAbiFunctionNames<ContractAbi, 'nonpayable' | 'payable'>,
-> extends BaseTransfer {
+> extends EvmTransfer {
   maxFee: bigint;
   destinationContractAddress: string;
   gasLimit: bigint;
@@ -77,7 +81,7 @@ class GenericMessageTransfer<
     'inputs'
   >;
   /**
-   * Create a GenericMessageTransfer object
+   * Create `GenericMessageTransfer` instance
    * @param {GenericMessageTransferRequest<ContractAbi, FunctionName>} params
    * @param {Config} config
    */
@@ -91,8 +95,7 @@ class GenericMessageTransfer<
     this.maxFee = params.maxFee;
   }
   /**
-   * Checks whether the transfer is valid
-   * given all parameters
+   * Checks validity of the transfer
    * @returns {Promise<boolean>}
    */
   async isValidTransfer(): Promise<boolean> {
@@ -172,44 +175,20 @@ class GenericMessageTransfer<
     );
 
     let executionData = ``;
-    const defaultPadding = 32;
-
     if (Array.isArray(this.functionParameters)) {
-      // Slice first param, it should be always depositer
-      // address in the contract
-      executionData = this.functionParameters
-        .slice(1)
-        .map((param: unknown) => {
-          const paramType = typeof param;
-          switch (paramType) {
-            case 'bigint':
-              return toHex((param as bigint).toString(), defaultPadding).substring(2);
-            case 'string':
-              return toHex((param as string).toString(), defaultPadding).substring(2);
-            case 'number':
-              return toHex((param as number).toString(), defaultPadding).substring(2);
-            case 'boolean':
-              return toHex(Number(param as boolean), defaultPadding).substring(2);
-            case 'object':
-            case 'undefined':
-            case 'function':
-            case 'symbol':
-              throw new Error('Unsupported parameter type.');
-          }
-        })
-        .join('');
+      executionData = serializeGenericCallParameters(this.functionParameters);
     }
 
     const executeFunctionSignature = contractInterface.getSighash(this.functionName);
-    return { executionData: `0x${executionData}`, executeFunctionSignature };
+    return { executionData, executeFunctionSignature };
   }
   /**
-   * Creates the transaction that can be
-   * sent to blockchain node
+   * Get the cross chain generic message transfer
+   * transaction
    * @param {ethers.Overrides} overrides
    * @returns {Promise<TransactionRequest>}
    */
-  async buildTransaction(overrides?: ethers.Overrides): Promise<TransactionRequest> {
+  async getTransferTransaction(overrides?: ethers.Overrides): Promise<TransactionRequest> {
     const isValid = await this.isValidTransfer();
     if (!isValid) throw new Error('Invalid Transfer.');
 
@@ -240,7 +219,11 @@ class GenericMessageTransfer<
 
     return createTransactionRequest(transaction);
   }
-
+  /**
+   * Get prepared additional deposit data
+   * in hex string format
+   * @returns {string}
+   */
   protected getDepositData(): string {
     const { executeFunctionSignature, executionData } = this.prepareFunctionCallEncodings();
     return createPermissionlessGenericDepositData(

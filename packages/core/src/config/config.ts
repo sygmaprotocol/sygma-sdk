@@ -96,8 +96,6 @@ export class Config {
         case 'number':
           return domain.chainId === domainLike;
       }
-
-      return false;
     });
 
     if (!config) throw new Error('Domain configuration not found.');

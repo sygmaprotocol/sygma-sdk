@@ -94,6 +94,13 @@ type GenericMessageParams = {
   overrides?: ethers.PayableOverrides;
 };
 
+/**
+ * Create a generic cross chain message transaction
+ * using typechain and ethers
+ * @category Generic Transfer
+ * @param {GenericMessageParams} param0
+ * @returns {Promise<PopulatedTransaction>}
+ */
 export const genericMessageTransfer = async ({
   executeFunctionSignature,
   executeContractAddress,

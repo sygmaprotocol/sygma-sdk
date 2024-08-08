@@ -1,8 +1,6 @@
-import type { Domain, FeeHandlerType, SubstrateResource } from '@buildwithsygma/core';
+import type { Domain, FeeHandlerType, ParachainId, SubstrateResource } from '@buildwithsygma/core';
 import type { ExtrinsicStatus } from '@polkadot/types/interfaces';
 import type { BN } from '@polkadot/util';
-
-export type ParachainId = number;
 
 export type SubstrateFee = {
   fee: BN;

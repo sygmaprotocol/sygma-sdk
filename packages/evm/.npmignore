@@ -1,13 +1,9 @@
-
-
 integration/
 coverage/
 dist/
 keysN1/
 keysN2/
-config/
 src/
-
 # Ignore configs
 setupTests.ts
 .eslintrc.cjs
@@ -20,7 +16,6 @@ tsconfig.*.json
 tsconfig.tsbuildinfo
 rollup.config.js
 **/__test__/*
-
 # Ignore random junk
 .DS_Store
 node_modules/**
