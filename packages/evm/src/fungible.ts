@@ -97,20 +97,23 @@ export async function createEvmFungibleAssetTransfer(
 class EvmFungibleAssetTransfer extends EvmTransfer {
   protected destinationAddress: string = '';
   protected securityModel: SecurityModel;
-  protected _amount: bigint = BigInt(0);
-  private transferAmount: bigint;
+  protected _adjustedAmount: bigint = BigInt(0);
+  private specifiedAmount: bigint;
 
   constructor(transfer: FungibleTokenTransferRequest, config: Config) {
     super(transfer, config);
-    this.transferAmount = transfer.amount;
+    this.specifiedAmount = transfer.amount;
 
     if (isValidAddressForNetwork(transfer.destinationAddress, this.destination.type))
       this.destinationAddress = transfer.destinationAddress;
     this.securityModel = transfer.securityModel ?? SecurityModel.MPC;
   }
 
-  get amount(): bigint {
-    return this._amount;
+  /**
+   * Returns amount to be transferred considering the fee
+   */
+  get adjustedAmount(): bigint {
+    return this._adjustedAmount;
   }
 
   public getSourceNetworkProvider(): Eip1193Provider {
@@ -127,7 +130,11 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
   }
 
   protected getDepositData(): string {
-    return createERCDepositData(this.amount, this.destinationAddress, this.destination.parachainId);
+    return createERCDepositData(
+      this.adjustedAmount,
+      this.destinationAddress,
+      this.destination.parachainId,
+    );
   }
 
   constructor(transfer: EvmFungibleTransferRequest, config: Config) {
@@ -144,10 +151,10 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
    * @returns {Promise<void>}
    */
   async setAmount(amount: bigint): Promise<void> {
-    this.transferAmount = amount;
+    this.specifiedAmount = amount;
 
     const fee = await this.getFee();
-    this._amount = calculateAdjustedAmount(amount, fee);
+    this._adjustedAmount = calculateAdjustedAmount(amount, fee);
   }
   /**
    * Sets the destination address
@@ -188,7 +195,7 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
       approvals.push(await approve(erc20, fee.handlerAddress, approvalAmount));
     }
 
-    const transferAmount = BigNumber.from(this.amount);
+    const transferAmount = BigNumber.from(this.adjustedAmount);
     if (handlerAllowance.lt(transferAmount)) {
       const approvalAmount = BigNumber.from(transferAmount).toString();
       approvals.push(await approve(erc20, handlerAddress, approvalAmount));
@@ -224,8 +231,9 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
     const erc20 = ERC20__factory.connect(this.resource.address, provider);
     const balance = await erc20.balanceOf(this.sourceAddress);
 
-    if (BigNumber.from(this.amount).lte(0)) throw new Error('Amount should be bigger than zero');
+    if (BigNumber.from(this.adjustedAmount).lte(0))
+      throw new Error('Amount should be bigger than zero');
 
-    if (balance.lt(this.transferAmount)) throw new Error('Insufficient account balance');
+    if (balance.lt(this.specifiedAmount)) throw new Error('Insufficient account balance');
   }
 }
