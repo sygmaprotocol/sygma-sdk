@@ -1,0 +1,8 @@
+{
+  "extends": ["../../typedoc.base.json"],
+  "name": "@buildwithsygma/core",
+  "entryPoints": ["src/index.ts"],
+  "exclude": ["**/*+(.test|.e2e).ts"],
+  "readme": "../../README.md",
+  "includeVersion": true
+}
