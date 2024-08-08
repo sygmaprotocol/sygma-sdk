@@ -33,7 +33,7 @@ export async function createSubstrateFungibleAssetTransfer(
 
 class SubstrateFungibleAssetTransfer extends BaseTransfer {
   amount: bigint;
-  destinationAddress: string;
+  destinationAddress: string = '';
   sourceNetworkProvider: ApiPromise;
   senderAddress: string;
 

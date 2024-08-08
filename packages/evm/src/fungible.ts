@@ -1,17 +1,19 @@
-import type { Eip1193Provider, EvmResource } from '@buildwithsygma/core';
 import {
   Config,
+  EthereumConfig,
   FeeHandlerType,
   isValidAddressForNetwork,
   SecurityModel,
 } from '@buildwithsygma/core';
-import type { EvmResource } from '@buildwithsygma/core';
+import type { Eip1193Provider, EvmResource } from '@buildwithsygma/core';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import type { TransactionRequest } from '@ethersproject/providers';
 import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber, constants, type PopulatedTransaction, utils } from 'ethers';
 import type { EvmFee } from 'types.js';
 
+import type { EvmTransferParams } from './evmTransfer.js';
+import { EvmTransfer } from './evmTransfer.js';
 import {
   approve,
   createERCDepositData,
@@ -100,7 +102,7 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
   protected _adjustedAmount: bigint = BigInt(0);
   private specifiedAmount: bigint;
 
-  constructor(transfer: FungibleTokenTransferRequest, config: Config) {
+  constructor(transfer: EvmFungibleTransferRequest, config: Config) {
     super(transfer, config);
     this.specifiedAmount = transfer.amount;
 
@@ -121,7 +123,7 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
   }
 
   async isValidTransfer(): Promise<boolean> {
-    const sourceDomainConfig = this.config.getDomainConfig(this.source);
+    const sourceDomainConfig = this.config.getDomainConfig(this.source) as EthereumConfig;
     const web3Provider = new Web3Provider(this.sourceNetworkProvider);
     const bridge = Bridge__factory.connect(sourceDomainConfig.bridge, web3Provider);
     const { resourceId } = this.resource;
@@ -137,14 +139,6 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
     );
   }
 
-  constructor(transfer: EvmFungibleTransferRequest, config: Config) {
-    super(transfer, config);
-    this._amount = transfer.amount;
-
-    if (isValidAddressForNetwork(transfer.destinationAddress, this.destination.type))
-      this.destinationAddress = transfer.destinationAddress;
-    this.securityModel = transfer.securityModel ?? SecurityModel.MPC;
-  }
   /**
    * Set amount to be transferred
    * @param {BigInt} amount
@@ -227,8 +221,9 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
   }
 
   async verifyAccountBalance(): Promise<void> {
+    const resource = this.resource as EvmResource;
     const provider = new Web3Provider(this.sourceNetworkProvider);
-    const erc20 = ERC20__factory.connect(this.resource.address, provider);
+    const erc20 = ERC20__factory.connect(resource.address, provider);
     const balance = await erc20.balanceOf(this.sourceAddress);
 
     if (BigNumber.from(this.adjustedAmount).lte(0))
