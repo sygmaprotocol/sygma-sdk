@@ -382,9 +382,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@buildwithsygma/btc@workspace:^, @buildwithsygma/btc@workspace:packages/btc":
+"@buildwithsygma/bitcoin@workspace:^, @buildwithsygma/bitcoin@workspace:packages/bitcoin":
   version: 0.0.0-use.local
-  resolution: "@buildwithsygma/btc@workspace:packages/btc"
+  resolution: "@buildwithsygma/bitcoin@workspace:packages/bitcoin"
   dependencies:
     "@buildwithsygma/core": "workspace:^"
     "@types/jest": "npm:^29.4.0"
@@ -576,7 +576,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk-btc-to-evm-fungible-transfer-example@workspace:examples/btc-to-evm-fungible-transfer"
   dependencies:
-    "@buildwithsygma/btc": "workspace:^"
+    "@buildwithsygma/bitcoin": "workspace:^"
     "@buildwithsygma/core": "workspace:^"
     bip32: "npm:^4.0.0"
     bip39: "npm:^3.1.0"
@@ -4070,17 +4070,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"base58-js@npm:^1.0.0":
-  version: 1.0.5
-  resolution: "base58-js@npm:1.0.5"
-  checksum: 2f8aacd9b10a82175efff6c81bf9a0d0a95e5b802ea403e855664f4bd848112a5d7b7a4e659761c8cd3bb1ffa0cb748a6f97490af52635593b9cdf7d8511ee0f
-  languageName: node
-  linkType: hard
-
 "base-x@npm:^4.0.0":
   version: 4.0.0
   resolution: "base-x@npm:4.0.0"
   checksum: 0cb47c94535144ab138f70bb5aa7e6e03049ead88615316b62457f110fc204f2c3baff5c64a1c1b33aeb068d79a68092c08a765c7ccfa133eee1e70e4c6eb903
+  languageName: node
+  linkType: hard
+
+"base58-js@npm:^1.0.0":
+  version: 1.0.5
+  resolution: "base58-js@npm:1.0.5"
+  checksum: 2f8aacd9b10a82175efff6c81bf9a0d0a95e5b802ea403e855664f4bd848112a5d7b7a4e659761c8cd3bb1ffa0cb748a6f97490af52635593b9cdf7d8511ee0f
   languageName: node
   linkType: hard
 
@@ -4119,6 +4119,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bip174@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "bip174@npm:2.1.1"
+  checksum: d92e142fca85fa4f621dbc9131dafe1da7d69fa7cae03137fa4745d66ffa50561f85ff8c49ca41da8ed1ca65e642415b13dc046531412dfebe6ff03c275e71ae
+  languageName: node
+  linkType: hard
+
+"bip32@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "bip32@npm:4.0.0"
+  dependencies:
+    "@noble/hashes": "npm:^1.2.0"
+    "@scure/base": "npm:^1.1.1"
+    typeforce: "npm:^1.11.5"
+    wif: "npm:^2.0.6"
+  checksum: b74ffd3a96b42a783eca6455dff8f0decc8360025b69d486d5a047b52cca6e8436bc5a9812cbeae2638a50f35da7fcd85b55cfe58272f55a5b31d7ac40a25522
+  languageName: node
+  linkType: hard
+
+"bip39@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "bip39@npm:3.1.0"
+  dependencies:
+    "@noble/hashes": "npm:^1.2.0"
+  checksum: 68f9673a0d6a851e9635f3af8a85f2a1ecef9066c76d77e6f0d58d274b5bf22a67f429da3997e07c0d2cf153a4d7321f9273e656cac0526f667575ddee28ef71
+  languageName: node
+  linkType: hard
+
 "bitcoin-address-validation@npm:^2.2.3":
   version: 2.2.3
   resolution: "bitcoin-address-validation@npm:2.2.3"
@@ -4127,6 +4155,20 @@ __metadata:
     bech32: "npm:^2.0.0"
     sha256-uint8array: "npm:^0.10.3"
   checksum: d9749b72dec123cd5dac45cdd8b2e1324e0900473d0e015aa052b95e249147f3e9ab4589cb9f88f2daf4b8fb612749e45d56e3aec6deffd17024582d367c145d
+  languageName: node
+  linkType: hard
+
+"bitcoinjs-lib@npm:^6.1.6":
+  version: 6.1.6
+  resolution: "bitcoinjs-lib@npm:6.1.6"
+  dependencies:
+    "@noble/hashes": "npm:^1.2.0"
+    bech32: "npm:^2.0.0"
+    bip174: "npm:^2.1.1"
+    bs58check: "npm:^3.0.1"
+    typeforce: "npm:^1.11.3"
+    varuint-bitcoin: "npm:^1.1.2"
+  checksum: 27e77add09051fcbb32266c1a03c6c1eb691cb6b91706c4bfd41e1f4bea76f53529364f4ce22efff7879a3d08940d113df87de64b9422697463432c7b561e78c
   languageName: node
   linkType: hard
 
@@ -5062,6 +5104,17 @@ __metadata:
   version: 0.2.0
   resolution: "eastasianwidth@npm:0.2.0"
   checksum: 26f364ebcdb6395f95124fda411f63137a4bfb5d3a06453f7f23dfe52502905bd84e0488172e0f9ec295fdc45f05c23d5d91baf16bd26f0fe9acd777a188dc39
+  languageName: node
+  linkType: hard
+
+"ecpair@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "ecpair@npm:2.1.0"
+  dependencies:
+    randombytes: "npm:^2.1.0"
+    typeforce: "npm:^1.18.0"
+    wif: "npm:^2.0.6"
+  checksum: 206a3c9af725416e6e91515278259319d88c880cf067c4e4d275fee5e746064cc5bc6279bdb2f87a9218ef25dd82921422d05e0952d4b41c8e91c070c504aa70
   languageName: node
   linkType: hard
 
@@ -11209,6 +11262,13 @@ __metadata:
   bin:
     typedoc: bin/typedoc
   checksum: c3ca06e7496276d6c14af6c9ed7afe48477117093fa4723b30c73b902adba5821fd58bb19139be9322980de0f279ec688600ac4d6da31792c1654675068f1352
+  languageName: node
+  linkType: hard
+
+"typeforce@npm:^1.11.3, typeforce@npm:^1.11.5, typeforce@npm:^1.18.0":
+  version: 1.18.0
+  resolution: "typeforce@npm:1.18.0"
+  checksum: 011f57effd9ae6d3dd8bb249e09b4ecadb2c2a3f803b27f977ac8b7782834855930bff971ba549bcd5a8cedc8136d8a977c0b7e050cc67deded948181b7ba3e8
   languageName: node
   linkType: hard
 
