@@ -95,7 +95,7 @@ describe('Fungible - createEvmFungibleAssetTransfer', () => {
   it('should create a transfer', async () => {
     const transfer = await createEvmFungibleAssetTransfer(TRANSFER_PARAMS);
     expect(transfer).toBeTruthy();
-    expect(transfer.amount).toEqual(parseEther('10').toBigInt());
+    expect(transfer.adjustedAmount).toEqual(parseEther('10').toBigInt());
   });
 
   it('should fail if fee handler is not registered', async () => {
