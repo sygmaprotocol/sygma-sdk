@@ -10,6 +10,7 @@ import { TypeOfAddress } from '../types.js';
 bitcoin.initEccLib(tinysecp);
 
 const P2TR_TRANSFER_PARAMS: BitcoinTransferParams = {
+  sourceAddress: 'tb1pxmrzd94rs6wtg6ewdjfmuu7s88n2kdqc20vzfmadanfaem3n9sdq0vagu0',
   source: 'bip122:000000000933ea01ad0ee984209779ba',
   destination: 1,
   destinationAddress: '0x98729c03c4D5e820F5e8c45558ae07aE63F97461',
