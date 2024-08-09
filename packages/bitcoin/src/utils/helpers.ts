@@ -3,12 +3,12 @@ import { payments, Psbt } from 'bitcoinjs-lib';
 
 import { TypeOfAddress } from '../types.js';
 import type {
-  BitcoinTransferParams,
   BitcoinTransferInputData,
   BitcoinTransferRequest,
   PaymentReturnData,
   UTXOData,
   CreateInputData,
+  CreatePsbtParams,
 } from '../types.js';
 
 /**
@@ -121,7 +121,7 @@ const invalidAmount = (amount: bigint, utxoData: UTXOData[]): boolean => {
  * @returns {BitcoinTransferRequest}
  */
 export function getPsbt(
-  params: BitcoinTransferParams,
+  params: CreatePsbtParams,
   feeAddress: string,
   depositAddress: string,
   feeAmount: bigint,

@@ -1,19 +1,20 @@
+import type { BitcoinResource } from '@buildwithsygma/core';
 import { Config } from '@buildwithsygma/core';
+import { BitcoinTransfer } from 'bitcoinTransfer.js';
 import type { networks } from 'bitcoinjs-lib';
 import type { BitcoinTransferParams, BitcoinTransferRequest, TypeOfAddress, UTXOData } from 'types';
 
-import { BaseTransfer } from './base-transfer.js';
 import { getPsbt } from './utils/index.js';
 
 export async function createBitcoinFungibleTransfer(
   params: BitcoinTransferParams,
-): Promise<BitcoinTransfer> {
+): Promise<BitcoinFungibleTransfer> {
   const config = new Config();
   await config.init(process.env.SYGMA_ENV || params.environment);
-  return new BitcoinTransfer(params, config);
+  return new BitcoinFungibleTransfer(params, config);
 }
 
-class BitcoinTransfer extends BaseTransfer {
+class BitcoinFungibleTransfer extends BitcoinTransfer {
   protected publicKey: Buffer;
   protected typeOfAddress: TypeOfAddress;
   protected network: networks.Network;
@@ -21,6 +22,7 @@ class BitcoinTransfer extends BaseTransfer {
   protected feeRate: bigint;
   protected utxoData: UTXOData[];
   protected size: bigint;
+  protected destinationAddress: string;
 
   constructor(transfer: BitcoinTransferParams, config: Config) {
     super(transfer, config);
@@ -52,7 +54,7 @@ class BitcoinTransfer extends BaseTransfer {
         size: this.size,
       },
       this.feeAddress,
-      this.resource.address,
+      (this.resource as BitcoinResource).address,
       this.feeAmount,
     );
   }

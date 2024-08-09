@@ -1,4 +1,4 @@
-import type { BitcoinResource, Domainlike, Environment } from '@buildwithsygma/core';
+import type { BaseTransferParams, Environment } from '@buildwithsygma/core';
 import type { networks, Psbt } from 'bitcoinjs-lib';
 
 export enum TypeOfAddress {
@@ -19,13 +19,10 @@ export type CreateInputData = {
   typeOfAddress: TypeOfAddress;
 };
 
-export type BitcoinTransferParams = {
+export interface BitcoinTransferParams extends BaseTransferParams {
   environment?: Environment;
-  source: Domainlike;
-  destination: Domainlike;
   destinationAddress: string;
   amount: bigint;
-  resource: BitcoinResource | string;
   utxoData: UTXOData[];
   publicKey: Buffer;
   typeOfAddress: TypeOfAddress;
@@ -33,7 +30,23 @@ export type BitcoinTransferParams = {
   feeRate: bigint;
   changeAddress?: string;
   size: bigint;
-};
+}
+
+export type CreatePsbtParams = Pick<
+  BitcoinTransferParams,
+  | 'source'
+  | 'destination'
+  | 'destinationAddress'
+  | 'amount'
+  | 'resource'
+  | 'utxoData'
+  | 'publicKey'
+  | 'typeOfAddress'
+  | 'network'
+  | 'feeRate'
+  | 'changeAddress'
+  | 'size'
+>;
 
 export type BitcoinTransferRequest = Psbt;
 
