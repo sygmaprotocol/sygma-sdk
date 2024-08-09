@@ -25,9 +25,13 @@ export const createERCDepositData = (
   let recipientAddressInBytes;
   if (utils.isAddress(recipientAddress)) {
     recipientAddressInBytes = getEVMRecipientAddressInBytes(recipientAddress);
-  } else {
+  } else if (parachainId) {
     recipientAddressInBytes = getSubstrateRecipientAddressInBytes(recipientAddress, parachainId);
+  } else {
+    const hexAddress = addressToHex(recipientAddress, recipientAddress.length);
+    recipientAddressInBytes = utils.arrayify(`0x${hexAddress}`);
   }
+
   const depositDataBytes = constructMainDepositData(
     BigNumber.from(tokenAmount),
     recipientAddressInBytes,
@@ -188,6 +192,24 @@ export function serializeGenericCallParameters(
     .join('');
   return `0x${serialized}`;
 }
+
+/**
+ * Return the address transformed to hex for bitcoin deposits
+ *
+ * @category Helpers
+ * @param address  - bitcoin address
+ * @param addressLength - length of the address
+ * @returns {string}
+ */
+export const addressToHex = (address: string, addressLength: number): string => {
+  const hexData = new Array(addressLength);
+  for (let i = 0; i < hexData.length; i++) {
+    const codePoint = address.charCodeAt(i);
+    hexData[i] = codePoint.toString(16);
+  }
+
+  return hexData.join('');
+};
 
 /**
  * Creates the data for permissionless generic handler

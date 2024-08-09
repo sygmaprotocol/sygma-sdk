@@ -1,0 +1,12 @@
+{
+  "exclude": [
+    "src/**/__test__/**",
+    "test/**"
+  ],
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "ES2020",
+    "esModuleInterop": true,
+    "outDir": "./dist-esm"
+  }
+}

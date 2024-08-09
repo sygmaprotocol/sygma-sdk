@@ -1,0 +1,13 @@
+{
+  "exclude": [
+    "src/**/__test__/**",
+    "test/**",
+  ],
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "outDir": "./dist-cjs"
+  }
+}

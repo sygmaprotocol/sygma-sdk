@@ -1,17 +1,23 @@
 import type { Config } from './config/config.js';
-import type { Domainlike, EvmResource, Domain, SubstrateResource } from './types.js';
+import type {
+  Domainlike,
+  EvmResource,
+  Domain,
+  SubstrateResource,
+  BitcoinResource,
+} from './types.js';
 
 export interface BaseTransferParams {
   source: Domainlike;
   destination: Domainlike;
-  resource: string | EvmResource | SubstrateResource;
+  resource: string | EvmResource | SubstrateResource | BitcoinResource;
   sourceAddress: string;
 }
 
 export abstract class BaseTransfer {
   protected destinationDomain: Domain;
   protected sourceDomain: Domain;
-  protected transferResource: EvmResource | SubstrateResource;
+  protected transferResource: EvmResource | SubstrateResource | BitcoinResource;
   protected sygmaConfiguration: Config;
 
   protected sourceAddress: string;
@@ -24,7 +30,7 @@ export abstract class BaseTransfer {
     return this.destinationDomain;
   }
 
-  public get resource(): EvmResource | SubstrateResource {
+  public get resource(): EvmResource | SubstrateResource | BitcoinResource {
     return this.transferResource;
   }
 
@@ -33,8 +39,8 @@ export abstract class BaseTransfer {
   }
 
   private findResource(
-    resource: string | EvmResource | SubstrateResource,
-  ): EvmResource | SubstrateResource | undefined {
+    resource: string | EvmResource | SubstrateResource | BitcoinResource,
+  ): EvmResource | SubstrateResource | BitcoinResource | undefined {
     return this.sygmaConfiguration.getResources(this.source).find(_resource => {
       return typeof resource === 'string'
         ? resource === _resource.resourceId
@@ -67,10 +73,10 @@ export abstract class BaseTransfer {
   }
   /**
    * Set resource to be transferred
-   * @param {EvmResource} resource
+   * @param {EvmResource | SubstrateResource | BitcoinResource} resource
    * @returns {BaseTransfer}
    */
-  setResource(resource: EvmResource | SubstrateResource): void {
+  setResource(resource: EvmResource | SubstrateResource | BitcoinResource): void {
     this.transferResource = resource;
   }
   /**

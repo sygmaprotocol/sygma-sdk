@@ -1,4 +1,10 @@
-import type { EvmResource, SubstrateResource, Eip1193Provider } from '@buildwithsygma/core';
+import type {
+  EvmResource,
+  SubstrateResource,
+  Eip1193Provider,
+  EthereumConfig,
+  SubstrateConfig,
+} from '@buildwithsygma/core';
 import { Network, ResourceType } from '@buildwithsygma/core';
 import type { createEvmFungibleAssetTransfer } from '@buildwithsygma/evm';
 import { getEvmHandlerBalance } from '@buildwithsygma/evm';
@@ -15,7 +21,7 @@ export async function hasEnoughLiquidity(
 ): Promise<boolean> {
   const { destination, resource, config } = transfer;
   const destinationDomainConfig = config.findDomainConfig(destination);
-  const handler = destinationDomainConfig.handlers.find(
+  const handler = (destinationDomainConfig as EthereumConfig | SubstrateConfig).handlers.find(
     handler => handler.type === ResourceType.FUNGIBLE,
   );
 
