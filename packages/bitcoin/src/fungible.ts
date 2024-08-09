@@ -1,9 +1,9 @@
 import type { BitcoinResource } from '@buildwithsygma/core';
 import { Config } from '@buildwithsygma/core';
-import { BitcoinTransfer } from 'bitcoinTransfer.js';
 import type { networks } from 'bitcoinjs-lib';
 import type { BitcoinTransferParams, BitcoinTransferRequest, TypeOfAddress, UTXOData } from 'types';
 
+import { BitcoinTransfer } from './bitcoinTransfer.js';
 import { getPsbt } from './utils/index.js';
 
 export async function createBitcoinFungibleTransfer(
