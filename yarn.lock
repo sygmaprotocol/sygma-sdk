@@ -619,7 +619,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/utils@workspace:packages/utils"
   dependencies:
-    "@buildwithsygma/bitcoin": "workspace:^"
     "@buildwithsygma/core": "workspace:^"
     "@buildwithsygma/evm": "workspace:^"
     "@buildwithsygma/substrate": "workspace:^"
