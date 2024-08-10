@@ -106,11 +106,12 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
 
   async verifyBalance(): Promise<void> {
     const fee = await this.getFee();
+    const amountBigNumber = new BN(this.amount.toString());
 
     if (!isValidAddressForNetwork(this.senderAddress, Network.SUBSTRATE))
       throw new Error('Sender address is incorrect');
 
-    if (new BN(this.amount.toString()).lt(fee.fee)) {
+    if (amountBigNumber.lt(fee.fee)) {
       throw new Error('Transfer amount should be higher than transfer fee');
     }
 
@@ -120,10 +121,7 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
       data: AccountData;
     };
 
-    // TODO: clarify if we extract fee from amount or add on top of it
-    const costs = new BN(this.amount.toString()).add(fee.fee);
-
-    if (new BN(balance.free).lt(costs)) {
+    if (new BN(balance.free).lt(amountBigNumber)) {
       throw new Error('Insufficient balance to perform the Transaction');
     }
   }
