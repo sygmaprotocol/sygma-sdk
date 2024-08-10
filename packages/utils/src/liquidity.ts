@@ -1,8 +1,8 @@
-import type { EvmResource, SubstrateResource, Eip1193Provider } from '@buildwithsygma/core';
+import type { Eip1193Provider, EvmResource, SubstrateResource } from '@buildwithsygma/core';
 import { Network, ResourceType } from '@buildwithsygma/core';
 import type { createEvmFungibleAssetTransfer } from '@buildwithsygma/evm';
 import { getEvmHandlerBalance } from '@buildwithsygma/evm';
-import type { createSubstrateFungibleAssetTransfer } from '@buildwithsygma/substrate';
+import type { createSubstrateFungibleAssetTransfer } from '@buildwithsygma/substrate/dist-esm';
 import { HttpProvider } from 'web3-providers-http';
 
 import { getSubstrateHandlerBalance } from './substrate/balances.js';
@@ -42,7 +42,8 @@ export async function hasEnoughLiquidity(
         handler.address,
       );
 
-      return transfer.amount <= evmHandlerBalance;
+      const transferValue = transfer as Awaited<ReturnType<typeof createEvmFungibleAssetTransfer>>;
+      return transferValue.adjustedAmount <= evmHandlerBalance;
     }
     case Network.SUBSTRATE: {
       const substrateHandlerBalance = await getSubstrateHandlerBalance(
@@ -51,7 +52,10 @@ export async function hasEnoughLiquidity(
         handler.address,
       );
 
-      return transfer.amount <= substrateHandlerBalance;
+      const transferValue = transfer as Awaited<
+        ReturnType<typeof createSubstrateFungibleAssetTransfer>
+      >;
+      return transferValue.amount <= substrateHandlerBalance;
     }
     // TODO: Bitcoin?
     default:

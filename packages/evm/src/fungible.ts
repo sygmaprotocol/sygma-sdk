@@ -1,19 +1,18 @@
 import {
   Config,
-  EthereumConfig,
   FeeHandlerType,
   isValidAddressForNetwork,
   SecurityModel,
 } from '@buildwithsygma/core';
-import type { Eip1193Provider, EvmResource } from '@buildwithsygma/core';
+import type { Eip1193Provider, EvmResource, EthereumConfig } from '@buildwithsygma/core';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import type { TransactionRequest } from '@ethersproject/providers';
 import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber, constants, type PopulatedTransaction, utils } from 'ethers';
-import type { EvmFee } from 'types.js';
 
 import type { EvmTransferParams } from './evmTransfer.js';
 import { EvmTransfer } from './evmTransfer.js';
+import type { EvmFee } from './types.js';
 import {
   approve,
   createERCDepositData,
