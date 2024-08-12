@@ -15,7 +15,7 @@ export enum Environment {
 export enum Network {
   EVM = 'evm',
   SUBSTRATE = 'substrate',
-  BITCOIN = 'bitcoin',
+  BITCOIN = 'btc',
 }
 
 export enum SecurityModel {

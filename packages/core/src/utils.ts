@@ -2,7 +2,7 @@ import * as process from 'node:process';
 
 import { decodeAddress, encodeAddress } from '@polkadot/keyring';
 import { hexToU8a, isHex } from '@polkadot/util';
-import validate, { Network as BitcoinNetwork } from 'bitcoin-address-validation';
+import { Network as BitcoinNetwork, validate } from 'bitcoin-address-validation';
 import { ethers } from 'ethers';
 
 import { ExplorerUrl, IndexerUrl } from './constants.js';
@@ -294,8 +294,12 @@ export function isValidEvmAddress(address: string): boolean {
  * @returns {boolean}
  */
 export function isValidBitcoinAddress(address: string): boolean {
-  if (process.env.SYGMA_ENV === Environment.TESTNET || process.env.SYGMA_ENV === Environment.DEVNET)
+  if (
+    process.env.SYGMA_ENV === Environment.TESTNET ||
+    process.env.SYGMA_ENV === Environment.DEVNET
+  ) {
     return validate(address, BitcoinNetwork.testnet);
+  }
 
   return validate(address, BitcoinNetwork.mainnet);
 }
