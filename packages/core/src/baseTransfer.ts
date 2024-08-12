@@ -1,5 +1,5 @@
 import type { Config } from './config/config.js';
-import type { Domainlike, EvmResource, Domain, SubstrateResource } from './types.js';
+import type { Domain, Domainlike, EvmResource, SubstrateResource } from './types.js';
 
 export interface BaseTransferParams {
   source: Domainlike;
@@ -78,8 +78,7 @@ export abstract class BaseTransfer {
    * @param destination
    * @returns
    */
-  setDesinationDomain(destination: Domainlike): void {
-    const domain = this.config.getDomain(destination);
-    this.destinationDomain = domain;
+  setDestinationDomain(destination: Domainlike): void {
+    this.destinationDomain = this.config.getDomain(destination);
   }
 }

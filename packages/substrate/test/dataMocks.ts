@@ -1,4 +1,5 @@
-import { FeeHandlerType, Network, ResourceType, SygmaConfig } from '@buildwithsygma/core';
+import type { SygmaConfig } from '@buildwithsygma/core';
+import { FeeHandlerType, Network, ResourceType } from '@buildwithsygma/core';
 
 const domainsMock: SygmaConfig = {
   domains: [
