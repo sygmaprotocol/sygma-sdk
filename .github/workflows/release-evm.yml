@@ -19,6 +19,8 @@ jobs:
           command: manifest
           release-type: node
           path: "packages/evm"
+          config-file: "release-please/rp-evm-config.json"
+          manifest-file: "release-please/rp-evm-manifest.json"
           token: ${{secrets.RELEASE_TOKEN}}
           monorepo-tags: true
           default-branch: main

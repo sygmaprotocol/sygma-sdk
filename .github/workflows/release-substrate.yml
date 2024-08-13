@@ -19,6 +19,8 @@ jobs:
           command: manifest
           release-type: node
           token: ${{secrets.RELEASE_TOKEN}}
+          config-file: "release-please/rp-substrate-config.json"
+          manifest-file: "release-please/rp-substrate-manifest.json"
           monorepo-tags: true
           default-branch: main
           path: "packages/substrate"
