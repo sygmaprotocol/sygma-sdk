@@ -1,8 +1,8 @@
 {
   "plugins": ["node-workspace"],
-  "pull-request-title-pattern": "chore: release substrate ${version}",
   "packages": {
     "packages/substrate": {
+      "component": "substrate",
       "releaseType": "node",
       "draft": false,
       "prerelease": false,

@@ -1,8 +1,8 @@
 {
   "plugins": ["node-workspace"],
-  "pull-request-title-pattern": "chore: release evm ${version}",
   "packages": {
     "packages/evm": {
+      "component": "evm",
       "releaseType": "node",
       "draft": false,
       "prerelease": false,
