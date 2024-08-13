@@ -382,7 +382,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@buildwithsygma/core@workspace:*, @buildwithsygma/core@workspace:^, @buildwithsygma/core@workspace:packages/core":
+"@buildwithsygma/core@npm:1.0.0, @buildwithsygma/core@workspace:*, @buildwithsygma/core@workspace:^, @buildwithsygma/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/core@workspace:packages/core"
   dependencies:
@@ -447,7 +447,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/evm@workspace:packages/evm"
   dependencies:
-    "@buildwithsygma/core": "workspace:^"
+    "@buildwithsygma/core": "npm:1.0.0"
     "@buildwithsygma/sygma-contracts": "npm:^2.8.0"
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/bytes": "npm:^5.7.0"
