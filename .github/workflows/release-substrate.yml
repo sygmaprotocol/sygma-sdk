@@ -19,6 +19,7 @@ jobs:
           command: manifest
           release-type: node
           token: ${{secrets.RELEASE_TOKEN}}
+          group-pull-request-title-pattern: "chore: release ${scope} ${component} ${version}"
           config-file: "release-please/rp-substrate-config.json"
           manifest-file: "release-please/rp-substrate-manifest.json"
           monorepo-tags: true
