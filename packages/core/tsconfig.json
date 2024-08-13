@@ -28,6 +28,6 @@
   "include": ["./src/**/*.ts", "./test/**/*.ts", "substrate-asset-transfer.ts"],
   "ts-node": {
     "esm": true,
-    "experimentalSpecifierResolution": "node",
-  },
+    "experimentalSpecifierResolution": "node"
+  }
 }
