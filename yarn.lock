@@ -382,7 +382,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@buildwithsygma/core@workspace:*, @buildwithsygma/core@workspace:^, @buildwithsygma/core@workspace:packages/core":
+"@buildwithsygma/core@npm:1.0.0, @buildwithsygma/core@workspace:*, @buildwithsygma/core@workspace:^, @buildwithsygma/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/core@workspace:packages/core"
   dependencies:
@@ -493,7 +493,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/substrate@workspace:packages/substrate"
   dependencies:
-    "@buildwithsygma/core": "workspace:^"
+    "@buildwithsygma/core": "npm:1.0.0"
     "@buildwithsygma/sygma-contracts": "npm:2.5.1"
     "@polkadot/api": "npm:^12.2.1"
     "@polkadot/api-base": "npm:^12.2.2"
