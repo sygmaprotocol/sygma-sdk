@@ -19,8 +19,12 @@ jobs:
           command: manifest
           release-type: node
           token: ${{secrets.RELEASE_TOKEN}}
+          group-pull-request-title-pattern: "chore: release ${scope} ${component} ${version}"
+          config-file: "release-please/rp-substrate-config.json"
+          manifest-file: "release-please/rp-substrate-manifest.json"
           monorepo-tags: true
           default-branch: main
+          path: "packages/substrate"
           changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false},{"type":"revert","hidden":true}]'
 
       - uses: actions/checkout@v4
