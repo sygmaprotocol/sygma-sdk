@@ -19,7 +19,6 @@ jobs:
           command: manifest
           release-type: node
           path: "packages/evm"
-          group-pull-request-title-pattern: "chore: release ${scope} ${component} ${version}"
           config-file: "release-please/rp-evm-config.json"
           manifest-file: "release-please/rp-evm-manifest.json"
           token: ${{secrets.RELEASE_TOKEN}}

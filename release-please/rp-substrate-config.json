@@ -1,5 +1,6 @@
 {
   "plugins": ["node-workspace"],
+  "pull-request-title-pattern": "chore: release ${scope} ${component} ${version}",
   "packages": {
     "packages/substrate": {
       "releaseType": "node",

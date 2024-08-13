@@ -18,7 +18,6 @@ jobs:
         with:
           command: manifest
           release-type: node
-          group-pull-request-title-pattern: "chore: release ${scope} ${component} ${version}"
           config-file: "release-please/rp-core-config.json"
           manifest-file: "release-please/rp-core-manifest.json"
           path: "packages/core"
