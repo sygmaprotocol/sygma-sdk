@@ -18,7 +18,7 @@ Make sure to set environment variable `SYGMA_ENV` to either `TESTNET` or `MAINNE
 
 ### Usage
 
-#### Config class
+#### Config class.
 
 ```typescript
 import { Config } from '@buildwithsygma/core';
