@@ -18,7 +18,7 @@ npm install @buildwithsygma/utils
 
 Currently you can use the `hasEnoughLiquidity` function to check if there is enough liquidity on the destination handler for the transfer to be completed.
 
-```javascript
+```typescript
 import { hasEnoughLiquidity } from '@buildwithsygma/utils';
 import { createEvmFungibleAssetTransfer } from '@buildwithsygma/evm';
 
@@ -31,8 +31,8 @@ const transfer = await createEvmFungibleAssetTransfer({
   destinationAddress: destinationAddress,
   sourceAddress: senderAddress,
 });
-
+...
+// destination provider RPC URL
 const destinationProviderUrl = 'your-provider-url'
-
-const hasEnoughLiquidity = hasEnoughLiquidity(transfer, destinationProviderUrl);
+const hasEnoughLiquidity = await hasEnoughLiquidity(transfer, destinationProviderUrl);
 ```

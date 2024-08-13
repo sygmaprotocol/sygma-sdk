@@ -1,4 +1,3 @@
-
 This package provides the latest typescript core primivites for the Sygma SDK packages. Core package allows you to get information about our supported Networks and resources. It provides some utility functions to get specific information about either all our domains. There are methods to get route information for the Sygma Protocol, as well as validating addresses for all the protocols that we currently support.
 
 ## Installation
@@ -17,16 +16,12 @@ npm install @buildwithsygma/core
 
 Make sure to set environment variable `SYGMA_ENV` to either `TESTNET` or `MAINNET` prior to using the SDK.
 
-## Support
-
 ### Usage
 
 #### Config class
 
-```javascript
-import {
-  Config
-} from '@buildwithsygma/core';
+```typescript
+import { Config } from '@buildwithsygma/core';
 
 const config = new Config();
 await config.init(process.env.SYGMA_ENV);
@@ -35,7 +30,7 @@ await config.init(process.env.SYGMA_ENV);
 const domainConfig = config.getDomainConfig(11155111); // sepolia chain Id
 
 // Get all the Sygma Domains based on Network types
-const domains = config.getDomains({ options: { networkTypes: ['evm' ]}});
+const domains = config.getDomains({ options: { networkTypes: ['evm'] } });
 
 // Get all Sepolia resources
 const resources = config.getResources(11155111);
@@ -43,18 +38,18 @@ const resources = config.getResources(11155111);
 
 #### Utility functions
 
-```javascript
-import { 
-  getSygmaScanLink, 
-  Environment, 
-  getDomains, 
-  getTransferStatus, 
+```typescript
+import {
+  getSygmaScanLink,
+  Environment,
+  getDomains,
+  getTransferStatus,
   getRoutes,
   getRawConfiguration,
   isValidSubstrateAddress,
   isValidEvmAddress,
   isValidBitcoinAddress,
-  isValidAddressForNetwork
+  isValidAddressForNetwork,
 } from '@buildwithsygma/core';
 
 const sourceHash = '0x...';
@@ -63,7 +58,7 @@ const sourceHash = '0x...';
 const sygmaScanLink = getSygmaScanLink(sourceHash, Environment.DEVNET);
 
 // Get all the Sygma Domains
-const domains = getDomains({ environment: Environment.DEVNET })
+const domains = getDomains({ environment: Environment.DEVNET });
 
 // Get all routes from Sepolia
 const routes = getRoutes(11155111, Environment.DEVNET);
