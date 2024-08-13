@@ -25,16 +25,17 @@ The Sygma SDK is written in TypeScript and allows developers to easily add cross
 ## Features
 
 Currently supported:
+
 - Transfering fungible assets between **Substrate** and **EVM** chains
 - Generic message passing between **EVM** chains
 
-## Installation
-```bash
-yarn add @buildwithsygma/core
-yarn add @buildwithsygma/evm
-```
+## Packages
 
-## Example 
+- [`@buildwithsygma/core`](./packages/core/README.md)
+- [`@buildwithsygma/evm`](./packages/evm/README.md)
+- [`@buildwithsygma/substrate`](./packages/substrate/README.md)
+
+## Example
 
 For examples of usage, go to the [`examples`](./examples/) folder
 
@@ -43,16 +44,11 @@ For examples of usage, go to the [`examples`](./examples/) folder
 For interacting directly with the contracts, use the `@buildwithsygma/sygma-contracts` package.
 
 ## Support
+
 <a href="https://discord.gg/ykXsJKfhgq">
   <img alt="discord" src="https://img.shields.io/discord/999966147644493824?label=Discord&logo=discord&style=flat" />
 </a>
 
 ## License
+
 GNU Lesser General Public License v3.0
-
-
-
-
-
-
-
