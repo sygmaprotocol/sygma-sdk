@@ -7,6 +7,12 @@ import { HttpProvider } from 'web3-providers-http';
 
 import { getSubstrateHandlerBalance } from './substrate/balances.js';
 
+/**
+ * @category Utility
+ * @param transfer - either an EVM or Substrate fungible asset transfer
+ * @param destinationProviderUrl - URL of the destination provider
+ * @returns {boolean}
+ */
 export async function hasEnoughLiquidity(
   transfer:
     | Awaited<ReturnType<typeof createEvmFungibleAssetTransfer>>

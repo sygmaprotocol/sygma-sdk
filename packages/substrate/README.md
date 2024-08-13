@@ -16,7 +16,10 @@ npm install @buildwithsygma/substrate
 
 ## Environment Setup
 
-Make sure to set environment variable `SYGMA_ENV` to either `TESTNET` or `MAINNET` prior to using the SDK.
+Make sure to set environment variable `SYGMA_ENV` to either `TESTNET` or `MAINNET` prior to using the SDK. We also define this other env variables that are going to be used by this package:
+
+* `RHALA_RPC_URL`: your RPC url for Rhala to use this package with Rhala Testnet
+* `PRIVATE_MNEMONIC`: your private mnemonic to sign the transfers using this package. If you use are using this package on the browser, you don't need to provide this.
 
 ## Support
 
@@ -40,14 +43,14 @@ const keyring = new Keyring({ type: "sr25519" });
 await cryptoWaitReady();
 const account = keyring.addFromUri(MNEMONIC);
 
-const transfer = await createEvmFungibleAssetTransfer({
+const transferParams = {
   sourceDomain: 5231,
   destinationDomain: 11155111,
   sourceNetworkProvider: api,
   resource: "0x0000000000000000000000000000000000000000000000000000000000001100",
   amount: BigInt("5000000"),
   destinationAddress: recipient,
-});
+};
 
 const transfer = await createSubstrateFungibleAssetTransfer(transferParams);
 const transferTx = await transfer.getTransferTransaction();
