@@ -56,7 +56,7 @@
     "typescript": "5.0.4"
   },
   "dependencies": {
-    "@buildwithsygma/core": "workspace:^",
+    "@buildwithsygma/core": "1.0.0",
     "@buildwithsygma/sygma-contracts": "^2.8.0",
     "@ethersproject/abi": "^5.7.0",
     "@ethersproject/bytes": "^5.7.0",
