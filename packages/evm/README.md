@@ -26,11 +26,10 @@ Bridge configuration and list of supported networks for each environment can be 
 
 ### Fungible Token Transfers
 
-```javascript
+```typescript
 import { Environment } from '@buildwithsygma/core';
 import { createEvmFungibleAssetTransfer } from '@buildwithsygma/evm';
-
-
+...
 const transfer = await createEvmFungibleAssetTransfer({
   source: 11155111,
   destination: 17000,
@@ -40,19 +39,14 @@ const transfer = await createEvmFungibleAssetTransfer({
   destinationAddress: destinationAddress,
   sourceAddress: senderAddress,
 });
-
+...
 const approvalTransactions = await transfer.getApprovalTransactions();
-for (const approvalTransaction of approvalTransactions) {
-  await wallet.sendTransaction(approvalTransaction);
-}
-
 const transferTransaction = await transfer.getTransferTransaction();
-await wallet.sendTransaction(transferTransaction);
 ```
 
 ### Generic Transfers
 
-```javascript
+```typescript
 import { Environment } from '@buildwithsygma/core';
 import { createCrossChainContractCall } from '@buildwithsygma/evm';
 
@@ -79,7 +73,6 @@ const transfer = await createCrossChainContractCall<
 });
 
 const transferTransaction = await transfer.getTransferTransaction();
-await wallet.sendTransaction(transferTransaction);
 ```
 
 ## Examples
