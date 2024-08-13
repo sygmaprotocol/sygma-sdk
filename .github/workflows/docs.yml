@@ -15,8 +15,8 @@ jobs:
           node-version: 18
       - run: corepack enable
       - run: yarn install --immutable
-      - run: yarn run lint # lint code
       - run: yarn run build # compile typescript into javascript
+      - run: yarn run lint # lint code
       - name: Build docs
         run: npm run docs
       - name: Deploy
