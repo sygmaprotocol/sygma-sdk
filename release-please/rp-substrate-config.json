@@ -1,5 +1,6 @@
 {
   "plugins": ["node-workspace"],
+  "separate-pull-requests": true,
   "packages": {
     "packages/substrate": {
       "component": "substrate",
