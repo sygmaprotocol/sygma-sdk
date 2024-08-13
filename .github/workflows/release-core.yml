@@ -18,6 +18,7 @@ jobs:
         with:
           command: manifest
           release-type: node
+          path: "packages/core"
           token: ${{secrets.RELEASE_TOKEN}}
           monorepo-tags: true
           default-branch: main
