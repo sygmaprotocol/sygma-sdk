@@ -1,5 +1,11 @@
 # Changelog
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @buildwithsygma/core bumped to 1.0.0
+
 ## 1.0.0 (2024-08-13)
 
 
