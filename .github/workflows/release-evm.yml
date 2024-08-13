@@ -2,8 +2,8 @@ name: Publish Sygma SDK EVM package to GitHub Package Registry
 
 on:
   push:
-    branches: ['main']
-    paths: ['packages/evm/**']
+    branches: ["main"]
+    paths: ["packages/evm/**"]
 
 jobs:
   maybe-release:
@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
-        # you should probably do this after your regular CI checks passes
-        # it will analyze commits and create PR with new version and updated CHANGELOG:md file. On merging it will create github release page with changelog
+      # you should probably do this after your regular CI checks passes
+      # it will analyze commits and create PR with new version and updated CHANGELOG:md file. On merging it will create github release page with changelog
       - uses: google-github-actions/release-please-action@v3
         id: release
         with:
@@ -30,10 +30,10 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          cache: 'yarn'
+          cache: "yarn"
           node-version: 18
-          registry-url: 'https://registry.npmjs.org'
-          scope: '@buildwithsygma'
+          registry-url: "https://registry.npmjs.org"
+          scope: "@buildwithsygma"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         if: ${{ steps.release.outputs.releases_created }}
@@ -46,7 +46,7 @@ jobs:
         run: yarn install --immutable
         if: ${{ steps.release.outputs.releases_created }}
 
-      - run: yarn evm:build
+      - run: yarn build
         if: ${{ steps.release.outputs.releases_created }}
 
       - run: npm publish --workspace=@buildwithsygma/evm publish --access public
