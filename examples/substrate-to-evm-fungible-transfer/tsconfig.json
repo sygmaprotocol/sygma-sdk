@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"composite": true,
-		"module": "ES2022",
+		"module": "ESNext",
 		"allowJs": true,
 		"declaration": true,
 		"sourceMap": true,
@@ -13,7 +13,7 @@
 		"downlevelIteration": true,
 		"allowSyntheticDefaultImports": true,
 		"forceConsistentCasingInFileNames": true,
-		"moduleResolution": "node",
+		"moduleResolution": "node"
 	},
 	"include": [
 		"src"
