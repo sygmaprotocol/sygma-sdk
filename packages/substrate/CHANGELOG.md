@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/sygmaprotocol/sygma-sdk/compare/substrate-v1.0.0...substrate-v1.0.1) (2024-08-14)
+
+
+### Bug Fixes
+
+* substrate command update ([#449](https://github.com/sygmaprotocol/sygma-sdk/issues/449)) ([5164cdf](https://github.com/sygmaprotocol/sygma-sdk/commit/5164cdffdb56fd9973c05af043b426440cdbcfa5))
+
 ## 1.0.0 (2024-08-13)
 
 
