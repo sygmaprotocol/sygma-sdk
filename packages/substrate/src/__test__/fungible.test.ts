@@ -46,7 +46,6 @@ describe('SubstrateFungibleAssetTransfer', () => {
       const transfer = await createSubstrateFungibleAssetTransfer(transferRequest);
 
       expect(transfer.amount).toBe(BigInt(100));
-      expect(transfer.senderAddress).toBe(transfer.senderAddress);
       expect(transfer.sourceNetworkProvider).toBe(transfer.sourceNetworkProvider);
       expect(transfer.destinationAddress).toBe(transferRequest.destinationAddress);
     });

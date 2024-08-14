@@ -13,7 +13,6 @@ export abstract class BaseTransfer {
   protected sourceDomain: Domain;
   protected transferResource: EvmResource | SubstrateResource;
   protected sygmaConfiguration: Config;
-
   protected sourceAddress: string;
 
   public get source(): Domain {
