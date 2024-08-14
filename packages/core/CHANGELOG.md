@@ -1,18 +1,12 @@
 # Changelog
 
-## [1.0.1](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.0.0...evm-v1.0.1) (2024-08-14)
-
-
-### Bug Fixes
-
-* EVM dependency ([#446](https://github.com/sygmaprotocol/sygma-sdk/issues/446)) ([2252d8e](https://github.com/sygmaprotocol/sygma-sdk/commit/2252d8eadb047bf8a87db9d25fe59d7fed684129))
-
 ## 1.0.0 (2024-08-13)
 
 
 ### Features
 
 * Added Liquidity helper function in `@buildwithsygma/utils` ([#407](https://github.com/sygmaprotocol/sygma-sdk/issues/407)) ([ad7b041](https://github.com/sygmaprotocol/sygma-sdk/commit/ad7b041fd0ae510e3b91cf171ed9db15fccc1a2a))
+* btc interfaces definition ([#387](https://github.com/sygmaprotocol/sygma-sdk/issues/387)) ([57073e1](https://github.com/sygmaprotocol/sygma-sdk/commit/57073e1f9fbb828096c360b845f1cda1f343de2d))
 * Implement fungible EVM transfers v3 ([#375](https://github.com/sygmaprotocol/sygma-sdk/issues/375)) ([f0806d3](https://github.com/sygmaprotocol/sygma-sdk/commit/f0806d3eb446c4228ca4956ebfcf498c51d7c406))
 * Implement fungible substrate transfers  ([#378](https://github.com/sygmaprotocol/sygma-sdk/issues/378)) ([a1f0b50](https://github.com/sygmaprotocol/sygma-sdk/commit/a1f0b50ea8d90046595d72d876f012cbeb4048f2))
 * Implement generic EVM-&gt;EVM transfers ([#392](https://github.com/sygmaprotocol/sygma-sdk/issues/392)) ([a24e1e7](https://github.com/sygmaprotocol/sygma-sdk/commit/a24e1e78c2945458a5891d82c695dc84640c5bdd))
@@ -21,18 +15,9 @@
 
 ### Bug Fixes
 
-* Fee issue on cronos causes transaction to fail ([#413](https://github.com/sygmaprotocol/sygma-sdk/issues/413)) ([6202fee](https://github.com/sygmaprotocol/sygma-sdk/commit/6202feefd0d40a1397d0e86d91586d0d486b2619))
-* fixed faulty branch merge that breaks GMP ([#415](https://github.com/sygmaprotocol/sygma-sdk/issues/415)) ([4de22d6](https://github.com/sygmaprotocol/sygma-sdk/commit/4de22d68327830b8421d53e8e494abfe92fab426))
-* Fixed maximum stack call error ([#394](https://github.com/sygmaprotocol/sygma-sdk/issues/394)) ([6f1b700](https://github.com/sygmaprotocol/sygma-sdk/commit/6f1b7004803749477b280f484e2d03d5b930a416))
+* separation of rp configs ([#433](https://github.com/sygmaprotocol/sygma-sdk/issues/433)) ([1fc3931](https://github.com/sygmaprotocol/sygma-sdk/commit/1fc393170d5f495854eeba0f1f7c41b3e3ae4c4e))
 
 
 ### Miscellaneous Chores
 
 * release 1.0.0 ([bb6a505](https://github.com/sygmaprotocol/sygma-sdk/commit/bb6a5053d843960f445f0dacebe101745f4d908f))
-
-
-### Dependencies
-
-* The following workspace dependencies were updated
-  * dependencies
-    * @buildwithsygma/core bumped to 1.0.0
