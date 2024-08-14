@@ -15,7 +15,7 @@ import {
   fetchUTXOS,
   getFeeEstimates,
   processUtxos,
-} from "./blockstream-api.js";
+} from "./blockstreamApi.js";
 
 dotenv.config();
 
