@@ -14,7 +14,7 @@ or
 npm install @buildwithsygma/substrate
 ```
 
-## Environment Setup.
+## Environment Setup
 
 Make sure to set environment variable `SYGMA_ENV` to either `TESTNET` or `MAINNET` prior to using the SDK.
 
