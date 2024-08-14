@@ -65,6 +65,7 @@ export class Config {
       name: config.name,
       type: config.type,
       parachainId: (config as SubstrateConfig).parachainId,
+      // used in bitcoin transfers
       feeAddress: (config as BitcoinConfig).feeAddress,
     };
   }
