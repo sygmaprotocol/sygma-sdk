@@ -52,7 +52,11 @@ jobs:
       - run: yarn build
         if: ${{ steps.release.outputs.releases_created }}
 
+      - env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+        if: ${{ steps.release.outputs.releases_created }}
+        run: |
+          echo -e "\nnpmAuthToken: \"$NODE_AUTH_TOKEN\"" >> ./.yarnrc.yml
+
       - run: yarn workspace @buildwithsygma/substrate npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         if: ${{ steps.release.outputs.releases_created }}
