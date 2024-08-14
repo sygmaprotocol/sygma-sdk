@@ -22,8 +22,8 @@ import { genericMessageTransfer } from './utils/index.js';
 import { createTransactionRequest } from './utils/transaction.js';
 
 /**
- * Required parameters for initiating
- * a generic message transfer request
+ * Required parameters for initiating a generic
+ * message transfer request
  */
 export interface GenericMessageTransferRequest<
   ContractAbi extends Abi,
