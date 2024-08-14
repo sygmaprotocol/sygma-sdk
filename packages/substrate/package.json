@@ -55,7 +55,7 @@
     "typescript": "^5.4.0"
   },
   "dependencies": {
-    "@buildwithsygma/core": "1.0.0",
+    "@buildwithsygma/core": "workspace:^",
     "@buildwithsygma/sygma-contracts": "2.5.1",
     "@polkadot/api": "^12.2.1",
     "@polkadot/api-base": "^12.2.2",
