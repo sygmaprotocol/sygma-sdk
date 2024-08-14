@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.0.1...evm-v1.0.2) (2024-08-14)
+
+
+### Bug Fixes
+
+* release trigger ([#456](https://github.com/sygmaprotocol/sygma-sdk/issues/456)) ([e1792d9](https://github.com/sygmaprotocol/sygma-sdk/commit/e1792d9605ff1d51a0a96993e6814e4915ee35e3))
+
 ## [1.0.1](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.0.0...evm-v1.0.1) (2024-08-14)
 
 
