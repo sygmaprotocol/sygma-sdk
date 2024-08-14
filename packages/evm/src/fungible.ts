@@ -40,13 +40,12 @@ function calculateAdjustedAmount(transfer: EvmFungibleAssetTransfer, fee: EvmFee
     const maxFee = fee.maxFee!;
     const percentage = fee.percentage!;
     const userSpecifiedAmount = BigNumber.from(transfer.amount);
-
     let amount = transfer.amount;
-    //calculate amount without fee (percentage)
+    // calculate amount
+    // without fee (percentage)
     const feelessAmount = userSpecifiedAmount
       .mul(constants.WeiPerEther)
       .div(utils.parseEther(String(1 + percentage)));
-
     const calculatedFee = userSpecifiedAmount.sub(feelessAmount);
     amount = feelessAmount.toBigInt();
 
