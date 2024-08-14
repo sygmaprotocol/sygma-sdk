@@ -1,9 +1,8 @@
-import type { BitcoinResource } from '@buildwithsygma/core';
-import { Config } from '@buildwithsygma/core';
+import { BaseTransfer, Config } from '@buildwithsygma/core';
+import type { Config as TConfig, BitcoinResource, Domain } from '@buildwithsygma/core/types';
 import type { networks } from 'bitcoinjs-lib';
 import type { BitcoinTransferParams, BitcoinTransferRequest, TypeOfAddress, UTXOData } from 'types';
 
-import { BitcoinTransfer } from './bitcoinTransfer.js';
 import { getPsbt } from './utils/index.js';
 
 export async function createBitcoinFungibleTransfer(
@@ -14,7 +13,7 @@ export async function createBitcoinFungibleTransfer(
   return new BitcoinFungibleTransfer(params, config);
 }
 
-class BitcoinFungibleTransfer extends BitcoinTransfer {
+class BitcoinFungibleTransfer extends BaseTransfer {
   protected publicKey: Buffer;
   protected typeOfAddress: TypeOfAddress;
   protected network: networks.Network;
@@ -23,8 +22,13 @@ class BitcoinFungibleTransfer extends BitcoinTransfer {
   protected utxoData: UTXOData[];
   protected size: bigint;
   protected destinationAddress: string;
+  protected amount: bigint;
+  protected sourceDomain: Domain;
+  protected destinationDomain: Domain;
+  protected feeAddress: string;
+  protected feeAmount: bigint;
 
-  constructor(transfer: BitcoinTransferParams, config: Config) {
+  constructor(transfer: BitcoinTransferParams, config: TConfig) {
     super(transfer, config);
     this.destinationAddress = transfer.destinationAddress;
     this.amount = transfer.amount;
@@ -35,6 +39,11 @@ class BitcoinFungibleTransfer extends BitcoinTransfer {
     this.feeRate = transfer.feeRate;
     this.utxoData = transfer.utxoData;
     this.size = transfer.size;
+    this.sourceDomain = config.getDomain(transfer.source);
+    this.destinationDomain = config.getDomain(transfer.destination);
+
+    this.feeAddress = this.sourceDomain.feeAddress as string;
+    this.feeAmount = BigInt((this.resource as BitcoinResource).feeAmount!);
   }
 
   getTransferTransaction(): BitcoinTransferRequest {
