@@ -14,11 +14,11 @@ or
 npm install @buildwithsygma/evm
 ```
 
-## Environment Setup
+## Environment Setup.
 
 Make sure to set environment variable `SYGMA_ENV` to either `TESTNET` or `MAINNET` prior to using the SDK.
 
-## Support
+## Support.
 
 Bridge configuration and list of supported networks for each environment can be found at: [Sygma bridge shared configuration github](https://github.com/sygmaprotocol/sygma-shared-configuration)
 
