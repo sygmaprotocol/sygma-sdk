@@ -1,10 +1,12 @@
 import {
   Config,
+  Eip1193Provider,
+  EthereumConfig,
+  EvmResource,
   FeeHandlerType,
   isValidAddressForNetwork,
   SecurityModel,
 } from '@buildwithsygma/core';
-import type { Eip1193Provider, EvmResource, EthereumConfig } from '@buildwithsygma/core';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import type { TransactionRequest } from '@ethersproject/providers';
 import { Web3Provider } from '@ethersproject/providers';
@@ -99,7 +101,7 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
   protected destinationAddress: string = '';
   protected securityModel: SecurityModel;
   protected _adjustedAmount: bigint = BigInt(0);
-  private specifiedAmount: bigint;
+  private specifiedAmount: bigint; // Original value to transfer without deductions
 
   constructor(transfer: EvmFungibleTransferRequest, config: Config) {
     super(transfer, config);
@@ -113,7 +115,7 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
   /**
    * Returns amount to be transferred considering the fee
    */
-  get adjustedAmount(): bigint {
+  get amount(): bigint {
     return this._adjustedAmount;
   }
 
@@ -131,11 +133,7 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
   }
 
   protected getDepositData(): string {
-    return createERCDepositData(
-      this.adjustedAmount,
-      this.destinationAddress,
-      this.destination.parachainId,
-    );
+    return createERCDepositData(this.amount, this.destinationAddress, this.destination.parachainId);
   }
 
   /**
@@ -173,7 +171,7 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
     const erc20 = ERC20__factory.connect(resource.address, provider);
     const fee = await this.getFee();
 
-    await this.verifyAccountBalance();
+    await this.verifyAccountBalance(fee);
 
     const feeHandlerAllowance = await getERC20Allowance(
       erc20,
@@ -188,7 +186,7 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
       approvals.push(await approve(erc20, fee.handlerAddress, approvalAmount));
     }
 
-    const transferAmount = BigNumber.from(this.adjustedAmount);
+    const transferAmount = BigNumber.from(this.amount);
     if (handlerAllowance.lt(transferAmount)) {
       const approvalAmount = BigNumber.from(transferAmount).toString();
       approvals.push(await approve(erc20, handlerAddress, approvalAmount));
@@ -206,7 +204,7 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
     const bridge = Bridge__factory.connect(domainConfig.bridge, provider);
     const fee = await this.getFee();
 
-    await this.verifyAccountBalance();
+    await this.verifyAccountBalance(fee);
 
     const transferTx = await erc20Transfer({
       depositData: this.getDepositData(),
@@ -219,15 +217,26 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
     return createTransactionRequest(transferTx);
   }
 
-  async verifyAccountBalance(): Promise<void> {
+  async verifyAccountBalance(fee: EvmFee): Promise<void> {
     const resource = this.resource as EvmResource;
     const provider = new Web3Provider(this.sourceNetworkProvider);
-    const erc20 = ERC20__factory.connect(resource.address, provider);
-    const balance = await erc20.balanceOf(this.sourceAddress);
 
-    if (BigNumber.from(this.adjustedAmount).lte(0))
-      throw new Error('Amount should be bigger than zero');
+    // Native Token Balance check
+    if ([FeeHandlerType.BASIC, FeeHandlerType.TWAP].includes(fee.type)) {
+      const nativeBalance = await provider.getBalance(this.sourceAddress);
 
-    if (balance.lt(this.specifiedAmount)) throw new Error('Insufficient account balance');
+      if (nativeBalance.lt(fee.fee))
+        throw new Error(`Insufficient native token balance for network ${this.sourceDomain.name}`);
+    }
+
+    // ERC20 Token Balance check
+    if ([FeeHandlerType.BASIC, FeeHandlerType.PERCENTAGE].includes(fee.type)) {
+      const erc20 = ERC20__factory.connect(resource.address, provider);
+      const erc20TokenBalance = await erc20.balanceOf(this.sourceAddress);
+
+      if (erc20TokenBalance.lt(this.specifiedAmount)) {
+        throw new Error(`Insufficient ${resource.symbol} token balance`);
+      }
+    }
   }
 }
