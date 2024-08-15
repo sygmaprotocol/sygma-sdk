@@ -1,32 +1,42 @@
-import type { BaseTransferParams, Config, Eip1193Provider } from '@buildwithsygma/core';
+import type { Config, Eip1193Provider } from '@buildwithsygma/core';
 import { BaseTransfer } from '@buildwithsygma/core';
 import { providers } from 'ethers';
 
 import { TwapFeeCalculator } from './fee/TwapFee.js';
 import { getFeeInformation, BasicFeeCalculator, PercentageFeeCalculator } from './fee/index.js';
-import type { EvmFee } from './types.js';
+import type { EvmFee, EvmTransferParams } from './types.js';
 
-export interface EvmTransferParams extends BaseTransferParams {
-  sourceNetworkProvider: Eip1193Provider;
-}
-
-export class EvmTransfer extends BaseTransfer {
-  sourceNetworkProvider: Eip1193Provider;
+/**
+ * @internal
+ * @class EvmTransfer
+ *
+ * @abstract
+ * Base EVM transfer class
+ * housing common functionality
+ */
+export abstract class EvmTransfer extends BaseTransfer {
+  public readonly sourceNetworkProvider: Eip1193Provider;
 
   constructor(params: EvmTransferParams, config: Config) {
     super(params, config);
     this.sourceNetworkProvider = params.sourceNetworkProvider;
   }
 
+  /**
+   * Deposit Data is required
+   * by the sygma protocol to process
+   * transfer types
+   * @returns {string}
+   */
   protected getDepositData(): string {
     throw new Error('Method not implemented.');
   }
 
   /**
    * Returns fee based on transfer amount.
-   * @param amount By default it is original amount passed in constructor
+   * @returns {Promise<EvmFee>}
    */
-  async getFee(): Promise<EvmFee> {
+  public async getFee(): Promise<EvmFee> {
     const provider = new providers.Web3Provider(this.sourceNetworkProvider);
 
     const { feeHandlerAddress, feeHandlerType } = await getFeeInformation(

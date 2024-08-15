@@ -10,7 +10,7 @@ import {
 import { BigNumber } from 'ethers';
 import { parseEther } from 'ethers/lib/utils.js';
 
-import { createEvmFungibleAssetTransfer } from '../fungible.js';
+import { createFungibleAssetTransfer } from '../fungibleAssetTransfer.js';
 import type { TransactionRequest } from '../types.js';
 
 const TRANSFER_PARAMS = {
@@ -25,7 +25,7 @@ const TRANSFER_PARAMS = {
     caip19: '0x11',
   },
   amount: parseEther('10').toBigInt(),
-  destinationAddress: '0x98729c03c4D5e820F5e8c45558ae07aE63F97461',
+  recipientAddress: '0x98729c03c4D5e820F5e8c45558ae07aE63F97461',
 };
 
 const MOCKED_CONFIG = {
@@ -86,9 +86,9 @@ describe('Fungible - createEvmFungibleAssetTransfer', () => {
   });
 
   it('should create a transfer', async () => {
-    const transfer = await createEvmFungibleAssetTransfer(TRANSFER_PARAMS);
+    const transfer = await createFungibleAssetTransfer(TRANSFER_PARAMS);
     expect(transfer).toBeTruthy();
-    expect(transfer.amount).toEqual(parseEther('10').toBigInt());
+    expect(transfer.transferAmount).toEqual(parseEther('10').toBigInt());
   });
 
   it('should fail if fee handler is not registered', async () => {
@@ -98,7 +98,7 @@ describe('Fungible - createEvmFungibleAssetTransfer', () => {
         .mockResolvedValue('0x0000000000000000000000000000000000000000'),
     });
 
-    await expect(async () => await createEvmFungibleAssetTransfer(TRANSFER_PARAMS)).rejects.toThrow(
+    await expect(async () => await createFungibleAssetTransfer(TRANSFER_PARAMS)).rejects.toThrow(
       'Failed getting fee: route not registered on fee handler',
     );
   });
@@ -143,7 +143,7 @@ describe('Fungible - Fee', () => {
   });
 
   it('should return fee for a transfer', async () => {
-    const transfer = await createEvmFungibleAssetTransfer(TRANSFER_PARAMS);
+    const transfer = await createFungibleAssetTransfer(TRANSFER_PARAMS);
     const fee = await transfer.getFee();
 
     expect(fee.fee).toEqual(0n);
@@ -157,7 +157,7 @@ describe('Fungible - Fee', () => {
       calculateFee: jest.fn().mockResolvedValue([BigNumber.from(0)]),
     });
 
-    const transfer = await createEvmFungibleAssetTransfer(TRANSFER_PARAMS);
+    const transfer = await createFungibleAssetTransfer(TRANSFER_PARAMS);
     const fee = await transfer.getFee();
 
     // expect(fee.fee).toEqual(0n);
@@ -201,7 +201,7 @@ describe('Fungible - Approvals', () => {
   });
 
   it('should return approvals for a transfer', async () => {
-    const transfer = await createEvmFungibleAssetTransfer(TRANSFER_PARAMS);
+    const transfer = await createFungibleAssetTransfer(TRANSFER_PARAMS);
     const approvals = await transfer.getApprovalTransactions();
 
     expect(approvals.length).toBeGreaterThan(0);
@@ -244,7 +244,7 @@ describe('Fungible - Deposit', () => {
   });
 
   it('should return deposit transaction', async () => {
-    const transfer = await createEvmFungibleAssetTransfer(TRANSFER_PARAMS);
+    const transfer = await createFungibleAssetTransfer(TRANSFER_PARAMS);
     const depositTransaction = await transfer.getTransferTransaction();
 
     expect(depositTransaction).toBeTruthy();

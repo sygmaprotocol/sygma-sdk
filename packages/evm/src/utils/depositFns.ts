@@ -3,11 +3,27 @@ import type { Bridge } from '@buildwithsygma/sygma-contracts';
 import type { PopulatedTransaction, ethers } from 'ethers';
 import { BigNumber } from 'ethers';
 
-import type { EvmFee, FungibleTransferParams } from '../types.js';
+import type { EvmFee } from '../types.js';
 
 import { createPermissionlessGenericDepositData } from './helpers.js';
 
 export const ASSET_TRANSFER_GAS_LIMIT: BigNumber = BigNumber.from(300000);
+
+/** @internal */
+type AssetTransferParams = {
+  /** The unique identifier for the destination network on the bridge. */
+  domainId: string;
+  /** The unique identifier for the resource being transferred. */
+  resourceId: string;
+  /** The bridge instance used for the transfer. */
+  bridgeInstance: Bridge;
+  /** The fee data associated with the ERC20 token transfer, including the gas price and gas limit. */
+  feeData: EvmFee;
+  /** Deposit data including amount of tokens, length and recipient address */
+  depositData: string;
+  /** Optional overrides for the transaction, such as gas price, gas limit, or value. */
+  overrides?: ethers.PayableOverrides;
+};
 
 /**
  * Perform an erc20 transfer
@@ -27,15 +43,57 @@ export const ASSET_TRANSFER_GAS_LIMIT: BigNumber = BigNumber.from(300000);
  * @param {Erc20TransferParamsType} params - The parameters for the erc20 transfer function.
  * @returns {Promise<ContractTransaction>} - The populated transaction.
  */
-export const erc20Transfer = async ({
+export const assetTransfer = async ({
   bridgeInstance,
   domainId,
   resourceId,
   feeData,
   depositData,
   overrides,
-}: FungibleTransferParams): Promise<PopulatedTransaction> => {
+}: AssetTransferParams): Promise<PopulatedTransaction> => {
   // pass data to smartcontract function and create a transaction
+  return executeDeposit(domainId, resourceId, depositData, feeData, bridgeInstance, overrides);
+};
+
+type GenericMessageParams = {
+  executeFunctionSignature: string;
+  executeContractAddress: string;
+  maxFee: string;
+  depositor: string;
+  executionData: string;
+  domainId: string;
+  resourceId: string;
+  bridgeInstance: Bridge;
+  feeData: EvmFee;
+  overrides?: ethers.PayableOverrides;
+};
+
+/**
+ * Create a generic cross chain message transaction
+ * using typechain and ethers
+ * @category Generic Transfer
+ * @param {GenericMessageParams} param0
+ * @returns {Promise<PopulatedTransaction>}
+ */
+export const genericMessageTransfer = async ({
+  executeFunctionSignature,
+  executeContractAddress,
+  maxFee,
+  depositor,
+  executionData,
+  bridgeInstance,
+  domainId,
+  resourceId,
+  feeData,
+  overrides,
+}: GenericMessageParams): Promise<PopulatedTransaction> => {
+  const depositData = createPermissionlessGenericDepositData(
+    executeFunctionSignature,
+    executeContractAddress,
+    maxFee,
+    depositor,
+    executionData,
+  );
   return executeDeposit(domainId, resourceId, depositData, feeData, bridgeInstance, overrides);
 };
 
@@ -79,46 +137,4 @@ export const executeDeposit = async (
   );
 
   return depositTransaction;
-};
-
-type GenericMessageParams = {
-  executeFunctionSignature: string;
-  executeContractAddress: string;
-  maxFee: string;
-  depositor: string;
-  executionData: string;
-  domainId: string;
-  resourceId: string;
-  bridgeInstance: Bridge;
-  feeData: EvmFee;
-  overrides?: ethers.PayableOverrides;
-};
-
-/**
- * Create a generic cross chain message transaction
- * using typechain and ethers
- * @category Generic Transfer
- * @param {GenericMessageParams} param0
- * @returns {Promise<PopulatedTransaction>}
- */
-export const genericMessageTransfer = async ({
-  executeFunctionSignature,
-  executeContractAddress,
-  maxFee,
-  depositor,
-  executionData,
-  bridgeInstance,
-  domainId,
-  resourceId,
-  feeData,
-  overrides,
-}: GenericMessageParams): Promise<PopulatedTransaction> => {
-  const depositData = createPermissionlessGenericDepositData(
-    executeFunctionSignature,
-    executeContractAddress,
-    maxFee,
-    depositor,
-    executionData,
-  );
-  return executeDeposit(domainId, resourceId, depositData, feeData, bridgeInstance, overrides);
 };

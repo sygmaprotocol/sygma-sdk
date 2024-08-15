@@ -165,7 +165,7 @@ describe('deposit functions', () => {
         feeData,
         depositData,
       };
-      await EVM.erc20Transfer(erc20Params);
+      await EVM.assetTransfer(erc20Params);
 
       expect(EVM.executeDeposit).toBeCalledWith(
         domainId,
