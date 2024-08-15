@@ -1,11 +1,13 @@
-import { Config, isValidAddressForNetwork } from '@buildwithsygma/core';
+import type { Config } from '@buildwithsygma/core';
+import { isValidAddressForNetwork } from '@buildwithsygma/core';
 import { Bridge__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import { constants, utils } from 'ethers';
+
 import { EvmTransfer } from './evmTransfer.js';
-import { EvmAssetTransferParams, TransactionRequest } from './types.js';
-import { createTransactionRequest } from './utils/transaction.js';
+import type { EvmAssetTransferParams, TransactionRequest } from './types.js';
 import { assetTransfer } from './utils/index.js';
+import { createTransactionRequest } from './utils/transaction.js';
 
 /**
  * Asset transfers in EVM
@@ -34,7 +36,7 @@ export abstract class AssetTransfer extends EvmTransfer implements IAssetTransfe
   recipient!: string;
 
   // Recipient address
-  get recipientAddress() {
+  get recipientAddress(): string {
     return this.recipient;
   }
 

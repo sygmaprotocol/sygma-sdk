@@ -5,7 +5,7 @@ import type {
   FeeHandlerType,
   SecurityModel,
 } from '@buildwithsygma/core';
-import {
+import type {
   Abi,
   AbiParametersToPrimitiveTypes,
   ExtractAbiFunction,

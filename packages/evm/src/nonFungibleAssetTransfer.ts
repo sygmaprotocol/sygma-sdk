@@ -1,19 +1,22 @@
-import { NonFungibleTransferParams, TransactionRequest } from 'types';
-import { AssetTransfer } from './evmAssetTransfer';
-import { Config, EvmResource } from '@buildwithsygma/core';
-import { createERCDepositData } from './utils/helpers.js';
-import { PopulatedTransaction, providers } from 'ethers';
-import { approve, isApproved } from 'utils';
+import type { EvmResource } from '@buildwithsygma/core';
+import { Config } from '@buildwithsygma/core';
 import {
   Bridge__factory,
   ERC721MinterBurnerPauser__factory,
 } from '@buildwithsygma/sygma-contracts';
-import { createTransactionRequest } from 'utils/transaction';
+import type { PopulatedTransaction } from 'ethers';
+import { providers } from 'ethers';
+import type { NonFungibleTransferParams, TransactionRequest } from 'types';
+
+import { AssetTransfer } from './evmAssetTransfer.js';
+import { createERCDepositData } from './utils/helpers.js';
+import { approve, isApproved } from './utils/index.js';
+import { createTransactionRequest } from './utils/transaction.js';
 
 class NonFungibleAssetTransfer extends AssetTransfer {
   protected tokenId: string;
 
-  get transferTokenId() {
+  get transferTokenId(): string {
     return this.tokenId;
   }
 
