@@ -39,6 +39,7 @@ const mockedDestination = {
 };
 
 const mockedTransfer = {
+  transferAmount: 0n,
   amount: 0n,
   resource: mockedResource,
   config: {
@@ -67,7 +68,7 @@ describe('hasEnoughLiquidity - EVM', () => {
     expect(isEnough).toEqual(true);
   });
   it('should return false if there isnt enough liquidity', async () => {
-    mockedTransfer.amount = BigInt(10);
+    mockedTransfer.transferAmount = BigInt(10);
 
     const isEnough = await hasEnoughLiquidity(
       mockedTransfer as unknown as Awaited<ReturnType<typeof createFungibleAssetTransfer>>,
