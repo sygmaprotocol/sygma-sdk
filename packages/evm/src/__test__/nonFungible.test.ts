@@ -3,6 +3,7 @@ import { Config, FeeHandlerType, Network, ResourceType } from '@buildwithsygma/c
 import {
   BasicFeeHandler__factory,
   Bridge__factory,
+  ERC721MinterBurnerPauser__factory,
   FeeHandlerRouter__factory,
 } from '@buildwithsygma/sygma-contracts';
 import { BigNumber } from 'ethers';
@@ -135,5 +136,49 @@ describe('NonFungibleAssetTransfer', () => {
     const fee = await transfer.getFee();
     expect(fee).toBeTruthy();
     expect(fee.type).toEqual(FeeHandlerType.BASIC);
+  });
+
+  it('setter - setTokenId', async () => {
+    const transfer = await createNonFungibleAssetTransfer(TRANSFER_PARAMS);
+    const newTokenId = '2046189';
+    transfer.setTokenId(newTokenId);
+    const transferTokenId = transfer.transferTokenId;
+    expect(transferTokenId).toEqual(newTokenId);
+  });
+
+  it('approval - returns approval transaction if not approved', async () => {
+    const transfer = await createNonFungibleAssetTransfer(TRANSFER_PARAMS);
+
+    (ERC721MinterBurnerPauser__factory.connect as jest.Mock).mockReturnValue({
+      getApproved: jest.fn().mockResolvedValue('0x0000000000000000000000000000000000000000'),
+      populateTransaction: {
+        approve: jest.fn().mockReturnValue({
+          to: '',
+          value: BigInt(0),
+          data: '',
+        }),
+      },
+    });
+
+    const approvalTransaction = await transfer.getApprovalTransactions();
+    expect(approvalTransaction.length).toBeGreaterThan(0);
+  });
+
+  it('approval - returns empty array if approved', async () => {
+    const transfer = await createNonFungibleAssetTransfer(TRANSFER_PARAMS);
+
+    (ERC721MinterBurnerPauser__factory.connect as jest.Mock).mockReturnValue({
+      getApproved: jest.fn().mockResolvedValue('0x98729c03c4D5e820F5e8c45558ae07aE63F97461'),
+      populateTransaction: {
+        approve: jest.fn().mockReturnValue({
+          to: '',
+          value: BigInt(0),
+          data: '',
+        }),
+      },
+    });
+
+    const approvalTransaction = await transfer.getApprovalTransactions();
+    expect(approvalTransaction.length).toEqual(0);
   });
 });
