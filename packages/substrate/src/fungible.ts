@@ -1,10 +1,10 @@
 import type { BaseTransferParams, SubstrateResource } from '@buildwithsygma/core';
 import {
+  BaseTransfer,
   Config,
   FeeHandlerType,
   isValidAddressForNetwork,
   Network,
-  BaseTransfer,
   ResourceType,
 } from '@buildwithsygma/core';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
@@ -13,13 +13,18 @@ import type { AccountData } from '@polkadot/types/interfaces';
 import { BN } from '@polkadot/util';
 
 import type { SubstrateFee } from './types.js';
-import { deposit, getBasicFee, getFeeHandler, getPercentageFee } from './utils/index.js';
+import {
+  deposit,
+  getBasicFee,
+  getFeeHandler,
+  getPercentageFee,
+  getAssetBalance,
+} from './utils/index.js';
 
 export interface SubstrateAssetTransferRequest extends BaseTransferParams {
   sourceNetworkProvider: ApiPromise;
   amount: bigint;
   destinationAddress: string;
-  senderAddress: string;
 }
 
 export async function createSubstrateFungibleAssetTransfer(
@@ -35,12 +40,10 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
   amount: bigint;
   destinationAddress: string = '';
   sourceNetworkProvider: ApiPromise;
-  senderAddress: string;
 
   constructor(transfer: SubstrateAssetTransferRequest, config: Config) {
     super(transfer, config);
     this.amount = transfer.amount;
-    this.senderAddress = transfer.senderAddress;
     this.sourceNetworkProvider = transfer.sourceNetworkProvider;
 
     if (isValidAddressForNetwork(transfer.destinationAddress, this.destination.type))
@@ -106,19 +109,38 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
 
   async verifyBalance(): Promise<void> {
     const fee = await this.getFee();
-    const amountBigNumber = new BN(this.amount.toString());
 
-    if (!isValidAddressForNetwork(this.senderAddress, Network.SUBSTRATE))
+    if (!isValidAddressForNetwork(this.sourceAddress, Network.SUBSTRATE))
       throw new Error('Sender address is incorrect');
 
-    const { data: balance } = (await this.sourceNetworkProvider.query.system.account(
-      this.senderAddress,
-    )) as unknown as {
-      data: AccountData;
-    };
+    // Native token balance check
+    if ([FeeHandlerType.BASIC].includes(fee.type)) {
+      const amountBigNumber = new BN(this.amount.toString());
+      const { data: balance } = (await this.sourceNetworkProvider.query.system.account(
+        this.sourceAddress,
+      )) as unknown as {
+        data: AccountData;
+      };
 
-    if (new BN(balance.free).lt(amountBigNumber)) {
-      throw new Error('Insufficient balance to perform the Transaction');
+      if (new BN(balance.free).lt(amountBigNumber)) {
+        throw new Error('Insufficient balance to perform the Transaction');
+      }
+    }
+
+    // Transferable Token balance check
+    if ([FeeHandlerType.BASIC, FeeHandlerType.PERCENTAGE].includes(fee.type)) {
+      const substrateResource = this.resource as SubstrateResource;
+      if (!substrateResource.assetID) throw new Error('Asset ID is empty for the current resource');
+
+      const transferableTokenBalance = await getAssetBalance(
+        this.sourceNetworkProvider,
+        substrateResource.assetID,
+        this.sourceAddress,
+      );
+
+      if (new BN(transferableTokenBalance.balance).lt(fee.fee)) {
+        throw new Error('Insufficient asset balance to perform the Transaction');
+      }
     }
   }
 
