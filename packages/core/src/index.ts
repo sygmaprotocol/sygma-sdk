@@ -1,3 +1,5 @@
+import './environment.js';
+
 export * from './baseTransfer.js';
 export * from './config/config.js';
 export * from './constants.js';

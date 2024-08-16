@@ -111,10 +111,6 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
     if (!isValidAddressForNetwork(this.senderAddress, Network.SUBSTRATE))
       throw new Error('Sender address is incorrect');
 
-    if (amountBigNumber.lt(fee.fee)) {
-      throw new Error('Transfer amount should be higher than transfer fee');
-    }
-
     const { data: balance } = (await this.sourceNetworkProvider.query.system.account(
       this.senderAddress,
     )) as unknown as {

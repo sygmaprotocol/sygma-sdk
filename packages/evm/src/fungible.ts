@@ -1,8 +1,6 @@
+import type { Eip1193Provider, EthereumConfig, EvmResource } from '@buildwithsygma/core';
 import {
   Config,
-  Eip1193Provider,
-  EthereumConfig,
-  EvmResource,
   FeeHandlerType,
   isValidAddressForNetwork,
   SecurityModel,
