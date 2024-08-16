@@ -356,6 +356,8 @@ describe('Fungible - Deposit', () => {
 
     const transfer = await createEvmFungibleAssetTransfer(TRANSFER_PARAMS);
 
-    await expect(transfer.getTransferTransaction()).rejects.toThrow('Insufficient account balance');
+    await expect(transfer.getTransferTransaction()).rejects.toThrow(
+      'Insufficient ERC20 token balance',
+    );
   });
 });
