@@ -45,14 +45,21 @@ jest.mock('@buildwithsygma/core', () => ({
 // eslint-disable-next-line @typescript-eslint/no-unsafe-return
 jest.mock('@ethersproject/providers', () => ({
   ...jest.requireActual('@ethersproject/providers'),
-  Web3Provider: jest.fn(),
+  Web3Provider: jest.fn().mockImplementation(() => {
+    return {
+      getBalance: jest.fn().mockResolvedValue(BigNumber.from('110000000000000000')),
+    };
+  }),
 }));
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-return
 jest.mock('@buildwithsygma/sygma-contracts', () => ({
   ...jest.requireActual('@buildwithsygma/sygma-contracts'),
   Bridge__factory: { connect: jest.fn() },
-  ERC20__factory: { connect: jest.fn() },
+  ERC20__factory: {
+    balanceOf: jest.fn().mockResolvedValue(BigInt(1)),
+    connect: jest.fn(),
+  },
   BasicFeeHandler__factory: { connect: jest.fn() },
   PercentageERC20FeeHandler__factory: { connect: jest.fn() },
   FeeHandlerRouter__factory: { connect: jest.fn() },
@@ -215,7 +222,7 @@ describe('Fungible - Approvals', () => {
     });
 
     await expect(transfer.getApprovalTransactions()).rejects.toThrow(
-      'Insufficient account balance',
+      'Insufficient ERC20 token balance',
     );
   });
 });
@@ -281,6 +288,8 @@ describe('Fungible - Deposit', () => {
 
     const transfer = await createEvmFungibleAssetTransfer(TRANSFER_PARAMS);
 
-    await expect(transfer.getTransferTransaction()).rejects.toThrow('Insufficient account balance');
+    await expect(transfer.getTransferTransaction()).rejects.toThrow(
+      'Insufficient ERC20 token balance',
+    );
   });
 });

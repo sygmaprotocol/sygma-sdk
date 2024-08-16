@@ -233,7 +233,7 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
       const erc20TokenBalance = await erc20.balanceOf(this.sourceAddress);
 
       if (erc20TokenBalance.lt(this.specifiedAmount)) {
-        throw new Error(`Insufficient ${resource.symbol} token balance`);
+        throw new Error(`Insufficient ERC20 token balance`);
       }
     }
   }
