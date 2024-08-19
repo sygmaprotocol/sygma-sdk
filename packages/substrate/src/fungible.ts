@@ -9,7 +9,6 @@ import {
 } from '@buildwithsygma/core';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
-import type { AccountData } from '@polkadot/types/interfaces';
 import { BN } from '@polkadot/util';
 
 import type { SubstrateFee } from './types.js';
@@ -19,6 +18,7 @@ import {
   getFeeHandler,
   getPercentageFee,
   getAssetBalance,
+  getNativeTokenBalance,
 } from './utils/index.js';
 
 export interface SubstrateAssetTransferRequest extends BaseTransferParams {
@@ -116,11 +116,7 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
     // Native token balance check
     if ([FeeHandlerType.BASIC].includes(fee.type)) {
       const amountBigNumber = new BN(this.amount.toString());
-      const { data: balance } = (await this.sourceNetworkProvider.query.system.account(
-        this.sourceAddress,
-      )) as unknown as {
-        data: AccountData;
-      };
+      const balance = await getNativeTokenBalance(this.sourceNetworkProvider, this.sourceAddress);
 
       if (new BN(balance.free).lt(amountBigNumber)) {
         throw new Error('Insufficient balance to perform the Transaction');

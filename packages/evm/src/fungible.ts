@@ -98,7 +98,7 @@ export async function createEvmFungibleAssetTransfer(
 class EvmFungibleAssetTransfer extends EvmTransfer {
   protected destinationAddress: string = '';
   protected securityModel: SecurityModel;
-  protected _adjustedAmount: bigint = BigInt(0);
+  protected adjustedAmount: bigint = BigInt(0);
   private specifiedAmount: bigint; // Original value to transfer without deductions
 
   constructor(transfer: EvmFungibleTransferRequest, config: Config) {
@@ -114,7 +114,7 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
    * Returns amount to be transferred considering the fee
    */
   get amount(): bigint {
-    return this._adjustedAmount;
+    return this.adjustedAmount;
   }
 
   public getSourceNetworkProvider(): Eip1193Provider {
@@ -143,7 +143,7 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
     this.specifiedAmount = amount;
 
     const fee = await this.getFee();
-    this._adjustedAmount = calculateAdjustedAmount(amount, fee);
+    this.adjustedAmount = calculateAdjustedAmount(amount, fee);
   }
   /**
    * Sets the destination address

@@ -11,6 +11,7 @@ import {
   getAssetBalance,
   getBasicFee,
   getFeeHandler,
+  getNativeTokenBalance,
   getPercentageFee,
 } from '../utils/index.js';
 
@@ -118,6 +119,7 @@ describe('SubstrateFungibleAssetTransfer', () => {
       {} as SubmittableExtrinsic<'promise', SubmittableResult>,
     );
     (getAssetBalance as jest.Mock).mockResolvedValue({ balance: BigInt(1000) });
+    (getNativeTokenBalance as jest.Mock).mockResolvedValue({ free: BigInt(100) });
 
     const transfer = await createSubstrateFungibleAssetTransfer(transferRequest);
     const tx = await transfer.getTransferTransaction();
