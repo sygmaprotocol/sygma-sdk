@@ -1,7 +1,7 @@
 import type { SubstrateResource } from '@buildwithsygma/core';
+import { getAssetBalance, getNativeTokenBalance } from '@buildwithsygma/substrate/types/utils';
 import { ApiPromise } from '@polkadot/api';
 import { WsProvider } from '@polkadot/rpc-provider';
-import { getAssetBalance, getNativeTokenBalance } from '@buildwithsygma/substrate/types/utils';
 
 export const getSubstrateHandlerBalance = async (
   destinationProviderUrl: string,
