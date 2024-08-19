@@ -124,7 +124,7 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
     }
 
     // Transferable Token balance check
-    if ([FeeHandlerType.BASIC, FeeHandlerType.PERCENTAGE].includes(fee.type)) {
+    if ([FeeHandlerType.PERCENTAGE].includes(fee.type)) {
       const substrateResource = this.resource as SubstrateResource;
       if (!substrateResource.assetID) throw new Error('Asset ID is empty for the current resource');
 

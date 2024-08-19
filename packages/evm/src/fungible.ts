@@ -228,7 +228,7 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
     }
 
     // ERC20 Token Balance check
-    if ([FeeHandlerType.BASIC, FeeHandlerType.PERCENTAGE].includes(fee.type)) {
+    if ([FeeHandlerType.PERCENTAGE].includes(fee.type)) {
       const erc20 = ERC20__factory.connect(resource.address, provider);
       const erc20TokenBalance = await erc20.balanceOf(this.sourceAddress);
 
