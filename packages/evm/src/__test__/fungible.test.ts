@@ -215,7 +215,45 @@ describe('Fungible - Approvals', () => {
     expect(approvals.length).toBeGreaterThan(0);
   });
 
-  it('should throw an error if balance is not sufficient', async () => {
+  it('should throw an error if balance is not sufficient - Basic', async () => {
+    (BasicFeeHandler__factory.connect as jest.Mock).mockReturnValue({
+      feeHandlerType: jest.fn().mockResolvedValue('basic'),
+      calculateFee: jest.fn().mockResolvedValue([parseEther('1')]),
+    });
+
+    const transfer = await createEvmFungibleAssetTransfer({
+      ...TRANSFER_PARAMS,
+      amount: parseEther('0').toBigInt(),
+    });
+
+    await expect(transfer.getApprovalTransactions()).rejects.toThrow(
+      'Insufficient native token balance for network',
+    );
+  });
+
+  it('should throw an error if balance is not sufficient - Percentage', async () => {
+    (BasicFeeHandler__factory.connect as jest.Mock).mockReturnValue({
+      feeHandlerType: jest.fn().mockResolvedValue('percentage'),
+      calculateFee: jest.fn().mockResolvedValue([BigNumber.from(0)]),
+    });
+    (PercentageERC20FeeHandler__factory.connect as jest.Mock).mockReturnValue({
+      feeHandlerType: jest.fn().mockResolvedValue('percentage'),
+      calculateFee: jest.fn().mockResolvedValue([BigNumber.from(0)]),
+      _resourceIDToFeeBounds: jest.fn().mockResolvedValue({
+        lowerBound: parseEther('10'),
+        upperBound: parseEther('100'),
+      }),
+      _domainResourceIDToFee: jest.fn().mockResolvedValue(BigNumber.from(100)),
+      HUNDRED_PERCENT: jest.fn().mockResolvedValue(10000),
+    });
+    (ERC20__factory.connect as jest.Mock).mockReturnValue({
+      balanceOf: jest.fn().mockResolvedValue(BigNumber.from(parseEther('1').toBigInt())), // Mock balance less than the required amount
+      populateTransaction: {
+        approve: jest.fn().mockResolvedValue({}),
+      },
+      allowance: jest.fn().mockResolvedValue(parseEther('0')),
+    });
+
     const transfer = await createEvmFungibleAssetTransfer({
       ...TRANSFER_PARAMS,
       amount: parseEther('100').toBigInt(),
@@ -277,7 +315,21 @@ describe('Fungible - Deposit', () => {
     expect(depositTransaction).toBeTruthy();
   });
 
-  it('should throw ERROR - Insufficient account balance', async () => {
+  it('should throw ERROR - Insufficient account balance - Percentage', async () => {
+    (BasicFeeHandler__factory.connect as jest.Mock).mockReturnValue({
+      feeHandlerType: jest.fn().mockResolvedValue('percentage'),
+      calculateFee: jest.fn().mockResolvedValue([BigNumber.from(0)]),
+    });
+    (PercentageERC20FeeHandler__factory.connect as jest.Mock).mockReturnValue({
+      feeHandlerType: jest.fn().mockResolvedValue('percentage'),
+      calculateFee: jest.fn().mockResolvedValue([BigNumber.from(0)]),
+      _resourceIDToFeeBounds: jest.fn().mockResolvedValue({
+        lowerBound: parseEther('10'),
+        upperBound: parseEther('100'),
+      }),
+      _domainResourceIDToFee: jest.fn().mockResolvedValue(BigNumber.from(100)),
+      HUNDRED_PERCENT: jest.fn().mockResolvedValue(10000),
+    });
     (ERC20__factory.connect as jest.Mock).mockReturnValue({
       balanceOf: jest.fn().mockResolvedValue(BigNumber.from(parseEther('1').toBigInt())), // Mock balance less than the required amount
       populateTransaction: {
