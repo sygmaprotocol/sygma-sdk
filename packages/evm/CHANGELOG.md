@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.0.2...evm-v2.0.0) (2024-08-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* throw an error when the source account has low balance ([#417](https://github.com/sygmaprotocol/sygma-sdk/issues/417))
+
+### Bug Fixes
+
+* throw an error when the source account has low balance ([#417](https://github.com/sygmaprotocol/sygma-sdk/issues/417)) ([201942b](https://github.com/sygmaprotocol/sygma-sdk/commit/201942b610ce81763e73df52320d5c014491904d)), closes [#338](https://github.com/sygmaprotocol/sygma-sdk/issues/338)
+
 ## [1.0.2](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.0.1...evm-v1.0.2) (2024-08-14)
 
 
