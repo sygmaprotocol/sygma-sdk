@@ -8,7 +8,7 @@ import type { BigNumber, PopulatedTransaction } from 'ethers';
  * const tokenApproved = await isApproved(tokenInstance, handlerAddress, tokenId);
  * console.log(`Token approval status for ${tokenID}:`, isApproved);
  *
- * @category Token interactions
+ * @category Token iteractions
  * @param {ERC721MinterBurnerPauser} tokenInstance - The ERC721 token instance used to query the approval status.
  * @param {string} spender - The address for which the token approval status is checked.
  * @param {number} tokenId - The TokenId of the token to be checked.

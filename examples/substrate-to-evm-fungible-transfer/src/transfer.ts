@@ -37,13 +37,12 @@ const substrateTransfer = async (): Promise<void> => {
   const api = await ApiPromise.create({ provider: wsProvider });
 
   const transferParams: SubstrateAssetTransferRequest = {
-    source: RHALA_CHAIN_ID,
-    destination: SEPOLIA_CHAIN_ID,
+    sourceDomain: RHALA_CHAIN_ID,
+    destinationDomain: SEPOLIA_CHAIN_ID,
     sourceNetworkProvider: api,
     resource: RESOURCE_ID_SYGMA_USD,
-    amount: BigInt("1"),
+    amount: BigInt("5000000"),
     destinationAddress: recipient,
-    sourceAddress: account.address,
   };
 
   const transfer = await createSubstrateFungibleAssetTransfer(transferParams);
