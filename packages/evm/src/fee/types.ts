@@ -1,6 +1,7 @@
 import type { FeeHandlerType } from '@buildwithsygma/core';
 import type { ethers } from 'ethers';
-import type { EvmFee } from 'types';
+
+import type { EvmFee } from '../types.js';
 
 /**
  * Parameters that are required to
