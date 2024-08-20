@@ -19,13 +19,13 @@
     "pretty": false,
     "strict": true,
     "sourceMap": true,
-    "target": "es2020",
+    "target": "ES2022",
     "skipLibCheck": true,
     "baseUrl": "./src",
     "resolveJsonModule": true
   },
-  "exclude": ["node_modules/**"],
-  "include": ["./src/**/*.ts", "./test/**/*.ts", "substrate-asset-transfer.ts"],
+  "exclude": ["node_modules/**", "src/**/__test__/**", "test/**"],
+  "include": ["./src/**/*.ts"],
   "ts-node": {
     "esm": true,
     "experimentalSpecifierResolution": "node"
