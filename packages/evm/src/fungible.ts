@@ -9,7 +9,7 @@ import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts
 import type { TransactionRequest } from '@ethersproject/providers';
 import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber, constants, type PopulatedTransaction, utils } from 'ethers';
-import type { EvmFee } from 'types.js';
+import type { EvmFee } from './types.js';
 
 import type { EvmTransferParams } from './evmTransfer.js';
 import { EvmTransfer } from './evmTransfer.js';

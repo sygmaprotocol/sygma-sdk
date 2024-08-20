@@ -37,9 +37,10 @@ const substrateTransfer = async (): Promise<void> => {
   const api = await ApiPromise.create({ provider: wsProvider });
 
   const transferParams: SubstrateAssetTransferRequest = {
-    sourceDomain: RHALA_CHAIN_ID,
-    destinationDomain: SEPOLIA_CHAIN_ID,
+    source: RHALA_CHAIN_ID,
+    destination: SEPOLIA_CHAIN_ID,
     sourceNetworkProvider: api,
+    sourceAddress: account.address,
     resource: RESOURCE_ID_SYGMA_USD,
     amount: BigInt("5000000"),
     destinationAddress: recipient,
@@ -54,17 +55,17 @@ const substrateTransfer = async (): Promise<void> => {
 
     if (status.isInBlock) {
       console.log(
-        `Transaction included at blockHash ${status.asInBlock.toString()}`,
+        `Transaction included at blockHash ${status.asInBlock.toString()}`
       );
     } else if (status.isFinalized) {
       const blockNumber = results.blockNumber.toNumber();
       const extrinsicIndex = results.txIndex;
 
       console.log(
-        `Transaction finalized at blockHash ${status.asFinalized.toString()}`,
+        `Transaction finalized at blockHash ${status.asFinalized.toString()}`
       );
       console.log(
-        `Explorer URL: ${getSygmaExplorerTransferUrl({ blockNumber, extrinsicIndex })}`,
+        `Explorer URL: ${getSygmaExplorerTransferUrl({ blockNumber, extrinsicIndex })}`
       );
       unsub();
       process.exit(0);
