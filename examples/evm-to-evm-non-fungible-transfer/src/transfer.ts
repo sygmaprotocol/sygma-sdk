@@ -3,7 +3,7 @@ import {
   Environment,
   getSygmaScanLink,
 } from "@buildwithsygma/core";
-import { createFungibleAssetTransfer } from "@buildwithsygma/evm";
+import { createNonFungibleAssetTransfer } from "@buildwithsygma/evm";
 import dotenv from "dotenv";
 import { Wallet, providers } from "ethers";
 import Web3HttpProvider from "web3-providers-http";
@@ -17,7 +17,7 @@ if (!privateKey) {
 }
 
 const SEPOLIA_CHAIN_ID = 11155111;
-const HOLESKY_CHAIN_ID = 17000;
+const CRONOS_TESTNET_CHAIN_ID = 338;
 const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000000200";
 const SEPOLIA_RPC_URL =
@@ -31,7 +31,7 @@ const getTxExplorerUrl = (params: {
   chainId: number;
 }): string => `${explorerUrls[params.chainId]}/tx/${params.txHash}`;
 
-export async function erc20Transfer(): Promise<void> {
+export async function erc721Transfer(): Promise<void> {
   const web3Provider = new Web3HttpProvider(SEPOLIA_RPC_URL);
   const ethersWeb3Provider = new providers.Web3Provider(web3Provider);
   const wallet = new Wallet(privateKey ?? "", ethersWeb3Provider);
@@ -40,16 +40,16 @@ export async function erc20Transfer(): Promise<void> {
 
   const params = {
     source: SEPOLIA_CHAIN_ID,
-    destination: HOLESKY_CHAIN_ID,
+    destination: CRONOS_TESTNET_CHAIN_ID,
     sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
     resource: RESOURCE_ID,
-    amount: BigInt(2) * BigInt(1e18),
-    destinationAddress: destinationAddress,
+    tokenId: process.env.TOKEN_ID,
+    recipientAddress: destinationAddress,
     environment: Environment.DEVNET,
-    sourceAddress: destinationAddress,
+    sourceAddress,
   };
 
-  const transfer = await createFungibleAssetTransfer(params);
+  const transfer = await createNonFungibleAssetTransfer(params);
 
   const approvals = await transfer.getApprovalTransactions();
   console.log(`Approving Tokens (${approvals.length})...`);
@@ -69,4 +69,4 @@ export async function erc20Transfer(): Promise<void> {
   );
 }
 
-erc20Transfer().finally(() => {});
+erc721Transfer().finally(() => {});
