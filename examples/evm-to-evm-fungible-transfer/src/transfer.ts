@@ -1,5 +1,5 @@
 import { Eip1193Provider, Environment } from "@buildwithsygma/core";
-import { createNonFungibleAssetTransfer } from "@buildwithsygma/evm";
+import { createFungibleAssetTransfer } from "@buildwithsygma/evm";
 import dotenv from "dotenv";
 import { Wallet, providers } from "ethers";
 import Web3HttpProvider from "web3-providers-http";
@@ -31,6 +31,7 @@ export async function erc20Transfer(): Promise<void> {
   const web3Provider = new Web3HttpProvider(SEPOLIA_RPC_URL);
   const ethersWeb3Provider = new providers.Web3Provider(web3Provider);
   const wallet = new Wallet(privateKey ?? "", ethersWeb3Provider);
+  const sourceAddress = await wallet.getAddress();
   const destinationAddress = await wallet.getAddress();
 
   const params = {
@@ -44,7 +45,7 @@ export async function erc20Transfer(): Promise<void> {
     sourceAddress: destinationAddress,
   };
 
-  const transfer = await createNonFungibleAssetTransfer(params);
+  const transfer = await createFungibleAssetTransfer(params);
 
   const approvals = await transfer.getApprovalTransactions();
   console.log(`Approving Tokens (${approvals.length})...`);
