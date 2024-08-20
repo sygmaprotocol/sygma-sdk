@@ -42,8 +42,9 @@ const substrateTransfer = async (): Promise<void> => {
     sourceNetworkProvider: api,
     sourceAddress: account.address,
     resource: RESOURCE_ID_SYGMA_USD,
-    amount: BigInt("5000000"),
+    amount: BigInt("1"),
     destinationAddress: recipient,
+    sourceAddress: account.address,
   };
 
   const transfer = await createSubstrateFungibleAssetTransfer(transferParams);
