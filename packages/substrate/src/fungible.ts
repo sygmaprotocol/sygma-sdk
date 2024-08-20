@@ -1,10 +1,9 @@
 import type { BaseTransferParams, SubstrateResource } from '@buildwithsygma/core';
 import {
-  BaseTransfer,
   Config,
   FeeHandlerType,
   isValidAddressForNetwork,
-  Network,
+  BaseTransfer,
   ResourceType,
 } from '@buildwithsygma/core';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
@@ -12,14 +11,7 @@ import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import { BN } from '@polkadot/util';
 
 import type { SubstrateFee } from './types.js';
-import {
-  deposit,
-  getBasicFee,
-  getFeeHandler,
-  getPercentageFee,
-  getAssetBalance,
-  getNativeTokenBalance,
-} from './utils/index.js';
+import { deposit, getBasicFee, getFeeHandler, getPercentageFee } from './utils/index.js';
 
 export interface SubstrateAssetTransferRequest extends BaseTransferParams {
   sourceNetworkProvider: ApiPromise;
@@ -38,13 +30,14 @@ export async function createSubstrateFungibleAssetTransfer(
 
 class SubstrateFungibleAssetTransfer extends BaseTransfer {
   amount: bigint;
-  destinationAddress: string = '';
+  destinationAddress: string;
   sourceNetworkProvider: ApiPromise;
 
   constructor(transfer: SubstrateAssetTransferRequest, config: Config) {
     super(transfer, config);
     this.amount = transfer.amount;
     this.sourceNetworkProvider = transfer.sourceNetworkProvider;
+    this.destinationAddress = transfer.destinationAddress;
 
     if (isValidAddressForNetwork(transfer.destinationAddress, this.destination.type))
       this.destinationAddress = transfer.destinationAddress;
@@ -107,52 +100,22 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
     }
   }
 
-  async verifyBalance(): Promise<void> {
-    const fee = await this.getFee();
-
-    if (!isValidAddressForNetwork(this.sourceAddress, Network.SUBSTRATE))
-      throw new Error('Sender address is incorrect');
-
-    // Native token balance check
-    if ([FeeHandlerType.BASIC].includes(fee.type)) {
-      const amountBigNumber = new BN(this.amount.toString());
-      const balance = await getNativeTokenBalance(this.sourceNetworkProvider, this.sourceAddress);
-
-      if (new BN(balance.free).lt(amountBigNumber)) {
-        throw new Error('Insufficient balance to perform the Transaction');
-      }
-    }
-
-    // Transferable Token balance check
-    if ([FeeHandlerType.PERCENTAGE].includes(fee.type)) {
-      const substrateResource = this.resource as SubstrateResource;
-      if (!substrateResource.assetID) throw new Error('Asset ID is empty for the current resource');
-
-      const transferableTokenBalance = await getAssetBalance(
-        this.sourceNetworkProvider,
-        substrateResource.assetID,
-        this.sourceAddress,
-      );
-
-      if (new BN(transferableTokenBalance.balance).lt(fee.fee)) {
-        throw new Error('Insufficient asset balance to perform the Transaction');
-      }
-    }
-  }
-
   /**
    * Returns the transaction to be signed by the user.
    * @dev potentially add optional param to override transaction params
    * @returns {Promise<SubmittableExtrinsic<'promise', SubmittableResult>>}
    */
   async getTransferTransaction(): Promise<SubmittableExtrinsic<'promise', SubmittableResult>> {
+    const fee = await this.getFee();
     const resource = this.resource as SubstrateResource;
 
     if (this.resource.type !== ResourceType.FUNGIBLE) {
       throw new Error(`Resource type ${this.resource.type} not supported by asset transfer`);
     }
 
-    await this.verifyBalance();
+    if (new BN(this.amount.toString()).lt(fee.fee)) {
+      throw new Error('Transfer amount should be higher than transfer fee');
+    }
 
     return deposit(
       this.sourceNetworkProvider,
