@@ -13,17 +13,25 @@ if (!privateKey) {
 }
 
 const SEPOLIA_CHAIN_ID = 11155111;
-const HOLESKY_CHAIN_ID = 17000; 
-const RESOURCE_ID = "0x0000000000000000000000000000000000000000000000000000000000000200";
-const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "https://eth-sepolia-public.unifra.io"
+const HOLESKY_CHAIN_ID = 17000;
+const RESOURCE_ID =
+  "0x0000000000000000000000000000000000000000000000000000000000000200";
+const SEPOLIA_RPC_URL =
+  process.env.SEPOLIA_RPC_URL || "https://eth-sepolia-public.unifra.io";
 
-const explorerUrls: Record<number, string> = { [SEPOLIA_CHAIN_ID]: 'https://sepolia.etherscan.io' };
-const getTxExplorerUrl = (params: { txHash: string; chainId: number }): string => `${explorerUrls[params.chainId]}/tx/${params.txHash}`;
+const explorerUrls: Record<number, string> = {
+  [SEPOLIA_CHAIN_ID]: "https://sepolia.etherscan.io",
+};
+const getTxExplorerUrl = (params: {
+  txHash: string;
+  chainId: number;
+}): string => `${explorerUrls[params.chainId]}/tx/${params.txHash}`;
 
 export async function erc20Transfer(): Promise<void> {
   const web3Provider = new Web3HttpProvider(SEPOLIA_RPC_URL);
   const ethersWeb3Provider = new providers.Web3Provider(web3Provider);
   const wallet = new Wallet(privateKey ?? "", ethersWeb3Provider);
+  const sourceAddress = await wallet.getAddress();
   const destinationAddress = await wallet.getAddress();
 
   const params = {
@@ -32,9 +40,9 @@ export async function erc20Transfer(): Promise<void> {
     sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
     resource: RESOURCE_ID,
     amount: BigInt(2) * BigInt(1e18),
-    destinationAddress: destinationAddress,
     environment: Environment.DEVNET,
-    sourceAddress: destinationAddress,
+    destinationAddress,
+    sourceAddress,
   };
 
   const transfer = await createEvmFungibleAssetTransfer(params);
@@ -44,13 +52,17 @@ export async function erc20Transfer(): Promise<void> {
   for (const approval of approvals) {
     const response = await wallet.sendTransaction(approval);
     await response.wait();
-    console.log(`Approved, transaction: ${getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID })}`);
+    console.log(
+      `Approved, transaction: ${getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID })}`
+    );
   }
 
   const transferTx = await transfer.getTransferTransaction();
   const response = await wallet.sendTransaction(transferTx);
   await response.wait();
-  console.log(`Depositted, transaction:  ${getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID })}`);
+  console.log(
+    `Depositted, transaction:  ${getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID })}`
+  );
 }
 
 erc20Transfer().finally(() => {});
