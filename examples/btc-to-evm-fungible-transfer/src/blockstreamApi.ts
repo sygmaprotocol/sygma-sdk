@@ -162,6 +162,5 @@ export const calculateSize = ({
 
   pstb.signAllInputs(signer);
   pstb.finalizeAllInputs();
-  const vsize = pstb.extractTransaction(true).virtualSize();
-  return vsize;
+  return pstb.extractTransaction(true).virtualSize();
 };
