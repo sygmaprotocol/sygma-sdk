@@ -76,18 +76,18 @@ async function btcToEvmTransfer(): Promise<void> {
     utxoAmount: BigInt(utxo.value),
   })) as unknown as UTXOData[];
 
-  const size = calculateSize(
-    mapedUtxos,
-    networks.testnet,
-    publicKeyDropedDERHeader,
-    ADDRESS as unknown as string,
-    DESTINATION_CHAIN_ID,
-    BigInt(AMOUNT),
-    BigInt(0),
-    ADDRESS as unknown as string,
-    tweakedSigner,
-    TypeOfAddress.P2TR,
-  );
+  const size = calculateSize({
+    utxoData: mapedUtxos,
+    network: networks.testnet,
+    publicKey: publicKeyDropedDERHeader,
+    depositAddress: ADDRESS as unknown as string,
+    domainId: DESTINATION_CHAIN_ID,
+    amount: BigInt(AMOUNT),
+    feeValue: BigInt(0),
+    changeAddress: ADDRESS as unknown as string,
+    signer: tweakedSigner,
+    typeOfAddress: TypeOfAddress.P2TR,
+  });
 
   const transferParams: BitcoinTransferParams = {
     source: SOURCE_CAIPID,

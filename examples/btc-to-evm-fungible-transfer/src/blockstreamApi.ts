@@ -4,7 +4,7 @@ import type { Network, Signer } from "bitcoinjs-lib";
 import { payments, Psbt } from "bitcoinjs-lib";
 
 type CalculateSizeParams = {
-  utxoData: BitcoinTransferParams["utxoData"][];
+  utxoData: BitcoinTransferParams["utxoData"];
   network: Network;
   publicKey: Buffer;
   depositAddress: string;
