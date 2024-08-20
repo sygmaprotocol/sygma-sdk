@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/sygmaprotocol/sygma-sdk/compare/substrate-v1.0.1...substrate-v1.0.2) (2024-08-20)
+
+
+### Bug Fixes
+
+* Add low balance validation  ([#481](https://github.com/sygmaprotocol/sygma-sdk/issues/481)) ([db4fcaf](https://github.com/sygmaprotocol/sygma-sdk/commit/db4fcaf879e673674bd5c1cf97b86bab59c4a0ff))
+
 ## [1.0.1](https://github.com/sygmaprotocol/sygma-sdk/compare/substrate-v1.0.0...substrate-v1.0.1) (2024-08-14)
 
 
