@@ -1,5 +1,5 @@
 import type { SubstrateResource } from '@buildwithsygma/core';
-import { getAssetBalance, getNativeTokenBalance } from '@buildwithsygma/substrate/types/utils';
+import { getAssetBalance, getNativeTokenBalance } from '@buildwithsygma/substrate';
 import { ApiPromise } from '@polkadot/api';
 import { WsProvider } from '@polkadot/rpc-provider';
 

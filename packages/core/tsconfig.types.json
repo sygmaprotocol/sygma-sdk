@@ -1,13 +1,8 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "declaration": true,
-    "moduleResolution": "node",
     "emitDeclarationOnly": true,
-    "outDir": "types",
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "module": "ES2022",
-    "target": "ESNext"
+    "outDir": "types"
   },
-  "exclude": ["test"]
+  "exclude": ["test", "src/**/__test__/**"]
 }
