@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.0.0](https://github.com/sygmaprotocol/sygma-sdk/compare/utils-v1.0.0...utils-v2.0.0) (2024-08-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* throw an error when the source account has low balance ([#417](https://github.com/sygmaprotocol/sygma-sdk/issues/417))
+
+### Bug Fixes
+
+* throw an error when the source account has low balance ([#417](https://github.com/sygmaprotocol/sygma-sdk/issues/417)) ([201942b](https://github.com/sygmaprotocol/sygma-sdk/commit/201942b610ce81763e73df52320d5c014491904d)), closes [#338](https://github.com/sygmaprotocol/sygma-sdk/issues/338)
+* throw an error when the source account has low balance ([#474](https://github.com/sygmaprotocol/sygma-sdk/issues/474)) ([984d6e3](https://github.com/sygmaprotocol/sygma-sdk/commit/984d6e383f03ebb40ea05cca533c87a2b2382aca))
+
 ## 1.0.0 (2024-08-16)
 
 
