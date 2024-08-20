@@ -3,6 +3,19 @@ import type { BitcoinTransferParams } from "@buildwithsygma/bitcoin";
 import type { Network, Signer } from "bitcoinjs-lib";
 import { payments, Psbt } from "bitcoinjs-lib";
 
+type CalculateSizeParams = {
+  utxoData: BitcoinTransferParams["utxoData"][];
+  network: Network;
+  publicKey: Buffer;
+  depositAddress: string;
+  domainId: number;
+  amount: bigint;
+  feeValue: bigint;
+  changeAddress: string;
+  signer: Signer;
+  typeOfAddress: TypeOfAddress;
+};
+
 type Utxo = {
   txid: string;
   vout: number;
@@ -88,81 +101,64 @@ export const processUtxos = (utxo: Utxo[], amount: number): Utxo[] => {
  * Ee calculate the size of the transaction by using a tx with zero fee => input amount == output amount
  * Correctnes of the data is not relevant here, we need to know what's the size is going to be for the amount of inputs passed and the 4 outputs (deposit, change, fee, encoded data) we use to relay the funds
  */
-export const calculateSize = (
-  utxoData: BitcoinTransferParams["utxoData"][],
-  network: Network,
-  publicKey: Buffer,
-  depositAddress: string,
-  domainId: number,
-  amount: bigint,
-  feeValue: bigint,
-  changeAddress: string,
-  signer: Signer,
-  typeOfAddress: TypeOfAddress,
-): number => {
+export const calculateSize = ({
+  utxoData,
+  network,
+  publicKey,
+  depositAddress,
+  domainId,
+  amount,
+  feeValue,
+  changeAddress,
+  signer,
+  typeOfAddress,
+}: CalculateSizeParams): number => {
   const pstb = new Psbt({ network: network });
 
-  let scriptPubKey: Buffer;
-  if (typeOfAddress !== TypeOfAddress.P2TR) {
-    const { output } = payments.p2wpkh({
-      pubkey: publicKey,
-      network: network,
-    }) as { output: Buffer };
-    scriptPubKey = output;
-  } else {
-    const { output } = payments.p2tr({
-      internalPubkey: publicKey,
-      network: network,
-    }) as { output: Buffer };
-    scriptPubKey = output;
-  }
+  const scriptPubKey: Buffer = (typeOfAddress !== TypeOfAddress.P2TR)
+    ? payments.p2wpkh({ pubkey: publicKey, network: network }).output as Buffer
+    : payments.p2tr({ internalPubkey: publicKey, network: network }).output as Buffer;
 
-  if (typeOfAddress === TypeOfAddress.P2TR) {
-    utxoData.forEach((utxo) => {
-      pstb.addInput({
-        hash: utxo.utxoTxId,
-        index: utxo.utxoOutputIndex,
-        witnessUtxo: {
-          value: Number(utxo.utxoAmount),
-          script: scriptPubKey,
-        },
-        tapInternalKey: publicKey,
-      });
-    });
-  } else {
-    utxoData.forEach((utxo) => {
-      pstb.addInput({
-        hash: utxo.utxoTxId,
-        index: utxo.utxoOutputIndex,
-        witnessUtxo: {
-          value: Number(utxo.utxoAmount),
-          script: scriptPubKey,
-        },
-      });
-    });
-  }
+  utxoData.forEach((utxo) => {
+    const input = {
+      hash: utxo.utxoTxId,
+      index: utxo.utxoOutputIndex,
+      witnessUtxo: {
+        value: Number(utxo.utxoAmount),
+        script: scriptPubKey,
+      },
+    };
 
-  pstb.addOutput({
-    script: payments.embed({
-      data: [Buffer.from(`${depositAddress}_${domainId}`)],
-    }).output as unknown as Buffer,
-    value: 0,
+    if (typeOfAddress === TypeOfAddress.P2TR) {
+      (input as any).tapInternalKey = publicKey;
+    }
+
+    pstb.addInput(input);
   });
 
-  pstb.addOutput({
-    address: changeAddress,
-    value: Number(amount),
-  });
 
-  pstb.addOutput({
-    address: changeAddress,
-    value: Number(feeValue),
-  });
+  const outputs = [
+    {
+      script: payments.embed({
+        data: [Buffer.from(`${depositAddress}_${domainId}`)],
+      }).output as Buffer,
+      value: 0,
+    },
+    {
+      address: changeAddress,
+      value: Number(amount),
+    },
+    {
+      address: changeAddress,
+      value: Number(feeValue),
+    },
+    {
+      address: changeAddress,
+      value: 0,
+    }
+  ];
 
-  pstb.addOutput({
-    address: changeAddress,
-    value: 0,
-  });
+  outputs.forEach(output => pstb.addOutput(output));
 
   pstb.signAllInputs(signer);
   pstb.finalizeAllInputs();
