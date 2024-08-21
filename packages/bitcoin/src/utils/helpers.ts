@@ -103,10 +103,6 @@ export function createInputData({
  * @returns {boolean}
  */
 const invalidAmount = (amount: bigint, utxoData: UTXOData[]): boolean => {
-  if (utxoData.length === 1) {
-    return amount > Number(utxoData[0].utxoAmount);
-  }
-
   return utxoData.reduce((acc, curr) => acc + curr.utxoAmount, BigInt(0)) < amount;
 };
 

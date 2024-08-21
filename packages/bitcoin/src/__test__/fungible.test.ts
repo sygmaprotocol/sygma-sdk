@@ -204,7 +204,9 @@ describe('Fungible - createBitcoinFungibleTransfer', () => {
     it('should throw if the utxo amount is less than the amount to transfer', async () => {
       const transferParams = { ...P2PWKH_TRANSFER_PARAMS, amount: BigInt(100000001) };
       const transfer = await createBitcoinFungibleTransfer(transferParams);
-      expect(() => transfer.getTransferTransaction()).toThrow();
+      expect(() => transfer.getTransferTransaction()).toThrow(
+        'Not enough funds to spend from the UTXO',
+      );
     });
 
     it('should throw if public key is incorrect', async () => {
