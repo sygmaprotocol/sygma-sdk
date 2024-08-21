@@ -1,6 +1,5 @@
-import type { Config, Domain, Eip1193Provider } from '@buildwithsygma/core';
+import type { Config, Eip1193Provider } from '@buildwithsygma/core';
 import { BaseTransfer } from '@buildwithsygma/core';
-import { Web3Provider } from '@ethersproject/providers';
 import { providers } from 'ethers';
 
 import { TwapFeeCalculator } from './fee/TwapFee.js';
@@ -69,13 +68,7 @@ export abstract class EvmTransfer extends BaseTransfer {
     });
   }
 
-  public async setSource(domain: Domain, provider: Eip1193Provider): Promise<void> {
-    const web3Provider = new Web3Provider(provider);
-    const domainConfig = this.config.getDomainConfig(domain);
-
-    const { chainId } = await web3Provider.getNetwork();
-    if (domainConfig.chainId !== chainId) throw new Error('Inavlid network.');
-    this.sourceDomain = domain;
-    this.provider = provider;
+  public setSourceAddress(address: `0x${string}`): void {
+    this.sourceAddress = address;
   }
 }
