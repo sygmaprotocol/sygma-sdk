@@ -38,8 +38,15 @@ const mockedDestination = {
   type: Network.EVM,
 };
 
-const mockedTransfer = {
+const mockedTransferEVM = {
   transferAmount: 0n,
+  resource: mockedResource,
+  config: {
+    findDomainConfig: jest.fn(),
+  },
+};
+
+const mockedTransferSubstrate = {
   amount: 0n,
   resource: mockedResource,
   config: {
@@ -51,34 +58,37 @@ const destinationProviderUrl = 'mockedProviderUrl';
 
 describe('hasEnoughLiquidity - EVM', () => {
   beforeAll(() => {
-    Object.assign(mockedTransfer, { destination: mockedDestination });
+    Object.assign(mockedTransferEVM, { destination: mockedDestination });
 
-    mockedTransfer.config.findDomainConfig.mockReturnValue({
+    mockedTransferEVM.config.findDomainConfig.mockReturnValue({
       handlers: [mockedHandler],
       resources: [mockedResource],
     });
   });
 
   it('should return true if there is enough liquidity', async () => {
+    mockedTransferEVM.transferAmount = BigInt(1);
+
     const isEnough = await hasEnoughLiquidity(
-      mockedTransfer as unknown as Awaited<ReturnType<typeof createFungibleAssetTransfer>>,
+      mockedTransferEVM as unknown as Awaited<ReturnType<typeof createFungibleAssetTransfer>>,
       destinationProviderUrl,
     );
 
     expect(isEnough).toEqual(true);
   });
+
   it('should return false if there isnt enough liquidity', async () => {
-    mockedTransfer.transferAmount = BigInt(10);
+    mockedTransferEVM.transferAmount = BigInt(10);
 
     const isEnough = await hasEnoughLiquidity(
-      mockedTransfer as unknown as Awaited<ReturnType<typeof createFungibleAssetTransfer>>,
+      mockedTransferEVM as unknown as Awaited<ReturnType<typeof createFungibleAssetTransfer>>,
       destinationProviderUrl,
     );
 
     expect(isEnough).toEqual(false);
   });
   it('should throw error if handler is not found', async () => {
-    const mockedTransferClone = Object.assign({}, mockedTransfer);
+    const mockedTransferClone = Object.assign({}, mockedTransferEVM);
     mockedTransferClone.config.findDomainConfig = jest
       .fn()
       .mockReturnValue({ handlers: [], resources: [mockedResource] });
@@ -91,7 +101,7 @@ describe('hasEnoughLiquidity - EVM', () => {
     ).rejects.toThrow('Handler not found or unregistered for resource.');
   });
   it('should throw error if resource is not found', async () => {
-    const mockedTransferClone = Object.assign({}, mockedTransfer);
+    const mockedTransferClone = Object.assign({}, mockedTransferEVM);
     mockedTransferClone.config.findDomainConfig = jest
       .fn()
       .mockReturnValue({ handlers: [mockedHandler], resources: [] });
@@ -107,31 +117,31 @@ describe('hasEnoughLiquidity - EVM', () => {
 
 describe('hasEnoughLiquidity - substrate', () => {
   beforeAll(() => {
-    Object.assign(mockedTransfer, {
+    Object.assign(mockedTransferSubstrate, {
       destination: { ...mockedDestination, type: Network.SUBSTRATE },
     });
 
-    mockedTransfer.config.findDomainConfig.mockReturnValue({
+    mockedTransferSubstrate.config.findDomainConfig.mockReturnValue({
       handlers: [mockedHandler],
       resources: [mockedResource],
     });
   });
 
   it('should return true if there is enough liquidity', async () => {
-    mockedTransfer.amount = BigInt(5);
+    mockedTransferSubstrate.amount = BigInt(5);
 
     const isEnough = await hasEnoughLiquidity(
-      mockedTransfer as unknown as Awaited<ReturnType<typeof createFungibleAssetTransfer>>,
+      mockedTransferSubstrate as unknown as Awaited<ReturnType<typeof createFungibleAssetTransfer>>,
       destinationProviderUrl,
     );
 
     expect(isEnough).toEqual(true);
   });
   it('should return false if there isnt enough liquidity', async () => {
-    mockedTransfer.amount = BigInt(10);
+    mockedTransferSubstrate.amount = BigInt(10);
 
     const isEnough = await hasEnoughLiquidity(
-      mockedTransfer as unknown as Awaited<ReturnType<typeof createFungibleAssetTransfer>>,
+      mockedTransferSubstrate as unknown as Awaited<ReturnType<typeof createFungibleAssetTransfer>>,
       destinationProviderUrl,
     );
 
@@ -141,11 +151,11 @@ describe('hasEnoughLiquidity - substrate', () => {
 
 describe('hasEnoughLiquidity - error', () => {
   beforeAll(() => {
-    Object.assign(mockedTransfer, {
+    Object.assign(mockedTransferEVM, {
       destination: { ...mockedDestination, type: 'foo' as unknown as Network },
     });
 
-    mockedTransfer.config.findDomainConfig.mockReturnValue({
+    mockedTransferEVM.config.findDomainConfig.mockReturnValue({
       handlers: [mockedHandler],
       resources: [mockedResource],
     });
@@ -153,7 +163,7 @@ describe('hasEnoughLiquidity - error', () => {
 
   it('should return false if network type is not supported', async () => {
     const isEnough = await hasEnoughLiquidity(
-      mockedTransfer as unknown as Awaited<ReturnType<typeof createFungibleAssetTransfer>>,
+      mockedTransferSubstrate as unknown as Awaited<ReturnType<typeof createFungibleAssetTransfer>>,
       destinationProviderUrl,
     );
 

@@ -1,6 +1,8 @@
 ## Introduction
 
-This package provides utility functions for Sygma SDK.
+This package provides utility functions for seamless integration of Sygma SDK.
+
+[`@buildwithsygma/evm`](../evm/README.md) and [`@buildwithsygma/substrate`](../substrate/README.md) packages can be used to transfer tokens from one network to another. However, there is a possibilty that the transfer might fail due to insufficient liquidity on Sygma protocol handlers. Therefore, this package provides utility function that can be used to avoid such failures.
 
 ## Installation
 
@@ -14,9 +16,9 @@ or
 npm install @buildwithsygma/utils
 ```
 
-### Usage
+### Function: `hasEnoughLiquidity`
 
-Currently you can use the `hasEnoughLiquidity` function to check if there is enough liquidity on the destination handler for the transfer to be completed.
+#### Example
 
 ```typescript
 import { hasEnoughLiquidity } from '@buildwithsygma/utils';

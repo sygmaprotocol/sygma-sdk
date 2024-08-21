@@ -5,7 +5,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { constants, utils } from 'ethers';
 
 import { EvmTransfer } from './evmTransfer.js';
-import type { EvmAssetTransferParams, TransactionRequest } from './types.js';
+import type { EvmAssetTransferParams, EvmFee, TransactionRequest } from './types.js';
 import { assetTransfer } from './utils/index.js';
 import { createTransactionRequest } from './utils/transaction.js';
 
@@ -27,7 +27,8 @@ interface IAssetTransfer {
  */
 export abstract class AssetTransfer extends EvmTransfer implements IAssetTransfer {
   // amount in case if its a fungible transfer
-  protected amount?: bigint;
+  protected specifiedAmount?: bigint;
+  protected adjustedAmount?: bigint;
   // tokenId in case if its a non fungible transfer
   protected tokenId?: string;
   // Recipient address, marked "!"
@@ -42,9 +43,14 @@ export abstract class AssetTransfer extends EvmTransfer implements IAssetTransfe
 
   constructor(assetTransferParams: EvmAssetTransferParams, config: Config) {
     super(assetTransferParams, config);
-    this.amount = assetTransferParams.amount;
+    this.specifiedAmount = assetTransferParams.amount;
+    this.adjustedAmount = assetTransferParams.amount;
     this.tokenId = assetTransferParams.tokenId;
     this.setRecipientAddress(assetTransferParams.recipientAddress);
+  }
+
+  protected hasEnoughBalance(fee?: EvmFee): Promise<boolean> {
+    throw new Error('Method not implemented.');
   }
 
   public getApprovalTransactions(): Promise<Array<TransactionRequest>> {
@@ -60,6 +66,9 @@ export abstract class AssetTransfer extends EvmTransfer implements IAssetTransfe
     const provider = new Web3Provider(this.sourceNetworkProvider);
     const bridge = Bridge__factory.connect(domainConfig.bridge, provider);
     const fee = await this.getFee();
+
+    const hasBalance = await this.hasEnoughBalance(fee);
+    if (!hasBalance) throw new Error('Insufficient token balance');
 
     const transferTx = await assetTransfer({
       depositData: this.getDepositData(),

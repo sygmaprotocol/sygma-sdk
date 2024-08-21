@@ -1,5 +1,10 @@
 import type { EvmResource } from '@buildwithsygma/core';
-import { Config, FeeHandlerType, SecurityModel } from '@buildwithsygma/core';
+import {
+  Config,
+  FeeHandlerType,
+  isValidAddressForNetwork,
+  SecurityModel,
+} from '@buildwithsygma/core';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber, constants, type PopulatedTransaction, utils } from 'ethers';
@@ -26,18 +31,29 @@ class FungibleAssetTransfer extends AssetTransfer {
    * will be used in future
    */
   protected securityModel: SecurityModel;
-  // amount of tokens that will be transferred
-  protected amount: bigint;
+  /**
+   * @privateRemarks
+   *
+   * adjustedAmount is the amount that will
+   * be deducted from the users wallet
+   * specifiedAmount is the amount that the
+   * user wants to transfer
+   */
+  protected adjustedAmount!: bigint;
+  protected specifiedAmount: bigint;
 
-  // amount of tokens that will be transferred
+  /**
+   * Returns amount to be transferred considering the fee
+   */
   get transferAmount(): bigint {
-    return this.amount;
+    return this.adjustedAmount;
   }
 
   constructor(transfer: FungibleTransferParams, config: Config) {
     super(transfer, config);
-    this.amount = transfer.amount;
+    this.specifiedAmount = transfer.amount;
     this.securityModel = transfer.securityModel ?? SecurityModel.MPC;
+    this.setDestinationAddress(transfer.recipientAddress);
   }
 
   /**
@@ -46,7 +62,36 @@ class FungibleAssetTransfer extends AssetTransfer {
    * @returns {string}
    */
   protected getDepositData(): string {
-    return createERCDepositData(this.amount, this.recipient, this.destination.parachainId);
+    return createERCDepositData(this.adjustedAmount, this.recipient, this.destination.parachainId);
+  }
+
+  /**
+   * Checks the source wallet
+   * balance to see if transfer
+   * would fail
+   * @param {EvmFee} fee
+   * @returns {Promise<boolean>}
+   */
+  protected async hasEnoughBalance(fee?: EvmFee): Promise<boolean> {
+    const resource = this.resource as EvmResource;
+    const provider = new Web3Provider(this.sourceNetworkProvider);
+
+    if (fee) {
+      switch (fee.type) {
+        case FeeHandlerType.BASIC:
+        case FeeHandlerType.TWAP: {
+          const nativeBalance = await provider.getBalance(this.sourceAddress);
+          return nativeBalance.gt(fee.fee);
+        }
+        case FeeHandlerType.PERCENTAGE: {
+          const erc20 = ERC20__factory.connect(resource.address, provider);
+          const erc20TokenBalance = await erc20.balanceOf(this.sourceAddress);
+          return erc20TokenBalance.gt(fee.fee);
+        }
+      }
+    }
+
+    return false;
   }
 
   /**
@@ -55,9 +100,14 @@ class FungibleAssetTransfer extends AssetTransfer {
    * @returns {Promise<void>}
    */
   public async setTransferAmount(amount: bigint): Promise<void> {
-    this.amount = amount;
+    this.specifiedAmount = amount;
     const fee = await this.getFee();
-    this.amount = calculateAdjustedAmount(this, fee);
+    this.adjustedAmount = calculateAdjustedAmount(this.specifiedAmount, fee);
+  }
+
+  public setDestinationAddress(destinationAddress: string): void {
+    if (isValidAddressForNetwork(destinationAddress, this.destination.type))
+      this.recipient = destinationAddress;
   }
 
   /**
@@ -74,6 +124,10 @@ class FungibleAssetTransfer extends AssetTransfer {
 
     const erc20 = ERC20__factory.connect(resource.address, provider);
     const fee = await this.getFee();
+
+    const hasBalance = await this.hasEnoughBalance(fee);
+    if (!hasBalance) throw new Error('Insufficient balance');
+
     const feeHandlerAllowance = await getERC20Allowance(
       erc20,
       this.sourceAddress,
@@ -87,7 +141,7 @@ class FungibleAssetTransfer extends AssetTransfer {
       approvals.push(await approve(erc20, fee.handlerAddress, approvalAmount));
     }
 
-    const transferAmount = BigNumber.from(this.amount);
+    const transferAmount = BigNumber.from(this.adjustedAmount);
     if (handlerAllowance.lt(transferAmount)) {
       const approvalAmount = BigNumber.from(transferAmount).toString();
       approvals.push(await approve(erc20, handlerAddress, approvalAmount));
@@ -101,21 +155,20 @@ class FungibleAssetTransfer extends AssetTransfer {
  * @internal only
  * This method is used to adjust transfer amount
  * based on percentage fee calculations
- * @param {EvmFungibleAssetTransfer} transfer
+ * @param transferAmount
  * @param {EvmFee} fee
  */
-function calculateAdjustedAmount(transfer: FungibleAssetTransfer, fee: EvmFee): bigint {
-  //in case of percentage fee handler, we are calculating what amount + fee will result int user inputed amount
+function calculateAdjustedAmount(transferAmount: bigint, fee: EvmFee): bigint {
+  //in case of percentage fee handler, we are calculating what amount + fee will result int user inputted amount
   //in case of fixed(basic) fee handler, fee is taken from native token
   if (fee.type === FeeHandlerType.PERCENTAGE) {
     const minFee = fee.minFee!;
     const maxFee = fee.maxFee!;
     const percentage = fee.percentage!;
-    const userSpecifiedAmount = BigNumber.from(transfer.transferAmount);
-    let amount = transfer.transferAmount;
+    const userSpecifiedAmount = BigNumber.from(transferAmount);
+    let amount: bigint;
     // calculate amount
     // without fee (percentage)
-
     const feelessAmount = userSpecifiedAmount
       .mul(constants.WeiPerEther)
       .div(utils.parseEther(String(1 + percentage)));
@@ -123,19 +176,19 @@ function calculateAdjustedAmount(transfer: FungibleAssetTransfer, fee: EvmFee): 
     const calculatedFee = userSpecifiedAmount.sub(feelessAmount);
     amount = feelessAmount.toBigInt();
 
-    //if calculated percentage fee is less than lower fee bound, substract lower bound from user input. If lower bound is 0, bound is ignored
+    //if calculated percentage fee is less than lower fee bound, subtract lower bound from user input. If lower bound is 0, bound is ignored
     if (calculatedFee.lt(minFee) && minFee > 0) {
-      amount = transfer.transferAmount - minFee;
+      amount = transferAmount - minFee;
     }
-    //if calculated percentage fee is more than upper fee bound, substract upper bound from user input. If upper bound is 0, bound is ignored
+    //if calculated percentage fee is more than upper fee bound, subtract upper bound from user input. If upper bound is 0, bound is ignored
     if (calculatedFee.gt(maxFee) && maxFee > 0) {
-      amount = transfer.transferAmount - maxFee;
+      amount = transferAmount - maxFee;
     }
 
     return amount;
   }
 
-  return transfer.transferAmount;
+  return transferAmount;
 }
 
 /**

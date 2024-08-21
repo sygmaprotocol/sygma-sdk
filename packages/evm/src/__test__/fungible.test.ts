@@ -45,14 +45,21 @@ jest.mock('@buildwithsygma/core', () => ({
 // eslint-disable-next-line @typescript-eslint/no-unsafe-return
 jest.mock('@ethersproject/providers', () => ({
   ...jest.requireActual('@ethersproject/providers'),
-  Web3Provider: jest.fn(),
+  Web3Provider: jest.fn().mockImplementation(() => {
+    return {
+      getBalance: jest.fn().mockResolvedValue(BigNumber.from('110000000000000000')),
+    };
+  }),
 }));
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-return
 jest.mock('@buildwithsygma/sygma-contracts', () => ({
   ...jest.requireActual('@buildwithsygma/sygma-contracts'),
   Bridge__factory: { connect: jest.fn() },
-  ERC20__factory: { connect: jest.fn() },
+  ERC20__factory: {
+    balanceOf: jest.fn().mockResolvedValue(BigInt(1)),
+    connect: jest.fn(),
+  },
   BasicFeeHandler__factory: { connect: jest.fn() },
   PercentageERC20FeeHandler__factory: { connect: jest.fn() },
   FeeHandlerRouter__factory: { connect: jest.fn() },
@@ -182,6 +189,7 @@ describe('Fungible - Approvals', () => {
     });
 
     (ERC20__factory.connect as jest.Mock).mockReturnValue({
+      balanceOf: jest.fn().mockResolvedValue(BigNumber.from(parseEther('50'))),
       populateTransaction: {
         approve: jest.fn().mockResolvedValue({}),
       },
@@ -206,6 +214,51 @@ describe('Fungible - Approvals', () => {
 
     expect(approvals.length).toBeGreaterThan(0);
   });
+
+  it('should throw an error if balance is not sufficient - Basic', async () => {
+    (BasicFeeHandler__factory.connect as jest.Mock).mockReturnValue({
+      feeHandlerType: jest.fn().mockResolvedValue('basic'),
+      calculateFee: jest.fn().mockResolvedValue([parseEther('1')]),
+    });
+
+    const transfer = await createFungibleAssetTransfer({
+      ...TRANSFER_PARAMS,
+      amount: parseEther('0').toBigInt(),
+    });
+
+    await expect(transfer.getApprovalTransactions()).rejects.toThrow('Insufficient balance');
+  });
+
+  it('should throw an error if balance is not sufficient - Percentage', async () => {
+    (BasicFeeHandler__factory.connect as jest.Mock).mockReturnValue({
+      feeHandlerType: jest.fn().mockResolvedValue('percentage'),
+      calculateFee: jest.fn().mockResolvedValue([BigNumber.from(0)]),
+    });
+    (PercentageERC20FeeHandler__factory.connect as jest.Mock).mockReturnValue({
+      feeHandlerType: jest.fn().mockResolvedValue('percentage'),
+      calculateFee: jest.fn().mockResolvedValue([BigNumber.from(0)]),
+      _resourceIDToFeeBounds: jest.fn().mockResolvedValue({
+        lowerBound: parseEther('10'),
+        upperBound: parseEther('100'),
+      }),
+      _domainResourceIDToFee: jest.fn().mockResolvedValue(BigNumber.from(100)),
+      HUNDRED_PERCENT: jest.fn().mockResolvedValue(10000),
+    });
+    (ERC20__factory.connect as jest.Mock).mockReturnValue({
+      balanceOf: jest.fn().mockResolvedValue(BigNumber.from(parseEther('0').toBigInt())), // Mock balance less than the required amount
+      populateTransaction: {
+        approve: jest.fn().mockResolvedValue({}),
+      },
+      allowance: jest.fn().mockResolvedValue(parseEther('0')),
+    });
+
+    const transfer = await createFungibleAssetTransfer({
+      ...TRANSFER_PARAMS,
+      amount: parseEther('100').toBigInt(),
+    });
+
+    await expect(transfer.getApprovalTransactions()).rejects.toThrow('Insufficient balance');
+  });
 });
 
 describe('Fungible - Deposit', () => {
@@ -221,6 +274,14 @@ describe('Fungible - Deposit', () => {
       _domainResourceIDToFeeHandlerAddress: jest
         .fn()
         .mockResolvedValue('0x98729c03c4D5e820F5e8c45558ae07aE63F97461'),
+    });
+
+    (ERC20__factory.connect as jest.Mock).mockReturnValue({
+      balanceOf: jest.fn().mockResolvedValue(BigNumber.from(parseEther('50').toBigInt())),
+      populateTransaction: {
+        approve: jest.fn().mockResolvedValue({}),
+      },
+      allowance: jest.fn().mockResolvedValue(parseEther('0')),
     });
 
     (Bridge__factory.connect as jest.Mock).mockReturnValue({
@@ -248,5 +309,33 @@ describe('Fungible - Deposit', () => {
     const depositTransaction = await transfer.getTransferTransaction();
 
     expect(depositTransaction).toBeTruthy();
+  });
+
+  it('should throw ERROR - Insufficient account balance - Percentage', async () => {
+    (BasicFeeHandler__factory.connect as jest.Mock).mockReturnValue({
+      feeHandlerType: jest.fn().mockResolvedValue('percentage'),
+      calculateFee: jest.fn().mockResolvedValue([BigNumber.from(0)]),
+    });
+    (PercentageERC20FeeHandler__factory.connect as jest.Mock).mockReturnValue({
+      feeHandlerType: jest.fn().mockResolvedValue('percentage'),
+      calculateFee: jest.fn().mockResolvedValue([BigNumber.from(0)]),
+      _resourceIDToFeeBounds: jest.fn().mockResolvedValue({
+        lowerBound: parseEther('10'),
+        upperBound: parseEther('100'),
+      }),
+      _domainResourceIDToFee: jest.fn().mockResolvedValue(BigNumber.from(100)),
+      HUNDRED_PERCENT: jest.fn().mockResolvedValue(10000),
+    });
+    (ERC20__factory.connect as jest.Mock).mockReturnValue({
+      balanceOf: jest.fn().mockResolvedValue(BigNumber.from(parseEther('0').toBigInt())), // Mock balance less than the required amount
+      populateTransaction: {
+        approve: jest.fn().mockResolvedValue({}),
+      },
+      allowance: jest.fn().mockResolvedValue(parseEther('0')),
+    });
+
+    const transfer = await createFungibleAssetTransfer(TRANSFER_PARAMS);
+
+    await expect(transfer.getTransferTransaction()).rejects.toThrow('Insufficient token balance');
   });
 });

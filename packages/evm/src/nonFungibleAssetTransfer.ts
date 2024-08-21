@@ -6,7 +6,7 @@ import {
 } from '@buildwithsygma/sygma-contracts';
 import type { PopulatedTransaction } from 'ethers';
 import { providers } from 'ethers';
-import type { NonFungibleTransferParams, TransactionRequest } from 'types';
+import type { EvmFee, NonFungibleTransferParams, TransactionRequest } from 'types';
 
 import { AssetTransfer } from './evmAssetTransfer.js';
 import { createERCDepositData } from './utils/helpers.js';
@@ -32,6 +32,14 @@ class NonFungibleAssetTransfer extends AssetTransfer {
    */
   protected getDepositData(): string {
     return createERCDepositData(BigInt(this.tokenId), this.recipient, this.destination.parachainId);
+  }
+
+  protected async hasEnoughBalance(fee?: EvmFee): Promise<boolean> {
+    const { address } = this.resource as EvmResource;
+    const provider = new providers.Web3Provider(this.sourceNetworkProvider);
+    const erc721 = ERC721MinterBurnerPauser__factory.connect(address, provider);
+    const owner = await erc721.ownerOf(this.tokenId);
+    return owner.toLowerCase() === this.sourceAddress.toLowerCase();
   }
 
   public setTokenId(tokenId: string): void {

@@ -17,9 +17,9 @@ if (!privateKey) {
 }
 
 const SEPOLIA_CHAIN_ID = 11155111;
-const HOLESKY_CHAIN_ID = 17000;
+const AMOY_CHAIN_ID = 80002;
 const RESOURCE_ID =
-  "0x0000000000000000000000000000000000000000000000000000000000000200";
+  "0x0000000000000000000000000000000000000000000000000000000000000300";
 const SEPOLIA_RPC_URL =
   process.env.SEPOLIA_RPC_URL || "https://eth-sepolia-public.unifra.io";
 
@@ -40,13 +40,13 @@ export async function erc20Transfer(): Promise<void> {
 
   const params = {
     source: SEPOLIA_CHAIN_ID,
-    destination: HOLESKY_CHAIN_ID,
+    destination: AMOY_CHAIN_ID,
     sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
     resource: RESOURCE_ID,
-    amount: BigInt(2) * BigInt(1e18),
-    destinationAddress: destinationAddress,
-    environment: Environment.DEVNET,
-    sourceAddress: destinationAddress,
+    amount: BigInt(1) * BigInt(1e18),
+    environment: (process.env.SYGMA_ENV as Environment) || Environment.TESTNET,
+    destinationAddress,
+    sourceAddress,
   };
 
   const transfer = await createFungibleAssetTransfer(params);
