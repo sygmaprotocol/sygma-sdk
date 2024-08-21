@@ -61,7 +61,7 @@ export async function erc20Transfer(): Promise<void> {
   const response = await wallet.sendTransaction(transferTx);
   await response.wait();
   console.log(
-    `Depositted, transaction:  ${getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID })}`
+    `Deposited, transaction:  ${getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID })}`
   );
 }
 
