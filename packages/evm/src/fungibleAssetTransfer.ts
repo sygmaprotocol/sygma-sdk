@@ -1,4 +1,4 @@
-import type { EvmResource, SubstrateResource } from '@buildwithsygma/core';
+import type { EvmResource } from '@buildwithsygma/core';
 import { Config, FeeHandlerType, ResourceType, SecurityModel } from '@buildwithsygma/core';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
