@@ -5,7 +5,6 @@ import {
   isValidAddressForNetwork,
   SecurityModel,
 } from '@buildwithsygma/core';
-import type { EvmResource } from '@buildwithsygma/core';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import type { TransactionRequest } from '@ethersproject/providers';
 import { Web3Provider } from '@ethersproject/providers';

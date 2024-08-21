@@ -1,10 +1,10 @@
 import type { BaseTransferParams, SubstrateResource } from '@buildwithsygma/core';
 import {
-  Network,
   BaseTransfer,
   Config,
   FeeHandlerType,
   isValidAddressForNetwork,
+  Network,
   ResourceType,
 } from '@buildwithsygma/core';
 import type { ApiPromise, SubmittableResult } from '@polkadot/api';
