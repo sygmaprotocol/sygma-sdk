@@ -3,7 +3,10 @@ import {
   Environment,
   getSygmaScanLink,
 } from "@buildwithsygma/core";
-import { createFungibleAssetTransfer } from "@buildwithsygma/evm";
+import {
+  createFungibleAssetTransfer,
+  FungibleTransferParams,
+} from "@buildwithsygma/evm";
 import dotenv from "dotenv";
 import { Wallet, providers } from "ethers";
 import Web3HttpProvider from "web3-providers-http";
@@ -38,14 +41,13 @@ export async function erc20Transfer(): Promise<void> {
   const sourceAddress = await wallet.getAddress();
   const destinationAddress = await wallet.getAddress();
 
-  const params = {
+  const params: FungibleTransferParams = {
     source: SEPOLIA_CHAIN_ID,
     destination: AMOY_CHAIN_ID,
     sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
     resource: RESOURCE_ID,
     amount: BigInt(1) * BigInt(1e18),
-    environment: (process.env.SYGMA_ENV as Environment) || Environment.TESTNET,
-    destinationAddress,
+    recipientAddress: destinationAddress,
     sourceAddress,
   };
 

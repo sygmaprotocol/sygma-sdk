@@ -3,7 +3,10 @@ import {
   Environment,
   getSygmaScanLink,
 } from "@buildwithsygma/core";
-import { createNonFungibleAssetTransfer } from "@buildwithsygma/evm";
+import {
+  createNonFungibleAssetTransfer,
+  NonFungibleTransferParams,
+} from "@buildwithsygma/evm";
 import dotenv from "dotenv";
 import { Wallet, providers } from "ethers";
 import Web3HttpProvider from "web3-providers-http";
@@ -38,14 +41,13 @@ export async function erc721Transfer(): Promise<void> {
   const sourceAddress = await wallet.getAddress();
   const destinationAddress = await wallet.getAddress();
 
-  const params = {
+  const params: NonFungibleTransferParams = {
     source: SEPOLIA_CHAIN_ID,
     destination: CRONOS_TESTNET_CHAIN_ID,
     sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
     resource: RESOURCE_ID,
-    tokenId: process.env.TOKEN_ID,
+    tokenId: process.env.TOKEN_ID as string,
     recipientAddress: destinationAddress,
-    environment: Environment.DEVNET,
     sourceAddress,
   };
 
