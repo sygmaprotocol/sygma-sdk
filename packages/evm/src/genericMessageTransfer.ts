@@ -1,4 +1,4 @@
-import type { EthereumConfig } from '@buildwithsygma/core';
+import type { EthereumConfig, EvmResource, SubstrateResource } from '@buildwithsygma/core';
 import { Config, Network, ResourceType } from '@buildwithsygma/core';
 import { Bridge__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
@@ -165,6 +165,16 @@ class GenericMessageTransfer<
     >,
   ): void {
     this.functionParameters = parameters;
+  }
+
+  public setResource(resource: EvmResource | SubstrateResource): void {
+    if (
+      resource.type !== ResourceType.PERMISSIONED_GENERIC &&
+      resource.type !== ResourceType.PERMISSIONLESS_GENERIC
+    ) {
+      throw new Error('Unsupported Resource type.');
+    }
+    this.transferResource = resource;
   }
 
   /**

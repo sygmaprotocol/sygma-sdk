@@ -1,4 +1,4 @@
-import type { Config, Domain, Eip1193Provider } from '@buildwithsygma/core';
+import type { Config, Domain, Eip1193Provider, EvmResource } from '@buildwithsygma/core';
 import { BaseTransfer } from '@buildwithsygma/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { providers } from 'ethers';

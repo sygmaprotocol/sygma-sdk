@@ -1,5 +1,5 @@
 import type { EvmResource } from '@buildwithsygma/core';
-import { Config } from '@buildwithsygma/core';
+import { Config, ResourceType } from '@buildwithsygma/core';
 import {
   Bridge__factory,
   ERC721MinterBurnerPauser__factory,
@@ -44,6 +44,13 @@ class NonFungibleAssetTransfer extends AssetTransfer {
 
   public setTokenId(tokenId: string): void {
     this.tokenId = tokenId;
+  }
+
+  public setResource(resource: EvmResource): void {
+    if (resource.type !== ResourceType.NON_FUNGIBLE) {
+      throw new Error('Unsupported Resource type.');
+    }
+    this.transferResource = resource;
   }
 
   public async getApprovalTransactions(): Promise<Array<TransactionRequest>> {
