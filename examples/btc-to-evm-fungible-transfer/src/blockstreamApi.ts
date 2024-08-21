@@ -30,11 +30,12 @@ type Utxo = {
 
 type FeeEstimates = Record<string, number>;
 
+const BLOCK_CONFIRMATION_INDEX = "5";
+
 export async function getFeeEstimates(blockstreamUrl: string): Promise<number> {
   if (!blockstreamUrl) throw new Error("Blockstream url is required");
   try {
     const response = await fetch(`${blockstreamUrl}/fee-estimates`);
-    const BLOCK_CONFIRMATION_INDEX = "5";
 
     const data = (await response.json()) as FeeEstimates;
 
