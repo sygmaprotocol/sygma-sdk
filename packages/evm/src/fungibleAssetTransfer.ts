@@ -20,7 +20,11 @@ import { createTransactionRequest } from './utils/transaction.js';
  * using Sygma protocol
  */
 class FungibleAssetTransfer extends AssetTransfer {
-  // will be used in future
+  /**
+   * @privateRemarks
+   *
+   * will be used in future
+   */
   protected securityModel: SecurityModel;
   // amount of tokens that will be transferred
   protected amount: bigint;
