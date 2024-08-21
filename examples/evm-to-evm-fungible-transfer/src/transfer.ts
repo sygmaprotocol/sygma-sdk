@@ -1,4 +1,5 @@
-import { Eip1193Provider, Environment } from "@buildwithsygma/core";
+import type { Eip1193Provider } from "@buildwithsygma/core";
+import { Environment } from "@buildwithsygma/core";
 import { createEvmFungibleAssetTransfer } from "@buildwithsygma/evm";
 import dotenv from "dotenv";
 import { Wallet, providers } from "ethers";
@@ -13,9 +14,9 @@ if (!privateKey) {
 }
 
 const SEPOLIA_CHAIN_ID = 11155111;
-const HOLESKY_CHAIN_ID = 17000;
+const AMOY_CHAIN_ID = 80002;
 const RESOURCE_ID =
-  "0x0000000000000000000000000000000000000000000000000000000000000200";
+  "0x0000000000000000000000000000000000000000000000000000000000000300";
 const SEPOLIA_RPC_URL =
   process.env.SEPOLIA_RPC_URL || "https://eth-sepolia-public.unifra.io";
 
@@ -36,17 +37,16 @@ export async function erc20Transfer(): Promise<void> {
 
   const params = {
     source: SEPOLIA_CHAIN_ID,
-    destination: HOLESKY_CHAIN_ID,
+    destination: AMOY_CHAIN_ID,
     sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
     resource: RESOURCE_ID,
-    amount: BigInt(2) * BigInt(1e18),
-    environment: Environment.DEVNET,
-    destinationAddress,
-    sourceAddress,
+    amount: BigInt(1) * BigInt(1e18),
+    destinationAddress: destinationAddress,
+    environment: (process.env.SYGMA_ENV as Environment) || Environment.TESTNET,
+    sourceAddress: sourceAddress,
   };
 
   const transfer = await createEvmFungibleAssetTransfer(params);
-
   const approvals = await transfer.getApprovalTransactions();
   console.log(`Approving Tokens (${approvals.length})...`);
   for (const approval of approvals) {

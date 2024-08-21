@@ -24,7 +24,6 @@ export class EvmTransfer extends BaseTransfer {
 
   /**
    * Returns fee based on transfer amount.
-   * @param amount By default it is original amount passed in constructor
    */
   async getFee(): Promise<EvmFee> {
     const provider = new providers.Web3Provider(this.sourceNetworkProvider);

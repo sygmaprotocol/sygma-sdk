@@ -1,6 +1,6 @@
 {
   "name": "@buildwithsygma/substrate",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Core primitives for bridging and message passing",
   "main": "dist-esm/index.js",
   "types": "types/index.d.ts",
@@ -57,9 +57,9 @@
   "dependencies": {
     "@buildwithsygma/core": "workspace:^",
     "@buildwithsygma/sygma-contracts": "2.5.1",
-    "@polkadot/api": "^12.2.1",
+    "@polkadot/api": "^12.3.1",
     "@polkadot/api-base": "^12.2.2",
-    "@polkadot/types": "^12.2.1",
+    "@polkadot/types": "^12.3.1",
     "@polkadot/util": "^12.6.2",
     "dotenv": "^16.4.5"
   }
