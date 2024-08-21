@@ -1,8 +1,4 @@
-import {
-  Eip1193Provider,
-  Environment,
-  getSygmaScanLink,
-} from "@buildwithsygma/core";
+import { Eip1193Provider, getSygmaScanLink } from "@buildwithsygma/core";
 import {
   createFungibleAssetTransfer,
   FungibleTransferParams,
