@@ -53,7 +53,6 @@ class FungibleAssetTransfer extends AssetTransfer {
     super(transfer, config);
     this.specifiedAmount = transfer.amount;
     this.securityModel = transfer.securityModel ?? SecurityModel.MPC;
-    this.setDestinationAddress(transfer.recipientAddress);
   }
 
   /**
@@ -103,11 +102,6 @@ class FungibleAssetTransfer extends AssetTransfer {
     this.specifiedAmount = amount;
     const fee = await this.getFee();
     this.adjustedAmount = calculateAdjustedAmount(this.specifiedAmount, fee);
-  }
-
-  public setDestinationAddress(destinationAddress: string): void {
-    if (isValidAddressForNetwork(destinationAddress, this.destination.type))
-      this.recipient = destinationAddress;
   }
 
   /**
