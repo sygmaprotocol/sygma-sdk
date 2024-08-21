@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    "module": "ES2022",
     "declaration": true,
     "declarationMap": true,
     "esModuleInterop": true,
@@ -18,9 +19,13 @@
     "pretty": false,
     "strict": true,
     "sourceMap": true,
+    "target": "ES2022",
     "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "resolveJsonModule": true
   },
-  "exclude": ["node_modules/**", "dist"]
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  }
 }
