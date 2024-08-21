@@ -26,7 +26,6 @@ export interface SubstrateAssetTransferRequest extends BaseTransferParams {
   sourceNetworkProvider: ApiPromise;
   amount: bigint;
   destinationAddress: string;
-  senderAddress: string;
 }
 
 export async function createSubstrateFungibleAssetTransfer(
@@ -42,12 +41,10 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
   amount: bigint;
   destinationAddress: string = '';
   sourceNetworkProvider: ApiPromise;
-  senderAddress: string;
 
   constructor(transfer: SubstrateAssetTransferRequest, config: Config) {
     super(transfer, config);
     this.amount = transfer.amount;
-    this.senderAddress = transfer.senderAddress;
     this.sourceNetworkProvider = transfer.sourceNetworkProvider;
 
     if (isValidAddressForNetwork(transfer.destinationAddress, this.destination.type))

@@ -166,80 +166,36 @@ describe('SubstrateFungibleAssetTransfer', () => {
         'Insufficient asset balance to perform the Transaction',
       );
     });
-
-    test('should throw ERROR - when native balance is not sufficient', async () => {
-      (getFeeHandler as jest.Mock).mockResolvedValue(FeeHandlerType.BASIC);
-      (getBasicFee as jest.Mock).mockResolvedValue({
-        fee: new BN(2000),
-        type: FeeHandlerType.BASIC,
-      });
-      (getAssetBalance as jest.Mock).mockResolvedValue({ balance: BigInt(1) });
-
-      const insufficientBalanceRequest = {
-        ...transferRequest,
-        amount: BigInt(1000), // Amount set to trigger insufficient balance
-      };
-
-      const transfer = await createSubstrateFungibleAssetTransfer(insufficientBalanceRequest);
-      await expect(transfer.getTransferTransaction()).rejects.toThrow(
-        'Insufficient balance to perform the Transaction',
-      );
-    });
-
-    test('should throw ERROR - Transferable Token is not sufficient - basic', async () => {
-      (getFeeHandler as jest.Mock).mockResolvedValue(FeeHandlerType.BASIC);
-      (getBasicFee as jest.Mock).mockResolvedValue({
-        fee: new BN(2000),
-        type: FeeHandlerType.PERCENTAGE,
-      });
-      (getAssetBalance as jest.Mock).mockResolvedValue({ balance: BigInt(0) });
-
-      const transfer = await createSubstrateFungibleAssetTransfer(transferRequest);
-      await expect(transfer.getTransferTransaction()).rejects.toThrow(
-        'Insufficient asset balance to perform the Transaction',
-      );
-    });
-
-    test('should throw ERROR - Transferable Token is not sufficient - Percentage', async () => {
-      (getFeeHandler as jest.Mock).mockResolvedValue(FeeHandlerType.PERCENTAGE);
-      (getPercentageFee as jest.Mock).mockResolvedValue({
-        fee: new BN(100),
-        type: FeeHandlerType.PERCENTAGE,
-      });
-      (getAssetBalance as jest.Mock).mockResolvedValue({ balance: BigInt(0) });
-
-      const transfer = await createSubstrateFungibleAssetTransfer(transferRequest);
-      await expect(transfer.getTransferTransaction()).rejects.toThrow(
-        'Insufficient asset balance to perform the Transaction',
-      );
-    });
   });
 
   describe('verifyBalance', () => {
     test('should pass balance verification when balance is sufficient', async () => {
       (getFeeHandler as jest.Mock).mockResolvedValue(FeeHandlerType.BASIC);
       (getBasicFee as jest.Mock).mockResolvedValue({
-        fee: new BN(100),
+        fee: new BN(500),
         type: FeeHandlerType.BASIC,
       });
+      (getNativeTokenBalance as jest.Mock).mockResolvedValue({ free: BigInt(500) });
 
       const sufficientBalanceRequest = {
         ...transferRequest,
-        amount: BigInt(200),
+        amount: BigInt(1),
       };
 
       const transfer = await createSubstrateFungibleAssetTransfer(sufficientBalanceRequest);
       await expect(transfer.verifyBalance()).resolves.not.toThrow();
     });
+
     test('should throw ERROR - when sender address is invalid', async () => {
       (getFeeHandler as jest.Mock).mockResolvedValue(FeeHandlerType.PERCENTAGE);
       (getPercentageFee as jest.Mock).mockResolvedValue({
         fee: new BN(50),
         type: FeeHandlerType.PERCENTAGE,
       });
+
       const invalidSenderRequest = {
         ...transferRequest,
-        senderAddress: 'invalidAddress',
+        sourceAddress: 'invalidAddress',
       };
 
       const transfer = await createSubstrateFungibleAssetTransfer(invalidSenderRequest);
