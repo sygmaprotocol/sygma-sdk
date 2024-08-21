@@ -32,6 +32,7 @@ export async function erc20Transfer(): Promise<void> {
   const web3Provider = new Web3HttpProvider(SEPOLIA_RPC_URL);
   const ethersWeb3Provider = new providers.Web3Provider(web3Provider);
   const wallet = new Wallet(privateKey ?? "", ethersWeb3Provider);
+  const sourceAddress = await wallet.getAddress();
   const destinationAddress = await wallet.getAddress();
 
   const params = {
@@ -42,7 +43,7 @@ export async function erc20Transfer(): Promise<void> {
     amount: BigInt(1) * BigInt(1e18),
     destinationAddress: destinationAddress,
     environment: (process.env.SYGMA_ENV as Environment) || Environment.TESTNET,
-    sourceAddress: destinationAddress,
+    sourceAddress: sourceAddress,
   };
 
   const transfer = await createEvmFungibleAssetTransfer(params);
@@ -52,7 +53,7 @@ export async function erc20Transfer(): Promise<void> {
     const response = await wallet.sendTransaction(approval);
     await response.wait();
     console.log(
-      `Approved, transaction: ${getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID })}`,
+      `Approved, transaction: ${getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID })}`
     );
   }
 
@@ -60,7 +61,7 @@ export async function erc20Transfer(): Promise<void> {
   const response = await wallet.sendTransaction(transferTx);
   await response.wait();
   console.log(
-    `Deposited, transaction:  ${getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID })}`,
+    `Deposited, transaction:  ${getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID })}`
   );
 }
 
