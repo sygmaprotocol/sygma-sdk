@@ -27,21 +27,18 @@ export function getScriptPubkey(
 ): {
   scriptPubKey: Buffer;
 } {
-  if (typeOfAddress === TypeOfAddress.P2WPKH) {
-    const { output } = payments.p2wpkh({
-      pubkey: publicKey,
-      network,
-    }) as PaymentReturnData;
+  const { output } =
+    typeOfAddress === TypeOfAddress.P2WPKH
+      ? (payments.p2wpkh({
+          pubkey: publicKey,
+          network,
+        }) as PaymentReturnData)
+      : (payments.p2tr({
+          internalPubkey: publicKey,
+          network,
+        }) as PaymentReturnData);
 
-    return { scriptPubKey: output };
-  } else {
-    const { output } = payments.p2tr({
-      internalPubkey: publicKey,
-      network,
-    }) as PaymentReturnData;
-
-    return { scriptPubKey: output };
-  }
+  return { scriptPubKey: output };
 }
 
 /**
@@ -102,7 +99,7 @@ export function createInputData({
  * @param utxoData - UTXO data
  * @returns {boolean}
  */
-const invalidAmount = (amount: bigint, utxoData: UTXOData[]): boolean => {
+const isValidAmount = (amount: bigint, utxoData: UTXOData[]): boolean => {
   return utxoData.reduce((acc, curr) => acc + curr.utxoAmount, BigInt(0)) < amount;
 };
 
@@ -130,7 +127,7 @@ export function getPsbt(
     throw new Error('UTXO data is required');
   }
 
-  if (invalidAmount(params.amount, params.utxoData)) {
+  if (isValidAmount(params.amount, params.utxoData)) {
     throw new Error('Not enough funds to spend from the UTXO');
   }
 
