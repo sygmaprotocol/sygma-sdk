@@ -1,6 +1,6 @@
 {
   "name": "@buildwithsygma/evm",
-  "version": "0.0.1",
+  "version": "1.0.3",
   "description": "Core primitives for bridging and message passing",
   "main": "dist-esm/index.js",
   "types": "types/index.d.ts",

@@ -1,9 +1,7 @@
 {
-  "exclude": ["src/**/__test__/**", "test/**"],
   "extends": "./tsconfig.json",
+  "exclude": ["node_modules/**", "src/**/__test__/**", "test/**"],
   "compilerOptions": {
-    "declaration": true,
-    "esModuleInterop": true,
     "module": "commonjs",
     "outDir": "./dist-cjs"
   }

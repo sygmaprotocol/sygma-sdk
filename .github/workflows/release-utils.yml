@@ -1,9 +1,9 @@
-name: Publish Sygma SDK to GitHub Package Registry
+name: Publish Sygma SDK Utilities package to GitHub Package Registry
 
 on:
   push:
     branches: ["main"]
-    paths: ["packages/core/**"]
+    paths: ["packages/utils/**"]
 
 jobs:
   maybe-release:
@@ -18,12 +18,12 @@ jobs:
         with:
           command: manifest
           release-type: node
-          config-file: "release-please/rp-core-config.json"
-          manifest-file: "release-please/rp-core-manifest.json"
-          path: "packages/core"
           token: ${{secrets.RELEASE_TOKEN}}
+          config-file: "release-please/rp-utils-config.json"
+          manifest-file: "release-please/rp-utils-manifest.json"
           monorepo-tags: true
           default-branch: main
+          path: "packages/utils"
           changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false},{"type":"revert","hidden":true}]'
 
       - uses: actions/checkout@v4
@@ -58,5 +58,5 @@ jobs:
         run: |
           echo -e "\nnpmAuthToken: \"$NODE_AUTH_TOKEN\"" >> ./.yarnrc.yml
 
-      - run: yarn workspace @buildwithsygma/core npm publish --access public
+      - run: yarn workspace @buildwithsygma/utils npm publish --access public
         if: ${{ steps.release.outputs.releases_created }}

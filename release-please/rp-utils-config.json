@@ -1,7 +1,9 @@
 {
-  "plugins": [],
+  "plugins": ["node-workspace"],
+  "separate-pull-requests": true,
   "packages": {
-    "packages/sdk": {
+    "packages/utils": {
+      "component": "utils",
       "releaseType": "node",
       "draft": false,
       "prerelease": false,

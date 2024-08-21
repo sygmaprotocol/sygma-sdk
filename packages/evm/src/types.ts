@@ -24,11 +24,17 @@ export type EvmFee = {
   handlerAddress: string;
   /** fungible token ERC20 address */
   tokenAddress?: string;
-  /** Percentage - applicable when percentage calculation is used */
+  /** Percentage - applicable when
+   *  percentage calculation is used
+   */
   percentage?: number;
-  /** minimum Fee - applicable when percentage calculation is used */
+  /** minimum Fee - applicable when
+   * percentage calculation is used
+   */
   minFee?: bigint;
-  /** maximum Fee - applicable when percentage calculation is used */
+  /** maximum Fee - applicable when
+   * percentage calculation is used
+   */
   maxFee?: bigint;
 };
 

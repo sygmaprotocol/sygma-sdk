@@ -1,12 +1,8 @@
 {
-    "compilerOptions": {
-        "declaration": true,
-        "emitDeclarationOnly": true,
-        "outDir": "types"
-    },
-    "extends": "./tsconfig.json",
-    "exclude": [
-        "test",
-        "src/**/__test__/**",
-    ]
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "emitDeclarationOnly": true,
+    "outDir": "types"
+  },
+  "exclude": ["test", "src/**/__test__/**"]
 }

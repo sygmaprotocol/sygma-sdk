@@ -1,42 +1,7 @@
 import type { SubstrateResource } from '@buildwithsygma/core';
+import { getAssetBalance, getNativeTokenBalance } from '@buildwithsygma/substrate';
 import { ApiPromise } from '@polkadot/api';
 import { WsProvider } from '@polkadot/rpc-provider';
-import type { Option } from '@polkadot/types';
-import type { AssetBalance, AccountData, AccountInfo } from '@polkadot/types/interfaces';
-
-/**
- * Retrieves the asset balance of a given account.
- *
- * @category Token interactions
- * @param {ApiPromise} api - The API instance used to query the chain.
- * @param {number} assetID - The ID of the asset to query. {@link https://github.com/sygmaprotocol/sygma-substrate-pallets#multiasset | More details}
- * @param {string} accountAddress - The address of the account for which to retrieve the asset balance.
- * @returns {Promise<AssetBalance>} A promise that resolves with the retrieved asset balance.
- */
-export const getAssetBalance = async (
-  api: ApiPromise,
-  assetID: number,
-  accountAddress: string,
-): Promise<AssetBalance> => {
-  const assetRes = await api.query.assets.account<Option<AssetBalance>>(assetID, accountAddress);
-  return assetRes.unwrapOrDefault();
-};
-
-/**
- * Retrieves balance value in native tokens of the network
- *
- * @category Token interactions
- * @param {ApiPromise} api - An ApiPromise instance.
- * @param {string} accountAddress - The address of the account for which to retrieve the asset balance.
- * @returns {Promise<AccountData>} A promise that resolves to a AccountData.
- */
-export const getNativeTokenBalance = async (
-  api: ApiPromise,
-  accountAddress: string,
-): Promise<AccountData> => {
-  const accountInfo = await api.query.system.account<AccountInfo>(accountAddress);
-  return accountInfo.data;
-};
 
 export const getSubstrateHandlerBalance = async (
   destinationProviderUrl: string,
