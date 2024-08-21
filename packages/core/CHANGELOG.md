@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/sygmaprotocol/sygma-sdk/compare/core-v1.0.1...core-v1.0.2) (2024-08-21)
+
+
+### Bug Fixes
+
+* Unified `tsconfig.json` in all subpackages to eliminate build discrepancies ([#487](https://github.com/sygmaprotocol/sygma-sdk/issues/487)) ([7be55ff](https://github.com/sygmaprotocol/sygma-sdk/commit/7be55ffed0dc079887ba7bfe11917dda4ddf890b))
+
 ## [1.0.1](https://github.com/sygmaprotocol/sygma-sdk/compare/core-v1.0.0...core-v1.0.1) (2024-08-20)
 
 
