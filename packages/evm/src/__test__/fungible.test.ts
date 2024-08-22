@@ -194,6 +194,7 @@ describe('Fungible - Fee', () => {
     const transfer = await createFungibleAssetTransfer(TRANSFER_PARAMS);
     await transfer.getFee();
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     expect(calculateFee.mock.calls[0][4]).toEqual(
       '0x0000000000000000000000000000000000000000000000008ac7230489e80000000000000000000000000000000000000000000000000000000000000000001498729c03c4d5e820f5e8c45558ae07ae63f97461',
     );
