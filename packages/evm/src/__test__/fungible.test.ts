@@ -171,6 +171,33 @@ describe('Fungible - Fee', () => {
     expect(fee.type).toEqual('percentage');
     expect(fee.handlerAddress).toEqual('0x98729c03c4D5e820F5e8c45558ae07aE63F97461');
   });
+
+  it('should query fee with deposit data', async () => {
+    const calculateFee = jest.fn().mockResolvedValue([BigNumber.from(0)]);
+
+    (PercentageERC20FeeHandler__factory.connect as jest.Mock).mockReturnValue({
+      feeHandlerType: jest.fn().mockResolvedValue('percentage'),
+      calculateFee,
+      _resourceIDToFeeBounds: jest.fn().mockResolvedValue({
+        lowerBound: parseEther('10'),
+        upperBound: parseEther('100'),
+      }),
+      _domainResourceIDToFee: jest.fn().mockResolvedValue(BigNumber.from(100)),
+      HUNDRED_PERCENT: jest.fn().mockResolvedValue(10000),
+    });
+
+    (BasicFeeHandler__factory.connect as jest.Mock).mockReturnValue({
+      feeHandlerType: jest.fn().mockResolvedValue('percentage'),
+      calculateFee: jest.fn().mockResolvedValue([BigNumber.from(0)]),
+    });
+
+    const transfer = await createFungibleAssetTransfer(TRANSFER_PARAMS);
+    await transfer.getFee();
+
+    expect(calculateFee.mock.calls[0][4]).toEqual(
+      '0x0000000000000000000000000000000000000000000000008ac7230489e80000000000000000000000000000000000000000000000000000000000000000001498729c03c4d5e820f5e8c45558ae07ae63f97461',
+    );
+  });
 });
 
 describe('Fungible - Approvals', () => {
