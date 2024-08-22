@@ -50,6 +50,7 @@ export class EvmTransfer extends BaseTransfer {
       resourceSygmaId: this.resource.resourceId,
       feeHandlerAddress,
       feeHandlerType,
+      depositData: this.getDepositData(),
     });
   }
 }
