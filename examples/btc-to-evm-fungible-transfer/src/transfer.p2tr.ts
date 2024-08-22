@@ -9,13 +9,10 @@ import { crypto, initEccLib, networks } from "bitcoinjs-lib";
 import { toXOnly } from "bitcoinjs-lib/src/psbt/bip371";
 import dotenv from "dotenv";
 import * as tinysecp from "tiny-secp256k1";
+import { broadcastTransaction, fetchUTXOS, getFeeEstimates, processUtxos } from '@buildwithsygma/utils'
 
 import {
-  broadcastTransaction,
   calculateSize,
-  fetchUTXOS,
-  getFeeEstimates,
-  processUtxos,
 } from "./blockstreamApi.js";
 
 dotenv.config();
@@ -62,11 +59,9 @@ async function btcToEvmTransfer(): Promise<void> {
     crypto.taggedHash("TapTweak", publicKeyDropedDERHeader),
   );
 
-  const feeRate = await getFeeEstimates(BLOCKSTREAM_URL);
+  const feeRate = await getFeeEstimates('5');
   const utxos = await fetchUTXOS(
-    ADDRESS as unknown as string,
-    BLOCKSTREAM_URL as unknown as string,
-  );
+    ADDRESS as unknown as string);
 
   const processedUtxos = processUtxos(utxos, AMOUNT);
 
@@ -117,8 +112,8 @@ async function btcToEvmTransfer(): Promise<void> {
   const tx = psbt.extractTransaction(true);
   console.log("Transaction hex", tx.toHex());
 
-  const txId = await broadcastTransaction(BLOCKSTREAM_URL, tx.toHex());
+  const txId = await broadcastTransaction(tx.toHex());
   console.log("Transaction broadcasted", `${EXPLORER_URL}/tx/${txId}`);
 }
 
-btcToEvmTransfer().finally(() => {});
+btcToEvmTransfer().finally(() => { });

@@ -10,12 +10,9 @@ import dotenv from "dotenv";
 import * as tinysecp from "tiny-secp256k1";
 
 import {
-  broadcastTransaction,
   calculateSize,
-  fetchUTXOS,
-  getFeeEstimates,
-  processUtxos,
 } from "./blockstreamApi.js";
+import { broadcastTransaction, fetchUTXOS, getFeeEstimates, processUtxos } from "@buildwithsygma/utils";
 
 dotenv.config();
 
@@ -54,11 +51,8 @@ async function btcToEvmTransfer(): Promise<void> {
   const rootKey = bip32.fromSeed(seed, networks.testnet);
   const derivedNode = rootKey.derivePath(DERIVATION_PATH);
 
-  const feeRate = await getFeeEstimates(BLOCKSTREAM_URL);
-  const utxos = await fetchUTXOS(
-    ADDRESS as unknown as string,
-    BLOCKSTREAM_URL as unknown as string,
-  );
+  const feeRate = await getFeeEstimates('5');
+  const utxos = await fetchUTXOS(ADDRESS as unknown as string);
 
   const processedUtxos = processUtxos(utxos, AMOUNT);
 
@@ -109,7 +103,7 @@ async function btcToEvmTransfer(): Promise<void> {
   const tx = psbt.extractTransaction(true);
   console.log("Transaction hex", tx.toHex());
 
-  const txId = await broadcastTransaction(BLOCKSTREAM_URL, tx.toHex());
+  const txId = await broadcastTransaction(tx.toHex());
   console.log("Transaction broadcasted", `${EXPLORER_URL}/tx/${txId}`);
 }
 

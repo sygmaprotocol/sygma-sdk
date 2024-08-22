@@ -9,7 +9,7 @@ import { Network, ResourceType } from '@buildwithsygma/core';
 import type { createEvmFungibleAssetTransfer } from '@buildwithsygma/evm';
 import { getEvmHandlerBalance } from '@buildwithsygma/evm';
 import type { createSubstrateFungibleAssetTransfer } from '@buildwithsygma/substrate/src';
-import { HttpProvider } from 'web3-providers-http';
+import HttpProvider from 'web3-providers-http';
 
 import { getSubstrateHandlerBalance } from './substrate/balances.js';
 

@@ -31,6 +31,7 @@
   "dependencies": {
     "@buildwithsygma/bitcoin": "workspace:^",
     "@buildwithsygma/core": "workspace:^",
+    "@buildwithsygma/utils": "workspace:^",
     "bip32": "^4.0.0",
     "bip39": "^3.1.0",
     "bitcoinjs-lib": "^6.1.6",

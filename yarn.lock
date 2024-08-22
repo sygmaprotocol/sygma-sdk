@@ -611,6 +611,7 @@ __metadata:
   dependencies:
     "@buildwithsygma/bitcoin": "workspace:^"
     "@buildwithsygma/core": "workspace:^"
+    "@buildwithsygma/utils": "workspace:^"
     bip32: "npm:^4.0.0"
     bip39: "npm:^3.1.0"
     bitcoinjs-lib: "npm:^6.1.6"
@@ -648,7 +649,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@buildwithsygma/utils@workspace:packages/utils":
+"@buildwithsygma/utils@workspace:^, @buildwithsygma/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/utils@workspace:packages/utils"
   dependencies:
