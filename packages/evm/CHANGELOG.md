@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.5](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.0.4...evm-v1.0.5) (2024-08-22)
+
+
+### Bug Fixes
+
+* Add missing `getDepositData` ([#494](https://github.com/sygmaprotocol/sygma-sdk/issues/494)) ([81c71fd](https://github.com/sygmaprotocol/sygma-sdk/commit/81c71fdf22dc5ec93503350b7de1d5a96c1235a9))
+
 ## [1.0.4](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.0.3...evm-v1.0.4) (2024-08-21)
 
 
