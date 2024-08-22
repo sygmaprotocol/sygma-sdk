@@ -6,9 +6,9 @@ import {
 } from '@buildwithsygma/sygma-contracts';
 import type { PopulatedTransaction } from 'ethers';
 import { providers } from 'ethers';
-import type { EvmFee, NonFungibleTransferParams, TransactionRequest } from 'types';
 
 import { AssetTransfer } from './evmAssetTransfer.js';
+import type { EvmFee, NonFungibleTransferParams, TransactionRequest } from './types.js';
 import { createERCDepositData } from './utils/helpers.js';
 import { approve, isApproved } from './utils/index.js';
 import { createTransactionRequest } from './utils/transaction.js';
@@ -34,6 +34,14 @@ class NonFungibleAssetTransfer extends AssetTransfer {
     return createERCDepositData(BigInt(this.tokenId), this.recipient, this.destination.parachainId);
   }
 
+  /**
+   * Returns true if source account
+   * has enough token balance to
+   * complete the transfer
+   * @param {EvmFee} fee Fee associated with transfer
+   * @returns {Promise<boolean>}
+   */
+  /* eslint-disable @typescript-eslint/no-unused-vars */
   protected async hasEnoughBalance(fee?: EvmFee): Promise<boolean> {
     const { address } = this.resource as EvmResource;
     const provider = new providers.Web3Provider(this.sourceNetworkProvider);

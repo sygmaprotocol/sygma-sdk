@@ -3,10 +3,9 @@ import { Config, FeeHandlerType, ResourceType, SecurityModel } from '@buildwiths
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber, constants, type PopulatedTransaction, utils } from 'ethers';
-import type { EvmFee, FungibleTransferParams } from 'types.js';
 
 import { AssetTransfer } from './evmAssetTransfer.js';
-import type { TransactionRequest } from './types.js';
+import type { EvmFee, FungibleTransferParams, TransactionRequest } from './types.js';
 import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
 import { createERCDepositData } from './utils/helpers.js';
 import { createTransactionRequest } from './utils/transaction.js';
@@ -34,7 +33,7 @@ class FungibleAssetTransfer extends AssetTransfer {
    * specifiedAmount is the amount that the
    * user wants to transfer
    */
-  protected adjustedAmount!: bigint;
+  protected declare adjustedAmount: bigint;
   protected specifiedAmount: bigint;
 
   /**

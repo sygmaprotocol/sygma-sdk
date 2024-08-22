@@ -49,6 +49,7 @@ export abstract class AssetTransfer extends EvmTransfer implements IAssetTransfe
     this.setRecipientAddress(assetTransferParams.recipientAddress);
   }
 
+  /* eslint-disable @typescript-eslint/no-unused-vars */
   protected hasEnoughBalance(fee?: EvmFee): Promise<boolean> {
     throw new Error('Method not implemented.');
   }

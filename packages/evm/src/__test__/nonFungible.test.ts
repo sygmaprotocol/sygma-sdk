@@ -8,9 +8,9 @@ import {
 } from '@buildwithsygma/sygma-contracts';
 import { BigNumber } from 'ethers';
 import { parseEther } from 'ethers/lib/utils.js';
-import type { NonFungibleTransferParams } from 'types';
 
 import { createNonFungibleAssetTransfer } from '../nonFungibleAssetTransfer.js';
+import type { NonFungibleTransferParams } from '../types.js';
 
 const TRANSFER_PARAMS: NonFungibleTransferParams = {
   source: 1,
