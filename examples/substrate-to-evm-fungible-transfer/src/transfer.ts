@@ -40,6 +40,7 @@ const substrateTransfer = async (): Promise<void> => {
     source: RHALA_CHAIN_ID,
     destination: SEPOLIA_CHAIN_ID,
     sourceNetworkProvider: api,
+    sourceAddress: account.address,
     resource: RESOURCE_ID_SYGMA_USD,
     amount: BigInt("1"),
     destinationAddress: recipient,

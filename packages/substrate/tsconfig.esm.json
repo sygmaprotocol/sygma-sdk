@@ -1,12 +1,8 @@
 {
-  "extends": "./tsconfig.base.json",
+  "extends": "./tsconfig.json",
+  "exclude": ["node_modules/**", "src/**/__test__/**", "test/**"],
   "compilerOptions": {
-    "module": "ES2020",
+    "module": "ES2022",
     "outDir": "./dist-esm"
-  },
-  "ts-node": {
-    "esm": true,
-    "experimentalSpecifierResolution": "node"
-  },
-  "exclude": ["test/**", "src/**/*.test.ts"]
+  }
 }

@@ -1,9 +1,8 @@
 {
-  "exclude": ["src/**/__test__/**", "test/**"],
   "extends": "./tsconfig.json",
+  "exclude": ["node_modules/**", "src/**/__test__/**", "test/**"],
   "compilerOptions": {
-    "module": "ES2020",
-    "esModuleInterop": true,
+    "module": "ES2022",
     "outDir": "./dist-esm"
   }
 }

@@ -1,13 +1,5 @@
 {
-  "extends": "./tsconfig.base.json",
-  "compilerOptions": {
-    "module": "ES2022",
-    "target": "es2020"
-  },
-  "include": ["./src/**/*.ts", "./test/**/*.ts", "substrate-asset-transfer.ts"],
-  "exclude": ["test/setupJest.js"],
-  "ts-node": {
-    "esm": true,
-    "experimentalSpecifierResolution": "node"
-  }
+  "extends": "../../tsconfig.base.json",
+  "exclude": ["node_modules/**"],
+  "include": ["./src/**/*.ts"]
 }
