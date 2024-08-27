@@ -20,8 +20,10 @@ class Transfer extends BaseTransfer {
 }
 
 describe('BaseTransfer', () => {
+  let config: Config;
+
   beforeAll(async () => {
-    const config = new Config();
+    config = new Config();
     await config.init(Environment.DEVNET);
   });
 
@@ -33,8 +35,6 @@ describe('BaseTransfer', () => {
   });
 
   it('should be able to instantiate a transfer object', async () => {
-    const config = new Config();
-    await config.init(Environment.DEVNET);
     const transfer = new Transfer(TRANSFER_PARAMS, config);
     expect(transfer).toBeTruthy();
     expect(transfer).toBeInstanceOf(Transfer);
