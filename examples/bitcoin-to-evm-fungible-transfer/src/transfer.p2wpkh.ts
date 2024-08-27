@@ -70,7 +70,7 @@ async function btcToEvmTransfer(): Promise<void> {
     publicKey: derivedNode.publicKey,
     depositAddress: ADDRESS as unknown as string,
     domainId: DESTINATION_CHAIN_ID,
-    amount: BigInt(AMOUNT),
+    amount: AMOUNT,
     feeValue: BigInt(0),
     changeAddress: ADDRESS as unknown as string,
     signer: derivedNode,

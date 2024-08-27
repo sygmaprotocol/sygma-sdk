@@ -1,5 +1,5 @@
 import { BaseTransfer, Config, Environment } from '@buildwithsygma/core';
-import type { Config as TConfig, BitcoinResource, Domain } from '@buildwithsygma/core/types';
+import type { Config as TConfig, BitcoinResource } from '@buildwithsygma/core/types';
 import type { networks } from 'bitcoinjs-lib';
 
 import type {
@@ -28,8 +28,6 @@ class BitcoinFungibleTransfer extends BaseTransfer {
   protected size: bigint;
   protected destinationAddress: string;
   protected amount: bigint;
-  protected sourceDomain: Domain;
-  protected destinationDomain: Domain;
   protected feeAddress: string;
   protected feeAmount: bigint;
 
@@ -44,8 +42,6 @@ class BitcoinFungibleTransfer extends BaseTransfer {
     this.feeRate = transfer.feeRate;
     this.utxoData = transfer.utxoData;
     this.size = transfer.size;
-    this.sourceDomain = config.getDomain(transfer.source);
-    this.destinationDomain = config.getDomain(transfer.destination);
 
     this.feeAddress = this.sourceDomain.feeAddress as string;
     this.feeAmount = BigInt((this.resource as BitcoinResource).feeAmount!);
