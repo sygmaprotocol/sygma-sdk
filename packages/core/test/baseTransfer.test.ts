@@ -20,6 +20,11 @@ class Transfer extends BaseTransfer {
 }
 
 describe('BaseTransfer', () => {
+  beforeAll(async () => {
+    const config = new Config();
+    await config.init(Environment.DEVNET);
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     fetchMock.resetMocks();
@@ -57,6 +62,7 @@ describe('BaseTransfer', () => {
 
     transfer.setResource(resource);
     expect(transfer.resource.caip19).toEqual(resource.caip19);
+    expect(transfer).toBeInstanceOf(Transfer)
   });
 
   it('should be able to set destination domain', async () => {
