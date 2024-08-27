@@ -37,6 +37,7 @@ describe('BaseTransfer', () => {
     await config.init(Environment.DEVNET);
     const transfer = new Transfer(TRANSFER_PARAMS, config);
     expect(transfer).toBeTruthy();
+    expect(transfer).toBeInstanceOf(Transfer);
   });
 
   it('should not be able to instantiate a transfer object with an invalid domain', async () => {
@@ -62,7 +63,6 @@ describe('BaseTransfer', () => {
 
     transfer.setResource(resource);
     expect(transfer.resource.caip19).toEqual(resource.caip19);
-    expect(transfer).toBeInstanceOf(Transfer)
   });
 
   it('should be able to set destination domain', async () => {
