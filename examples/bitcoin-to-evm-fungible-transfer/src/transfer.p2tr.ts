@@ -55,7 +55,6 @@ async function btcToEvmTransfer(): Promise<void> {
   const rootKey = bip32.fromSeed(seed, networks.testnet);
   const derivedNode = rootKey.derivePath(DERIVATION_PATH);
 
-  // Note: default example is going to run P2TR transfer
   const publicKeyDropedDERHeader = toXOnly(derivedNode.publicKey);
 
   const tweakedSigner = derivedNode.tweak(

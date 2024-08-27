@@ -1,4 +1,4 @@
-import { Config, Environment } from '@buildwithsygma/core';
+import { Config } from '@buildwithsygma/core';
 import * as bitcoin from 'bitcoinjs-lib';
 import { toXOnly } from 'bitcoinjs-lib/src/psbt/bip371';
 import * as tinysecp from 'tiny-secp256k1';
@@ -29,7 +29,6 @@ const P2TR_TRANSFER_PARAMS: BitcoinTransferParams = {
   typeOfAddress: TypeOfAddress.P2TR,
   network: bitcoin.networks.testnet,
   changeAddress: 'tb1pxmrzd94rs6wtg6ewdjfmuu7s88n2kdqc20vzfmadanfaem3n9sdq0vagu0',
-  environment: Environment.DEVNET,
   feeRate: BigInt(103),
   size: BigInt(400),
 };

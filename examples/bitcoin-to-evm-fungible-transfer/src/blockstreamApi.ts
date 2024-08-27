@@ -3,7 +3,7 @@ import type { BitcoinTransferParams } from "@buildwithsygma/bitcoin";
 import type { Network, Signer } from "bitcoinjs-lib";
 import { payments, Psbt } from "bitcoinjs-lib";
 
-type CalculateSizeParams = {
+type SizeCalculationParams = {
   utxoData: BitcoinTransferParams["utxoData"];
   network: Network;
   publicKey: Buffer;
@@ -31,7 +31,7 @@ export const calculateSize = ({
   changeAddress,
   signer,
   typeOfAddress,
-}: CalculateSizeParams): number => {
+}: SizeCalculationParams): number => {
   const pstb = new Psbt({ network: network });
 
   const scriptPubKey: Buffer = (typeOfAddress !== TypeOfAddress.P2TR)
