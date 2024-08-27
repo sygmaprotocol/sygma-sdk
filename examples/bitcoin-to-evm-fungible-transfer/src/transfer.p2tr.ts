@@ -17,16 +17,19 @@ import {
 
 dotenv.config();
 
-const SOURCE_CAIPID = process.env.SOURCE_CAIPID;
-const DESTINATION_ADDRESS = process.env.DESTINATION_ADDRESS;
 const DESTINATION_CHAIN_ID = 11155111;
-const RESOURCE_ID = process.env.RESOURCE_ID;
-const BLOCKSTREAM_URL = process.env.BLOCKSTREAM_URL;
-const EXPLORER_URL = process.env.EXPLORER_URL;
-const MNEMONIC = process.env.MNEMONIC;
-const DERIVATION_PATH = process.env.DERIVATION_PATH;
-const ADDRESS = process.env.ADDRESS;
-const AMOUNT = Number(process.env.AMOUNT);
+const {
+  SOURCE_CAIPID,
+  DESTINATION_ADDRESS,
+  RESOURCE_ID,
+  BLOCKSTREAM_URL,
+  EXPLORER_URL,
+  MNEMONIC,
+  DERIVATION_PATH,
+  ADDRESS,
+  AMOUNT,
+} = process.env;
+
 
 if (
   !SOURCE_CAIPID ||
@@ -39,7 +42,7 @@ if (
   !AMOUNT
 ) {
   throw new Error(
-    "Please provided needed env variables needed into the .env file",
+    "Missing required environment variables, please make sure .env file exists."
   );
 }
 

@@ -1,4 +1,4 @@
-import type { BaseTransferParams, Environment } from '@buildwithsygma/core';
+import type { BaseTransferParams } from '@buildwithsygma/core';
 import type { networks, Psbt } from 'bitcoinjs-lib';
 
 export enum TypeOfAddress {
@@ -20,7 +20,6 @@ export type CreateInputData = {
 };
 
 export interface BitcoinTransferParams extends BaseTransferParams {
-  environment?: Environment;
   destinationAddress: string;
   amount: bigint;
   utxoData: UTXOData[];
@@ -48,7 +47,7 @@ export type CreatePsbtParams = Pick<
   | 'size'
 >;
 
-export type BitcoinTransferRequest = Psbt;
+export type BitcoinTransaction = Psbt;
 
 export type PaymentReturnData = {
   output: Buffer;

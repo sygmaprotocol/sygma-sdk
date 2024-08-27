@@ -1,5 +1,5 @@
 {
-  "name": "@buildwithsygma/sygma-sdk-btc-to-evm-fungible-transfer-example",
+  "name": "@buildwithsygma/sygma-sdk-evm-to-bitcoin-fungible-transfer",
   "version": "0.1.0",
   "type": "module",
   "description": "Sygma sdk examples",
@@ -17,8 +17,7 @@
     "bitcoin"
   ],
   "scripts": {
-    "transfer:p2tr": "tsx src/transfer.p2tr.ts",
-    "transfer:p2wpkh": "tsx src/transfer.p2wpkh.ts"
+    "transfer": "tsx src/transfer.ts"
   },
   "author": "Sygmaprotocol Product Team",
   "license": "LGPL-3.0-or-later",
@@ -29,14 +28,8 @@
     "typescript": "5.0.4"
   },
   "dependencies": {
-    "@buildwithsygma/bitcoin": "workspace:^",
     "@buildwithsygma/core": "workspace:^",
-    "@buildwithsygma/utils": "workspace:^",
-    "bip32": "^4.0.0",
-    "bip39": "^3.1.0",
-    "bitcoinjs-lib": "^6.1.6",
-    "ecpair": "^2.1.0",
-    "tiny-secp256k1": "^2.2.3",
+    "@buildwithsygma/evm": "workspace:^",
     "tsx": "^4.15.4"
   }
 }

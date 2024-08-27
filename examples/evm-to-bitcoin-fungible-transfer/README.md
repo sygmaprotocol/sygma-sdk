@@ -1,6 +1,6 @@
 # Sygma SDK EVM to BTC example
 
-This is an example script that demonstrates the functionality of the SDK using the Sygma ecosystem. The script showcases a token transfer between the provided account and a BTC testnet account. 
+This is an example that demonstrates functionality of the protocol using Sygma SDK. The src/transfer.ts script showcases how bitcoins can be transferred from an EVM Sepolia account utilizing `@buildwithsygma/evm` package.
 
 ## Prerequisites
 

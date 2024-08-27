@@ -1,10 +1,10 @@
-import { BaseTransfer, Config } from '@buildwithsygma/core';
+import { BaseTransfer, Config, Environment } from '@buildwithsygma/core';
 import type { Config as TConfig, BitcoinResource, Domain } from '@buildwithsygma/core/types';
 import type { networks } from 'bitcoinjs-lib';
 
 import type {
   BitcoinTransferParams,
-  BitcoinTransferRequest,
+  BitcoinTransaction,
   TypeOfAddress,
   UTXOData,
 } from './types.js';
@@ -14,7 +14,7 @@ export async function createBitcoinFungibleTransfer(
   params: BitcoinTransferParams,
 ): Promise<BitcoinFungibleTransfer> {
   const config = new Config();
-  await config.init(process.env.SYGMA_ENV || params.environment);
+  await config.init(process.env.SYGMA_ENV || Environment.MAINNET);
   return new BitcoinFungibleTransfer(params, config);
 }
 
@@ -51,7 +51,7 @@ class BitcoinFungibleTransfer extends BaseTransfer {
     this.feeAmount = BigInt((this.resource as BitcoinResource).feeAmount!);
   }
 
-  getTransferTransaction(): BitcoinTransferRequest {
+  getTransferTransaction(): BitcoinTransaction {
     return getPsbt(
       {
         source: this.sourceDomain.caipId,

@@ -4,7 +4,7 @@ import { payments, Psbt } from 'bitcoinjs-lib';
 import { TypeOfAddress } from '../types.js';
 import type {
   BitcoinTransferInputData,
-  BitcoinTransferRequest,
+  BitcoinTransaction,
   PaymentReturnData,
   UTXOData,
   CreateInputData,
@@ -118,7 +118,7 @@ export function getPsbt(
   feeAddress: string,
   depositAddress: string,
   feeAmount: bigint,
-): BitcoinTransferRequest {
+): BitcoinTransaction {
   if (!['P2WPKH', 'P2TR'].includes(params.typeOfAddress.toString())) {
     throw new Error('Unsuported address type');
   }

@@ -1,8 +1,8 @@
-# Sygma SDK BTC to EVM example
+# Sygma SDK Bitcoin to EVM example
 
 ## Sygma SDK ERC20 Example
 
-This is an example script that demonstrates the functionality of the SDK using the Sygma ecosystem. The script showcases a asset transfer between a BTC testnet account and a EVM Sepolia account.
+This is an example that demonstrates functionality of the protocol using Sygma SDK. The src/transfer.ts script showcases how bitcoins can transferred over to an EVM Sepolia address utilizing `@buildwithsygma/bitcoin` package.
 
 ## Prerequisites
 
@@ -109,7 +109,7 @@ To send Testnet BTC to your EVM account on Sepolia using P2WPKH address run:
 yarn run transfer:p2wpkh
 ```
 
-Replace the placeholder values in the `.env` file with your own Testnet BTC Taproot private key as well as the other env variables needed such as DESTINATION_ADDRESS, DESTINATION_DOMAIN_ID, RESOURCE_ID and SOURCE_DOMAIN_ID.
+Replace the placeholder values in the `.env` file with your own Testnet BTC Taproot private key as well as the other env variables needed such as DESTINATION_ADDRESS, DESTINATION_DOMAIN_ID, RESOURCE_ID, DERIVATION_PATH, and SOURCE_DOMAIN_ID.
 
 ## Script Functionality
 
