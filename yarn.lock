@@ -605,9 +605,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@buildwithsygma/sygma-sdk-btc-to-evm-fungible-transfer-example@workspace:examples/btc-to-evm-fungible-transfer":
+"@buildwithsygma/sygma-sdk-bitcoin-to-evm-fungible-transfer-example@workspace:examples/bitcoin-to-evm-fungible-transfer":
   version: 0.0.0-use.local
-  resolution: "@buildwithsygma/sygma-sdk-btc-to-evm-fungible-transfer-example@workspace:examples/btc-to-evm-fungible-transfer"
+  resolution: "@buildwithsygma/sygma-sdk-bitcoin-to-evm-fungible-transfer-example@workspace:examples/bitcoin-to-evm-fungible-transfer"
   dependencies:
     "@buildwithsygma/bitcoin": "workspace:^"
     "@buildwithsygma/core": "workspace:^"
@@ -625,9 +625,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@buildwithsygma/sygma-sdk-evm-to-btc-fungible-transfer@workspace:examples/evm-to-btc-fungible-transfer":
+"@buildwithsygma/sygma-sdk-evm-to-bitcoin-fungible-transfer@workspace:examples/evm-to-bitcoin-fungible-transfer":
   version: 0.0.0-use.local
-  resolution: "@buildwithsygma/sygma-sdk-evm-to-btc-fungible-transfer@workspace:examples/evm-to-btc-fungible-transfer"
+  resolution: "@buildwithsygma/sygma-sdk-evm-to-bitcoin-fungible-transfer@workspace:examples/evm-to-bitcoin-fungible-transfer"
   dependencies:
     "@buildwithsygma/core": "workspace:^"
     "@buildwithsygma/evm": "workspace:^"
