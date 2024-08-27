@@ -23,15 +23,12 @@ describe('BaseTransfer', () => {
   let config: Config;
 
   beforeAll(async () => {
-    config = new Config();
-    await config.init(Environment.DEVNET);
-  });
-
-  beforeEach(() => {
     jest.clearAllMocks();
     fetchMock.resetMocks();
     fetchMock.doMock();
     fetchMock.mockIf(ConfigUrl.DEVNET.toString(), JSON.stringify(mockedDevnetConfig));
+    config = new Config();
+    await config.init(Environment.DEVNET);
   });
 
   it('should be able to instantiate a transfer object', async () => {
