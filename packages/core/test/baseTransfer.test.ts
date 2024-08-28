@@ -33,7 +33,6 @@ describe('BaseTransfer', () => {
 
   it('should be able to instantiate a transfer object', async () => {
     const transfer = new Transfer(TRANSFER_PARAMS, config);
-    expect(transfer).toBeTruthy();
     expect(transfer).toBeInstanceOf(Transfer);
   });
 
