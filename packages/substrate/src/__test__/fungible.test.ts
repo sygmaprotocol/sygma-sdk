@@ -1,6 +1,6 @@
 import { FeeHandlerType } from '@buildwithsygma/core';
 import type { SubmittableResult } from '@polkadot/api';
-import { ApiPromise, WsProvider } from '@polkadot/api';
+import { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import { BN } from '@polkadot/util';
 
@@ -17,15 +17,12 @@ import {
 
 jest.mock('../utils/index.js');
 
-const RHALA_RPC_URL = 'wss://rhala-node.phala.network/ws';
-const wsProvider = new WsProvider(RHALA_RPC_URL);
-
 describe('SubstrateFungibleAssetTransfer', () => {
   let api: jest.Mocked<ApiPromise>;
   let transferRequest: SubstrateAssetTransferRequest;
 
   beforeAll(async () => {
-    api = (await ApiPromise.create({ provider: wsProvider })) as jest.Mocked<ApiPromise>;
+    api = (await ApiPromise.create()) as jest.Mocked<ApiPromise>;
     transferRequest = {
       sourceAddress: '5E75Q88u1Hw2VouCiRWoEfKXJMFtqLSUzhqzsH6yWjhd8cem',
       source: 5, // Substrate

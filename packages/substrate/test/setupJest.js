@@ -34,7 +34,14 @@ jest.mock('@polkadot/api', () => {
 
   return {
     ...originalModule,
-    WsProvider: jest.fn().mockImplementation(() => ({})),
+    WsProvider: jest.fn(() => ({
+      connect: jest.fn(),
+      disconnect: jest.fn(),
+      isConnected: jest.fn().mockReturnValue(true),
+      send: jest.fn(),
+      on: jest.fn(),
+      off: jest.fn(),
+    })),
     ApiPromise: {
       create: jest.fn().mockImplementation(config => {
         return Promise.resolve(createMockApi(config));

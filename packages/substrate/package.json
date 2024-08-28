@@ -17,7 +17,7 @@
     "url": "https://github.com/sygmaprotocol/sygma-sdk"
   },
   "scripts": {
-    "test": "jest --watchAll --detectOpenHandles --silent --collect-coverage",
+    "test": "jest --watchAll --detectOpenHandles --silent",
     "test:unit": "jest --detectOpenHandles",
     "test:substrate": "jest --watchAll --testPathPattern=src/test",
     "build:esm": "tsc -p tsconfig.esm.json && echo '{\"type\": \"module\"}' > ./dist-esm/package.json",
