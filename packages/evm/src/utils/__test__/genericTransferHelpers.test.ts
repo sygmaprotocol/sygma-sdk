@@ -53,7 +53,7 @@ describe('createGenericCallDepositData', () => {
     const genericCallParams = {
       abi: CONTRACT_ABI,
       functionName: 'store',
-      functionParams: [depositor, depositor, BigInt(3052070251)],
+      functionParams: [depositor, depositor, BigInt(42069)],
       contractAddress: '0x4bE595ab5A070663B314970Fc10C049BBA0ad489',
       destination: {
         name: 'EVM',
@@ -66,8 +66,10 @@ describe('createGenericCallDepositData', () => {
       depositor: depositor as `0x${string}`,
     };
 
+    const expectedDepositData =
+      '0x00000000000000000000000000000000000000000000000000000000002dc6c00004ba154fea144be595ab5a070663b314970fc10c049bba0ad4891498729c03c4d5e820f5e8c45558ae07ae63f9746100000000000000000000000098729c03c4d5e820f5e8c45558ae07ae63f97461000000000000000000000000000000000000000000000000000000000000a455';
+
     const depositData = createGenericCallDepositData(genericCallParams);
-    console.log(depositData);
-    expect(true).toBe(true);
+    expect(depositData.toLowerCase()).toEqual(expectedDepositData.toLowerCase());
   });
 });

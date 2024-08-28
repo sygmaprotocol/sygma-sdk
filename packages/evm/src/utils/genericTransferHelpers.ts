@@ -26,7 +26,8 @@ export function createGenericCallDepositData(genericTransferParams: GenericDepos
     const paddedMaxFee = hexZeroPad(BigNumber.from(maxFee).toHexString(), 32);
     const funcData = contractInterface.encodeFunctionData(functionName, functionParams);
     const funcSig = funcData.substring(0, 10);
-    const funcParamEncoded = funcData.substring(10);
+    /** 0x (2) + function signature (8) + first param which is always set to depositer by relayer (64)  */
+    const funcParamEncoded = funcData.substring(74);
 
     const funcSigLen = getZeroPaddedLength(funcSig, 2);
     const contractAddrLen = getZeroPaddedLength(contractAddress, 1);
