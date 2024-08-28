@@ -15,11 +15,11 @@ import { EvmTransfer } from './evmTransfer.js';
 import type { EvmFee } from './types.js';
 import {
   approve,
-  createERCDepositData,
   createTransactionRequest,
-  erc20Transfer,
+  executeDeposit,
   getERC20Allowance,
 } from './utils/index.js';
+import { createFungibleDepositData } from './utils/assetTransferHelpers.js';
 
 interface EvmFungibleTransferRequest extends EvmTransferParams {
   sourceAddress: string;
@@ -131,7 +131,11 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
   }
 
   protected getDepositData(): string {
-    return createERCDepositData(this.amount, this.destinationAddress, this.destination.parachainId);
+    return createFungibleDepositData({
+      destination: this.destination,
+      recipientAddress: this.destinationAddress,
+      amount: this.amount,
+    });
   }
 
   /**
@@ -204,13 +208,13 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
 
     await this.verifyAccountBalance(fee);
 
-    const transferTx = await erc20Transfer({
-      depositData: this.getDepositData(),
-      bridgeInstance: bridge,
-      domainId: this.destination.id.toString(),
-      resourceId: this.resource.resourceId,
-      feeData: fee,
-    });
+    const transferTx = await executeDeposit(
+      this.destination.id.toString(),
+      this.resource.resourceId,
+      this.getDepositData(),
+      fee,
+      bridge,
+    );
 
     return createTransactionRequest(transferTx);
   }

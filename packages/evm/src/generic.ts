@@ -14,12 +14,9 @@ import type { EvmTransferParams } from './evmTransfer.js';
 import { EvmTransfer } from './evmTransfer.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
 import type { TransactionRequest } from './types.js';
-import {
-  createPermissionlessGenericDepositData,
-  serializeGenericCallParameters,
-} from './utils/helpers.js';
-import { genericMessageTransfer } from './utils/index.js';
+import { executeDeposit } from './utils/index.js';
 import { createTransactionRequest } from './utils/transaction.js';
+import { createGenericCallDepositData } from './utils/genericTransferHelpers.js';
 
 /**
  * Required parameters for initiating a generic
@@ -163,26 +160,6 @@ class GenericMessageTransfer<
     this.functionParameters = parameters;
   }
   /**
-   * Prepare function call encodings
-   * @returns {{ executionData: string; executionFunctionSignature: string; }}
-   */
-  private prepareFunctionCallEncodings(): {
-    executionData: string;
-    executeFunctionSignature: string;
-  } {
-    const contractInterface = new ethers.utils.Interface(
-      JSON.stringify(this.destinationContractAbi),
-    );
-
-    let executionData = ``;
-    if (Array.isArray(this.functionParameters)) {
-      executionData = serializeGenericCallParameters(this.functionParameters);
-    }
-
-    const executeFunctionSignature = contractInterface.getSighash(this.functionName);
-    return { executionData, executeFunctionSignature };
-  }
-  /**
    * Get the cross chain generic message transfer
    * transaction
    * @param {ethers.Overrides} overrides
@@ -192,30 +169,19 @@ class GenericMessageTransfer<
     const isValid = await this.isValidTransfer();
     if (!isValid) throw new Error('Invalid Transfer.');
 
-    const { executeFunctionSignature, executionData } = this.prepareFunctionCallEncodings();
-    const { resourceId } = this.resource;
-
-    const executeContractAddress = this.destinationContractAddress;
     const sourceDomain = this.config.getDomainConfig(this.source);
-    const domainId = this.config.getDomainConfig(this.destination).id.toString();
     const provider = new Web3Provider(this.sourceNetworkProvider);
-    const depositor = this.sourceAddress;
-    const maxFee = this.maxFee.toString();
     const bridgeInstance = Bridge__factory.connect(sourceDomain.bridge, provider);
     const feeData = await this.getFee();
+    const depositData = this.getDepositData();
 
-    const transaction = await genericMessageTransfer({
-      executeFunctionSignature,
-      executeContractAddress,
-      maxFee,
-      depositor,
-      executionData,
-      bridgeInstance,
-      domainId,
-      resourceId,
+    const transaction = await executeDeposit(
+      this.destination.id.toString(),
+      this.resource.resourceId,
+      depositData,
       feeData,
-      overrides,
-    });
+      bridgeInstance,
+    );
 
     return createTransactionRequest(transaction);
   }
@@ -225,13 +191,14 @@ class GenericMessageTransfer<
    * @returns {string}
    */
   protected getDepositData(): string {
-    const { executeFunctionSignature, executionData } = this.prepareFunctionCallEncodings();
-    return createPermissionlessGenericDepositData(
-      executeFunctionSignature,
-      this.destinationContractAddress,
-      this.maxFee.toString(),
-      this.sourceAddress,
-      executionData,
-    );
+    return createGenericCallDepositData({
+      abi: this.destinationContractAbi,
+      functionName: this.functionName,
+      functionParams: this.functionParameters,
+      contractAddress: this.destinationContractAddress,
+      destination: this.destination,
+      maxFee: this.maxFee,
+      depositor: this.sourceAddress as `0x${string}`,
+    });
   }
 }
