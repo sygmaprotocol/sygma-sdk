@@ -1,12 +1,13 @@
+import { Network } from '@buildwithsygma/core';
+import { arrayify } from '@ethersproject/bytes';
 import { utils } from 'ethers';
+
 import {
   createFungibleDepositData,
   createSubstrateMultiLocationObject,
   serializeEvmAddress,
   serializeSubstrateAddress,
-} from '../assetTransferHelpers';
-import { Network } from '@buildwithsygma/core';
-import { arrayify } from '@ethersproject/bytes';
+} from '../assetTransferHelpers.js';
 
 describe('createERCDepositData', () => {
   it('should return the correct deposit data', () => {

@@ -8,15 +8,16 @@ import type {
   ExtractAbiFunction,
   ExtractAbiFunctionNames,
 } from 'abitype';
-import { constants, ethers } from 'ethers';
+import type { ethers } from 'ethers';
+import { constants } from 'ethers';
 
 import type { EvmTransferParams } from './evmTransfer.js';
 import { EvmTransfer } from './evmTransfer.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
 import type { TransactionRequest } from './types.js';
+import { createGenericCallDepositData } from './utils/genericTransferHelpers.js';
 import { executeDeposit } from './utils/index.js';
 import { createTransactionRequest } from './utils/transaction.js';
-import { createGenericCallDepositData } from './utils/genericTransferHelpers.js';
 
 /**
  * Required parameters for initiating a generic
@@ -181,6 +182,7 @@ class GenericMessageTransfer<
       depositData,
       feeData,
       bridgeInstance,
+      overrides,
     );
 
     return createTransactionRequest(transaction);

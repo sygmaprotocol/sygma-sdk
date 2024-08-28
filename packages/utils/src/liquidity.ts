@@ -42,7 +42,7 @@ export async function hasEnoughLiquidity(
         handler.address,
       );
 
-      const transferValue = transfer as Awaited<ReturnType<typeof createEvmFungibleAssetTransfer>>;
+      const transferValue = transfer;
       return transferValue.amount <= evmHandlerBalance;
     }
     case Network.SUBSTRATE: {

@@ -13,13 +13,13 @@ import { BigNumber, constants, type PopulatedTransaction, utils } from 'ethers';
 import type { EvmTransferParams } from './evmTransfer.js';
 import { EvmTransfer } from './evmTransfer.js';
 import type { EvmFee } from './types.js';
+import { createFungibleDepositData } from './utils/assetTransferHelpers.js';
 import {
   approve,
   createTransactionRequest,
   executeDeposit,
   getERC20Allowance,
 } from './utils/index.js';
-import { createFungibleDepositData } from './utils/assetTransferHelpers.js';
 
 interface EvmFungibleTransferRequest extends EvmTransferParams {
   sourceAddress: string;

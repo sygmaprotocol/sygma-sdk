@@ -1,4 +1,5 @@
-import { Domain, Network } from '@buildwithsygma/core';
+import type { Domain } from '@buildwithsygma/core';
+import { Network } from '@buildwithsygma/core';
 import { AbiCoder } from '@ethersproject/abi';
 import { arrayify, concat, hexlify, hexZeroPad } from '@ethersproject/bytes';
 import { TypeRegistry } from '@polkadot/types';
@@ -37,8 +38,8 @@ export function createSubstrateMultiLocationObject(
   substrateAddress: string,
   parachainId?: number,
 ): string {
-  let decodedAddress = decodeAddress(substrateAddress);
-  let hexlifiedAddress = hexlify(decodedAddress);
+  const decodedAddress = decodeAddress(substrateAddress);
+  const hexlifiedAddress = hexlify(decodedAddress);
   const parents = parachainId ? 1 : 0;
   const interior = parachainId
     ? {
