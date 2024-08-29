@@ -1,4 +1,4 @@
-import type { Config, Eip1193Provider } from '@buildwithsygma/core';
+import type { Config, HexString, Eip1193Provider } from '@buildwithsygma/core';
 import { BaseTransfer } from '@buildwithsygma/core';
 import { providers } from 'ethers';
 
@@ -21,7 +21,7 @@ export abstract class EvmTransfer extends BaseTransfer {
     return this.provider;
   }
 
-  constructor(params: EvmTransferParams, config: Config) {
+  protected constructor(params: EvmTransferParams, config: Config) {
     super(params, config);
     this.provider = params.sourceNetworkProvider;
   }
@@ -69,7 +69,7 @@ export abstract class EvmTransfer extends BaseTransfer {
     });
   }
 
-  public setSourceAddress(address: `0x${string}`): void {
+  public setSourceAddress(address: HexString): void {
     this.sourceAddress = address;
   }
 }

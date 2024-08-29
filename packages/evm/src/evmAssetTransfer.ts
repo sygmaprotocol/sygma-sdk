@@ -41,7 +41,7 @@ export abstract class AssetTransfer extends EvmTransfer implements IAssetTransfe
     return this.recipient;
   }
 
-  constructor(assetTransferParams: EvmAssetTransferParams, config: Config) {
+  protected constructor(assetTransferParams: EvmAssetTransferParams, config: Config) {
     super(assetTransferParams, config);
     this.specifiedAmount = assetTransferParams.amount;
     this.adjustedAmount = assetTransferParams.amount;
