@@ -27,5 +27,12 @@
   "ts-node": {
     "esm": true,
     "experimentalSpecifierResolution": "node"
-  }
+  },
+  "references": [
+    { "path": "packages/core" },
+    { "path": "packages/evm" },
+    { "path": "packages/substrate" },
+    { "path": "packages/utils" }
+  ],
+  "exclude": ["**/node_modules/**"]
 }
