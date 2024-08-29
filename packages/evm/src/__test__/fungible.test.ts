@@ -1,4 +1,3 @@
-import type { Eip1193Provider } from '@buildwithsygma/core';
 import { Network, Config, ResourceType } from '@buildwithsygma/core';
 import {
   BasicFeeHandler__factory,
@@ -13,19 +12,15 @@ import { parseEther } from 'ethers/lib/utils.js';
 import { createFungibleAssetTransfer } from '../fungibleAssetTransfer.js';
 import type { TransactionRequest } from '../types.js';
 
+import { ASSET_TRANSFER_PARAMS } from './constants.js';
+
 const TRANSFER_PARAMS = {
-  source: 1,
-  destination: 2,
-  sourceAddress: '0x98729c03c4D5e820F5e8c45558ae07aE63F97461',
-  sourceNetworkProvider: jest.fn() as unknown as Eip1193Provider,
+  ...ASSET_TRANSFER_PARAMS,
   resource: {
-    address: '0x98729c03c4D5e820F5e8c45558ae07aE63F97461',
-    type: ResourceType.FUNGIBLE,
-    resourceId: '0x0',
-    caip19: '0x11',
+    ...ASSET_TRANSFER_PARAMS.resource,
+    type: ResourceType.NON_FUNGIBLE,
   },
   amount: parseEther('10').toBigInt(),
-  recipientAddress: '0x98729c03c4D5e820F5e8c45558ae07aE63F97461',
 };
 
 const MOCKED_CONFIG = {
