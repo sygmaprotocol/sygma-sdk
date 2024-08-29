@@ -194,10 +194,10 @@ describe('Fungible - Fee', () => {
     const transfer = await createFungibleAssetTransfer(TRANSFER_PARAMS);
     await transfer.getFee();
 
-    const actualDepositData = calculateFee.mock.calls[0][4];
+    const actualDepositData = (calculateFee.mock.calls as string[][])[0][4];
     const expectedDepositData =
       '0x0000000000000000000000000000000000000000000000008ac7230489e80000000000000000000000000000000000000000000000000000000000000000001498729c03c4d5e820f5e8c45558ae07ae63f97461';
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
     expect(actualDepositData).toEqual(expectedDepositData);
   });
 });
