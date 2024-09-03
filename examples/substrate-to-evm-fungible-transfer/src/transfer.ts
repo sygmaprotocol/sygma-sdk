@@ -13,13 +13,13 @@ if (!MNEMONIC) {
 }
 
 const SEPOLIA_CHAIN_ID = 11155111;
-const RHALA_CHAIN_ID = 5231;
+const TANGLE_CHAIN_ID = 3799;
 
 const RESOURCE_ID_SYGMA_USD =
-  "0x0000000000000000000000000000000000000000000000000000000000001100";
-const recipient = "0x98729c03c4D5e820F5e8c45558ae07aE63F97461";
-const RHALA_RPC_URL =
-  process.env.RHALA_RPC_URL ?? "wss://rhala-node.phala.network/ws";
+  "0x0000000000000000000000000000000000000000000000000000000000002000";
+const recipient = "0xE39bb23F17a2cf7C9a8C4918376A32036A8867db";
+const TANGLE_RPC_URL =
+  process.env.SOURCE_SUBSTRATE_RPC_URL ?? "wss://rpc.tangle.tools";
 
 const SYGMA_EXPLORER_URL = "https://scan.test.buildwithsygma.com";
 const getSygmaExplorerTransferUrl = (params: {
@@ -33,18 +33,17 @@ const substrateTransfer = async (): Promise<void> => {
   const keyring = new Keyring({ type: "sr25519" });
   await cryptoWaitReady();
   const account = keyring.addFromUri(MNEMONIC);
-  const wsProvider = new WsProvider(RHALA_RPC_URL);
+  const wsProvider = new WsProvider(TANGLE_RPC_URL);
   const api = await ApiPromise.create({ provider: wsProvider });
 
   const transferParams: SubstrateAssetTransferRequest = {
-    source: RHALA_CHAIN_ID,
+    source: TANGLE_CHAIN_ID,
     destination: SEPOLIA_CHAIN_ID,
     sourceNetworkProvider: api,
     sourceAddress: account.address,
     resource: RESOURCE_ID_SYGMA_USD,
-    amount: BigInt("1"),
+    amount: BigInt(1) * BigInt(1e18),
     destinationAddress: recipient,
-    sourceAddress: account.address,
   };
 
   const transfer = await createSubstrateFungibleAssetTransfer(transferParams);
@@ -56,7 +55,7 @@ const substrateTransfer = async (): Promise<void> => {
 
     if (status.isInBlock) {
       console.log(
-        `Transaction included at blockHash ${status.asInBlock.toString()}`
+        `Transaction included at blockHash ${status.asInBlock.toString()}`,
       );
     } else if (status.isFinalized) {
       const blockNumber = results.blockNumber?.toNumber();
@@ -64,10 +63,10 @@ const substrateTransfer = async (): Promise<void> => {
 
       if (blockNumber && extrinsicIndex) {
         console.log(
-          `Transaction finalized at blockHash ${status.asFinalized.toString()}`
+          `Transaction finalized at blockHash ${status.asFinalized.toString()}`,
         );
         console.log(
-          `Explorer URL: ${getSygmaExplorerTransferUrl({ blockNumber, extrinsicIndex })}`
+          `Explorer URL: ${getSygmaExplorerTransferUrl({ blockNumber, extrinsicIndex })}`,
         );
       }
       unsub();
