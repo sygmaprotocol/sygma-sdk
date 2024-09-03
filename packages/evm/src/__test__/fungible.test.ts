@@ -344,4 +344,20 @@ describe('Fungible - Deposit', () => {
       'Insufficient ERC20 token balance',
     );
   });
+
+  it('should throw ERROR - Insufficient account balance', async () => {
+    (ERC20__factory.connect as jest.Mock).mockReturnValue({
+      balanceOf: jest.fn().mockResolvedValue(BigNumber.from(parseEther('1').toBigInt())), // Mock balance less than the required amount
+      populateTransaction: {
+        approve: jest.fn().mockResolvedValue({}),
+      },
+      allowance: jest.fn().mockResolvedValue(parseEther('0')),
+    });
+
+    const transfer = await createEvmFungibleAssetTransfer(TRANSFER_PARAMS);
+
+    await expect(transfer.getTransferTransaction()).rejects.toThrow(
+      'Insufficient ERC20 token balance',
+    );
+  });
 });
