@@ -66,7 +66,7 @@ describe('BaseTransfer', () => {
     await config.init(Environment.DEVNET);
     const transfer = new Transfer(TRANSFER_PARAMS, config);
 
-    transfer.setDesinationDomain('ethereum:1');
+    transfer.setDestinationDomain('ethereum:1');
     expect(transfer.destination).toBeTruthy();
   });
 });
