@@ -5,9 +5,6 @@ import type {
   FeeHandlerType,
   SecurityModel,
 } from '@buildwithsygma/core';
-import type { Bridge } from '@buildwithsygma/sygma-contracts';
-import type { ethers } from 'ethers';
-
 export interface TransactionRequest {
   to: string;
   value: bigint;
@@ -51,19 +48,3 @@ export type GenericTransferRequest = {
 
 /** An EVM resource is accepted as either the resource object or it's Sygma ID */
 export type EvmResourceish = string | EvmResource;
-
-/** @internal */
-export type FungibleTransferParams = {
-  /** The unique identifier for the destination network on the bridge. */
-  domainId: string;
-  /** The unique identifier for the resource being transferred. */
-  resourceId: string;
-  /** The bridge instance used for the transfer. */
-  bridgeInstance: Bridge;
-  /** The fee data associated with the ERC20 token transfer, including the gas price and gas limit. */
-  feeData: EvmFee;
-  /** Deposit data including amount of tokens, length and recipient address */
-  depositData: string;
-  /** Optional overrides for the transaction, such as gas price, gas limit, or value. */
-  overrides?: ethers.PayableOverrides;
-};

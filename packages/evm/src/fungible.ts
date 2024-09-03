@@ -22,7 +22,7 @@ import {
   getERC20Allowance,
 } from './utils/index.js';
 
-interface EvmFungibleTransferRequest extends EvmTransferParams {
+export interface EvmFungibleTransferRequest extends EvmTransferParams {
   sourceAddress: string;
   amount: bigint;
   destinationAddress: string;
@@ -109,6 +109,8 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
   constructor(transfer: EvmFungibleTransferRequest, config: Config) {
     super(transfer, config);
     this.specifiedAmount = transfer.amount;
+    this.optionalGas = transfer.optionalGas;
+    this.optionalMessage = transfer.optionalMessage;
 
     if (isValidAddressForNetwork(transfer.destinationAddress, this.destination.type))
       this.destinationAddress = transfer.destinationAddress;

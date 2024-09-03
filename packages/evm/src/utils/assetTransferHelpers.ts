@@ -7,7 +7,7 @@ import { decodeAddress } from '@polkadot/util-crypto';
 import { BigNumber } from 'ethers';
 
 const ACTIONS_ARRAY_ABI =
-  'tuple(uint256 nativeValue, address callTo, address approveTo, address tokenSend, address tokenReceive, bytes data)';
+  'tuple(uint256 nativeValue, address callTo, address approveTo, address tokenSend, address tokenReceive, bytes data)[]';
 
 interface FungibleDepositAction {
   nativeValue: bigint;
@@ -115,9 +115,10 @@ export function createFungibleDepositData(depositParams: FungbileDepositParams):
   if (optionalMessage) {
     const { transactionId, actions, receiver } = optionalMessage;
     const abiCoder = new AbiCoder();
+
     const optionalMessageEncoded = abiCoder.encode(
       ['bytes32', ACTIONS_ARRAY_ABI, 'address'],
-      [transactionId, actions, receiver],
+      [transactionId, actions.map(action => Object.values(action)), receiver],
     );
 
     const optionalMessageSeriailzed = arrayify(optionalMessageEncoded);
