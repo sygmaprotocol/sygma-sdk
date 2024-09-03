@@ -118,7 +118,7 @@ export function createFungibleDepositData(depositParams: FungbileDepositParams):
 
     const optionalMessageEncoded = abiCoder.encode(
       ['bytes32', ACTIONS_ARRAY_ABI, 'address'],
-      [transactionId, actions.map(action => Object.values(action)), receiver],
+      [transactionId, actions.map(action => Object.values(action) as Array<unknown>), receiver],
     );
 
     const optionalMessageSeriailzed = arrayify(optionalMessageEncoded);

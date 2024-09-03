@@ -5,6 +5,7 @@ import type {
   FeeHandlerType,
   SecurityModel,
 } from '@buildwithsygma/core';
+
 export interface TransactionRequest {
   to: string;
   value: bigint;
