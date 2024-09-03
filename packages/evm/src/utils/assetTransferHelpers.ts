@@ -18,16 +18,18 @@ interface FungibleDepositAction {
   data: string;
 }
 
+export interface FungibleTransferOptionalMessage {
+  transactionId: string;
+  actions: FungibleDepositAction[];
+  receiver: string;
+}
+
 interface FungbileDepositParams {
   destination: Domain;
   recipientAddress: string;
   amount: bigint;
   optionalGas?: bigint;
-  optionalMessage?: {
-    transactionId: string;
-    actions: FungibleDepositAction[];
-    receiver: string;
-  };
+  optionalMessage?: FungibleTransferOptionalMessage;
 }
 
 export function serializeEvmAddress(evmAddress: `0x${string}`): Uint8Array {

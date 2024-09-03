@@ -13,7 +13,10 @@ import { BigNumber, constants, type PopulatedTransaction, utils } from 'ethers';
 import type { EvmTransferParams } from './evmTransfer.js';
 import { EvmTransfer } from './evmTransfer.js';
 import type { EvmFee } from './types.js';
-import { createFungibleDepositData } from './utils/assetTransferHelpers.js';
+import {
+  createFungibleDepositData,
+  FungibleTransferOptionalMessage,
+} from './utils/assetTransferHelpers.js';
 import {
   approve,
   createTransactionRequest,
@@ -26,6 +29,8 @@ interface EvmFungibleTransferRequest extends EvmTransferParams {
   amount: bigint;
   destinationAddress: string;
   securityModel?: SecurityModel;
+  optionalGas?: bigint;
+  optionalMessage?: FungibleTransferOptionalMessage;
 }
 
 /**
@@ -99,6 +104,8 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
   protected destinationAddress: string = '';
   protected securityModel: SecurityModel;
   protected adjustedAmount: bigint = BigInt(0);
+  protected optionalGas?: bigint;
+  protected optionalMessage?: FungibleTransferOptionalMessage;
   private specifiedAmount: bigint; // Original value to transfer without deductions
 
   constructor(transfer: EvmFungibleTransferRequest, config: Config) {
@@ -135,6 +142,8 @@ class EvmFungibleAssetTransfer extends EvmTransfer {
       destination: this.destination,
       recipientAddress: this.destinationAddress,
       amount: this.amount,
+      optionalGas: this.optionalGas,
+      optionalMessage: this.optionalMessage,
     });
   }
 
