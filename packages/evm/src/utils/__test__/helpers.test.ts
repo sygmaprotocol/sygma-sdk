@@ -148,18 +148,18 @@ describe('addressToHex', () => {
   test('should convert p2tr address to hex', () => {
     const address = 'tb1pnyh5nayrmwux72guec3xy7qryjjww6tu9mev3d5347lqcwgus4jsd95d2r';
     const expectedHex =
-      '746231706e7968356e6179726d777578373267756563337879377172796a6a7777367475396d65763364353334376c716377677573346a73643935643272';
+      '0x746231706e7968356e6179726d777578373267756563337879377172796a6a7777367475396d65763364353334376c716377677573346a73643935643272';
 
-    const result = addressToHex(address, address.length);
+    const result = addressToHex(address);
     expect(result).toEqual(expectedHex);
   });
 
   test('should convert p2wpkh address to hex', () => {
     const address = 'tb1qsfyzl92pv7wkyaj0tfjdtwvcsj840p004jglvp';
     const expectedHex =
-      '746231717366797a6c3932707637776b79616a3074666a6474777663736a383430703030346a676c7670';
+      '0x746231717366797a6c3932707637776b79616a3074666a6474777663736a383430703030346a676c7670';
 
-    const result = addressToHex(address, address.length);
+    const result = addressToHex(address);
     expect(result).toEqual(expectedHex);
   });
 });
