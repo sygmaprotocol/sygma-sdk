@@ -364,6 +364,11 @@ describe('Fungible - Deposit', () => {
   });
 
   it('should throw ERROR - Insufficient account balance', async () => {
+    (BasicFeeHandler__factory.connect as jest.Mock).mockReturnValue({
+      feeHandlerType: jest.fn().mockResolvedValue('basic'),
+      calculateFee: jest.fn().mockResolvedValue([parseEther('2')]),
+    });
+
     (ERC20__factory.connect as jest.Mock).mockReturnValue({
       balanceOf: jest.fn().mockResolvedValue(BigNumber.from(parseEther('1').toBigInt())), // Mock balance less than the required amount
       populateTransaction: {
@@ -374,8 +379,6 @@ describe('Fungible - Deposit', () => {
 
     const transfer = await createFungibleAssetTransfer(TRANSFER_PARAMS);
 
-    await expect(transfer.getTransferTransaction()).rejects.toThrow(
-      'Insufficient ERC20 token balance',
-    );
+    await expect(transfer.getTransferTransaction()).rejects.toThrow('Insufficient token balance');
   });
 });
