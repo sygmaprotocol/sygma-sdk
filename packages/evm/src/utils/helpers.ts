@@ -28,8 +28,8 @@ export const createERCDepositData = (
   } else if (parachainId) {
     recipientAddressInBytes = getSubstrateRecipientAddressInBytes(recipientAddress, parachainId);
   } else {
-    const hexAddress = addressToHex(recipientAddress, recipientAddress.length);
-    recipientAddressInBytes = utils.arrayify(`0x${hexAddress}`);
+    const hexAddress = addressToHex(recipientAddress);
+    recipientAddressInBytes = utils.arrayify(`${hexAddress}`);
   }
 
   const depositDataBytes = constructMainDepositData(
@@ -198,17 +198,10 @@ export function serializeGenericCallParameters(
  *
  * @category Helpers
  * @param address  - bitcoin address
- * @param addressLength - length of the address
  * @returns {string}
  */
-export const addressToHex = (address: string, addressLength: number): string => {
-  const hexData = new Array(addressLength);
-  for (let i = 0; i < hexData.length; i++) {
-    const codePoint = address.charCodeAt(i);
-    hexData[i] = codePoint.toString(16);
-  }
-
-  return hexData.join('');
+export const addressToHex = (address: string): string => {
+  return utils.hexlify(utils.toUtf8Bytes(address));
 };
 
 /**

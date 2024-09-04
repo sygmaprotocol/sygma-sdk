@@ -1,4 +1,3 @@
-import { Environment, } from "@buildwithsygma/core";
 import { createEvmFungibleAssetTransfer } from "@buildwithsygma/evm";
 import dotenv from "dotenv";
 import { Wallet, providers } from "ethers";
@@ -14,7 +13,7 @@ if (!privateKey) {
 
 const SEPOLIA_CHAIN_ID = 11155111;
 const BITCOIN_DOMAIN_CAIPID = "bip122:000000000933ea01ad0ee984209779ba";
-const RESOURCE_ID = "0x0000000000000000000000000000000000000000000000000000000000000300";
+const RESOURCE_ID = "0x0000000000000000000000000000000000000000000000000000000000000700";
 const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "https://eth-sepolia-public.unifra.io"
 const BTC_DESTINATION_ADDRESS = process.env.BTC_DESTINATION_ADDRESS;
 
@@ -33,7 +32,6 @@ export async function erc20Transfer(): Promise<void> {
     resource: RESOURCE_ID,
     amount: BigInt(1) * BigInt(1e8), // or any amount to send
     destinationAddress: BTC_DESTINATION_ADDRESS,
-    environment: Environment.DEVNET,
     sourceAddress: await wallet.getAddress(),
   };
 
