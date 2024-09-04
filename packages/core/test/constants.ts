@@ -76,5 +76,45 @@ export const mockedDevnetConfig = {
         },
       ],
     },
+    {
+      chainId: 222,
+      id: 221,
+      caipId: 'ethereum:1',
+      name: 'ethereum:1',
+      type: 'evm',
+      bridge: '0xb36C801f644908bAAe89b7C28ad57Af18638A6a9',
+      handlers: [
+        {
+          type: 'erc20',
+          address: '0xAf2DB8059Bd69ba9Ac4c59D25de1C87931e62448',
+        },
+      ],
+      parachainId: undefined,
+      nativeTokenSymbol: 'eth',
+      nativeTokenFullName: 'ether',
+      nativeTokenDecimals: 18,
+      blockConfirmations: 5,
+      startBlock: 7225328,
+      feeHandlers: [
+        {
+          address: '0x81bbFC4aC5E731d9EAdb749a7e7A6E973CF7E399',
+          type: 'basic',
+        },
+        {
+          address: '0xF5703Fcf2bfFC33625857D8ae8994b3260AA3c1f',
+          type: 'oracle',
+        },
+      ],
+      resources: [
+        {
+          resourceId: '0x0000000000000000000000000000000000000000000000000000000000000000',
+          caip19: 'caip19',
+          type: 'erc20',
+          address: '0x3D151A97A446C9ea6893038e7C0db73466f3f3af',
+          symbol: 'ERC20TST',
+          decimals: 18,
+        },
+      ],
+    },
   ],
 };
