@@ -372,7 +372,7 @@ describe('Fungible - Deposit', () => {
       allowance: jest.fn().mockResolvedValue(parseEther('0')),
     });
 
-    const transfer = await createEvmFungibleAssetTransfer(TRANSFER_PARAMS);
+    const transfer = await createFungibleAssetTransfer(TRANSFER_PARAMS);
 
     await expect(transfer.getTransferTransaction()).rejects.toThrow(
       'Insufficient ERC20 token balance',
