@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.5](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.0.4...evm-v1.0.5) (2024-08-23)
+
+
+### Bug Fixes
+
+* Add missing `getDepositData` ([#499](https://github.com/sygmaprotocol/sygma-sdk/issues/499)) ([7c8a438](https://github.com/sygmaprotocol/sygma-sdk/commit/7c8a4387c16bfffe2250b5d71037c44a288d5585))
+
+## [1.0.4](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.0.3...evm-v1.0.4) (2024-08-21)
+
+
+### Bug Fixes
+
+* Unified `tsconfig.json` in all subpackages to eliminate build discrepancies ([#487](https://github.com/sygmaprotocol/sygma-sdk/issues/487)) ([7be55ff](https://github.com/sygmaprotocol/sygma-sdk/commit/7be55ffed0dc079887ba7bfe11917dda4ddf890b))
+
 ## [1.0.3](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.0.2...evm-v1.0.3) (2024-08-20)
 
 

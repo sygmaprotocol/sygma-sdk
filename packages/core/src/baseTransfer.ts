@@ -19,7 +19,6 @@ export abstract class BaseTransfer {
   protected sourceDomain: Domain;
   protected transferResource: EvmResource | SubstrateResource | BitcoinResource;
   protected sygmaConfiguration: Config;
-
   protected sourceAddress: string;
 
   public get source(): Domain {
@@ -84,8 +83,7 @@ export abstract class BaseTransfer {
    * @param destination
    * @returns
    */
-  setDesinationDomain(destination: Domainlike): void {
-    const domain = this.config.getDomain(destination);
-    this.destinationDomain = domain;
+  setDestinationDomain(destination: Domainlike): void {
+    this.destinationDomain = this.config.getDomain(destination);
   }
 }
