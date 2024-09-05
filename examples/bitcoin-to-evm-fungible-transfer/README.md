@@ -91,7 +91,7 @@ Take into consideration that a typical response when query the utxos of your add
       "block_hash": "",
       "block_time": 1721666904
   },
-  "value": 936396`
+  "value": 936396
 }
 ```
 

@@ -23,7 +23,7 @@ const getTxExplorerUrl = (params: { txHash: string; chainId: number }): string =
 export async function erc20Transfer(): Promise<void> {
   const web3Provider = new Web3HttpProvider(SEPOLIA_RPC_URL);
   const ethersWeb3Provider = new providers.Web3Provider(web3Provider);
-  const wallet = new Wallet(privateKey ?? "", ethersWeb3Provider);
+  const wallet = new Wallet(privateKey!, ethersWeb3Provider);
 
   const params = {
     source: SEPOLIA_CHAIN_ID,
