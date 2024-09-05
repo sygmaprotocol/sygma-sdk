@@ -45,6 +45,21 @@ export type EvmFee = {
 /** An EVM resource is accepted as either the resource object or it's Sygma ID */
 export type EvmResourceish = string | EvmResource;
 
+interface FungibleDepositAction {
+  nativeValue: bigint;
+  callTo: string;
+  approveTo: string;
+  tokenSend: string;
+  tokenReceive: string;
+  data: string;
+}
+
+export interface FungibleTransferOptionalMessage {
+  transactionId: string;
+  actions: FungibleDepositAction[];
+  receiver: string;
+}
+
 export interface EvmTransferParams extends BaseTransferParams {
   sourceAddress: string;
   sourceNetworkProvider: Eip1193Provider;
@@ -59,6 +74,8 @@ export interface EvmAssetTransferParams extends EvmTransferParams {
 export interface FungibleTransferParams extends EvmAssetTransferParams {
   amount: bigint;
   securityModel?: SecurityModel;
+  optionalGas?: bigint;
+  optionalMessage: FungibleTransferOptionalMessage;
 }
 
 export interface NonFungibleTransferParams extends EvmAssetTransferParams {

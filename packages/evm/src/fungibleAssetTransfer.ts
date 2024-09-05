@@ -5,9 +5,13 @@ import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber, constants, type PopulatedTransaction, utils } from 'ethers';
 
 import { AssetTransfer } from './evmAssetTransfer.js';
-import type { EvmFee, FungibleTransferParams, TransactionRequest } from './types.js';
+import type {
+  EvmFee,
+  FungibleTransferOptionalMessage,
+  FungibleTransferParams,
+  TransactionRequest,
+} from './types.js';
 import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
-import type { FungibleTransferOptionalMessage } from './utils/assetTransferHelpers.js';
 import { createFungibleDepositData } from './utils/assetTransferHelpers.js';
 import { createTransactionRequest } from './utils/transaction.js';
 
@@ -51,6 +55,8 @@ class FungibleAssetTransfer extends AssetTransfer {
     super(transfer, config);
     this.specifiedAmount = transfer.amount;
     this.securityModel = transfer.securityModel ?? SecurityModel.MPC;
+    this.optionalGas = transfer.optionalGas;
+    this.optionalMessage = transfer.optionalMessage;
   }
 
   /**

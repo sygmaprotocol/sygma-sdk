@@ -5,24 +5,10 @@ import { arrayify, concat, hexlify, hexZeroPad } from '@ethersproject/bytes';
 import { TypeRegistry } from '@polkadot/types';
 import { decodeAddress } from '@polkadot/util-crypto';
 import { BigNumber } from 'ethers';
+import { FungibleTransferOptionalMessage } from '../types';
 
 const ACTIONS_ARRAY_ABI =
   'tuple(uint256 nativeValue, address callTo, address approveTo, address tokenSend, address tokenReceive, bytes data)[]';
-
-interface FungibleDepositAction {
-  nativeValue: bigint;
-  callTo: string;
-  approveTo: string;
-  tokenSend: string;
-  tokenReceive: string;
-  data: string;
-}
-
-export interface FungibleTransferOptionalMessage {
-  transactionId: string;
-  actions: FungibleDepositAction[];
-  receiver: string;
-}
 
 interface FungbileDepositParams {
   destination: Domain;
