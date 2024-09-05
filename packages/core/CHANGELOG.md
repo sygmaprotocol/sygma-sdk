@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/sygmaprotocol/sygma-sdk/compare/core-v1.0.3...core-v1.1.0) (2024-09-05)
+
+
+### Features
+
+* **evm:** Added support for creating cross chain non fungible asset transfer transactions ([#460](https://github.com/sygmaprotocol/sygma-sdk/issues/460)) ([6c40781](https://github.com/sygmaprotocol/sygma-sdk/commit/6c40781593c927a06a42f593c511520f41d028d5))
+
 ## [1.0.3](https://github.com/sygmaprotocol/sygma-sdk/compare/core-v1.0.2...core-v1.0.3) (2024-09-03)
 
 
