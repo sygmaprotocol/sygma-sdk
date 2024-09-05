@@ -75,7 +75,7 @@ export interface FungibleTransferParams extends EvmAssetTransferParams {
   amount: bigint;
   securityModel?: SecurityModel;
   optionalGas?: bigint;
-  optionalMessage: FungibleTransferOptionalMessage;
+  optionalMessage?: FungibleTransferOptionalMessage;
 }
 
 export interface NonFungibleTransferParams extends EvmAssetTransferParams {
