@@ -5,7 +5,8 @@ import { arrayify, concat, hexlify, hexZeroPad } from '@ethersproject/bytes';
 import { TypeRegistry } from '@polkadot/types';
 import { decodeAddress } from '@polkadot/util-crypto';
 import { BigNumber } from 'ethers';
-import { FungibleTransferOptionalMessage } from '../types';
+
+import type { FungibleTransferOptionalMessage } from '../types.js';
 
 const ACTIONS_ARRAY_ABI =
   'tuple(uint256 nativeValue, address callTo, address approveTo, address tokenSend, address tokenReceive, bytes data)[]';
