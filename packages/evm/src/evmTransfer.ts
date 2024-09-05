@@ -1,31 +1,46 @@
-import type { BaseTransferParams, Config, Eip1193Provider } from '@buildwithsygma/core';
+import type { Config, HexString, Eip1193Provider } from '@buildwithsygma/core';
 import { BaseTransfer } from '@buildwithsygma/core';
 import { providers } from 'ethers';
 
 import { TwapFeeCalculator } from './fee/TwapFee.js';
 import { getFeeInformation, BasicFeeCalculator, PercentageFeeCalculator } from './fee/index.js';
-import type { EvmFee } from './types.js';
+import type { EvmFee, EvmTransferParams } from './types.js';
 
-export interface EvmTransferParams extends BaseTransferParams {
-  sourceNetworkProvider: Eip1193Provider;
-}
+/**
+ * @internal
+ * @class EvmTransfer
+ *
+ * @abstract
+ * Base EVM transfer class
+ * housing common functionality
+ */
+export abstract class EvmTransfer extends BaseTransfer {
+  protected provider: Eip1193Provider;
 
-export class EvmTransfer extends BaseTransfer {
-  sourceNetworkProvider: Eip1193Provider;
-
-  constructor(params: EvmTransferParams, config: Config) {
-    super(params, config);
-    this.sourceNetworkProvider = params.sourceNetworkProvider;
+  get sourceNetworkProvider(): Eip1193Provider {
+    return this.provider;
   }
 
+  protected constructor(params: EvmTransferParams, config: Config) {
+    super(params, config);
+    this.provider = params.sourceNetworkProvider;
+  }
+
+  /**
+   * Deposit Data is required
+   * by the sygma protocol to process
+   * transfer types
+   * @returns {string}
+   */
   protected getDepositData(): string {
     throw new Error('Method not implemented.');
   }
 
   /**
    * Returns fee based on transfer amount.
+   * @returns {Promise<EvmFee>}
    */
-  async getFee(): Promise<EvmFee> {
+  public async getFee(): Promise<EvmFee> {
     const provider = new providers.Web3Provider(this.sourceNetworkProvider);
 
     const { feeHandlerAddress, feeHandlerType } = await getFeeInformation(
@@ -52,5 +67,9 @@ export class EvmTransfer extends BaseTransfer {
       feeHandlerType,
       depositData: this.getDepositData(),
     });
+  }
+
+  public setSourceAddress(address: HexString): void {
+    this.sourceAddress = address;
   }
 }

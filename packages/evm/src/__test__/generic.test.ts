@@ -6,7 +6,7 @@ import {
   FeeHandlerRouter__factory,
 } from '@buildwithsygma/sygma-contracts';
 
-import { createCrossChainContractCall } from '../generic.js';
+import { createCrossChainContractCall } from '../genericMessageTransfer.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-return
 jest.mock('@buildwithsygma/core', () => ({

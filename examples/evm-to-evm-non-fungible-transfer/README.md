@@ -1,6 +1,6 @@
-## Sygma SDK ERC20 Example
+## Sygma SDK ERC721 Example
 
-This is an example script that demonstrates the functionality of the SDK using the Sygma ecosystem. The script showcases an ERC20 token transfer between the same account on two different testnets using the Sygma SDK.
+This is an example script that demonstrates the functionality of the SDK using the Sygma ecosystem. The script showcases an ERC721 token transfer between the same account on two different testnets using the Sygma SDK.
 
 ## Prerequisites
 
@@ -8,7 +8,7 @@ Before running the script, ensure that you have the following:
 
 - Node.js
 - Yarn (version 3.4.1 or higher)
-- A development wallet funded with `ERC20LRTest` tokens from the [Sygma faucet](https://faucet-ui-stage.buildwithsygma.com/)
+  <!-- - A development wallet funded with `ERC20LRTest` tokens from the [Sygma faucet](https://faucet-ui-stage.buildwithsygma.com/) -->
 - The [exported private key](https://support.metamask.io/hc/en-us/articles/360015289632-How-to-export-an-account-s-private-key) of your development wallet
 - [Sepolia ETH](https://www.alchemy.com/faucets/ethereum-sepolia) for gas
 - An Ethereum [provider](https://www.infura.io/) (in case the hardcoded RPC within the script does not work)
@@ -49,7 +49,7 @@ This example uses the `dotenv` module to manage private keys. To run the example
 Create a `.env` file in the evm-to-evm example folder:
 
 ```bash
-cd examples/evm-to-evm-fungible-transfer
+cd examples/evm-to-evm-non-fungible-transfer
 touch .env
 ```
 
@@ -63,8 +63,8 @@ To send an ERC20 example transfer run:
 yarn run transfer
 ```
 
-The example will use `ethers` in conjuction with the sygma-sdk to
-create a transfer from `Sepolia` to `Holesky` with a test ERC20 token.
+<!-- The example will use `ethers` in conjuction with the sygma-sdk to
+create a transfer from `Sepolia` to `Holesky` with a test ERC721 token. -->
 
 Replace the placeholder values in the `.env` file with your own Ethereum wallet private key.
 
@@ -80,9 +80,9 @@ This example script performs the following steps:
 
 - initializes the SDK and establishes a connection to the Ethereum provider.
 - retrieves the list of supported domains and resources from the SDK configuration.
-- Searches for the ERC20 token resource with the specified symbol
+- Searches for the ERC721 token resource with the specified symbol
 - Searches for the Cronos and Sepolia domains in the list of supported domains based on their chain IDs
-- Constructs a transfer object that defines the details of the ERC20 token transfer
+- Constructs a transfer object that defines the details of the ERc721 token transfer
 - Retrieves the fee required for the transfer from the SDK.
-- Builds the necessary approval transactions for the transfer and sends them using the Ethereum wallet. The approval transactions are required to authorize the transfer of ERC20 tokens.
+- Builds the necessary approval transactions for the transfer and sends them using the Ethereum wallet. The approval transactions are required to authorize the transfer of ERc721 tokens.
 - Builds the final transfer transaction and sends it using the Ethereum wallet.

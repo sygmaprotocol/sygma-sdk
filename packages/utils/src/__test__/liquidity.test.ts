@@ -1,5 +1,5 @@
 import { Network, ResourceType } from '@buildwithsygma/core';
-import type { createEvmFungibleAssetTransfer } from '@buildwithsygma/evm';
+import type { createFungibleAssetTransfer } from '@buildwithsygma/evm';
 
 import { hasEnoughLiquidity } from '../liquidity.js';
 
@@ -39,7 +39,7 @@ const mockedDestination = {
 };
 
 const mockedTransferEVM = {
-  amount: 0n,
+  transferAmount: 0n,
   resource: mockedResource,
   config: {
     findDomainConfig: jest.fn(),
@@ -67,10 +67,10 @@ describe('hasEnoughLiquidity - EVM', () => {
   });
 
   it('should return true if there is enough liquidity', async () => {
-    mockedTransferEVM.amount = BigInt(1);
+    mockedTransferEVM.transferAmount = BigInt(1);
 
     const isEnough = await hasEnoughLiquidity(
-      mockedTransferEVM as unknown as Awaited<ReturnType<typeof createEvmFungibleAssetTransfer>>,
+      mockedTransferEVM as unknown as Awaited<ReturnType<typeof createFungibleAssetTransfer>>,
       destinationProviderUrl,
     );
 
@@ -78,10 +78,10 @@ describe('hasEnoughLiquidity - EVM', () => {
   });
 
   it('should return false if there isnt enough liquidity', async () => {
-    mockedTransferEVM.amount = BigInt(100);
+    mockedTransferEVM.transferAmount = BigInt(10);
 
     const isEnough = await hasEnoughLiquidity(
-      mockedTransferEVM as unknown as Awaited<ReturnType<typeof createEvmFungibleAssetTransfer>>,
+      mockedTransferEVM as unknown as Awaited<ReturnType<typeof createFungibleAssetTransfer>>,
       destinationProviderUrl,
     );
 
@@ -95,9 +95,7 @@ describe('hasEnoughLiquidity - EVM', () => {
 
     await expect(
       hasEnoughLiquidity(
-        mockedTransferClone as unknown as Awaited<
-          ReturnType<typeof createEvmFungibleAssetTransfer>
-        >,
+        mockedTransferClone as unknown as Awaited<ReturnType<typeof createFungibleAssetTransfer>>,
         destinationProviderUrl,
       ),
     ).rejects.toThrow('Handler not found or unregistered for resource.');
@@ -110,9 +108,7 @@ describe('hasEnoughLiquidity - EVM', () => {
 
     await expect(
       hasEnoughLiquidity(
-        mockedTransferClone as unknown as Awaited<
-          ReturnType<typeof createEvmFungibleAssetTransfer>
-        >,
+        mockedTransferClone as unknown as Awaited<ReturnType<typeof createFungibleAssetTransfer>>,
         destinationProviderUrl,
       ),
     ).rejects.toThrow('Resource not found or unregistered.');
@@ -135,9 +131,7 @@ describe('hasEnoughLiquidity - substrate', () => {
     mockedTransferSubstrate.amount = BigInt(5);
 
     const isEnough = await hasEnoughLiquidity(
-      mockedTransferSubstrate as unknown as Awaited<
-        ReturnType<typeof createEvmFungibleAssetTransfer>
-      >,
+      mockedTransferSubstrate as unknown as Awaited<ReturnType<typeof createFungibleAssetTransfer>>,
       destinationProviderUrl,
     );
 
@@ -147,9 +141,7 @@ describe('hasEnoughLiquidity - substrate', () => {
     mockedTransferSubstrate.amount = BigInt(10);
 
     const isEnough = await hasEnoughLiquidity(
-      mockedTransferSubstrate as unknown as Awaited<
-        ReturnType<typeof createEvmFungibleAssetTransfer>
-      >,
+      mockedTransferSubstrate as unknown as Awaited<ReturnType<typeof createFungibleAssetTransfer>>,
       destinationProviderUrl,
     );
 
@@ -171,7 +163,7 @@ describe('hasEnoughLiquidity - error', () => {
 
   it('should return false if network type is not supported', async () => {
     const isEnough = await hasEnoughLiquidity(
-      mockedTransferEVM as unknown as Awaited<ReturnType<typeof createEvmFungibleAssetTransfer>>,
+      mockedTransferSubstrate as unknown as Awaited<ReturnType<typeof createFungibleAssetTransfer>>,
       destinationProviderUrl,
     );
 

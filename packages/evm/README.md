@@ -28,14 +28,34 @@ Bridge configuration and list of supported networks for each environment can be 
 
 ```typescript
 import { Environment } from '@buildwithsygma/core';
-import { createEvmFungibleAssetTransfer } from '@buildwithsygma/evm';
+import { createFungibleAssetTransfer } from '@buildwithsygma/evm';
 ...
-const transfer = await createEvmFungibleAssetTransfer({
+const transfer = await createFungibleAssetTransfer({
   source: 11155111,
   destination: 17000,
   sourceNetworkProvider: provider,
   resource: '0x0000000000000000000000000000000000000000000000000000000000000200',
   amount: BigInt(2) * BigInt(1e18),
+  destinationAddress: destinationAddress,
+  sourceAddress: senderAddress,
+});
+...
+const approvalTransactions = await transfer.getApprovalTransactions();
+const transferTransaction = await transfer.getTransferTransaction();
+```
+
+### Non Fungible Token Transfers
+
+```typescript
+import { Environment } from '@buildwithsygma/core';
+import { createNonFungibleAssetTransfer } from '@buildwithsygma/evm';
+...
+const transfer = await createNonFungibleAssetTransfer({
+  source: 11155111,
+  destination: 17000,
+  sourceNetworkProvider: provider,
+  resource: '0x0000000000000000000000000000000000000000000000000000000000000200',
+  tokenId: "1",
   destinationAddress: destinationAddress,
   sourceAddress: senderAddress,
 });
@@ -80,4 +100,5 @@ const transferTransaction = await transfer.getTransferTransaction();
 The SDK monorepo contains the following examples demonstrating the usage of EVM Package:
 
 1. [Fungible Token Transfers](https://github.com/sygmaprotocol/sygma-sdk/tree/main/examples/evm-to-evm-fungible-transfer)
-2. [Generic Transfers/Contract Calls](https://github.com/sygmaprotocol/sygma-sdk/tree/main/examples/evm-to-evm-generic-message-transfer)
+2. [Non Fungible Token Transfers](https://github.com/sygmaprotocol/sygma-sdk/tree/main/examples/evm-to-evm-non-fungible-transfer)
+3. [Generic Transfers/Contract Calls](https://github.com/sygmaprotocol/sygma-sdk/tree/main/examples/evm-to-evm-generic-message-transfer)

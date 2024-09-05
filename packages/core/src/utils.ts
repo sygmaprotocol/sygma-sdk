@@ -285,7 +285,7 @@ export function isValidSubstrateAddress(address: string): boolean {
  * @returns {boolean}
  */
 export function isValidEvmAddress(address: string): boolean {
-  return !!ethers.utils.isAddress(address);
+  return ethers.utils.isAddress(address);
 }
 
 /**
