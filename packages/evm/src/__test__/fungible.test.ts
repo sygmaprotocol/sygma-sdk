@@ -162,7 +162,6 @@ describe('Fungible - Fee', () => {
     const transfer = await createFungibleAssetTransfer(TRANSFER_PARAMS);
     const fee = await transfer.getFee();
 
-    // expect(fee.fee).toEqual(0n);
     expect(fee.type).toEqual('percentage');
     expect(fee.handlerAddress).toEqual('0x98729c03c4D5e820F5e8c45558ae07aE63F97461');
   });

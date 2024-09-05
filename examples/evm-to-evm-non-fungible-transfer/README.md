@@ -9,7 +9,7 @@ Before running the script, ensure that you have the following:
 - Node.js
 - Yarn (version 3.4.1 or higher)
   <!-- - A development wallet funded with `ERC20LRTest` tokens from the [Sygma faucet](https://faucet-ui-stage.buildwithsygma.com/) -->
-  <!-- - The [exported private key](https://support.metamask.io/hc/en-us/articles/360015289632-How-to-export-an-account-s-private-key) of your development wallet -->
+- The [exported private key](https://support.metamask.io/hc/en-us/articles/360015289632-How-to-export-an-account-s-private-key) of your development wallet
 - [Sepolia ETH](https://www.alchemy.com/faucets/ethereum-sepolia) for gas
 - An Ethereum [provider](https://www.infura.io/) (in case the hardcoded RPC within the script does not work)
 
