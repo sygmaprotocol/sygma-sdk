@@ -59,15 +59,17 @@ const substrateTransfer = async (): Promise<void> => {
         `Transaction included at blockHash ${status.asInBlock.toString()}`
       );
     } else if (status.isFinalized) {
-      const blockNumber = results.blockNumber.toNumber();
+      const blockNumber = results.blockNumber?.toNumber();
       const extrinsicIndex = results.txIndex;
 
-      console.log(
-        `Transaction finalized at blockHash ${status.asFinalized.toString()}`
-      );
-      console.log(
-        `Explorer URL: ${getSygmaExplorerTransferUrl({ blockNumber, extrinsicIndex })}`
-      );
+      if (blockNumber && extrinsicIndex) {
+        console.log(
+          `Transaction finalized at blockHash ${status.asFinalized.toString()}`
+        );
+        console.log(
+          `Explorer URL: ${getSygmaExplorerTransferUrl({ blockNumber, extrinsicIndex })}`
+        );
+      }
       unsub();
       process.exit(0);
     }

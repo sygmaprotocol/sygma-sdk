@@ -14,14 +14,15 @@ import { BN } from '@polkadot/util';
 import type { SubstrateFee } from './types.js';
 import {
   deposit,
+  getAssetBalance,
   getBasicFee,
   getFeeHandler,
-  getPercentageFee,
-  getAssetBalance,
   getNativeTokenBalance,
+  getPercentageFee,
 } from './utils/index.js';
 
 export interface SubstrateAssetTransferRequest extends BaseTransferParams {
+  sourceAddress: string;
   sourceNetworkProvider: ApiPromise;
   amount: bigint;
   destinationAddress: string;

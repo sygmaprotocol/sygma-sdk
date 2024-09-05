@@ -1,10 +1,16 @@
 import type {
-  Domain,
+  BaseTransferParams,
   Eip1193Provider,
   EvmResource,
   FeeHandlerType,
   SecurityModel,
 } from '@buildwithsygma/core';
+import type {
+  Abi,
+  AbiParametersToPrimitiveTypes,
+  ExtractAbiFunction,
+  ExtractAbiFunctionNames,
+} from 'abitype';
 
 export interface TransactionRequest {
   to: string;
@@ -36,16 +42,40 @@ export type EvmFee = {
   maxFee?: bigint;
 };
 
-export type GenericTransferRequest = {
-  sourceDomain: string | number | Domain;
-  sourceNetworkProvider: Eip1193Provider;
-  destinationDomain: string | number | Domain;
-  destinationContractAddress: string;
-  destinationFunctionSignature: string;
-  executionData: string;
-  gasLimit: bigint;
-  securityModel?: SecurityModel; //defaults to MPC
-};
-
 /** An EVM resource is accepted as either the resource object or it's Sygma ID */
 export type EvmResourceish = string | EvmResource;
+
+export interface EvmTransferParams extends BaseTransferParams {
+  sourceAddress: string;
+  sourceNetworkProvider: Eip1193Provider;
+}
+
+export interface EvmAssetTransferParams extends EvmTransferParams {
+  recipientAddress: string;
+  amount?: bigint;
+  tokenId?: string;
+}
+
+export interface FungibleTransferParams extends EvmAssetTransferParams {
+  amount: bigint;
+  securityModel?: SecurityModel;
+}
+
+export interface NonFungibleTransferParams extends EvmAssetTransferParams {
+  tokenId: string;
+}
+
+export interface GenericMessageTransferParams<
+  ContractAbi extends Abi,
+  FunctionName extends ExtractAbiFunctionNames<ContractAbi, 'nonpayable' | 'payable'>,
+> extends EvmTransferParams {
+  gasLimit: bigint;
+  functionParameters: AbiParametersToPrimitiveTypes<
+    ExtractAbiFunction<ContractAbi, FunctionName>['inputs'],
+    'inputs'
+  >;
+  functionName: FunctionName;
+  destinationContractAbi: ContractAbi;
+  destinationContractAddress: string;
+  maxFee: bigint;
+}

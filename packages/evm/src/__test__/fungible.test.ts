@@ -1,4 +1,3 @@
-import type { Eip1193Provider } from '@buildwithsygma/core';
 import { Network, Config, ResourceType } from '@buildwithsygma/core';
 import {
   BasicFeeHandler__factory,
@@ -10,22 +9,18 @@ import {
 import { BigNumber } from 'ethers';
 import { parseEther } from 'ethers/lib/utils.js';
 
-import { createEvmFungibleAssetTransfer } from '../fungible.js';
+import { createFungibleAssetTransfer } from '../fungibleAssetTransfer.js';
 import type { TransactionRequest } from '../types.js';
 
+import { ASSET_TRANSFER_PARAMS } from './constants.js';
+
 const TRANSFER_PARAMS = {
-  source: 1,
-  destination: 2,
-  sourceAddress: '0x98729c03c4D5e820F5e8c45558ae07aE63F97461',
-  sourceNetworkProvider: jest.fn() as unknown as Eip1193Provider,
+  ...ASSET_TRANSFER_PARAMS,
   resource: {
-    address: '0x98729c03c4D5e820F5e8c45558ae07aE63F97461',
-    type: ResourceType.FUNGIBLE,
-    resourceId: '0x0',
-    caip19: '0x11',
+    ...ASSET_TRANSFER_PARAMS.resource,
+    type: ResourceType.NON_FUNGIBLE,
   },
   amount: parseEther('10').toBigInt(),
-  destinationAddress: '0x98729c03c4D5e820F5e8c45558ae07aE63F97461',
 };
 
 const MOCKED_CONFIG = {
@@ -93,9 +88,9 @@ describe('Fungible - createEvmFungibleAssetTransfer', () => {
   });
 
   it('should create a transfer', async () => {
-    const transfer = await createEvmFungibleAssetTransfer(TRANSFER_PARAMS);
+    const transfer = await createFungibleAssetTransfer(TRANSFER_PARAMS);
     expect(transfer).toBeTruthy();
-    expect(transfer.amount).toEqual(parseEther('10').toBigInt());
+    expect(transfer.transferAmount).toEqual(parseEther('10').toBigInt());
   });
 
   it('should fail if fee handler is not registered', async () => {
@@ -105,7 +100,7 @@ describe('Fungible - createEvmFungibleAssetTransfer', () => {
         .mockResolvedValue('0x0000000000000000000000000000000000000000'),
     });
 
-    await expect(async () => await createEvmFungibleAssetTransfer(TRANSFER_PARAMS)).rejects.toThrow(
+    await expect(async () => await createFungibleAssetTransfer(TRANSFER_PARAMS)).rejects.toThrow(
       'Failed getting fee: route not registered on fee handler',
     );
   });
@@ -150,7 +145,7 @@ describe('Fungible - Fee', () => {
   });
 
   it('should return fee for a transfer', async () => {
-    const transfer = await createEvmFungibleAssetTransfer(TRANSFER_PARAMS);
+    const transfer = await createFungibleAssetTransfer(TRANSFER_PARAMS);
     const fee = await transfer.getFee();
 
     expect(fee.fee).toEqual(0n);
@@ -164,12 +159,40 @@ describe('Fungible - Fee', () => {
       calculateFee: jest.fn().mockResolvedValue([BigNumber.from(0)]),
     });
 
-    const transfer = await createEvmFungibleAssetTransfer(TRANSFER_PARAMS);
+    const transfer = await createFungibleAssetTransfer(TRANSFER_PARAMS);
     const fee = await transfer.getFee();
 
-    // expect(fee.fee).toEqual(0n);
     expect(fee.type).toEqual('percentage');
     expect(fee.handlerAddress).toEqual('0x98729c03c4D5e820F5e8c45558ae07aE63F97461');
+  });
+
+  it('should query fee with deposit data', async () => {
+    const calculateFee = jest.fn().mockResolvedValue([BigNumber.from(0)]);
+
+    (PercentageERC20FeeHandler__factory.connect as jest.Mock).mockReturnValue({
+      feeHandlerType: jest.fn().mockResolvedValue('percentage'),
+      calculateFee,
+      _resourceIDToFeeBounds: jest.fn().mockResolvedValue({
+        lowerBound: parseEther('10'),
+        upperBound: parseEther('100'),
+      }),
+      _domainResourceIDToFee: jest.fn().mockResolvedValue(BigNumber.from(100)),
+      HUNDRED_PERCENT: jest.fn().mockResolvedValue(10000),
+    });
+
+    (BasicFeeHandler__factory.connect as jest.Mock).mockReturnValue({
+      feeHandlerType: jest.fn().mockResolvedValue('percentage'),
+      calculateFee: jest.fn().mockResolvedValue([BigNumber.from(0)]),
+    });
+
+    const transfer = await createFungibleAssetTransfer(TRANSFER_PARAMS);
+    await transfer.getFee();
+
+    const actualDepositData = (calculateFee.mock.calls as string[][])[0][4];
+    const expectedDepositData =
+      '0x0000000000000000000000000000000000000000000000008ac7230489e80000000000000000000000000000000000000000000000000000000000000000001498729c03c4d5e820f5e8c45558ae07ae63f97461';
+
+    expect(actualDepositData).toEqual(expectedDepositData);
   });
 });
 
@@ -209,7 +232,7 @@ describe('Fungible - Approvals', () => {
   });
 
   it('should return approvals for a transfer', async () => {
-    const transfer = await createEvmFungibleAssetTransfer(TRANSFER_PARAMS);
+    const transfer = await createFungibleAssetTransfer(TRANSFER_PARAMS);
     const approvals = await transfer.getApprovalTransactions();
 
     expect(approvals.length).toBeGreaterThan(0);
@@ -221,14 +244,12 @@ describe('Fungible - Approvals', () => {
       calculateFee: jest.fn().mockResolvedValue([parseEther('1')]),
     });
 
-    const transfer = await createEvmFungibleAssetTransfer({
+    const transfer = await createFungibleAssetTransfer({
       ...TRANSFER_PARAMS,
       amount: parseEther('0').toBigInt(),
     });
 
-    await expect(transfer.getApprovalTransactions()).rejects.toThrow(
-      'Insufficient native token balance for network',
-    );
+    await expect(transfer.getApprovalTransactions()).rejects.toThrow('Insufficient balance');
   });
 
   it('should throw an error if balance is not sufficient - Percentage', async () => {
@@ -247,21 +268,19 @@ describe('Fungible - Approvals', () => {
       HUNDRED_PERCENT: jest.fn().mockResolvedValue(10000),
     });
     (ERC20__factory.connect as jest.Mock).mockReturnValue({
-      balanceOf: jest.fn().mockResolvedValue(BigNumber.from(parseEther('1').toBigInt())), // Mock balance less than the required amount
+      balanceOf: jest.fn().mockResolvedValue(BigNumber.from(parseEther('0').toBigInt())), // Mock balance less than the required amount
       populateTransaction: {
         approve: jest.fn().mockResolvedValue({}),
       },
       allowance: jest.fn().mockResolvedValue(parseEther('0')),
     });
 
-    const transfer = await createEvmFungibleAssetTransfer({
+    const transfer = await createFungibleAssetTransfer({
       ...TRANSFER_PARAMS,
       amount: parseEther('100').toBigInt(),
     });
 
-    await expect(transfer.getApprovalTransactions()).rejects.toThrow(
-      'Insufficient ERC20 token balance',
-    );
+    await expect(transfer.getApprovalTransactions()).rejects.toThrow('Insufficient balance');
   });
 });
 
@@ -309,7 +328,7 @@ describe('Fungible - Deposit', () => {
   });
 
   it('should return deposit transaction', async () => {
-    const transfer = await createEvmFungibleAssetTransfer(TRANSFER_PARAMS);
+    const transfer = await createFungibleAssetTransfer(TRANSFER_PARAMS);
     const depositTransaction = await transfer.getTransferTransaction();
 
     expect(depositTransaction).toBeTruthy();
@@ -331,6 +350,25 @@ describe('Fungible - Deposit', () => {
       HUNDRED_PERCENT: jest.fn().mockResolvedValue(10000),
     });
     (ERC20__factory.connect as jest.Mock).mockReturnValue({
+      balanceOf: jest.fn().mockResolvedValue(BigNumber.from(parseEther('0').toBigInt())), // Mock balance less than the required amount
+      populateTransaction: {
+        approve: jest.fn().mockResolvedValue({}),
+      },
+      allowance: jest.fn().mockResolvedValue(parseEther('0')),
+    });
+
+    const transfer = await createFungibleAssetTransfer(TRANSFER_PARAMS);
+
+    await expect(transfer.getTransferTransaction()).rejects.toThrow('Insufficient token balance');
+  });
+
+  it('should throw ERROR - Insufficient account balance', async () => {
+    (BasicFeeHandler__factory.connect as jest.Mock).mockReturnValue({
+      feeHandlerType: jest.fn().mockResolvedValue('basic'),
+      calculateFee: jest.fn().mockResolvedValue([parseEther('2')]),
+    });
+
+    (ERC20__factory.connect as jest.Mock).mockReturnValue({
       balanceOf: jest.fn().mockResolvedValue(BigNumber.from(parseEther('1').toBigInt())), // Mock balance less than the required amount
       populateTransaction: {
         approve: jest.fn().mockResolvedValue({}),
@@ -338,10 +376,8 @@ describe('Fungible - Deposit', () => {
       allowance: jest.fn().mockResolvedValue(parseEther('0')),
     });
 
-    const transfer = await createEvmFungibleAssetTransfer(TRANSFER_PARAMS);
+    const transfer = await createFungibleAssetTransfer(TRANSFER_PARAMS);
 
-    await expect(transfer.getTransferTransaction()).rejects.toThrow(
-      'Insufficient ERC20 token balance',
-    );
+    await expect(transfer.getTransferTransaction()).rejects.toThrow('Insufficient token balance');
   });
 });

@@ -1,5 +1,7 @@
 export type ParachainId = number;
 
+export type HexString = `0x${string}`;
+
 export enum RouteType {
   GMP = 'gmp',
   FUNGIBLE = 'fungible',

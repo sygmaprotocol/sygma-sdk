@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/sygmaprotocol/sygma-sdk/compare/core-v1.0.2...core-v1.0.3) (2024-09-03)
+
+
+### Bug Fixes
+
+* typo ([#507](https://github.com/sygmaprotocol/sygma-sdk/issues/507)) ([d91a780](https://github.com/sygmaprotocol/sygma-sdk/commit/d91a7802b2ab2eb0c30e062a7c2a04e8be1904f2))
+
 ## [1.0.2](https://github.com/sygmaprotocol/sygma-sdk/compare/core-v1.0.1...core-v1.0.2) (2024-08-21)
 
 

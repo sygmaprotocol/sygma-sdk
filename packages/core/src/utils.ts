@@ -2,7 +2,7 @@ import * as process from 'node:process';
 
 import { decodeAddress, encodeAddress } from '@polkadot/keyring';
 import { hexToU8a, isHex } from '@polkadot/util';
-import validate, { Network as BitcoinNetwork } from 'bitcoin-address-validation';
+import { Network as BitcoinNetwork, validate } from 'bitcoin-address-validation';
 import { ethers } from 'ethers';
 
 import { ExplorerUrl, IndexerUrl } from './constants.js';
@@ -285,7 +285,7 @@ export function isValidSubstrateAddress(address: string): boolean {
  * @returns {boolean}
  */
 export function isValidEvmAddress(address: string): boolean {
-  return !!ethers.utils.isAddress(address);
+  return ethers.utils.isAddress(address);
 }
 
 /**

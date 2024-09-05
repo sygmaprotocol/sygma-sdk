@@ -15,7 +15,7 @@
   "scripts": {
     "lint": "yarn workspaces foreach -A run lint",
     "clean": "yarn workspaces foreach -A run clean",
-    "build": "yarn run clean && yarn workspaces foreach -A run build:all",
+    "build": "yarn run clean && yarn workspaces foreach -A -t run build:all",
     "test": "yarn workspaces foreach -A run test:unit --ci --silent --coverage",
     "core:build": "yarn workspace @buildwithsygma/core build:all",
     "core:cleanDist": "yarn workspace @buildwithsygma/core clean",

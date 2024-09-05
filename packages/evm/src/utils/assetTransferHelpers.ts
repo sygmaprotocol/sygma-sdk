@@ -27,7 +27,8 @@ export interface FungibleTransferOptionalMessage {
 interface FungbileDepositParams {
   destination: Domain;
   recipientAddress: string;
-  amount: bigint;
+  amount?: bigint;
+  tokenId?: string;
   optionalGas?: bigint;
   optionalMessage?: FungibleTransferOptionalMessage;
 }
@@ -79,7 +80,8 @@ export function serializeSubstrateAddress(
 }
 
 export function createFungibleDepositData(depositParams: FungbileDepositParams): string {
-  const { recipientAddress, destination, amount, optionalGas, optionalMessage } = depositParams;
+  const { recipientAddress, destination, amount, tokenId, optionalGas, optionalMessage } =
+    depositParams;
   let recipientAddressSerialized: Uint8Array;
 
   switch (destination.type) {
@@ -99,9 +101,12 @@ export function createFungibleDepositData(depositParams: FungbileDepositParams):
     }
   }
 
+  const val = amount !== undefined ? amount : tokenId !== undefined ? tokenId : null;
+  if (val === null) throw new Error('Token Amount Or ID is required.');
+
   const HEX_PADDING = 32;
-  const amountInHex = BigNumber.from(amount).toHexString();
-  const zeroPaddedAmount = hexZeroPad(amountInHex, HEX_PADDING);
+  const tokenAmountOrIdInHex = BigNumber.from(val).toHexString();
+  const zeroPaddedAmount = hexZeroPad(tokenAmountOrIdInHex, HEX_PADDING);
   const addressLenInHex = BigNumber.from(recipientAddressSerialized.length).toHexString();
   const zeroPaddedAddrLen = hexZeroPad(addressLenInHex, HEX_PADDING);
   let depositData = concat([zeroPaddedAmount, zeroPaddedAddrLen, recipientAddressSerialized]);

@@ -1,7 +1,11 @@
-import { getSygmaScanLink, type Eip1193Provider } from "@buildwithsygma/core";
 import {
-  createFungibleAssetTransfer,
-  EvmFungibleTransferRequest,
+  Eip1193Provider,
+  Environment,
+  getSygmaScanLink,
+} from "@buildwithsygma/core";
+import {
+  createNonFungibleAssetTransfer,
+  NonFungibleTransferParams,
 } from "@buildwithsygma/evm";
 import dotenv from "dotenv";
 import { Wallet, providers } from "ethers";
@@ -16,12 +20,11 @@ if (!privateKey) {
 }
 
 const SEPOLIA_CHAIN_ID = 11155111;
-const AMOY_CHAIN_ID = 84532;
+const CRONOS_TESTNET_CHAIN_ID = 338;
 const RESOURCE_ID =
-  "0x0000000000000000000000000000000000000000000000000000000000001200";
+  "0x0000000000000000000000000000000000000000000000000000000000000200";
 const SEPOLIA_RPC_URL =
-  process.env.SEPOLIA_RPC_URL ||
-  "https://eth-sepolia.g.alchemy.com/v2/MeCKDrpxLkGOn4LMlBa3cKy1EzzOzwzG";
+  process.env.SEPOLIA_RPC_URL || "https://eth-sepolia-public.unifra.io";
 
 const explorerUrls: Record<number, string> = {
   [SEPOLIA_CHAIN_ID]: "https://sepolia.etherscan.io",
@@ -31,25 +34,24 @@ const getTxExplorerUrl = (params: {
   chainId: number;
 }): string => `${explorerUrls[params.chainId]}/tx/${params.txHash}`;
 
-export async function erc20Transfer(): Promise<void> {
+export async function erc721Transfer(): Promise<void> {
   const web3Provider = new Web3HttpProvider(SEPOLIA_RPC_URL);
   const ethersWeb3Provider = new providers.Web3Provider(web3Provider);
   const wallet = new Wallet(privateKey ?? "", ethersWeb3Provider);
   const sourceAddress = await wallet.getAddress();
   const destinationAddress = await wallet.getAddress();
 
-  const params: EvmFungibleTransferRequest = {
+  const params: NonFungibleTransferParams = {
     source: SEPOLIA_CHAIN_ID,
-    destination: AMOY_CHAIN_ID,
+    destination: CRONOS_TESTNET_CHAIN_ID,
     sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
     resource: RESOURCE_ID,
-    amount: BigInt(1) * BigInt(1e6),
-    destinationAddress: destinationAddress, // this needs to be AddressZero to call DefaultMessageReceiver on dest
-    sourceAddress: sourceAddress,
-    optionalGas: BigInt(500000),
+    tokenId: process.env.TOKEN_ID as string,
+    recipientAddress: destinationAddress,
+    sourceAddress,
   };
 
-  const transfer = await createFungibleAssetTransfer(params);
+  const transfer = await createNonFungibleAssetTransfer(params);
 
   const approvals = await transfer.getApprovalTransactions();
   console.log(`Approving Tokens (${approvals.length})...`);
@@ -69,4 +71,4 @@ export async function erc20Transfer(): Promise<void> {
   );
 }
 
-erc20Transfer().finally(() => {});
+erc721Transfer().finally(() => {});

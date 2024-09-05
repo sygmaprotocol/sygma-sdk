@@ -11,52 +11,13 @@ import type {
 import type { ethers } from 'ethers';
 import { constants } from 'ethers';
 
-import type { EvmTransferParams } from './evmTransfer.js';
 import { EvmTransfer } from './evmTransfer.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
-import type { TransactionRequest } from './types.js';
+import type { GenericMessageTransferParams, TransactionRequest } from './types.js';
 import { createGenericCallDepositData } from './utils/genericTransferHelpers.js';
 import { executeDeposit } from './utils/index.js';
 import { createTransactionRequest } from './utils/transaction.js';
 
-/**
- * Required parameters for initiating a generic
- * message transfer request
- */
-export interface GenericMessageTransferRequest<
-  ContractAbi extends Abi,
-  FunctionName extends ExtractAbiFunctionNames<ContractAbi, 'nonpayable' | 'payable'>,
-> extends EvmTransferParams {
-  gasLimit: bigint;
-  functionParameters: AbiParametersToPrimitiveTypes<
-    ExtractAbiFunction<ContractAbi, FunctionName>['inputs'],
-    'inputs'
-  >;
-  functionName: FunctionName;
-  destinationContractAbi: ContractAbi;
-  destinationContractAddress: string;
-  maxFee: bigint;
-}
-/**
- * Prepare a Sygma cross chain contract call
- * @param {GenericMessageTransferRequest<ContractAbi, FunctionName>} request
- * @returns {Promise<GenericMessageTransfer<ContractAbi, FunctionName>>}
- */
-export async function createCrossChainContractCall<
-  ContractAbi extends Abi,
-  FunctionName extends ExtractAbiFunctionNames<ContractAbi, 'nonpayable' | 'payable'>,
->(
-  request: GenericMessageTransferRequest<ContractAbi, FunctionName>,
-): Promise<GenericMessageTransfer<ContractAbi, FunctionName>> {
-  const config = new Config();
-  await config.init(process.env.SYGMA_ENV);
-  const genericTransfer = new GenericMessageTransfer<ContractAbi, FunctionName>(request, config);
-
-  const isValidTransfer = await genericTransfer.isValidTransfer();
-  if (!isValidTransfer) throw new Error('Invalid transfer.');
-
-  return genericTransfer;
-}
 /**
  * @internal
  * @class EvmFungibleAssetTransfer
@@ -69,21 +30,22 @@ class GenericMessageTransfer<
   ContractAbi extends Abi,
   FunctionName extends ExtractAbiFunctionNames<ContractAbi, 'nonpayable' | 'payable'>,
 > extends EvmTransfer {
-  maxFee: bigint;
-  destinationContractAddress: string;
-  gasLimit: bigint;
+  protected maxFee: bigint;
+  protected destinationContractAddress: string;
+  protected gasLimit: bigint;
   functionName: FunctionName;
   destinationContractAbi: ContractAbi;
   functionParameters: AbiParametersToPrimitiveTypes<
     ExtractAbiFunction<ContractAbi, FunctionName>['inputs'],
     'inputs'
   >;
+
   /**
    * Create `GenericMessageTransfer` instance
    * @param {GenericMessageTransferRequest<ContractAbi, FunctionName>} params
    * @param {Config} config
    */
-  constructor(params: GenericMessageTransferRequest<ContractAbi, FunctionName>, config: Config) {
+  constructor(params: GenericMessageTransferParams<ContractAbi, FunctionName>, config: Config) {
     super(params, config);
     this.destinationContractAddress = params.destinationContractAddress;
     this.gasLimit = params.gasLimit;
@@ -92,11 +54,12 @@ class GenericMessageTransfer<
     this.destinationContractAbi = params.destinationContractAbi;
     this.maxFee = params.maxFee;
   }
+
   /**
    * Checks validity of the transfer
    * @returns {Promise<boolean>}
    */
-  async isValidTransfer(): Promise<boolean> {
+  public async isValidTransfer(): Promise<boolean> {
     // Resource type should always be generic
     if (
       this.resource.type !== ResourceType.PERMISSIONED_GENERIC &&
@@ -126,33 +89,37 @@ class GenericMessageTransfer<
     );
     return feeInformation.feeHandlerAddress !== constants.AddressZero;
   }
+
   /**
    * Sets the destination contract address
    * Target contract address
    * @param {string} contractAddress
    */
-  setDestinationContractAddress(contractAddress: string): void {
+  public setDestinationContractAddress(contractAddress: string): void {
     this.destinationContractAddress = contractAddress;
   }
+
   /**
    * Sets the destination contract ABI
    * @param {ContractAbi} contractAbi
    */
-  setDestinationContractAbi(contractAbi: ContractAbi): void {
+  public setDestinationContractAbi(contractAbi: ContractAbi): void {
     this.destinationContractAbi = contractAbi;
   }
+
   /**
    * Sets the execution function name
    * @param {FunctionName} name
    */
-  setExecutionFunctionName(name: FunctionName): void {
+  public setExecutionFunctionName(name: FunctionName): void {
     this.functionName = name;
   }
+
   /**
    * Set functions arguments
    * @param {AbiParametersToPrimitiveTypes<ExtractAbiFunction<ContractAbi, FunctionName>['inputs'], 'inputs'>} parameters
    */
-  setFunctionExecutionParameters(
+  public setFunctionExecutionParameters(
     parameters: AbiParametersToPrimitiveTypes<
       ExtractAbiFunction<ContractAbi, FunctionName>['inputs'],
       'inputs'
@@ -203,4 +170,25 @@ class GenericMessageTransfer<
       depositor: this.sourceAddress as `0x${string}`,
     });
   }
+}
+
+/**
+ * Prepare a Sygma cross chain contract call
+ * @param {GenericMessageTransferRequest<ContractAbi, FunctionName>} request
+ * @returns {Promise<GenericMessageTransfer<ContractAbi, FunctionName>>}
+ */
+export async function createCrossChainContractCall<
+  ContractAbi extends Abi,
+  FunctionName extends ExtractAbiFunctionNames<ContractAbi, 'nonpayable' | 'payable'>,
+>(
+  params: GenericMessageTransferParams<ContractAbi, FunctionName>,
+): Promise<GenericMessageTransfer<ContractAbi, FunctionName>> {
+  const config = new Config();
+  await config.init(process.env.SYGMA_ENV);
+  const genericTransfer = new GenericMessageTransfer<ContractAbi, FunctionName>(params, config);
+
+  const isValidTransfer = await genericTransfer.isValidTransfer();
+  if (!isValidTransfer) throw new Error('Invalid transfer.');
+
+  return genericTransfer;
 }
