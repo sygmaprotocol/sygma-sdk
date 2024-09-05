@@ -43,7 +43,6 @@ export async function erc20Transfer(): Promise<void> {
     sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
     resource: RESOURCE_ID,
     amount: BigInt(1) * BigInt(1e18),
-    destinationAddress: destinationAddress,
     recipientAddress: destinationAddress,
     sourceAddress,
   };
