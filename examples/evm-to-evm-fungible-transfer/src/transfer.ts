@@ -43,6 +43,7 @@ export async function erc20Transfer(): Promise<void> {
     sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
     resource: RESOURCE_ID,
     amount: BigInt(1) * BigInt(1e18),
+    destinationAddress: destinationAddress,
     recipientAddress: destinationAddress,
     sourceAddress,
   };
@@ -55,7 +56,7 @@ export async function erc20Transfer(): Promise<void> {
     const response = await wallet.sendTransaction(approval);
     await response.wait();
     console.log(
-      `Approved, transaction: ${getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID })}`
+      `Approved, transaction: ${getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID })}`,
     );
   }
 
@@ -63,7 +64,7 @@ export async function erc20Transfer(): Promise<void> {
   const response = await wallet.sendTransaction(transferTx);
   await response.wait();
   console.log(
-    `Depositted, transaction:  ${getSygmaScanLink(response.hash, process.env.SYGMA_ENV)}`
+    `Depositted, transaction:  ${getSygmaScanLink(response.hash, process.env.SYGMA_ENV)}`,
   );
 }
 

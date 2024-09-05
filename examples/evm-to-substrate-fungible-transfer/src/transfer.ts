@@ -1,5 +1,4 @@
 import type { Eip1193Provider } from "@buildwithsygma/core";
-import { Environment } from "@buildwithsygma/core";
 import { createEvmFungibleAssetTransfer } from "@buildwithsygma/evm";
 import dotenv from "dotenv";
 import { Wallet, providers } from "ethers";
@@ -43,7 +42,6 @@ export async function erc20Transfer(): Promise<void> {
     resource: RESOURCE_ID,
     amount: BigInt(1) * BigInt(1e18),
     destinationAddress: destinationAddress,
-    environment: (process.env.SYGMA_ENV as Environment) || Environment.TESTNET,
     sourceAddress: sourceAddress,
   };
 
