@@ -1,7 +1,7 @@
 import { getSygmaScanLink, type Eip1193Provider } from "@buildwithsygma/core";
 import {
   createFungibleAssetTransfer,
-  EvmFungibleTransferRequest,
+  FungibleTransferParams,
 } from "@buildwithsygma/evm";
 import dotenv from "dotenv";
 import { Wallet, providers } from "ethers";
@@ -38,13 +38,13 @@ export async function erc20Transfer(): Promise<void> {
   const sourceAddress = await wallet.getAddress();
   const destinationAddress = await wallet.getAddress();
 
-  const params: EvmFungibleTransferRequest = {
+  const params: FungibleTransferParams = {
     source: SEPOLIA_CHAIN_ID,
     destination: AMOY_CHAIN_ID,
     sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
     resource: RESOURCE_ID,
     amount: BigInt(1) * BigInt(1e6),
-    destinationAddress: destinationAddress, // this needs to be AddressZero to call DefaultMessageReceiver on dest
+    recipientAddress: destinationAddress,
     sourceAddress: sourceAddress,
     optionalGas: BigInt(500000),
   };
