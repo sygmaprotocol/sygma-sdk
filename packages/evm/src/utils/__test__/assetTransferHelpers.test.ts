@@ -52,6 +52,26 @@ describe('createERCDepositData', () => {
 
     expect(depositData).toEqual(expectedDepositData);
   });
+
+  it('should return the correct deposit data - bitcoin', () => {
+    const tokenAmount = BigInt(100);
+    const recipientAddress = 'tb1qsfyzl92pv7wkyaj0tfjdtwvcsj840p004jglvp';
+    const expectedDepositData =
+      '0x0000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000000000000000000000000000000000002a746231717366797a6c3932707637776b79616a3074666a6474777663736a383430703030346a676c7670';
+
+    const depositData = createFungibleDepositData({
+      recipientAddress,
+      amount: tokenAmount,
+      destination: {
+        name: 'bitcoin',
+        type: Network.BITCOIN,
+        caipId: '11',
+        chainId: 1,
+        id: 1,
+      },
+    });
+    expect(depositData).toEqual(expectedDepositData);
+  });
 });
 
 describe('createSubstrateMultiLocationObject', () => {

@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.2.0](https://github.com/sygmaprotocol/sygma-sdk/compare/utils-v1.1.0...utils-v1.2.0) (2024-09-09)
+
+
+### Features
+
+* **bitcoin:** Added support for Bitcoin transfers ([#389](https://github.com/sygmaprotocol/sygma-sdk/issues/389)) ([1f428b1](https://github.com/sygmaprotocol/sygma-sdk/commit/1f428b1b4d8dd0a6b04488f532f3e9d10c5d1b15))
+
+## [1.1.0](https://github.com/sygmaprotocol/sygma-sdk/compare/utils-v1.0.2...utils-v1.1.0) (2024-09-05)
+
+
+### Features
+
+* **evm:** Added support for creating cross chain non fungible asset transfer transactions ([#460](https://github.com/sygmaprotocol/sygma-sdk/issues/460)) ([6c40781](https://github.com/sygmaprotocol/sygma-sdk/commit/6c40781593c927a06a42f593c511520f41d028d5))
+
 ## [1.0.2](https://github.com/sygmaprotocol/sygma-sdk/compare/utils-v1.0.1...utils-v1.0.2) (2024-08-21)
 
 

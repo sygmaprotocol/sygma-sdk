@@ -294,8 +294,12 @@ export function isValidEvmAddress(address: string): boolean {
  * @returns {boolean}
  */
 export function isValidBitcoinAddress(address: string): boolean {
-  if (process.env.SYGMA_ENV === Environment.TESTNET || process.env.SYGMA_ENV === Environment.DEVNET)
+  if (
+    process.env.SYGMA_ENV === Environment.TESTNET ||
+    process.env.SYGMA_ENV === Environment.DEVNET
+  ) {
     return validate(address, BitcoinNetwork.testnet);
+  }
 
   return validate(address, BitcoinNetwork.mainnet);
 }

@@ -4,7 +4,7 @@ import { AbiCoder } from '@ethersproject/abi';
 import { arrayify, concat, hexlify, hexZeroPad } from '@ethersproject/bytes';
 import { TypeRegistry } from '@polkadot/types';
 import { decodeAddress } from '@polkadot/util-crypto';
-import { BigNumber } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 
 import type { FungibleTransferOptionalMessage } from '../types.js';
 
@@ -80,6 +80,12 @@ export function createFungibleDepositData(depositParams: FungbileDepositParams):
       recipientAddressSerialized = serializeSubstrateAddress(
         recipientAddress,
         destination.parachainId,
+      );
+      break;
+    }
+    case Network.BITCOIN: {
+      recipientAddressSerialized = utils.arrayify(
+        `${utils.hexlify(utils.toUtf8Bytes(recipientAddress))}`,
       );
       break;
     }
