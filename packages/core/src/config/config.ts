@@ -1,5 +1,6 @@
 import { ConfigUrl } from '../index.js';
 import type {
+  BitcoinConfig,
   Domain,
   Domainlike,
   EthereumConfig,
@@ -7,6 +8,7 @@ import type {
   Resource,
   SubstrateConfig,
   SygmaConfig,
+  SygmaDomainConfig,
 } from '../types.js';
 import { Environment } from '../types.js';
 
@@ -52,10 +54,10 @@ export class Config {
   }
   /**
    * Creates a domain object from config object
-   * @param {EthereumConfig | SubstrateConfig} config
+   * @param {SygmaDomainConfig} config
    * @returns {Domain}
    */
-  private createDomain(config: EthereumConfig | SubstrateConfig): Domain {
+  private createDomain(config: SygmaDomainConfig): Domain {
     return {
       id: config.id,
       caipId: config.caipId,
@@ -63,6 +65,8 @@ export class Config {
       name: config.name,
       type: config.type,
       parachainId: (config as SubstrateConfig).parachainId,
+      // used in bitcoin transfers
+      feeAddress: (config as BitcoinConfig).feeAddress,
     };
   }
   /**
@@ -72,7 +76,7 @@ export class Config {
    * @param {number} sygmaId
    * @returns {SubstrateConfig | EthereumConfig}
    */
-  findDomainConfigBySygmaId(sygmaId: number): SubstrateConfig | EthereumConfig {
+  findDomainConfigBySygmaId(sygmaId: number): SygmaDomainConfig {
     const domainConfig = this.configuration.domains.find(domain => domain.id === sygmaId);
     if (!domainConfig) throw new Error(`Domain with sygmaId: ${sygmaId} not found.`);
     return domainConfig;
@@ -81,9 +85,9 @@ export class Config {
    * Find configuration of the domain
    * existing in current sygma configuration
    * @param {Domainlike} domainLike
-   * @returns {{ config: SubstrateConfig | EthereumConfig | undefined; environment: Environment; }}
+   * @returns {{ config: SygmaDomainConfig | undefined; environment: Environment; }}
    */
-  findDomainConfig(domainLike: Domainlike): SubstrateConfig | EthereumConfig {
+  findDomainConfig(domainLike: Domainlike): SygmaDomainConfig {
     const config = this.configuration.domains.find(domain => {
       switch (typeof domainLike) {
         case 'string':
@@ -122,7 +126,7 @@ export class Config {
    * @param {Domainlike} domainLike chain id, caip id or sygma id
    * @returns {SubstrateConfig | EthereumConfig}
    */
-  getDomainConfig(domainLike: Domainlike): SubstrateConfig | EthereumConfig {
+  getDomainConfig(domainLike: Domainlike): SubstrateConfig | EthereumConfig | BitcoinConfig {
     if (!this.initialized) throw new Error('SDK Uninitialized');
     const domainConfig = this.findDomainConfig(domainLike);
     if (!domainConfig) throw new Error('Domain configuration not found.');

@@ -415,6 +415,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@buildwithsygma/bitcoin@workspace:^, @buildwithsygma/bitcoin@workspace:packages/bitcoin":
+  version: 0.0.0-use.local
+  resolution: "@buildwithsygma/bitcoin@workspace:packages/bitcoin"
+  dependencies:
+    "@buildwithsygma/core": "workspace:^"
+    "@types/jest": "npm:^29.4.0"
+    bitcoinjs-lib: "npm:^6.1.6"
+    concurrently: "npm:7.0.0"
+    eslint: "npm:8"
+    hardhat: "npm:2.8.2"
+    jest: "npm:^29.4.1"
+    jest-environment-jsdom: "npm:^29.4.1"
+    jest-extended: "npm:1.2.0"
+    jest-fetch-mock: "npm:^3.0.3"
+    tiny-secp256k1: "npm:2.2.3"
+    ts-jest: "npm:^29.0.5"
+    ts-node: "npm:10.9.1"
+    typedoc: "npm:^0.24.1"
+    typedoc-plugin-markdown: "npm:^3.15.1"
+    typescript: "npm:5.0.4"
+  languageName: unknown
+  linkType: soft
+
 "@buildwithsygma/core@workspace:*, @buildwithsygma/core@workspace:^, @buildwithsygma/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/core@workspace:packages/core"
@@ -598,6 +621,40 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@buildwithsygma/sygma-sdk-bitcoin-to-evm-fungible-transfer-example@workspace:examples/bitcoin-to-evm-fungible-transfer":
+  version: 0.0.0-use.local
+  resolution: "@buildwithsygma/sygma-sdk-bitcoin-to-evm-fungible-transfer-example@workspace:examples/bitcoin-to-evm-fungible-transfer"
+  dependencies:
+    "@buildwithsygma/bitcoin": "workspace:^"
+    "@buildwithsygma/core": "workspace:^"
+    "@buildwithsygma/utils": "workspace:^"
+    bip32: "npm:^4.0.0"
+    bip39: "npm:^3.1.0"
+    bitcoinjs-lib: "npm:^6.1.6"
+    dotenv: "npm:^16.3.1"
+    ecpair: "npm:^2.1.0"
+    eslint: "npm:8"
+    tiny-secp256k1: "npm:^2.2.3"
+    ts-node: "npm:10.9.1"
+    tsx: "npm:^4.15.4"
+    typescript: "npm:5.0.4"
+  languageName: unknown
+  linkType: soft
+
+"@buildwithsygma/sygma-sdk-evm-to-bitcoin-fungible-transfer@workspace:examples/evm-to-bitcoin-fungible-transfer":
+  version: 0.0.0-use.local
+  resolution: "@buildwithsygma/sygma-sdk-evm-to-bitcoin-fungible-transfer@workspace:examples/evm-to-bitcoin-fungible-transfer"
+  dependencies:
+    "@buildwithsygma/core": "workspace:^"
+    "@buildwithsygma/evm": "workspace:^"
+    dotenv: "npm:^16.3.1"
+    eslint: "npm:8"
+    ts-node: "npm:10.9.1"
+    tsx: "npm:^4.15.4"
+    typescript: "npm:5.0.4"
+  languageName: unknown
+  linkType: soft
+
 "@buildwithsygma/sygma-sdk@workspace:.":
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/sygma-sdk@workspace:."
@@ -608,7 +665,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@buildwithsygma/utils@workspace:packages/utils":
+"@buildwithsygma/utils@workspace:^, @buildwithsygma/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/utils@workspace:packages/utils"
   dependencies:
@@ -2156,7 +2213,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:1.4.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.3.3, @noble/hashes@npm:^1.4.0, @noble/hashes@npm:~1.4.0":
+"@noble/hashes@npm:1.4.0, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.3.3, @noble/hashes@npm:^1.4.0, @noble/hashes@npm:~1.4.0":
   version: 1.4.0
   resolution: "@noble/hashes@npm:1.4.0"
   checksum: 8c3f005ee72e7b8f9cff756dfae1241485187254e3f743873e22073d63906863df5d4f13d441b7530ea614b7a093f0d889309f28b59850f33b66cb26a779a4a5
@@ -4066,6 +4123,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"base-x@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "base-x@npm:4.0.0"
+  checksum: 0cb47c94535144ab138f70bb5aa7e6e03049ead88615316b62457f110fc204f2c3baff5c64a1c1b33aeb068d79a68092c08a765c7ccfa133eee1e70e4c6eb903
+  languageName: node
+  linkType: hard
+
 "base58-js@npm:^1.0.0":
   version: 1.0.5
   resolution: "base58-js@npm:1.0.5"
@@ -4108,6 +4172,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bip174@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "bip174@npm:2.1.1"
+  checksum: d92e142fca85fa4f621dbc9131dafe1da7d69fa7cae03137fa4745d66ffa50561f85ff8c49ca41da8ed1ca65e642415b13dc046531412dfebe6ff03c275e71ae
+  languageName: node
+  linkType: hard
+
+"bip32@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "bip32@npm:4.0.0"
+  dependencies:
+    "@noble/hashes": "npm:^1.2.0"
+    "@scure/base": "npm:^1.1.1"
+    typeforce: "npm:^1.11.5"
+    wif: "npm:^2.0.6"
+  checksum: b74ffd3a96b42a783eca6455dff8f0decc8360025b69d486d5a047b52cca6e8436bc5a9812cbeae2638a50f35da7fcd85b55cfe58272f55a5b31d7ac40a25522
+  languageName: node
+  linkType: hard
+
+"bip39@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "bip39@npm:3.1.0"
+  dependencies:
+    "@noble/hashes": "npm:^1.2.0"
+  checksum: 68f9673a0d6a851e9635f3af8a85f2a1ecef9066c76d77e6f0d58d274b5bf22a67f429da3997e07c0d2cf153a4d7321f9273e656cac0526f667575ddee28ef71
+  languageName: node
+  linkType: hard
+
 "bitcoin-address-validation@npm:^2.2.3":
   version: 2.2.3
   resolution: "bitcoin-address-validation@npm:2.2.3"
@@ -4116,6 +4208,20 @@ __metadata:
     bech32: "npm:^2.0.0"
     sha256-uint8array: "npm:^0.10.3"
   checksum: d9749b72dec123cd5dac45cdd8b2e1324e0900473d0e015aa052b95e249147f3e9ab4589cb9f88f2daf4b8fb612749e45d56e3aec6deffd17024582d367c145d
+  languageName: node
+  linkType: hard
+
+"bitcoinjs-lib@npm:^6.1.6":
+  version: 6.1.6
+  resolution: "bitcoinjs-lib@npm:6.1.6"
+  dependencies:
+    "@noble/hashes": "npm:^1.2.0"
+    bech32: "npm:^2.0.0"
+    bip174: "npm:^2.1.1"
+    bs58check: "npm:^3.0.1"
+    typeforce: "npm:^1.11.3"
+    varuint-bitcoin: "npm:^1.1.2"
+  checksum: 27e77add09051fcbb32266c1a03c6c1eb691cb6b91706c4bfd41e1f4bea76f53529364f4ce22efff7879a3d08940d113df87de64b9422697463432c7b561e78c
   languageName: node
   linkType: hard
 
@@ -4235,7 +4341,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bs58check@npm:^2.1.2":
+"bs58@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "bs58@npm:5.0.0"
+  dependencies:
+    base-x: "npm:^4.0.0"
+  checksum: 0d1b05630b11db48039421b5975cb2636ae0a42c62f770eec257b2e5c7d94cb5f015f440785f3ec50870a6e9b1132b35bd0a17c7223655b22229f24b2a3491d1
+  languageName: node
+  linkType: hard
+
+"bs58check@npm:<3.0.0, bs58check@npm:^2.1.2":
   version: 2.1.2
   resolution: "bs58check@npm:2.1.2"
   dependencies:
@@ -4243,6 +4358,16 @@ __metadata:
     create-hash: "npm:^1.1.0"
     safe-buffer: "npm:^5.1.2"
   checksum: 5d33f319f0d7abbe1db786f13f4256c62a076bc8d184965444cb62ca4206b2c92bee58c93bce57150ffbbbe00c48838ac02e6f384e0da8215cac219c0556baa9
+  languageName: node
+  linkType: hard
+
+"bs58check@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "bs58check@npm:3.0.1"
+  dependencies:
+    "@noble/hashes": "npm:^1.2.0"
+    bs58: "npm:^5.0.0"
+  checksum: a01f62351d17cea5f6607f75f6b4b79d3473d018c52f1dfa6f449751062bb079ebfd556ea81c453de657102ab8c5a6b78620161f21ae05f0e5a43543e0447700
   languageName: node
   linkType: hard
 
@@ -5032,6 +5157,17 @@ __metadata:
   version: 0.2.0
   resolution: "eastasianwidth@npm:0.2.0"
   checksum: 26f364ebcdb6395f95124fda411f63137a4bfb5d3a06453f7f23dfe52502905bd84e0488172e0f9ec295fdc45f05c23d5d91baf16bd26f0fe9acd777a188dc39
+  languageName: node
+  linkType: hard
+
+"ecpair@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "ecpair@npm:2.1.0"
+  dependencies:
+    randombytes: "npm:^2.1.0"
+    typeforce: "npm:^1.18.0"
+    wif: "npm:^2.0.6"
+  checksum: 206a3c9af725416e6e91515278259319d88c880cf067c4e4d275fee5e746064cc5bc6279bdb2f87a9218ef25dd82921422d05e0952d4b41c8e91c070c504aa70
   languageName: node
   linkType: hard
 
@@ -10810,6 +10946,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tiny-secp256k1@npm:2.2.3, tiny-secp256k1@npm:^2.2.3":
+  version: 2.2.3
+  resolution: "tiny-secp256k1@npm:2.2.3"
+  dependencies:
+    uint8array-tools: "npm:0.0.7"
+  checksum: 84ca5b88e90fc2a89b90814cec2394716393a9325f318ffede0cb99ff79aa4a63d609c76fc596727fd53192d9163ccaf690dc6817d3e571c625e3668d01177aa
+  languageName: node
+  linkType: hard
+
 "tmp@npm:0.0.33":
   version: 0.0.33
   resolution: "tmp@npm:0.0.33"
@@ -11173,6 +11318,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typeforce@npm:^1.11.3, typeforce@npm:^1.11.5, typeforce@npm:^1.18.0":
+  version: 1.18.0
+  resolution: "typeforce@npm:1.18.0"
+  checksum: 011f57effd9ae6d3dd8bb249e09b4ecadb2c2a3f803b27f977ac8b7782834855930bff971ba549bcd5a8cedc8136d8a977c0b7e050cc67deded948181b7ba3e8
+  languageName: node
+  linkType: hard
+
 "typescript@npm:5.0.4":
   version: 5.0.4
   resolution: "typescript@npm:5.0.4"
@@ -11226,6 +11378,13 @@ __metadata:
   bin:
     uglifyjs: bin/uglifyjs
   checksum: 51dbe1304a91cac5daa01f6a2d4ecd545fab7b7d0625e11590b923e95a6d2263b3481dcea974abfc0282b33d2c76f74f1196a992df07eae0847175bc39ea45bb
+  languageName: node
+  linkType: hard
+
+"uint8array-tools@npm:0.0.7":
+  version: 0.0.7
+  resolution: "uint8array-tools@npm:0.0.7"
+  checksum: 7d67aef80f3b6417c1dacc6505d5d82e3441bc6c1706b43698c5322e6fe7078a13a737efa8fcbd0884bd4b589511cc0a90cf4fe7cdd1b62b16007f1b0811ce36
   languageName: node
   linkType: hard
 
@@ -11358,6 +11517,15 @@ __metadata:
     "@types/istanbul-lib-coverage": "npm:^2.0.1"
     convert-source-map: "npm:^2.0.0"
   checksum: 968bcf1c7c88c04df1ffb463c179558a2ec17aa49e49376120504958239d9e9dad5281aa05f2a78542b8557f2be0b0b4c325710262f3b838b40d703d5ed30c23
+  languageName: node
+  linkType: hard
+
+"varuint-bitcoin@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "varuint-bitcoin@npm:1.1.2"
+  dependencies:
+    safe-buffer: "npm:^5.1.1"
+  checksum: 3d38f8de8192b7a4fc00abea01ed189f1e1e6aee1ebc4192040c5717d2483e0a6a73873fcf6b3c1910d947d338b671470505705fe40c765dc832255dfa2d4210
   languageName: node
   linkType: hard
 
@@ -11602,6 +11770,15 @@ __metadata:
   dependencies:
     string-width: "npm:^1.0.2 || 2"
   checksum: 9bf69ad55f7bcccd5a7af2ebbb8115aebf1b17e6d4f0a2a40a84f5676e099153b9adeab331e306661bf2a8419361bacba83057a62163947507473ce7ac4116b7
+  languageName: node
+  linkType: hard
+
+"wif@npm:^2.0.6":
+  version: 2.0.6
+  resolution: "wif@npm:2.0.6"
+  dependencies:
+    bs58check: "npm:<3.0.0"
+  checksum: 9ff55fdde73226bbae6a08b68298b6d14bbc22fa4cefac11edaacb2317c217700f715b95dc4432917f73511ec983f1bc032d22c467703b136f4e6ca7dfa9f10b
   languageName: node
   linkType: hard
 

@@ -1,0 +1,35 @@
+{
+  "name": "@buildwithsygma/sygma-sdk-evm-to-bitcoin-fungible-transfer",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Sygma sdk examples",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sygmaprotocol/sygma-sdk"
+  },
+  "keywords": [
+    "sygma",
+    "sygmaprotocol",
+    "buildwithsygma",
+    "web3",
+    "bridge",
+    "bitcoin"
+  ],
+  "scripts": {
+    "transfer": "tsx src/transfer.ts"
+  },
+  "author": "Sygmaprotocol Product Team",
+  "license": "LGPL-3.0-or-later",
+  "devDependencies": {
+    "dotenv": "^16.3.1",
+    "eslint": "8",
+    "ts-node": "10.9.1",
+    "typescript": "5.0.4"
+  },
+  "dependencies": {
+    "@buildwithsygma/core": "workspace:^",
+    "@buildwithsygma/evm": "workspace:^",
+    "tsx": "^4.15.4"
+  }
+}
