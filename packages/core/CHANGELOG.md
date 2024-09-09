@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/sygmaprotocol/sygma-sdk/compare/core-v1.1.0...core-v1.2.0) (2024-09-09)
+
+
+### Features
+
+* **bitcoin:** Added support for Bitcoin transfers ([#389](https://github.com/sygmaprotocol/sygma-sdk/issues/389)) ([1f428b1](https://github.com/sygmaprotocol/sygma-sdk/commit/1f428b1b4d8dd0a6b04488f532f3e9d10c5d1b15))
+
 ## [1.1.0](https://github.com/sygmaprotocol/sygma-sdk/compare/core-v1.0.3...core-v1.1.0) (2024-09-05)
 
 
