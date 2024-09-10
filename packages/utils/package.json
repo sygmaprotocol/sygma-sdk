@@ -64,6 +64,6 @@
     "@polkadot/rpc-provider": "^12.2.1",
     "@polkadot/types": "^12.2.1",
     "@polkadot/util": "^12.6.2",
-    "web3-providers-http": "1.10.4"
+    "web3-providers-http": "4.2.0"
   }
 }
