@@ -80,7 +80,7 @@ export async function erc20Transfer(): Promise<void> {
           nativeValue: BigInt(0),
           callTo: targetContractAddress,
           data: contractInterface.encodeFunctionData("claimName", [
-            "Pookie",
+            "EVM-EVM-ERC20+GENERIC",
             destinationAddress,
             BigInt(5) * BigInt(1e5),
           ]),
