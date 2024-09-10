@@ -1,4 +1,4 @@
-import type { EthereumConfig, EvmResource, SubstrateResource } from '@buildwithsygma/core';
+import type { EthereumConfig } from '@buildwithsygma/core';
 import { Config, Network, ResourceType } from '@buildwithsygma/core';
 import { Bridge__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
@@ -8,16 +8,14 @@ import type {
   ExtractAbiFunction,
   ExtractAbiFunctionNames,
 } from 'abitype';
-import { constants, ethers } from 'ethers';
+import type { ethers } from 'ethers';
+import { constants } from 'ethers';
 
 import { EvmTransfer } from './evmTransfer.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
 import type { GenericMessageTransferParams, TransactionRequest } from './types.js';
-import {
-  createPermissionlessGenericDepositData,
-  serializeGenericCallParameters,
-} from './utils/helpers.js';
-import { genericMessageTransfer } from './utils/index.js';
+import { createGenericCallDepositData } from './utils/genericTransferHelpers.js';
+import { executeDeposit } from './utils/index.js';
 import { createTransactionRequest } from './utils/transaction.js';
 
 /**
@@ -55,43 +53,6 @@ class GenericMessageTransfer<
     this.functionName = params.functionName;
     this.destinationContractAbi = params.destinationContractAbi;
     this.maxFee = params.maxFee;
-  }
-
-  /**
-   * Get prepared additional deposit data
-   * in hex string format
-   * @returns {string}
-   */
-  protected getDepositData(): string {
-    const { executeFunctionSignature, executionData } = this.prepareFunctionCallEncodings();
-    return createPermissionlessGenericDepositData(
-      executeFunctionSignature,
-      this.destinationContractAddress,
-      this.maxFee.toString(),
-      this.sourceAddress,
-      executionData,
-    );
-  }
-
-  /**
-   * Prepare function call encodings
-   * @returns {{ executionData: string; executionFunctionSignature: string; }}
-   */
-  private prepareFunctionCallEncodings(): {
-    executionData: string;
-    executeFunctionSignature: string;
-  } {
-    const contractInterface = new ethers.utils.Interface(
-      JSON.stringify(this.destinationContractAbi),
-    );
-
-    let executionData = ``;
-    if (Array.isArray(this.functionParameters)) {
-      executionData = serializeGenericCallParameters(this.functionParameters);
-    }
-
-    const executeFunctionSignature = contractInterface.getSighash(this.functionName);
-    return { executionData, executeFunctionSignature };
   }
 
   /**
@@ -166,17 +127,6 @@ class GenericMessageTransfer<
   ): void {
     this.functionParameters = parameters;
   }
-
-  public setResource(resource: EvmResource | SubstrateResource): void {
-    if (
-      resource.type !== ResourceType.PERMISSIONED_GENERIC &&
-      resource.type !== ResourceType.PERMISSIONLESS_GENERIC
-    ) {
-      throw new Error('Unsupported Resource type.');
-    }
-    this.transferResource = resource;
-  }
-
   /**
    * Get the cross chain generic message transfer
    * transaction
@@ -187,32 +137,38 @@ class GenericMessageTransfer<
     const isValid = await this.isValidTransfer();
     if (!isValid) throw new Error('Invalid Transfer.');
 
-    const { executeFunctionSignature, executionData } = this.prepareFunctionCallEncodings();
-    const { resourceId } = this.resource;
-
-    const executeContractAddress = this.destinationContractAddress;
     const sourceDomain = this.config.getDomainConfig(this.source);
-    const domainId = this.config.getDomainConfig(this.destination).id.toString();
     const provider = new Web3Provider(this.sourceNetworkProvider);
-    const depositor = this.sourceAddress;
-    const maxFee = this.maxFee.toString();
     const bridgeInstance = Bridge__factory.connect(sourceDomain.bridge, provider);
     const feeData = await this.getFee();
+    const depositData = this.getDepositData();
 
-    const transaction = await genericMessageTransfer({
-      executeFunctionSignature,
-      executeContractAddress,
-      maxFee,
-      depositor,
-      executionData,
-      bridgeInstance,
-      domainId,
-      resourceId,
+    const transaction = await executeDeposit(
+      this.destination.id.toString(),
+      this.resource.resourceId,
+      depositData,
       feeData,
+      bridgeInstance,
       overrides,
-    });
+    );
 
     return createTransactionRequest(transaction);
+  }
+  /**
+   * Get prepared additional deposit data
+   * in hex string format
+   * @returns {string}
+   */
+  protected getDepositData(): string {
+    return createGenericCallDepositData({
+      abi: this.destinationContractAbi,
+      functionName: this.functionName,
+      functionParams: this.functionParameters,
+      contractAddress: this.destinationContractAddress,
+      destination: this.destination,
+      maxFee: this.maxFee,
+      depositor: this.sourceAddress as `0x${string}`,
+    });
   }
 }
 

@@ -1,9 +1,9 @@
 import { FeeHandlerType } from '@buildwithsygma/core';
 import type { Bridge, ERC721MinterBurnerPauser } from '@buildwithsygma/sygma-contracts';
-import { type ethers, type ContractReceipt, type PopulatedTransaction } from 'ethers';
+import { type ContractReceipt, type PopulatedTransaction } from 'ethers';
 
 import type { EvmFee } from '../../types.js';
-import * as EVM from '../depositFns.js';
+import * as EVM from '../depositFn.js';
 
 jest.mock(
   '@buildwithsygma/sygma-contracts',
@@ -25,7 +25,6 @@ describe('deposit functions', () => {
   let resourceId: string;
   let depositData: string;
   let feeData: EvmFee;
-  let bridgeInstance: Bridge;
 
   beforeEach(() => {
     domainId = 'domainId';
@@ -37,7 +36,6 @@ describe('deposit functions', () => {
       tokenAddress: '0x00',
       handlerAddress: '0x9867',
     };
-    bridgeInstance = { deposit: jest.fn() } as unknown as Bridge;
 
     jest.clearAllMocks();
   });
@@ -141,40 +139,6 @@ describe('deposit functions', () => {
           bridgeInstance as unknown as Bridge,
         ),
       ).rejects.toThrowError('Deposit failed');
-    });
-  });
-
-  describe('erc20Transfer', () => {
-    it('should successfully execute', async () => {
-      jest.spyOn(EVM, 'executeDeposit').mockResolvedValueOnce({} as ethers.PopulatedTransaction);
-      bridgeInstance = {
-        signer: {
-          getAddress: jest.fn().mockResolvedValue('0xMyaddress'),
-        },
-      } as unknown as Bridge;
-
-      const depositData =
-        '0x0000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000000000000000000000000000000000001498729c03c4d5e820f5e8c45558ae07ae63f97461';
-
-      const erc20Params = {
-        amount: BigInt('100'),
-        recipientAddress: '0x98729c03c4D5e820F5e8c45558ae07aE63F97461',
-        bridgeInstance,
-        domainId,
-        resourceId,
-        feeData,
-        depositData,
-      };
-      await EVM.assetTransfer(erc20Params);
-
-      expect(EVM.executeDeposit).toBeCalledWith(
-        domainId,
-        resourceId,
-        depositData,
-        feeData,
-        bridgeInstance,
-        undefined,
-      );
     });
   });
 });

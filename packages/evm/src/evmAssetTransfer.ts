@@ -2,11 +2,12 @@ import type { Config } from '@buildwithsygma/core';
 import { isValidAddressForNetwork } from '@buildwithsygma/core';
 import { Bridge__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
+import type { PayableOverrides } from 'ethers';
 import { constants, utils } from 'ethers';
 
 import { EvmTransfer } from './evmTransfer.js';
 import type { EvmAssetTransferParams, EvmFee, TransactionRequest } from './types.js';
-import { assetTransfer } from './utils/index.js';
+import { executeDeposit } from './utils/depositFn.js';
 import { createTransactionRequest } from './utils/transaction.js';
 
 /**
@@ -62,7 +63,7 @@ export abstract class AssetTransfer extends EvmTransfer implements IAssetTransfe
    * Get transfer transaction
    * @returns {Promise<TransactionRequest>}
    */
-  public async getTransferTransaction(): Promise<TransactionRequest> {
+  public async getTransferTransaction(overrides?: PayableOverrides): Promise<TransactionRequest> {
     const domainConfig = this.config.getDomainConfig(this.source);
     const provider = new Web3Provider(this.sourceNetworkProvider);
     const bridge = Bridge__factory.connect(domainConfig.bridge, provider);
@@ -71,13 +72,14 @@ export abstract class AssetTransfer extends EvmTransfer implements IAssetTransfe
     const hasBalance = await this.hasEnoughBalance(fee);
     if (!hasBalance) throw new Error('Insufficient token balance');
 
-    const transferTx = await assetTransfer({
-      depositData: this.getDepositData(),
-      bridgeInstance: bridge,
-      domainId: this.destination.id.toString(),
-      resourceId: this.resource.resourceId,
-      feeData: fee,
-    });
+    const transferTx = await executeDeposit(
+      this.destination.id.toString(),
+      this.resource.resourceId,
+      this.getDepositData(),
+      fee,
+      bridge,
+      overrides,
+    );
 
     return createTransactionRequest(transferTx);
   }

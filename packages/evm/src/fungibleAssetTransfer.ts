@@ -5,9 +5,14 @@ import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber, constants, type PopulatedTransaction, utils } from 'ethers';
 
 import { AssetTransfer } from './evmAssetTransfer.js';
-import type { EvmFee, FungibleTransferParams, TransactionRequest } from './types.js';
+import type {
+  EvmFee,
+  FungibleTransferOptionalMessage,
+  FungibleTransferParams,
+  TransactionRequest,
+} from './types.js';
 import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
-import { createERCDepositData } from './utils/helpers.js';
+import { createFungibleDepositData } from './utils/assetTransferHelpers.js';
 import { createTransactionRequest } from './utils/transaction.js';
 
 /**
@@ -36,6 +41,9 @@ class FungibleAssetTransfer extends AssetTransfer {
   protected declare adjustedAmount: bigint;
   protected specifiedAmount: bigint;
 
+  protected optionalGas?: bigint;
+  protected optionalMessage?: FungibleTransferOptionalMessage;
+
   /**
    * Returns amount to be transferred considering the fee
    */
@@ -47,6 +55,8 @@ class FungibleAssetTransfer extends AssetTransfer {
     super(transfer, config);
     this.specifiedAmount = transfer.amount;
     this.securityModel = transfer.securityModel ?? SecurityModel.MPC;
+    this.optionalGas = transfer.optionalGas;
+    this.optionalMessage = transfer.optionalMessage;
   }
 
   /**
@@ -55,7 +65,13 @@ class FungibleAssetTransfer extends AssetTransfer {
    * @returns {string}
    */
   protected getDepositData(): string {
-    return createERCDepositData(this.adjustedAmount, this.recipient, this.destination.parachainId);
+    return createFungibleDepositData({
+      destination: this.destination,
+      recipientAddress: this.recipientAddress,
+      amount: this.adjustedAmount,
+      optionalGas: this.optionalGas,
+      optionalMessage: this.optionalMessage,
+    });
   }
 
   /**

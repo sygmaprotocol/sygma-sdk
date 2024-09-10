@@ -9,7 +9,7 @@ import { providers } from 'ethers';
 
 import { AssetTransfer } from './evmAssetTransfer.js';
 import type { EvmFee, NonFungibleTransferParams, TransactionRequest } from './types.js';
-import { createERCDepositData } from './utils/helpers.js';
+import { createFungibleDepositData } from './utils/assetTransferHelpers.js';
 import { approve, isApproved } from './utils/index.js';
 import { createTransactionRequest } from './utils/transaction.js';
 
@@ -31,7 +31,11 @@ class NonFungibleAssetTransfer extends AssetTransfer {
    * @returns {string}
    */
   protected getDepositData(): string {
-    return createERCDepositData(BigInt(this.tokenId), this.recipient, this.destination.parachainId);
+    return createFungibleDepositData({
+      destination: this.destination,
+      recipientAddress: this.recipientAddress,
+      tokenId: this.tokenId,
+    });
   }
 
   /**

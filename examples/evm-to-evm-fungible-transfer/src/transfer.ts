@@ -1,4 +1,4 @@
-import { Eip1193Provider, getSygmaScanLink } from "@buildwithsygma/core";
+import { getSygmaScanLink, type Eip1193Provider } from "@buildwithsygma/core";
 import {
   createFungibleAssetTransfer,
   FungibleTransferParams,
@@ -16,11 +16,12 @@ if (!privateKey) {
 }
 
 const SEPOLIA_CHAIN_ID = 11155111;
-const AMOY_CHAIN_ID = 80002;
+const AMOY_CHAIN_ID = 84532;
 const RESOURCE_ID =
-  "0x0000000000000000000000000000000000000000000000000000000000000300";
+  "0x0000000000000000000000000000000000000000000000000000000000001200";
 const SEPOLIA_RPC_URL =
-  process.env.SEPOLIA_RPC_URL || "https://eth-sepolia-public.unifra.io";
+  process.env.SEPOLIA_RPC_URL ||
+  "https://eth-sepolia.g.alchemy.com/v2/MeCKDrpxLkGOn4LMlBa3cKy1EzzOzwzG";
 
 const explorerUrls: Record<number, string> = {
   [SEPOLIA_CHAIN_ID]: "https://sepolia.etherscan.io",
@@ -42,9 +43,10 @@ export async function erc20Transfer(): Promise<void> {
     destination: AMOY_CHAIN_ID,
     sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
     resource: RESOURCE_ID,
-    amount: BigInt(1) * BigInt(1e18),
+    amount: BigInt(1) * BigInt(1e6),
     recipientAddress: destinationAddress,
-    sourceAddress,
+    sourceAddress: sourceAddress,
+    optionalGas: BigInt(500000),
   };
 
   const transfer = await createFungibleAssetTransfer(params);
