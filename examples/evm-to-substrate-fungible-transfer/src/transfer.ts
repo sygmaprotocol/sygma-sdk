@@ -1,8 +1,5 @@
-import { getSygmaScanLink, type Eip1193Provider } from "@buildwithsygma/core";
-import {
-  createFungibleAssetTransfer,
-  FungibleTransferParams,
-} from "@buildwithsygma/evm";
+import type { Eip1193Provider } from "@buildwithsygma/core";
+import { createEvmFungibleAssetTransfer } from "@buildwithsygma/evm";
 import dotenv from "dotenv";
 import { Wallet, providers } from "ethers";
 import Web3HttpProvider from "web3-providers-http";
@@ -16,11 +13,11 @@ if (!privateKey) {
 }
 
 const SEPOLIA_CHAIN_ID = 11155111;
-const AMOY_CHAIN_ID = 84532;
+const TANGLE_CHAIN_ID = 3799;
 const RESOURCE_ID =
-  "0x0000000000000000000000000000000000000000000000000000000000001200";
+  "0x0000000000000000000000000000000000000000000000000000000000002000";
 const SEPOLIA_RPC_URL =
-  process.env.SEPOLIA_RPC_URL ||
+  process.env.SOURCE_EVM_RPC_URL ??
   "https://eth-sepolia.g.alchemy.com/v2/MeCKDrpxLkGOn4LMlBa3cKy1EzzOzwzG";
 
 const explorerUrls: Record<number, string> = {
@@ -36,21 +33,19 @@ export async function erc20Transfer(): Promise<void> {
   const ethersWeb3Provider = new providers.Web3Provider(web3Provider);
   const wallet = new Wallet(privateKey ?? "", ethersWeb3Provider);
   const sourceAddress = await wallet.getAddress();
-  const destinationAddress = await wallet.getAddress();
+  const destinationAddress = "5GjowPEaFNnwbrmpPuDmBVdF2e7n3cHwk2LnUwHXsaW5KtEL";
 
-  const params: FungibleTransferParams = {
+  const params = {
     source: SEPOLIA_CHAIN_ID,
-    destination: AMOY_CHAIN_ID,
+    destination: TANGLE_CHAIN_ID,
     sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
     resource: RESOURCE_ID,
-    amount: BigInt(1) * BigInt(1e6),
-    recipientAddress: destinationAddress,
+    amount: BigInt(1) * BigInt(1e18),
+    destinationAddress: destinationAddress,
     sourceAddress: sourceAddress,
-    optionalGas: BigInt(500000),
   };
 
-  const transfer = await createFungibleAssetTransfer(params);
-
+  const transfer = await createEvmFungibleAssetTransfer(params);
   const approvals = await transfer.getApprovalTransactions();
   console.log(`Approving Tokens (${approvals.length})...`);
   for (const approval of approvals) {
@@ -65,7 +60,7 @@ export async function erc20Transfer(): Promise<void> {
   const response = await wallet.sendTransaction(transferTx);
   await response.wait();
   console.log(
-    `Depositted, transaction:  ${getSygmaScanLink(response.hash, process.env.SYGMA_ENV)}`,
+    `Deposited, transaction:  ${getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID })}`,
   );
 }
 

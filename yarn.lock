@@ -515,6 +515,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@buildwithsygma/evm-to-substrate-fungible-transfer-example@workspace:examples/evm-to-substrate-fungible-transfer":
+  version: 0.0.0-use.local
+  resolution: "@buildwithsygma/evm-to-substrate-fungible-transfer-example@workspace:examples/evm-to-substrate-fungible-transfer"
+  dependencies:
+    "@buildwithsygma/core": "workspace:*"
+    "@buildwithsygma/substrate": "workspace:*"
+    "@polkadot/api": "npm:^12.3.1"
+    "@polkadot/keyring": "npm:^12.6.2"
+    "@polkadot/util-crypto": "npm:^12.6.2"
+    dotenv: "npm:^16.3.1"
+    eslint: "npm:8"
+    ts-node: "npm:10.9.1"
+    tsx: "npm:^4.15.4"
+    typescript: "npm:5.0.4"
+  languageName: unknown
+  linkType: soft
+
 "@buildwithsygma/evm@workspace:^, @buildwithsygma/evm@workspace:packages/evm":
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/evm@workspace:packages/evm"
