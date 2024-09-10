@@ -71,7 +71,7 @@ export async function erc20Transfer(): Promise<void> {
     optionalGas: BigInt(5_000_000),
     optionalMessage: {
       receiver: destinationAddress,
-      transactionId: ethers.utils.formatBytes32String("Testing"),
+      transactionId: ethers.utils.formatBytes32String("EVM-ERC20+GENERIC"),
       actions: [
         {
           approveTo: targetContractAddress,
@@ -80,7 +80,7 @@ export async function erc20Transfer(): Promise<void> {
           nativeValue: BigInt(0),
           callTo: targetContractAddress,
           data: contractInterface.encodeFunctionData("claimName", [
-            "EVM-EVM-ERC20+GENERIC",
+            "EVM-ERC20+GENERIC",
             destinationAddress,
             BigInt(5) * BigInt(1e5),
           ]),
