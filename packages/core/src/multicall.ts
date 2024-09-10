@@ -4,8 +4,7 @@ import {
   FeeHandlerRouter__factory,
 } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
-import { Contract } from 'ethers';
-import { defaultAbiCoder } from 'ethers/lib/utils';
+import { Contract, utils } from 'ethers';
 
 import MulticallAbi from './abi/Multicall.json';
 import type { Eip1193Provider, FeeHandlerType, RouteIndexerType } from './types.js';
@@ -232,7 +231,7 @@ export async function getFeeHandlerAddressesOfRoutes(params: {
 
     destination.set(
       route.resourceId,
-      defaultAbiCoder.decode(['address'], results.returnData[idx]).toString(),
+      utils.defaultAbiCoder.decode(['address'], results.returnData[idx]).toString(),
     );
   });
 
@@ -279,7 +278,7 @@ export async function getFeeHandlerTypeOfRoutes(params: {
       }
     }
 
-    const feeHandlerType = defaultAbiCoder.decode(
+    const feeHandlerType = utils.defaultAbiCoder.decode(
       ['string'],
       results.returnData[idx],
     )[0] as unknown as FeeHandlerType;
