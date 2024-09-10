@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.2.0...evm-v1.3.0) (2024-09-10)
+
+
+### Features
+
+* **evm:** Update SDK to Support New ERC20Handler with Optional Contract Call ([#504](https://github.com/sygmaprotocol/sygma-sdk/issues/504)) ([2cb56a2](https://github.com/sygmaprotocol/sygma-sdk/commit/2cb56a28a270502b3590460fd7c750ca53bb7333))
+
 ## [1.2.0](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.1.0...evm-v1.2.0) (2024-09-09)
 
 
