@@ -1,11 +1,17 @@
-import { getSygmaScanLink, type Eip1193Provider } from "@buildwithsygma/core";
+import {
+  Config,
+  EvmResource,
+  getSygmaScanLink,
+  type Eip1193Provider,
+} from "@buildwithsygma/core";
 import {
   createFungibleAssetTransfer,
   FungibleTransferParams,
 } from "@buildwithsygma/evm";
 import dotenv from "dotenv";
-import { Wallet, providers } from "ethers";
+import { Wallet, ethers, providers } from "ethers";
 import Web3HttpProvider from "web3-providers-http";
+import { getContractAddress, getContractInterface } from "./contracts";
 
 dotenv.config();
 
@@ -37,6 +43,22 @@ export async function erc20Transfer(): Promise<void> {
   const wallet = new Wallet(privateKey ?? "", ethersWeb3Provider);
   const sourceAddress = await wallet.getAddress();
   const destinationAddress = await wallet.getAddress();
+  const contract = "sprinterNameService";
+
+  const config = new Config();
+  await config.init(process.env.SYGMA_ENV);
+  const resource = config
+    .getDomainConfig(SOURCE_CHAIN_ID)
+    .resources.find((resource) => resource.resourceId === RESOURCE_ID);
+
+  if (!resource) return;
+
+  const targetContractAddress = getContractAddress(
+    DESTINATION_CHAIN_ID,
+    contract
+  );
+
+  const contractInterface = getContractInterface(contract);
 
   const params: FungibleTransferParams = {
     source: SOURCE_CHAIN_ID,
@@ -44,8 +66,27 @@ export async function erc20Transfer(): Promise<void> {
     sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
     resource: RESOURCE_ID,
     amount: BigInt(1) * BigInt(1e6),
-    recipientAddress: destinationAddress,
+    recipientAddress: ethers.constants.AddressZero,
     sourceAddress: sourceAddress,
+    optionalGas: BigInt(5_000_000),
+    optionalMessage: {
+      receiver: destinationAddress,
+      transactionId: ethers.utils.formatBytes32String("Testing"),
+      actions: [
+        {
+          approveTo: targetContractAddress,
+          tokenSend: (resource as EvmResource).address,
+          tokenReceive: ethers.constants.AddressZero,
+          nativeValue: BigInt(0),
+          callTo: targetContractAddress,
+          data: contractInterface.encodeFunctionData("claimName", [
+            "Pookie",
+            destinationAddress,
+            BigInt(5) * BigInt(1e5),
+          ]),
+        },
+      ],
+    },
   };
 
   const transfer = await createFungibleAssetTransfer(params);
