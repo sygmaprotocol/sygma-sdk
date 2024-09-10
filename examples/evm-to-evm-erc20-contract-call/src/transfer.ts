@@ -47,7 +47,7 @@ export async function erc20Transfer(): Promise<void> {
   const config = new Config();
   await config.init(process.env.SYGMA_ENV);
   const resource = config
-    .getDomainConfig(SOURCE_CHAIN_ID)
+    .getDomainConfig(DESTINATION_CHAIN_ID)
     .resources.find((resource) => resource.resourceId === RESOURCE_ID);
 
   if (!resource) return;
