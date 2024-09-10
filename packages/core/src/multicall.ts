@@ -6,7 +6,7 @@ import {
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract, utils } from 'ethers';
 
-import { MulticallAbi } from './abiMulticall.js';
+import { MulticallAbi } from './multicallAbi.js';
 import type { Eip1193Provider, FeeHandlerType, RouteIndexerType } from './types.js';
 
 enum MulticallDeployedNetworks {
