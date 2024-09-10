@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/sygmaprotocol/sygma-sdk/compare/core-v1.2.0...core-v1.2.1) (2024-09-10)
+
+
+### Bug Fixes
+
+* import for utils on core package ([#520](https://github.com/sygmaprotocol/sygma-sdk/issues/520)) ([f718e74](https://github.com/sygmaprotocol/sygma-sdk/commit/f718e74256a0a687916b383179693cf1a31ec66b))
+
 ## [1.2.0](https://github.com/sygmaprotocol/sygma-sdk/compare/core-v1.1.0...core-v1.2.0) (2024-09-09)
 
 
