@@ -9,7 +9,7 @@ import { Network, ResourceType } from '@buildwithsygma/core';
 import type { createFungibleAssetTransfer } from '@buildwithsygma/evm';
 import { getEvmHandlerBalance } from '@buildwithsygma/evm';
 import type { createSubstrateFungibleAssetTransfer } from '@buildwithsygma/substrate/src';
-import HttpProvider from 'web3-providers-http';
+import * as Web3ProvidersHttp from 'web3-providers-http';
 
 import { getSubstrateHandlerBalance } from './substrate/balances.js';
 
@@ -41,7 +41,7 @@ export async function hasEnoughLiquidity(
 
   switch (destination.type) {
     case Network.EVM: {
-      const provider = new HttpProvider(destinationProviderUrl);
+      const provider = new Web3ProvidersHttp.HttpProvider(destinationProviderUrl);
       const evmHandlerBalance = await getEvmHandlerBalance(
         provider as unknown as Eip1193Provider,
         resource as EvmResource,
