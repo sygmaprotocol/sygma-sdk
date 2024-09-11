@@ -9,6 +9,9 @@ import { Network, ResourceType } from '@buildwithsygma/core';
 import type { createFungibleAssetTransfer } from '@buildwithsygma/evm';
 import { getEvmHandlerBalance } from '@buildwithsygma/evm';
 import type { createSubstrateFungibleAssetTransfer } from '@buildwithsygma/substrate/src';
+/**
+ * @remarks default import even if type definition says there is named and default
+ */
 import * as Web3ProvidersHttp from 'web3-providers-http';
 
 import { getSubstrateHandlerBalance } from './substrate/balances.js';
