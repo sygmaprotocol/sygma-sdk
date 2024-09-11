@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/sygmaprotocol/sygma-sdk/compare/utils-v1.2.0...utils-v1.2.1) (2024-09-11)
+
+
+### Bug Fixes
+
+* remark regarding import resolution ([#531](https://github.com/sygmaprotocol/sygma-sdk/issues/531)) ([8b4a3cd](https://github.com/sygmaprotocol/sygma-sdk/commit/8b4a3cd1dc70ff2027e80bb8cd6926ad5fb02f33))
+
 ## [1.2.0](https://github.com/sygmaprotocol/sygma-sdk/compare/utils-v1.1.0...utils-v1.2.0) (2024-09-09)
 
 
