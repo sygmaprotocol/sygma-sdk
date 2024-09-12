@@ -21,8 +21,8 @@ export interface TransactionRequest {
   nonce?: number;
   chainId?: number;
   type?: number;
-  maxFeePerGas?: BigInt;
-  maxPriorityFeePerGas?: BigInt;
+  maxFeePerGas?: bigint;
+  maxPriorityFeePerGas?: bigint;
 }
 
 export type EvmFee = {
