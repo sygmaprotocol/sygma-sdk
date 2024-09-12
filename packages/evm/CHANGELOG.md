@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.3.0...evm-v1.3.1) (2024-09-12)
+
+
+### Bug Fixes
+
+* `optionalMessage` and `optionalGas` encoding ([#536](https://github.com/sygmaprotocol/sygma-sdk/issues/536)) ([ebc8885](https://github.com/sygmaprotocol/sygma-sdk/commit/ebc8885a449ac5af88d34c11eb4eea3d20ef5540))
+
 ## [1.3.0](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.2.0...evm-v1.3.0) (2024-09-10)
 
 
