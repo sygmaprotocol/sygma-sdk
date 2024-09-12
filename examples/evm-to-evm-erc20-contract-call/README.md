@@ -1,6 +1,6 @@
-## Sygma SDK ERC20 Example
+## Sygma SDK ERC20 + Contract Call Example
 
-This is an example script that demonstrates the functionality of the SDK using the Sygma ecosystem. The script showcases an ERC20 token transfer between the same account on two different testnets using the Sygma SDK.
+This is an example script that demonstrates the functionality of the SDK using the Sygma ecosystem. The script showcases an ERC20 token transfer with a contract call between the same account on two different testnets using the Sygma SDK.
 
 ## Prerequisites
 
@@ -57,7 +57,7 @@ Replace between the quotation marks your exported private key:
 
 `PRIVATE_KEY="YOUR_PRIVATE_KEY_HERE"`
 
-To send an ERC20 example transfer run:
+Run the transfer script using:
 
 ```bash
 yarn run transfer
@@ -73,16 +73,3 @@ Replace the placeholder values in the `.env` file with your own Ethereum wallet 
 To replace default rpc Cronos and Sepolia urls use env variables:
 
 - `SEPOLIA_RPC_URL="SEPOLIA_RPC_URL_HERE"`
-
-## Script Functionality
-
-This example script performs the following steps:
-
-- initializes the SDK and establishes a connection to the Ethereum provider.
-- retrieves the list of supported domains and resources from the SDK configuration.
-- Searches for the ERC20 token resource with the specified symbol
-- Searches for the Cronos and Sepolia domains in the list of supported domains based on their chain IDs
-- Constructs a transfer object that defines the details of the ERC20 token transfer
-- Retrieves the fee required for the transfer from the SDK.
-- Builds the necessary approval transactions for the transfer and sends them using the Ethereum wallet. The approval transactions are required to authorize the transfer of ERC20 tokens.
-- Builds the final transfer transaction and sends it using the Ethereum wallet.

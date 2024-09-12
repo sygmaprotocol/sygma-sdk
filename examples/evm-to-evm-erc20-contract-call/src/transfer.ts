@@ -21,15 +21,15 @@ if (!privateKey) {
   throw new Error("Missing environment variable: PRIVATE_KEY");
 }
 
-const SOURCE_CHAIN_ID = 11155111;
-const DESTINATION_CHAIN_ID = 84532;
+const SEPOLIA_CHAIN_ID = 11155111;
+const BASE_SEPOLIA_CHAIN_ID = 84532;
 const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000001200";
 const SEPOLIA_RPC_URL =
   process.env.SEPOLIA_RPC_URL || "https://ethereum-sepolia-rpc.publicnode.com";
 
 const explorerUrls: Record<number, string> = {
-  [SOURCE_CHAIN_ID]: "https://sepolia.etherscan.io",
+  [SEPOLIA_CHAIN_ID]: "https://sepolia.etherscan.io",
 };
 const getTxExplorerUrl = (params: {
   txHash: string;
@@ -47,21 +47,21 @@ export async function erc20Transfer(): Promise<void> {
   const config = new Config();
   await config.init(process.env.SYGMA_ENV);
   const resource = config
-    .getDomainConfig(DESTINATION_CHAIN_ID)
+    .getDomainConfig(BASE_SEPOLIA_CHAIN_ID)
     .resources.find((resource) => resource.resourceId === RESOURCE_ID);
 
   if (!resource) return;
 
   const targetContractAddress = getContractAddress(
-    DESTINATION_CHAIN_ID,
+    BASE_SEPOLIA_CHAIN_ID,
     contract
   );
 
   const contractInterface = getContractInterface(contract);
 
   const params: FungibleTransferParams = {
-    source: SOURCE_CHAIN_ID,
-    destination: DESTINATION_CHAIN_ID,
+    source: SEPOLIA_CHAIN_ID,
+    destination: BASE_SEPOLIA_CHAIN_ID,
     sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
     resource: RESOURCE_ID,
     amount: BigInt(1) * BigInt(1e6),
@@ -96,7 +96,7 @@ export async function erc20Transfer(): Promise<void> {
     const response = await wallet.sendTransaction(approval);
     await response.wait();
     console.log(
-      `Approved, transaction: ${getTxExplorerUrl({ txHash: response.hash, chainId: SOURCE_CHAIN_ID })}`
+      `Approved, transaction: ${getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID })}`
     );
   }
 
