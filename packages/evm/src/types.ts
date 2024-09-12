@@ -17,6 +17,7 @@ export interface TransactionRequest {
   value: bigint;
   data: string;
   gasLimit: bigint;
+  gasPrice?: bigint;
 }
 
 export type EvmFee = {

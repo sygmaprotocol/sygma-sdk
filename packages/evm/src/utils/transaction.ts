@@ -13,5 +13,6 @@ export function createTransactionRequest(transaction: PopulatedTransaction): Tra
     value: transaction.value ? transaction.value.toBigInt() : undefined,
     data: transaction.data,
     gasLimit: transaction.gasLimit ? transaction.gasLimit.toBigInt() : undefined,
+    gasPrice: transaction.gasPrice ? transaction.gasPrice.toBigInt() : undefined,
   } as TransactionRequest;
 }
