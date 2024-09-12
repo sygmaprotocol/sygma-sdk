@@ -104,13 +104,11 @@ export function createFungibleDepositData(depositParams: FungbileDepositParams):
   const zeroPaddedAddrLen = hexZeroPad(addressLenInHex, HEX_PADDING);
   let depositData = concat([zeroPaddedAmount, zeroPaddedAddrLen, recipientAddressSerialized]);
 
-  if (optionalGas) {
+  if (optionalMessage !== undefined && optionalGas !== undefined) {
     const optionalGasInHex = BigNumber.from(optionalGas).toHexString();
     const zeroPaddedOptionalGas = hexZeroPad(optionalGasInHex, HEX_PADDING);
     depositData = concat([depositData, zeroPaddedOptionalGas]);
-  }
 
-  if (optionalMessage) {
     const { transactionId, actions, receiver } = optionalMessage;
     const abiCoder = new AbiCoder();
 
