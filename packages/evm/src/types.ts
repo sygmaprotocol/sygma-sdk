@@ -18,6 +18,11 @@ export interface TransactionRequest {
   data: string;
   gasLimit: bigint;
   gasPrice?: bigint;
+  nonce?: number;
+  chainId?: number;
+  type?: number;
+  maxFeePerGas?: BigInt;
+  maxPriorityFeePerGas?: BigInt;
 }
 
 export type EvmFee = {
