@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/sygmaprotocol/sygma-sdk/compare/core-v1.2.1...core-v1.2.2) (2024-09-10)
+
+
+### Bug Fixes
+
+* remove json file to fix json import error ([#527](https://github.com/sygmaprotocol/sygma-sdk/issues/527)) ([e2bd0d6](https://github.com/sygmaprotocol/sygma-sdk/commit/e2bd0d6480f98a4676e6870d58a0622b96c96212))
+
 ## [1.2.1](https://github.com/sygmaprotocol/sygma-sdk/compare/core-v1.2.0...core-v1.2.1) (2024-09-10)
 
 
