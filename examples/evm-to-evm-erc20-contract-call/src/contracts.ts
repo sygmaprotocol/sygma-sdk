@@ -1,15 +1,12 @@
 import { ethers } from "ethers";
 import fs from "fs";
-import path from "path";
 
 type Contract = "sprinterNameService" | "storage";
 
 export function getContractInterface(
   contract: Contract
 ): ethers.utils.Interface {
-  const file = path.join(`${process.cwd()}/src/abi/${contract}.json`);
-
-  const abi = fs.readFileSync(file, {
+  const abi = fs.readFileSync(`${process.cwd()}/src/abi/${contract}.json`, {
     encoding: "utf-8",
   });
 
