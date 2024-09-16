@@ -4,12 +4,10 @@ import {
 } from "@buildwithsygma/bitcoin";
 import type { BitcoinTransferParams, UTXOData } from "@buildwithsygma/bitcoin";
 import { BIP32Factory } from "bip32";
-import { mnemonicToSeed } from "bip39";
-import { crypto, initEccLib, networks } from "bitcoinjs-lib";
-import { toXOnly } from "bitcoinjs-lib/src/psbt/bip371";
+import { initEccLib, networks, Signer } from "bitcoinjs-lib";
 import dotenv from "dotenv";
 import * as tinysecp from "tiny-secp256k1";
-import { broadcastTransaction, fetchUTXOS, getFeeEstimates, processUtxos } from '@buildwithsygma/utils'
+import { broadcastTransaction, fetchUTXOS, getFeeEstimates, getPublicKey, processUtxos } from '@buildwithsygma/utils'
 
 import {
   calculateSize,
@@ -51,15 +49,15 @@ async function btcToEvmTransfer(): Promise<void> {
   initEccLib(tinysecp);
   const bip32 = BIP32Factory(tinysecp);
   console.log("Transfer BTC to EVM");
-  const seed = await mnemonicToSeed(MNEMONIC);
-  const rootKey = bip32.fromSeed(seed, networks.testnet);
-  const derivedNode = rootKey.derivePath(DERIVATION_PATH);
 
-  const publicKeyDropedDERHeader = toXOnly(derivedNode.publicKey);
-
-  const tweakedSigner = derivedNode.tweak(
-    crypto.taggedHash("TapTweak", publicKeyDropedDERHeader),
-  );
+  const { tweakedSigner, publicKeyDropedDERHeader  } = await getPublicKey({
+    bip32,
+    mnemonic: MNEMONIC as string,
+    derivationPath: DERIVATION_PATH as string,
+    network: networks.testnet,
+    typeOfAddress: TypeOfAddress.P2TR
+  }
+  ) as { publicKeyDropedDERHeader: Buffer, tweakedSigner: Signer };
 
   const feeRate = await getFeeEstimates('5');
   const utxos = await fetchUTXOS(

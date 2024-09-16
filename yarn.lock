@@ -695,6 +695,9 @@ __metadata:
     "@polkadot/types": "npm:^12.2.1"
     "@polkadot/util": "npm:^12.6.2"
     "@types/jest": "npm:^29.4.0"
+    bip32: "npm:4.0.0"
+    bip39: "npm:3.1.0"
+    bitcoinjs-lib: "npm:^6.1.6"
     eslint: "npm:8"
     jest: "npm:^29.4.1"
     jest-environment-jsdom: "npm:^29.4.1"
@@ -4196,7 +4199,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bip32@npm:^4.0.0":
+"bip32@npm:4.0.0, bip32@npm:^4.0.0":
   version: 4.0.0
   resolution: "bip32@npm:4.0.0"
   dependencies:
@@ -4208,7 +4211,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bip39@npm:^3.1.0":
+"bip39@npm:3.1.0, bip39@npm:^3.1.0":
   version: 3.1.0
   resolution: "bip39@npm:3.1.0"
   dependencies:
