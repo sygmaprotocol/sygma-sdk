@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3](https://github.com/sygmaprotocol/sygma-sdk/compare/core-v1.2.2...core-v1.2.3) (2024-09-18)
+
+
+### Bug Fixes
+
+* edge incompatibility  ([#540](https://github.com/sygmaprotocol/sygma-sdk/issues/540)) ([a1270ba](https://github.com/sygmaprotocol/sygma-sdk/commit/a1270ba1af51744d5c72c24e68fa45d0d99ab999)), closes [#539](https://github.com/sygmaprotocol/sygma-sdk/issues/539)
+
 ## [1.2.2](https://github.com/sygmaprotocol/sygma-sdk/compare/core-v1.2.1...core-v1.2.2) (2024-09-10)
 
 
