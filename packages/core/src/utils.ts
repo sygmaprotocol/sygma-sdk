@@ -1,5 +1,3 @@
-import * as process from 'node:process';
-
 import { decodeAddress, encodeAddress } from '@polkadot/keyring';
 import { hexToU8a, isHex } from '@polkadot/util';
 import { Network as BitcoinNetwork, validate } from 'bitcoin-address-validation';
