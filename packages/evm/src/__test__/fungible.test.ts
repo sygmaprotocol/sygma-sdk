@@ -10,7 +10,6 @@ import { BigNumber } from 'ethers';
 import { parseEther } from 'ethers/lib/utils.js';
 
 import { createFungibleAssetTransfer } from '../fungibleAssetTransfer.js';
-import type { TransactionRequest } from '../types.js';
 
 import { ASSET_TRANSFER_PARAMS } from './constants.js';
 
@@ -313,8 +312,9 @@ describe('Fungible - Deposit', () => {
           to: '',
           value: BigInt(0),
           data: '',
-          gasLimit: BigInt(0),
-        } as TransactionRequest),
+          gasLimit: BigNumber.from('1'),
+          gasPrice: BigNumber.from('1'),
+        }),
       },
       _resourceIDToHandlerAddress: jest
         .fn()
@@ -332,6 +332,17 @@ describe('Fungible - Deposit', () => {
     const depositTransaction = await transfer.getTransferTransaction();
 
     expect(depositTransaction).toBeTruthy();
+  });
+
+  it('should return deposit transaction with overrides', async () => {
+    const transfer = await createFungibleAssetTransfer(TRANSFER_PARAMS);
+    const depositTransaction = await transfer.getTransferTransaction({
+      gasLimit: 1n,
+      gasPrice: 1n,
+    });
+
+    expect(depositTransaction.gasLimit).toEqual(1n);
+    expect(depositTransaction.gasPrice).toEqual(1n);
   });
 
   it('should throw ERROR - Insufficient account balance - Percentage', async () => {

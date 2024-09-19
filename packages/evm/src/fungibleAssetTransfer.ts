@@ -2,7 +2,8 @@ import type { EvmResource } from '@buildwithsygma/core';
 import { Config, FeeHandlerType, ResourceType, SecurityModel } from '@buildwithsygma/core';
 import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
-import { BigNumber, constants, type PopulatedTransaction, utils } from 'ethers';
+import { BigNumber, constants, utils } from 'ethers';
+import type { ethers, PopulatedTransaction } from 'ethers';
 
 import { AssetTransfer } from './evmAssetTransfer.js';
 import type {
@@ -126,7 +127,9 @@ class FungibleAssetTransfer extends AssetTransfer {
    * associated with fungible transfer
    * @returns {Promise<Array<TransactionRequest>>}
    */
-  public async getApprovalTransactions(): Promise<Array<TransactionRequest>> {
+  public async getApprovalTransactions(
+    overrides?: ethers.Overrides,
+  ): Promise<Array<TransactionRequest>> {
     const provider = new Web3Provider(this.sourceNetworkProvider);
     const sourceDomainConfig = this.config.getDomainConfig(this.source);
     const bridge = Bridge__factory.connect(sourceDomainConfig.bridge, provider);
@@ -149,13 +152,13 @@ class FungibleAssetTransfer extends AssetTransfer {
     const approvals: Array<PopulatedTransaction> = [];
     if (fee.type == FeeHandlerType.PERCENTAGE && feeHandlerAllowance.lt(fee.fee)) {
       const approvalAmount = BigNumber.from(fee.fee).toString();
-      approvals.push(await approve(erc20, fee.handlerAddress, approvalAmount));
+      approvals.push(await approve(erc20, fee.handlerAddress, approvalAmount, overrides));
     }
 
     const transferAmount = BigNumber.from(this.adjustedAmount);
     if (handlerAllowance.lt(transferAmount)) {
       const approvalAmount = BigNumber.from(transferAmount).toString();
-      approvals.push(await approve(erc20, handlerAddress, approvalAmount));
+      approvals.push(await approve(erc20, handlerAddress, approvalAmount, overrides));
     }
 
     return approvals.map(approval => createTransactionRequest(approval));
