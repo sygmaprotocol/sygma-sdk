@@ -537,7 +537,7 @@ __metadata:
   resolution: "@buildwithsygma/evm@workspace:packages/evm"
   dependencies:
     "@buildwithsygma/core": "workspace:^"
-    "@buildwithsygma/sygma-contracts": "npm:^2.8.0"
+    "@buildwithsygma/sygma-contracts": "npm:^2.9.0"
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/bytes": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
@@ -626,7 +626,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@buildwithsygma/sygma-contracts@npm:^2.8.0":
+"@buildwithsygma/sygma-contracts@npm:^2.9.0":
   version: 2.9.0
   resolution: "@buildwithsygma/sygma-contracts@npm:2.9.0"
   dependencies:

@@ -3,7 +3,7 @@ import { arrayify } from '@ethersproject/bytes';
 import { utils } from 'ethers';
 
 import {
-  createFungibleDepositData,
+  createAssetDepositData,
   createSubstrateMultiLocationObject,
   serializeEvmAddress,
   serializeSubstrateAddress,
@@ -16,7 +16,7 @@ describe('createERCDepositData', () => {
     const expectedDepositData =
       '0x000000000000000000000000000000000000000000000000000000000000006400000000000000000000000000000000000000000000000000000000000000141234567890123456789012345678901234567890';
 
-    const depositData = createFungibleDepositData({
+    const depositData = createAssetDepositData({
       recipientAddress,
       amount,
       destination: {
@@ -37,7 +37,7 @@ describe('createERCDepositData', () => {
     const expectedDepositData =
       '0x00000000000000000000000000000000000000000000000000000000000000640000000000000000000000000000000000000000000000000000000000000027010200511f0100fac48520983815e2022ded67ca8d27b73d51b1b022284c48b4eccbb7a328d80f';
 
-    const depositData = createFungibleDepositData({
+    const depositData = createAssetDepositData({
       recipientAddress,
       amount,
       destination: {
@@ -59,7 +59,7 @@ describe('createERCDepositData', () => {
     const expectedDepositData =
       '0x0000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000000000000000000000000000000000002a746231717366797a6c3932707637776b79616a3074666a6474777663736a383430703030346a676c7670';
 
-    const depositData = createFungibleDepositData({
+    const depositData = createAssetDepositData({
       recipientAddress,
       amount: tokenAmount,
       destination: {

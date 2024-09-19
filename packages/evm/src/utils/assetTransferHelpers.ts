@@ -11,7 +11,7 @@ import type { FungibleTransferOptionalMessage } from '../types.js';
 const ACTIONS_ARRAY_ABI =
   'tuple(uint256 nativeValue, address callTo, address approveTo, address tokenSend, address tokenReceive, bytes data)[]';
 
-interface FungbileDepositParams {
+interface AssetDepositParams {
   destination: Domain;
   recipientAddress: string;
   amount?: bigint;
@@ -66,7 +66,7 @@ export function serializeSubstrateAddress(
   return registry.createType('MultiLocation', JSON.parse(multilocationObject)).toU8a();
 }
 
-export function createFungibleDepositData(depositParams: FungbileDepositParams): string {
+export function createAssetDepositData(depositParams: AssetDepositParams): string {
   const { recipientAddress, destination, amount, tokenId, optionalGas, optionalMessage } =
     depositParams;
   let recipientAddressSerialized: Uint8Array;

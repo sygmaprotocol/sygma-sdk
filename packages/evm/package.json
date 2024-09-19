@@ -57,7 +57,7 @@
   },
   "dependencies": {
     "@buildwithsygma/core": "workspace:^",
-    "@buildwithsygma/sygma-contracts": "^2.8.0",
+    "@buildwithsygma/sygma-contracts": "^2.9.0",
     "@ethersproject/abi": "^5.7.0",
     "@ethersproject/bytes": "^5.7.0",
     "@ethersproject/contracts": "^5.7.0",

@@ -9,7 +9,7 @@ import { providers } from 'ethers';
 
 import { AssetTransfer } from './evmAssetTransfer.js';
 import type { EvmFee, NonFungibleTransferParams, TransactionRequest } from './types.js';
-import { createFungibleDepositData } from './utils/assetTransferHelpers.js';
+import { createAssetDepositData } from './utils/assetTransferHelpers.js';
 import { approve, isApproved } from './utils/index.js';
 import { createTransactionRequest } from './utils/transaction.js';
 
@@ -31,7 +31,7 @@ class NonFungibleAssetTransfer extends AssetTransfer {
    * @returns {string}
    */
   protected getDepositData(): string {
-    return createFungibleDepositData({
+    return createAssetDepositData({
       destination: this.destination,
       recipientAddress: this.recipientAddress,
       tokenId: this.tokenId,

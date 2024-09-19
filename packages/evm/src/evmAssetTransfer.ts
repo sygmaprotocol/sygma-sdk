@@ -7,8 +7,8 @@ import { constants, utils } from 'ethers';
 
 import { EvmTransfer } from './evmTransfer.js';
 import type { EvmAssetTransferParams, EvmFee, TransactionRequest } from './types.js';
-import { createTransactionRequest } from './utils/transaction.js';
 import { getTransactionOverrides } from './utils/depositFn.js';
+import { createTransactionRequest } from './utils/transaction.js';
 
 /**
  * Asset transfers in EVM

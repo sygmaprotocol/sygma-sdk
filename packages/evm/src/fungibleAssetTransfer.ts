@@ -6,14 +6,8 @@ import {
   NativeTokenAdapter__factory,
 } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
-import {
-  BigNumber,
-  constants,
-  ethers,
-  PayableOverrides,
-  type PopulatedTransaction,
-  utils,
-} from 'ethers';
+import { BigNumber, constants, utils } from 'ethers';
+import type { ethers, PayableOverrides, PopulatedTransaction } from 'ethers';
 
 import { AssetTransfer } from './evmAssetTransfer.js';
 import type {
@@ -23,9 +17,9 @@ import type {
   TransactionRequest,
 } from './types.js';
 import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
-import { createFungibleDepositData } from './utils/assetTransferHelpers.js';
-import { createTransactionRequest } from './utils/transaction.js';
+import { createAssetDepositData } from './utils/assetTransferHelpers.js';
 import { getTransactionOverrides } from './utils/depositFn.js';
+import { createTransactionRequest } from './utils/transaction.js';
 
 /**
  * @internal
@@ -86,7 +80,7 @@ class FungibleAssetTransfer extends AssetTransfer {
    * @returns {string}
    */
   protected getDepositData(): string {
-    return createFungibleDepositData({
+    return createAssetDepositData({
       destination: this.destination,
       recipientAddress: this.recipientAddress,
       amount: this.adjustedAmount,
@@ -191,7 +185,7 @@ class FungibleAssetTransfer extends AssetTransfer {
   ): Promise<TransactionRequest> {
     const domainConfig = this.config.getDomainConfig(this.source) as EthereumConfig;
     const provider = new Web3Provider(this.sourceNetworkProvider);
-    const nativeTokenAdapter = await NativeTokenAdapter__factory.connect(
+    const nativeTokenAdapter = NativeTokenAdapter__factory.connect(
       domainConfig.nativeTokenAdapter,
       provider,
     );
