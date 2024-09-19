@@ -1,8 +1,19 @@
 import type { EvmResource } from '@buildwithsygma/core';
 import { Config, FeeHandlerType, ResourceType, SecurityModel } from '@buildwithsygma/core';
-import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
+import {
+  Bridge__factory,
+  ERC20__factory,
+  NativeTokenAdapter__factory,
+} from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
-import { BigNumber, constants, type PopulatedTransaction, utils } from 'ethers';
+import {
+  BigNumber,
+  constants,
+  ethers,
+  PayableOverrides,
+  type PopulatedTransaction,
+  utils,
+} from 'ethers';
 
 import { AssetTransfer } from './evmAssetTransfer.js';
 import type {
@@ -14,6 +25,7 @@ import type {
 import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
 import { createFungibleDepositData } from './utils/assetTransferHelpers.js';
 import { createTransactionRequest } from './utils/transaction.js';
+import { getTransactionOverrides } from './utils/depositFn.js';
 
 /**
  * @internal
@@ -57,6 +69,15 @@ class FungibleAssetTransfer extends AssetTransfer {
     this.securityModel = transfer.securityModel ?? SecurityModel.MPC;
     this.optionalGas = transfer.optionalGas;
     this.optionalMessage = transfer.optionalMessage;
+  }
+
+  protected isNativeTransfer(): boolean {
+    const { symbol, type } = this.resource;
+    const { nativeTokenSymbol } = this.config.getDomainConfig(this.sourceDomain);
+
+    return (
+      type === ResourceType.FUNGIBLE && symbol?.toLowerCase() === nativeTokenSymbol.toLowerCase()
+    );
   }
 
   /**
@@ -127,6 +148,10 @@ class FungibleAssetTransfer extends AssetTransfer {
    * @returns {Promise<Array<TransactionRequest>>}
    */
   public async getApprovalTransactions(): Promise<Array<TransactionRequest>> {
+    if (this.isNativeTransfer()) {
+      return [];
+    }
+
     const provider = new Web3Provider(this.sourceNetworkProvider);
     const sourceDomainConfig = this.config.getDomainConfig(this.source);
     const bridge = Bridge__factory.connect(sourceDomainConfig.bridge, provider);
@@ -159,6 +184,33 @@ class FungibleAssetTransfer extends AssetTransfer {
     }
 
     return approvals.map(approval => createTransactionRequest(approval));
+  }
+
+  protected async getNativeDepositTransaction(
+    overrides?: ethers.Overrides,
+  ): Promise<TransactionRequest> {
+    const domainConfig = this.config.getDomainConfig(this.source);
+    const provider = new Web3Provider(this.sourceNetworkProvider);
+    const bridge = Bridge__factory.connect(domainConfig.bridge, provider);
+    const handlerAddress = await bridge._resourceIDToHandlerAddress(this.resource.resourceId);
+    const nativeTokenAdapter = await NativeTokenAdapter__factory.connect(handlerAddress, provider);
+    const fee = await this.getFee();
+
+    const transferTransaction = await nativeTokenAdapter.populateTransaction.deposit(
+      this.destination.id.toString(),
+      this.recipientAddress,
+      getTransactionOverrides(fee, overrides),
+    );
+
+    return createTransactionRequest(transferTransaction);
+  }
+
+  public async getTransferTransaction(overrides?: PayableOverrides): Promise<TransactionRequest> {
+    if (this.isNativeTransfer()) {
+      return await this.getNativeDepositTransaction(overrides);
+    }
+
+    return super.getTransferTransaction(overrides);
   }
 }
 

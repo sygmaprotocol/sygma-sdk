@@ -7,8 +7,8 @@ import { constants, utils } from 'ethers';
 
 import { EvmTransfer } from './evmTransfer.js';
 import type { EvmAssetTransferParams, EvmFee, TransactionRequest } from './types.js';
-import { executeDeposit } from './utils/depositFn.js';
 import { createTransactionRequest } from './utils/transaction.js';
+import { getTransactionOverrides } from './utils/depositFn.js';
 
 /**
  * Asset transfers in EVM
@@ -72,16 +72,15 @@ export abstract class AssetTransfer extends EvmTransfer implements IAssetTransfe
     const hasBalance = await this.hasEnoughBalance(fee);
     if (!hasBalance) throw new Error('Insufficient token balance');
 
-    const transferTx = await executeDeposit(
-      this.destination.id.toString(),
+    const transferTransaction = await bridge.populateTransaction.deposit(
+      this.destinationDomain.id.toString(),
       this.resource.resourceId,
       this.getDepositData(),
-      fee,
-      bridge,
-      overrides,
+      '0x',
+      getTransactionOverrides(fee, overrides),
     );
 
-    return createTransactionRequest(transferTx);
+    return createTransactionRequest(transferTransaction);
   }
 
   /**

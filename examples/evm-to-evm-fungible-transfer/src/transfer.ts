@@ -18,7 +18,7 @@ if (!privateKey) {
 const SEPOLIA_CHAIN_ID = 11155111;
 const AMOY_CHAIN_ID = 84532;
 const RESOURCE_ID =
-  "0x0000000000000000000000000000000000000000000000000000000000001200";
+  "0x1000000000000000000000000000000000000000000000000000000000000000";
 const SEPOLIA_RPC_URL =
   process.env.SEPOLIA_RPC_URL ||
   "https://eth-sepolia.g.alchemy.com/v2/MeCKDrpxLkGOn4LMlBa3cKy1EzzOzwzG";
@@ -43,7 +43,7 @@ export async function erc20Transfer(): Promise<void> {
     destination: AMOY_CHAIN_ID,
     sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
     resource: RESOURCE_ID,
-    amount: BigInt(1) * BigInt(1e6),
+    amount: BigInt(1) * BigInt(1e17),
     recipientAddress: destinationAddress,
     sourceAddress: sourceAddress,
     optionalGas: BigInt(500000),
@@ -57,7 +57,7 @@ export async function erc20Transfer(): Promise<void> {
     const response = await wallet.sendTransaction(approval);
     await response.wait();
     console.log(
-      `Approved, transaction: ${getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID })}`,
+      `Approved, transaction: ${getTxExplorerUrl({ txHash: response.hash, chainId: SEPOLIA_CHAIN_ID })}`
     );
   }
 
@@ -65,7 +65,7 @@ export async function erc20Transfer(): Promise<void> {
   const response = await wallet.sendTransaction(transferTx);
   await response.wait();
   console.log(
-    `Depositted, transaction:  ${getSygmaScanLink(response.hash, process.env.SYGMA_ENV)}`,
+    `Depositted, transaction:  ${getSygmaScanLink(response.hash, process.env.SYGMA_ENV)}`
   );
 }
 
