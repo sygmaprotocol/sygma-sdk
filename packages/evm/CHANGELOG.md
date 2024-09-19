@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.3.1...evm-v1.3.2) (2024-09-19)
+
+
+### Bug Fixes
+
+* added ethereum transaction overrides ([#534](https://github.com/sygmaprotocol/sygma-sdk/issues/534)) ([478c15c](https://github.com/sygmaprotocol/sygma-sdk/commit/478c15cd1f54465c7df1cd4f486c74019f1b30b0))
+
 ## [1.3.1](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.3.0...evm-v1.3.1) (2024-09-12)
 
 
