@@ -8,6 +8,7 @@ export const localConfig: SygmaConfig = {
       caipId: '',
       chainId: 1337,
       name: 'Ethereum 1',
+      nativeTokenAdapter: '',
       type: Network.EVM,
       bridge: '0x6CdE2Cd82a4F8B74693Ff5e194c19CA08c2d1c68',
       handlers: [
@@ -76,6 +77,7 @@ export const localConfig: SygmaConfig = {
       caipId: '',
       chainId: 1338,
       name: 'evm2',
+      nativeTokenAdapter: '',
       type: Network.EVM,
       bridge: '0x6CdE2Cd82a4F8B74693Ff5e194c19CA08c2d1c68',
       handlers: [

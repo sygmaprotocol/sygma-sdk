@@ -1,4 +1,4 @@
-import type { EvmResource } from '@buildwithsygma/core';
+import type { EthereumConfig, EvmResource } from '@buildwithsygma/core';
 import { Config, FeeHandlerType, ResourceType, SecurityModel } from '@buildwithsygma/core';
 import {
   Bridge__factory,
@@ -189,12 +189,15 @@ class FungibleAssetTransfer extends AssetTransfer {
   protected async getNativeDepositTransaction(
     overrides?: ethers.Overrides,
   ): Promise<TransactionRequest> {
-    const domainConfig = this.config.getDomainConfig(this.source);
+    const domainConfig = this.config.getDomainConfig(this.source) as EthereumConfig;
     const provider = new Web3Provider(this.sourceNetworkProvider);
-    const bridge = Bridge__factory.connect(domainConfig.bridge, provider);
-    const handlerAddress = await bridge._resourceIDToHandlerAddress(this.resource.resourceId);
-    const nativeTokenAdapter = await NativeTokenAdapter__factory.connect(handlerAddress, provider);
+    const nativeTokenAdapter = await NativeTokenAdapter__factory.connect(
+      domainConfig.nativeTokenAdapter,
+      provider,
+    );
+
     const fee = await this.getFee();
+    fee.fee += this.transferAmount;
 
     const transferTransaction = await nativeTokenAdapter.populateTransaction.deposit(
       this.destination.id.toString(),

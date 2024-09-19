@@ -132,6 +132,7 @@ export type FeeHandler = {
 
 export interface EthereumConfig extends BaseConfig<Network.EVM> {
   handlers: Array<Handler>;
+  nativeTokenAdapter: string;
   feeRouter: string;
   feeHandlers: Array<FeeHandler>;
 }
