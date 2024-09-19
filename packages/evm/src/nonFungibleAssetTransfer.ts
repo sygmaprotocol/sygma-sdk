@@ -4,7 +4,7 @@ import {
   Bridge__factory,
   ERC721MinterBurnerPauser__factory,
 } from '@buildwithsygma/sygma-contracts';
-import type { PopulatedTransaction } from 'ethers';
+import type { ethers, PopulatedTransaction } from 'ethers';
 import { providers } from 'ethers';
 
 import { AssetTransfer } from './evmAssetTransfer.js';
@@ -65,7 +65,9 @@ class NonFungibleAssetTransfer extends AssetTransfer {
     this.transferResource = resource;
   }
 
-  public async getApprovalTransactions(): Promise<Array<TransactionRequest>> {
+  public async getApprovalTransactions(
+    overrides?: ethers.Overrides,
+  ): Promise<Array<TransactionRequest>> {
     const approvalTransactions: Array<PopulatedTransaction> = [];
     const provider = new providers.Web3Provider(this.sourceNetworkProvider);
     const sourceDomainConfig = this.config.getDomainConfig(this.source.caipId);
@@ -78,7 +80,9 @@ class NonFungibleAssetTransfer extends AssetTransfer {
     const isAlreadyApproved = await isApproved(tokenInstance, handlerAddress, Number(this.tokenId));
 
     if (!isAlreadyApproved) {
-      approvalTransactions.push(await approve(tokenInstance, handlerAddress, this.tokenId));
+      approvalTransactions.push(
+        await approve(tokenInstance, handlerAddress, this.tokenId, overrides),
+      );
     }
 
     return approvalTransactions.map(transaction => createTransactionRequest(transaction));

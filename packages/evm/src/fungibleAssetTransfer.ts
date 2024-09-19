@@ -141,7 +141,9 @@ class FungibleAssetTransfer extends AssetTransfer {
    * associated with fungible transfer
    * @returns {Promise<Array<TransactionRequest>>}
    */
-  public async getApprovalTransactions(): Promise<Array<TransactionRequest>> {
+  public async getApprovalTransactions(
+    overrides?: ethers.Overrides,
+  ): Promise<Array<TransactionRequest>> {
     if (this.isNativeTransfer()) {
       return [];
     }
@@ -168,13 +170,13 @@ class FungibleAssetTransfer extends AssetTransfer {
     const approvals: Array<PopulatedTransaction> = [];
     if (fee.type == FeeHandlerType.PERCENTAGE && feeHandlerAllowance.lt(fee.fee)) {
       const approvalAmount = BigNumber.from(fee.fee).toString();
-      approvals.push(await approve(erc20, fee.handlerAddress, approvalAmount));
+      approvals.push(await approve(erc20, fee.handlerAddress, approvalAmount, overrides));
     }
 
     const transferAmount = BigNumber.from(this.adjustedAmount);
     if (handlerAllowance.lt(transferAmount)) {
       const approvalAmount = BigNumber.from(transferAmount).toString();
-      approvals.push(await approve(erc20, handlerAddress, approvalAmount));
+      approvals.push(await approve(erc20, handlerAddress, approvalAmount, overrides));
     }
 
     return approvals.map(approval => createTransactionRequest(approval));
@@ -202,7 +204,7 @@ class FungibleAssetTransfer extends AssetTransfer {
     return createTransactionRequest(transferTransaction);
   }
 
-  public async getTransferTransaction(overrides?: PayableOverrides): Promise<TransactionRequest> {
+  public async getTransferTransaction(overrides?: ethers.Overrides): Promise<TransactionRequest> {
     if (this.isNativeTransfer()) {
       return await this.getNativeDepositTransaction(overrides);
     }

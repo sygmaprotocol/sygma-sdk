@@ -2,7 +2,7 @@ import type { Config } from '@buildwithsygma/core';
 import { isValidAddressForNetwork } from '@buildwithsygma/core';
 import { Bridge__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
-import type { PayableOverrides } from 'ethers';
+import type { ethers, PayableOverrides } from 'ethers';
 import { constants, utils } from 'ethers';
 
 import { EvmTransfer } from './evmTransfer.js';
@@ -19,8 +19,8 @@ import { createTransactionRequest } from './utils/transaction.js';
  * TODO: Add Support for all
  */
 interface IAssetTransfer {
-  getTransferTransaction(): Promise<TransactionRequest>;
-  getApprovalTransactions(): Promise<Array<TransactionRequest>>;
+  getTransferTransaction(overrides?: ethers.Overrides): Promise<TransactionRequest>;
+  getApprovalTransactions(overrides?: ethers.Overrides): Promise<Array<TransactionRequest>>;
 }
 
 /**
