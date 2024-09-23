@@ -50,7 +50,7 @@ async function btcToEvmTransfer(): Promise<void> {
   const bip32 = BIP32Factory(tinysecp);
   console.log("Transfer BTC to EVM");
 
-  const { tweakedSigner, publicKeyDropedDERHeader  } = await getPublicKey({
+  const { tweakedSigner, publicKeyDropedDERHeader } = await getPublicKey({
     bip32,
     mnemonic: MNEMONIC as string,
     derivationPath: DERIVATION_PATH as string,
