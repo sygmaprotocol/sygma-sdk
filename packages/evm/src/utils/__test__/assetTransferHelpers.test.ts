@@ -27,7 +27,6 @@ describe('createERCDepositData', () => {
         id: 1,
       },
       isNativeToken: false,
-      q,
     });
 
     expect(depositData).toEqual(expectedDepositData);
