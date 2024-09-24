@@ -35,6 +35,7 @@ class NonFungibleAssetTransfer extends AssetTransfer {
       destination: this.destination,
       recipientAddress: this.recipientAddress,
       tokenId: this.tokenId,
+      isNativeToken: false,
     });
   }
 

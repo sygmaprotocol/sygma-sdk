@@ -102,3 +102,12 @@ export interface GenericMessageTransferParams<
   destinationContractAddress: string;
   maxFee: bigint;
 }
+
+export type NativeTokenDepositArgsWithoutMessage = [string, string];
+export type NativeTokenDepositArgsWithGeneralMessage = [string, string];
+export type NativeTokenDepositArgsWithEVMMessage = [string, string, bigint, string];
+export type NativeTokenDepositMethods =
+  | 'deposit'
+  | 'depositToEVM'
+  | 'depositGeneral'
+  | 'depositToEVMWithMessage';

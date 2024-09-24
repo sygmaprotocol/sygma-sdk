@@ -18,7 +18,7 @@ import type {
 } from './types.js';
 import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
 import { createAssetDepositData } from './utils/assetTransferHelpers.js';
-import { getTransactionOverrides } from './utils/depositFn.js';
+import { getNativeTokenDepositTransaction } from './utils/nativeTokenDepositHelpers.js';
 import { createTransactionRequest } from './utils/transaction.js';
 
 /**
@@ -86,6 +86,7 @@ class FungibleAssetTransfer extends AssetTransfer {
       amount: this.adjustedAmount,
       optionalGas: this.optionalGas,
       optionalMessage: this.optionalMessage,
+      isNativeToken: this.isNativeTransfer(),
     });
   }
 
@@ -182,7 +183,7 @@ class FungibleAssetTransfer extends AssetTransfer {
     return approvals.map(approval => createTransactionRequest(approval));
   }
 
-  protected async getNativeDepositTransaction(
+  protected async getNativeTokenDepositTransaction(
     overrides?: ethers.Overrides,
   ): Promise<TransactionRequest> {
     const domainConfig = this.config.getDomainConfig(this.source) as EthereumConfig;
@@ -195,18 +196,24 @@ class FungibleAssetTransfer extends AssetTransfer {
     const fee = await this.getFee();
     fee.fee += this.transferAmount;
 
-    const transferTransaction = await nativeTokenAdapter.populateTransaction.deposit(
-      this.destination.id.toString(),
-      this.recipientAddress,
-      getTransactionOverrides(fee, overrides),
+    return await getNativeTokenDepositTransaction(
+      {
+        destinationNetworkId: this.destination.id.toString(),
+        destinationNetworkType: this.destination.type,
+        parachainId: this.destination.parachainId,
+        recipientAddress: this.recipientAddress,
+        optionalMessage: this.optionalMessage,
+        optionalGas: this.optionalGas,
+        depositData: this.getDepositData(),
+      },
+      nativeTokenAdapter,
+      overrides,
     );
-
-    return createTransactionRequest(transferTransaction);
   }
 
   public async getTransferTransaction(overrides?: ethers.Overrides): Promise<TransactionRequest> {
     if (this.isNativeTransfer()) {
-      return await this.getNativeDepositTransaction(overrides);
+      return await this.getNativeTokenDepositTransaction(overrides);
     }
 
     return super.getTransferTransaction(overrides);

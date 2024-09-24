@@ -16,7 +16,7 @@ if (!privateKey) {
 }
 
 const SEPOLIA_CHAIN_ID = 11155111;
-const AMOY_CHAIN_ID = 84532;
+const BASE_SEPOLIA_CHAIN_ID = 84532;
 const RESOURCE_ID =
   "0x1000000000000000000000000000000000000000000000000000000000000000";
 const SEPOLIA_RPC_URL =
@@ -40,7 +40,7 @@ export async function erc20Transfer(): Promise<void> {
 
   const params: FungibleTransferParams = {
     source: SEPOLIA_CHAIN_ID,
-    destination: AMOY_CHAIN_ID,
+    destination: BASE_SEPOLIA_CHAIN_ID,
     sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
     resource: RESOURCE_ID,
     amount: BigInt(1) * BigInt(1e17),

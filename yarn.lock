@@ -537,7 +537,7 @@ __metadata:
   resolution: "@buildwithsygma/evm@workspace:packages/evm"
   dependencies:
     "@buildwithsygma/core": "workspace:^"
-    "@buildwithsygma/sygma-contracts": "npm:^2.9.0"
+    "@buildwithsygma/sygma-contracts": "npm:^2.10.1"
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/bytes": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
@@ -626,15 +626,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@buildwithsygma/sygma-contracts@npm:^2.9.0":
-  version: 2.9.0
-  resolution: "@buildwithsygma/sygma-contracts@npm:2.9.0"
+"@buildwithsygma/sygma-contracts@npm:^2.10.1":
+  version: 2.10.1
+  resolution: "@buildwithsygma/sygma-contracts@npm:2.10.1"
   dependencies:
     "@openzeppelin/contracts": "npm:4.5.0"
     "@uniswap/v3-periphery": "npm:^1.4.4"
+    solmate: "npm:^6.2.0"
   peerDependencies:
     ethers: ">= 5.0.0"
-  checksum: 0f98a64da674e1264caaf429665a23b7db63365d7a8c5a38d8e23f0b728faecd6bfd3a0c43616bd4aa43133229324f14d4c3d0e2e24225d223574d5e94af9263
+  checksum: c6cddf6a427a4d3ab1321fbc21f9e47a64661823ffdb55db230ce9874878125735aad260d3aef454f7681f2d2f7d446882f82f1cf3e7f69209e183b69f375c4a
   languageName: node
   linkType: hard
 
@@ -10554,6 +10555,13 @@ __metadata:
   bin:
     solcjs: solcjs
   checksum: 28405adfba1f55603dc5b674630383bfbdbfab2d36deba2ff0a90c46cbc346bcabf0ed6175e12ae3c0b751ef082d0405ab42dcc24f88603a446e097a925d7425
+  languageName: node
+  linkType: hard
+
+"solmate@npm:^6.2.0":
+  version: 6.7.0
+  resolution: "solmate@npm:6.7.0"
+  checksum: 7c51286ac486de2cace00fd136a210d01e2dc28403373583ce5acd49178f1cf4421d3f3a945f28af36e7fcedcea194238b2b5eb53be78a04b9e04f32ea8d286f
   languageName: node
   linkType: hard
 
