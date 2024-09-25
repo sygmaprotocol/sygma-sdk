@@ -77,14 +77,14 @@ export function getNativeTokenDepositContractArgs(
         encodeOptionalMessage(optionalMessage!),
       ];
     case 'depositGeneral':
-      return [destinationNetworkId, depositData];
+      return [destinationNetworkId, `0x${depositData.substring(66)}`];
   }
 }
 
 export async function getNativeTokenDepositTransaction(
   depositParams: Omit<NativeDepositParams, 'method'>,
   nativeTokenAdapter: NativeTokenAdapter,
-  overrides?: ethers.Overrides,
+  overrides?: ethers.PayableOverrides,
 ): Promise<TransactionRequest> {
   const method = getNativeTokenDepositMethod(
     depositParams.destinationNetworkType,

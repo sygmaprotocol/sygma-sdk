@@ -86,7 +86,6 @@ class FungibleAssetTransfer extends AssetTransfer {
       amount: this.adjustedAmount,
       optionalGas: this.optionalGas,
       optionalMessage: this.optionalMessage,
-      isNativeToken: this.isNativeTransfer(),
     });
   }
 
@@ -196,6 +195,8 @@ class FungibleAssetTransfer extends AssetTransfer {
     const fee = await this.getFee();
     fee.fee += this.transferAmount;
 
+    const payableOverrides: ethers.PayableOverrides = { ...overrides, value: fee.fee };
+
     return await getNativeTokenDepositTransaction(
       {
         destinationNetworkId: this.destination.id.toString(),
@@ -207,7 +208,7 @@ class FungibleAssetTransfer extends AssetTransfer {
         depositData: this.getDepositData(),
       },
       nativeTokenAdapter,
-      overrides,
+      payableOverrides,
     );
   }
 

@@ -26,7 +26,6 @@ describe('createERCDepositData', () => {
         chainId: 1,
         id: 1,
       },
-      isNativeToken: false,
     });
 
     expect(depositData).toEqual(expectedDepositData);
@@ -49,7 +48,6 @@ describe('createERCDepositData', () => {
         id: 1,
         parachainId: 2004,
       },
-      isNativeToken: false,
     });
 
     expect(depositData).toEqual(expectedDepositData);
@@ -71,7 +69,6 @@ describe('createERCDepositData', () => {
         chainId: 1,
         id: 1,
       },
-      isNativeToken: false,
     });
     expect(depositData).toEqual(expectedDepositData);
   });

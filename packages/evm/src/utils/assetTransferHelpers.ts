@@ -18,7 +18,6 @@ interface AssetDepositParams {
   tokenId?: string;
   optionalGas?: bigint;
   optionalMessage?: FungibleTransferOptionalMessage;
-  isNativeToken: boolean;
 }
 
 export function serializeEvmAddress(evmAddress: `0x${string}`): Uint8Array {
@@ -112,15 +111,8 @@ export function encodeOptionalMessage(optionalMessage: FungibleTransferOptionalM
 }
 
 export function createAssetDepositData(depositParams: AssetDepositParams): string {
-  const {
-    isNativeToken,
-    recipientAddress,
-    destination,
-    amount,
-    tokenId,
-    optionalGas,
-    optionalMessage,
-  } = depositParams;
+  const { recipientAddress, destination, amount, tokenId, optionalGas, optionalMessage } =
+    depositParams;
 
   const recipientAddressSerialized: Uint8Array = serializeDestinationAddress(
     recipientAddress,
@@ -137,12 +129,7 @@ export function createAssetDepositData(depositParams: AssetDepositParams): strin
   const addressLenInHex = BigNumber.from(recipientAddressSerialized.length).toHexString();
   const zeroPaddedAddrLen = hexZeroPad(addressLenInHex, HEX_PADDING);
 
-  let depositData;
-  if (isNativeToken) {
-    depositData = concat([zeroPaddedAddrLen, recipientAddressSerialized]);
-  } else {
-    depositData = concat([zeroPaddedAmount, zeroPaddedAddrLen, recipientAddressSerialized]);
-  }
+  let depositData = concat([zeroPaddedAmount, zeroPaddedAddrLen, recipientAddressSerialized]);
 
   if (optionalMessage !== undefined && optionalGas !== undefined) {
     const optionalGasInHex = BigNumber.from(optionalGas).toHexString();
