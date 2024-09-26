@@ -64,7 +64,7 @@ export const approve = async (
   const unsignedTx = await tokenInstance.populateTransaction.approve(
     spender,
     amountOrIdForApproval,
-    overrides,
+    overrides ? overrides : {},
   );
   return unsignedTx;
 };
