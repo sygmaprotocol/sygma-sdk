@@ -14,8 +14,8 @@ import { constants } from 'ethers';
 import { EvmTransfer } from './evmTransfer.js';
 import { getFeeInformation } from './fee/getFeeInformation.js';
 import type { GenericMessageTransferParams, TransactionRequest } from './types.js';
+import { getTransactionOverrides } from './utils/depositFn.js';
 import { createGenericCallDepositData } from './utils/genericTransferHelpers.js';
-import { executeDeposit } from './utils/index.js';
 import { createTransactionRequest } from './utils/transaction.js';
 
 /**
@@ -143,16 +143,15 @@ class GenericMessageTransfer<
     const feeData = await this.getFee();
     const depositData = this.getDepositData();
 
-    const transaction = await executeDeposit(
+    const transferTransaction = await bridgeInstance.populateTransaction.deposit(
       this.destination.id.toString(),
       this.resource.resourceId,
       depositData,
-      feeData,
-      bridgeInstance,
-      overrides,
+      '0x',
+      getTransactionOverrides(feeData, overrides),
     );
 
-    return createTransactionRequest(transaction);
+    return createTransactionRequest(transferTransaction);
   }
   /**
    * Get prepared additional deposit data

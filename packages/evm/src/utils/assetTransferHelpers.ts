@@ -11,7 +11,7 @@ import type { FungibleTransferOptionalMessage } from '../types.js';
 const ACTIONS_ARRAY_ABI =
   'tuple(uint256 nativeValue, address callTo, address approveTo, address tokenSend, address tokenReceive, bytes data)[]';
 
-interface FungbileDepositParams {
+interface AssetDepositParams {
   destination: Domain;
   recipientAddress: string;
   amount?: bigint;
@@ -66,33 +66,59 @@ export function serializeSubstrateAddress(
   return registry.createType('MultiLocation', JSON.parse(multilocationObject)).toU8a();
 }
 
-export function createFungibleDepositData(depositParams: FungbileDepositParams): string {
-  const { recipientAddress, destination, amount, tokenId, optionalGas, optionalMessage } =
-    depositParams;
-  let recipientAddressSerialized: Uint8Array;
-
-  switch (destination.type) {
+export function serializeDestinationAddress(
+  address: string,
+  type: Network,
+  parachainId?: number,
+): Uint8Array {
+  switch (type) {
     case Network.EVM: {
-      recipientAddressSerialized = serializeEvmAddress(recipientAddress as `0x${string}`);
-      break;
+      return serializeEvmAddress(address as `0x${string}`);
     }
     case Network.SUBSTRATE: {
-      recipientAddressSerialized = serializeSubstrateAddress(
-        recipientAddress,
-        destination.parachainId,
-      );
-      break;
+      return serializeSubstrateAddress(address, parachainId);
     }
     case Network.BITCOIN: {
-      recipientAddressSerialized = utils.arrayify(
-        `${utils.hexlify(utils.toUtf8Bytes(recipientAddress))}`,
-      );
-      break;
+      return utils.arrayify(`${utils.hexlify(utils.toUtf8Bytes(address))}`);
     }
     default: {
       throw new Error('Unsupported destination network type.');
     }
   }
+}
+
+export function encodeOptionalMessage(optionalMessage: FungibleTransferOptionalMessage): string {
+  const { transactionId, actions, receiver } = optionalMessage;
+  const abiCoder = new AbiCoder();
+
+  const optionalMessageEncoded = abiCoder.encode(
+    ['bytes32', ACTIONS_ARRAY_ABI, 'address'],
+    [
+      transactionId,
+      actions.map(action => [
+        action.nativeValue,
+        action.callTo,
+        action.approveTo,
+        action.tokenSend,
+        action.tokenReceive,
+        action.data,
+      ]),
+      receiver,
+    ],
+  );
+
+  return optionalMessageEncoded;
+}
+
+export function createAssetDepositData(depositParams: AssetDepositParams): string {
+  const { recipientAddress, destination, amount, tokenId, optionalGas, optionalMessage } =
+    depositParams;
+
+  const recipientAddressSerialized: Uint8Array = serializeDestinationAddress(
+    recipientAddress,
+    destination.type,
+    destination.parachainId,
+  );
 
   const val = amount !== undefined ? amount : tokenId !== undefined ? tokenId : null;
   if (val === null) throw new Error('Token Amount Or ID is required.');
@@ -102,6 +128,7 @@ export function createFungibleDepositData(depositParams: FungbileDepositParams):
   const zeroPaddedAmount = hexZeroPad(tokenAmountOrIdInHex, HEX_PADDING);
   const addressLenInHex = BigNumber.from(recipientAddressSerialized.length).toHexString();
   const zeroPaddedAddrLen = hexZeroPad(addressLenInHex, HEX_PADDING);
+
   let depositData = concat([zeroPaddedAmount, zeroPaddedAddrLen, recipientAddressSerialized]);
 
   if (optionalMessage !== undefined && optionalGas !== undefined) {
@@ -109,25 +136,7 @@ export function createFungibleDepositData(depositParams: FungbileDepositParams):
     const zeroPaddedOptionalGas = hexZeroPad(optionalGasInHex, HEX_PADDING);
     depositData = concat([depositData, zeroPaddedOptionalGas]);
 
-    const { transactionId, actions, receiver } = optionalMessage;
-    const abiCoder = new AbiCoder();
-
-    const optionalMessageEncoded = abiCoder.encode(
-      ['bytes32', ACTIONS_ARRAY_ABI, 'address'],
-      [
-        transactionId,
-        actions.map(action => [
-          action.nativeValue,
-          action.callTo,
-          action.approveTo,
-          action.tokenSend,
-          action.tokenReceive,
-          action.data,
-        ]),
-        receiver,
-      ],
-    );
-
+    const optionalMessageEncoded = encodeOptionalMessage(optionalMessage);
     const optionalMessageSeriailzed = arrayify(optionalMessageEncoded);
     const optionalMsgLenInHex = BigNumber.from(optionalMessageSeriailzed.length).toHexString();
     const zeroPaddedOptionalMsgLen = hexZeroPad(optionalMsgLenInHex, HEX_PADDING);

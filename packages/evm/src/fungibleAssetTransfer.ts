@@ -1,6 +1,10 @@
-import type { EvmResource } from '@buildwithsygma/core';
+import type { EthereumConfig, EvmResource } from '@buildwithsygma/core';
 import { Config, FeeHandlerType, ResourceType, SecurityModel } from '@buildwithsygma/core';
-import { Bridge__factory, ERC20__factory } from '@buildwithsygma/sygma-contracts';
+import {
+  Bridge__factory,
+  ERC20__factory,
+  NativeTokenAdapter__factory,
+} from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber, constants, utils } from 'ethers';
 import type { ethers, PopulatedTransaction } from 'ethers';
@@ -13,7 +17,8 @@ import type {
   TransactionRequest,
 } from './types.js';
 import { approve, getERC20Allowance } from './utils/approveAndCheckFns.js';
-import { createFungibleDepositData } from './utils/assetTransferHelpers.js';
+import { createAssetDepositData } from './utils/assetTransferHelpers.js';
+import { getNativeTokenDepositTransaction } from './utils/nativeTokenDepositHelpers.js';
 import { createTransactionRequest } from './utils/transaction.js';
 
 /**
@@ -60,13 +65,22 @@ class FungibleAssetTransfer extends AssetTransfer {
     this.optionalMessage = transfer.optionalMessage;
   }
 
+  protected isNativeTransfer(): boolean {
+    const { symbol, type } = this.resource;
+    const { nativeTokenSymbol } = this.config.getDomainConfig(this.sourceDomain);
+
+    return (
+      type === ResourceType.FUNGIBLE && symbol?.toLowerCase() === nativeTokenSymbol.toLowerCase()
+    );
+  }
+
   /**
    * Returns encoded deposit
    * data
    * @returns {string}
    */
   protected getDepositData(): string {
-    return createFungibleDepositData({
+    return createAssetDepositData({
       destination: this.destination,
       recipientAddress: this.recipientAddress,
       amount: this.adjustedAmount,
@@ -130,6 +144,10 @@ class FungibleAssetTransfer extends AssetTransfer {
   public async getApprovalTransactions(
     overrides?: ethers.Overrides,
   ): Promise<Array<TransactionRequest>> {
+    if (this.isNativeTransfer()) {
+      return [];
+    }
+
     const provider = new Web3Provider(this.sourceNetworkProvider);
     const sourceDomainConfig = this.config.getDomainConfig(this.source);
     const bridge = Bridge__factory.connect(sourceDomainConfig.bridge, provider);
@@ -162,6 +180,44 @@ class FungibleAssetTransfer extends AssetTransfer {
     }
 
     return approvals.map(approval => createTransactionRequest(approval));
+  }
+
+  protected async getNativeTokenDepositTransaction(
+    overrides?: ethers.Overrides,
+  ): Promise<TransactionRequest> {
+    const domainConfig = this.config.getDomainConfig(this.source) as EthereumConfig;
+    const provider = new Web3Provider(this.sourceNetworkProvider);
+    const nativeTokenAdapter = NativeTokenAdapter__factory.connect(
+      domainConfig.nativeTokenAdapter,
+      provider,
+    );
+
+    const fee = await this.getFee();
+    fee.fee += this.transferAmount;
+
+    const payableOverrides: ethers.PayableOverrides = { ...overrides, value: fee.fee };
+
+    return await getNativeTokenDepositTransaction(
+      {
+        destinationNetworkId: this.destination.id.toString(),
+        destinationNetworkType: this.destination.type,
+        parachainId: this.destination.parachainId,
+        recipientAddress: this.recipientAddress,
+        optionalMessage: this.optionalMessage,
+        optionalGas: this.optionalGas,
+        depositData: this.getDepositData(),
+      },
+      nativeTokenAdapter,
+      payableOverrides,
+    );
+  }
+
+  public async getTransferTransaction(overrides?: ethers.Overrides): Promise<TransactionRequest> {
+    if (this.isNativeTransfer()) {
+      return await this.getNativeTokenDepositTransaction(overrides);
+    }
+
+    return super.getTransferTransaction(overrides);
   }
 }
 
