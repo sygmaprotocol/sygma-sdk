@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.3.3...evm-v1.4.0) (2024-09-26)
+
+
+### Features
+
+* **evm:** Expanding SDK to support Native transfer with optional con… ([#545](https://github.com/sygmaprotocol/sygma-sdk/issues/545)) ([eb57424](https://github.com/sygmaprotocol/sygma-sdk/commit/eb5742473dbb21bc0c18da7e73dcea50b0c769cd))
+
 ## [1.3.3](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.3.2...evm-v1.3.3) (2024-09-26)
 
 
