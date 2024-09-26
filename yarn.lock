@@ -421,6 +421,8 @@ __metadata:
   dependencies:
     "@buildwithsygma/core": "workspace:^"
     "@types/jest": "npm:^29.4.0"
+    bip32: "npm:4.0.0"
+    bip39: "npm:3.1.0"
     bitcoinjs-lib: "npm:^6.1.6"
     concurrently: "npm:7.0.0"
     eslint: "npm:8"

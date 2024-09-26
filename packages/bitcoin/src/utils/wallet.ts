@@ -1,11 +1,10 @@
-import { TypeOfAddress } from '@buildwithsygma/bitcoin';
 import type { BIP32Interface } from 'bip32';
 import { mnemonicToSeed } from 'bip39';
 import type { Signer } from 'bitcoinjs-lib';
 import { crypto } from 'bitcoinjs-lib';
 import { toXOnly } from 'bitcoinjs-lib/src/psbt/bip371';
 
-import type { PublicKeyParams } from './types.js';
+import { TypeOfAddress, type PublicKeyParams } from '../types.js';
 
 /**
  * @category Bitcoin Wallet Helpers

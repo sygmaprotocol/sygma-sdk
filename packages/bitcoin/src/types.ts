@@ -1,5 +1,6 @@
 import type { BaseTransferParams } from '@buildwithsygma/core';
-import type { networks, Psbt } from 'bitcoinjs-lib';
+import type { BIP32API } from 'bip32';
+import type { Network, networks, Psbt } from 'bitcoinjs-lib';
 
 export enum TypeOfAddress {
   P2WPKH = 'P2WPKH',
@@ -59,4 +60,12 @@ export type BitcoinTransferInputData = {
   index: number;
   witnessUtxo: { value: number; script: Buffer };
   tapInternalKey?: Buffer;
+};
+
+export type PublicKeyParams = {
+  bip32: BIP32API;
+  mnemonic: string;
+  derivationPath: string;
+  network: Network;
+  typeOfAddress: TypeOfAddress;
 };
