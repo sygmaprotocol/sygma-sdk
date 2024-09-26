@@ -29,9 +29,9 @@ export function getNativeTokenDepositMethod(
     if (destinationNetworkType === Network.EVM) {
       return 'depositToEVMWithMessage';
     }
-  }
 
-  throw new Error('Unsupported deposit method.');
+    return 'depositGeneral';
+  }
 }
 
 interface NativeDepositParams {
