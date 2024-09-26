@@ -18,7 +18,7 @@ if (!privateKey) {
 const SEPOLIA_CHAIN_ID = 11155111;
 const BASE_SEPOLIA_CHAIN_ID = 84532;
 const RESOURCE_ID =
-  "0x1000000000000000000000000000000000000000000000000000000000000000";
+  "0x0000000000000000000000000000000000000000000000000000000000001200";
 const SEPOLIA_RPC_URL =
   process.env.SEPOLIA_RPC_URL ||
   "https://eth-sepolia.g.alchemy.com/v2/MeCKDrpxLkGOn4LMlBa3cKy1EzzOzwzG";
@@ -43,7 +43,7 @@ export async function erc20Transfer(): Promise<void> {
     destination: BASE_SEPOLIA_CHAIN_ID,
     sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
     resource: RESOURCE_ID,
-    amount: BigInt(1) * BigInt(1e17),
+    amount: BigInt(1) * BigInt(1e6),
     recipientAddress: destinationAddress,
     sourceAddress: sourceAddress,
     optionalGas: BigInt(500000),
