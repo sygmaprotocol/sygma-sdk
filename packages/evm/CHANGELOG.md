@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.3](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.3.2...evm-v1.3.3) (2024-09-26)
+
+
+### Bug Fixes
+
+* approval failure with no transaction overrides ([#548](https://github.com/sygmaprotocol/sygma-sdk/issues/548)) ([cdd4d5f](https://github.com/sygmaprotocol/sygma-sdk/commit/cdd4d5fb6f5e99c3ee5f97067953c7e577fd91f2))
+
 ## [1.3.2](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.3.1...evm-v1.3.2) (2024-09-19)
 
 
