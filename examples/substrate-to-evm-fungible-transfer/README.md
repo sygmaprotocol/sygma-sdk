@@ -1,14 +1,13 @@
 ## Sygma SDK Substrate Asset Transfer Example
-
 This is an example script that demonstrates the functionality of the SDK using the Sygma ecosystem. The script showcases a Substrate Asset transfer between a Substrate network and an EVM network using the Sygma SDK.
 
 ## Prerequisites
 
 Before running the script, ensure that you have the following:
 
-- Node.js installed on your machine
+- Node.js installed on your machine (v18.20.4)
 - Yarn (version 3.4.1 or higher)
-- A Substrate development wallet funded with `PHA` tokens; **you may wish** to run the [EVM-to-Substrate example](../evm-to-substrate-fungible-transfer/) first to preload `PHA` tokens into a Substrate wallet
+- A Substrate development wallet funded with `TANGLE` tokens; **you may wish** to run the [EVM-to-Substrate example](../evm-to-substrate-fungible-transfer/) first to preload `PHA` tokens into a Substrate wallet
 - The 12-word mnemonic for your Substrate development wallet
 - An Ethereum wallet to receive tokens into (the example presets an existing wallet address already)
 - A Substrate provider (in case the hardcoded WSS within the script does not work)
@@ -63,15 +62,15 @@ To send a Substrate token to an EVM chain example transfer run:
 yarn run transfer
 ```
 
-The example will use `@polkadot/keyring` in conjuction with the sygma-sdk to
-create a transfer from `Roccoco Phala` to `Sepolia`.
+The example will use `@polkadot/keyring` in conjunction with the sygma-sdk to
+create a transfer from `Tangle` to `Sepolia`.
 
 Replace the placeholder values in the `.env` file with your own Substrate wallet mnemonic, and your own destination EVM address within the script.
 
 **Note**
 
-To replace default rpc Rhala urls use env variables:
-- `RHALA_RPC_URL="RHALA_RPC_URL_HERE"`
+To replace default rpc TANGLE url use env variable:
+- `SOURCE_SUBSTRATE_RPC_URL="TANGLE_RPC_URL_HERE"`
 
 ## Script Functionality
 
@@ -80,7 +79,7 @@ This example script performs the following steps:
 - initializes the SDK and establishes a connection to the Substrate node.
 - retrieves the list of supported domains and resources from the SDK configuration.
 - Searches for the Substrate asset resource with the specified ResourceId
-- Searches for the Cronos and Sepolia domains in the list of supported domains based on their chain IDs
+- Searches for the Tangle and Sepolia domains in the list of supported domains based on their chain IDs
 - Constructs a transfer object that defines the details of the Substrate asset transfer
 - Retrieves the fee required for the transfer from the SDK.
 - Builds the final transfer transaction and sends it using the Substrate account.
