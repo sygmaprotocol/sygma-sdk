@@ -1,6 +1,6 @@
 import type { BaseTransferParams } from '@buildwithsygma/core';
-import type { BIP32API } from 'bip32';
-import type { Network, networks, Psbt } from 'bitcoinjs-lib';
+import type { BIP32API, BIP32Interface } from 'bip32';
+import type { Network, networks, Psbt, Signer } from 'bitcoinjs-lib';
 
 export enum TypeOfAddress {
   P2WPKH = 'P2WPKH',
@@ -69,3 +69,7 @@ export type PublicKeyParams = {
   network: Network;
   typeOfAddress: TypeOfAddress;
 };
+
+export type GetPublicKeyResult =
+  | { tweakedSigner: Signer; publicKeyDropedDERHeader: Buffer }
+  | { derivedNode: BIP32Interface };
