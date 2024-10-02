@@ -2,6 +2,7 @@ import type { BitcoinTransferParams, UTXOData } from "@buildwithsygma/bitcoin";
 import {
   createBitcoinFungibleTransfer,
   TypeOfAddress,
+  getPublicKey
 } from "@buildwithsygma/bitcoin";
 import { BIP32Factory, BIP32Interface } from "bip32";
 import { initEccLib, networks } from "bitcoinjs-lib";
@@ -11,7 +12,7 @@ import * as tinysecp from "tiny-secp256k1";
 import {
   calculateSize,
 } from "./blockstreamApi.js";
-import { broadcastTransaction, fetchUTXOS, getFeeEstimates, getPublicKey, processUtxos } from "@buildwithsygma/utils";
+import { broadcastTransaction, fetchUTXOS, getFeeEstimates, processUtxos } from "@buildwithsygma/utils";
 
 dotenv.config();
 
