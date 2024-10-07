@@ -72,6 +72,8 @@ const substrateTransfer = async (): Promise<void> => {
       }
       unsub();
       process.exit(0);
+    } else if (status.isDropped || status.isInvalid || status.isUsurped) {
+      console.error("Transaction failed. Status:", status.toString());
     }
   });
 };
