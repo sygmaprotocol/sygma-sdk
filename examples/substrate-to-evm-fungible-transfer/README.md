@@ -1,4 +1,4 @@
-## Sygma SDK Substrate to EVM (Tangle to Sepolia) Asset Transfer Example
+# Sygma SDK Substrate to EVM (Tangle to Sepolia) Asset Transfer Example
 This is an example script that demonstrates the functionality of the SDK using the Sygma ecosystem. The script showcases a Substrate Asset transfer between a Substrate network and an EVM network using the Sygma SDK.
 
 ## Prerequisites
@@ -7,7 +7,7 @@ Before running the script, ensure that you have the following:
 
 - Node.js installed on your machine (v18.20.4)
 - Yarn (version 3.4.1 or higher)
-- A Substrate development wallet funded with `TANGLE` tokens; **you may wish** to run the [EVM-to-Substrate example](../evm-to-substrate-fungible-transfer) first to preload `PHA` tokens into a Substrate wallet
+- A Substrate development wallet funded with TANGLE `TNT` tokens; **you may wish** to run the [EVM-to-Substrate example](https://github.com/sygmaprotocol/sygma-sdk/tree/main/examples/evm-to-substrate-fungible-transfer/) first to preload `TNT` tokens into a Substrate wallet
 - The 12-word mnemonic for your Substrate development wallet
 - An Ethereum wallet to receive tokens into (the example presets an existing wallet address already)
 - A Substrate provider (in case the hardcoded WSS within the script does not work)
@@ -19,7 +19,7 @@ Before running the script, ensure that you have the following:
 To get started, clone this repository to your local machine with:
 
 ```bash
-git clone git@github.com:sygmaprotocol/sygma-sdk.git
+git clone https://github.com/sygmaprotocol/sygma-sdk.git
 cd sygma-sdk/
 ```
 
@@ -36,7 +36,7 @@ yarn install
 To start the example you need to build the sdk first with:
 
 ```bash
-yarn sdk:build
+yarn build
 ```
 
 ### Obtaining sygUSD Tokens
@@ -64,7 +64,7 @@ The file should contain the following environment variables:
 - SYGMA_ENV: The Sygma environment you’re using, e.g., testnet.
 
 Here’s an example of the .env file:
-```bash
+```dotenv
 PRIVATE_MNEMONIC="YOUR TWELVE WORD MNEMONIC HERE"
 SOURCE_SUBSTRATE_RPC_URL="wss://rpc.tangle.tools"
 RECIPIENT_ADDRESS="YOUR EVM ADDRESS"
@@ -94,11 +94,6 @@ Replace the placeholder values in the `.env` file with your own Substrate wallet
 ### Monitoring the Transfer
 
 Once the transaction is finalized, you can view the transaction details in the [Sygma Explorer](https://scan.test.buildwithsygma.com).
-
-**Note**
-
-To replace default rpc TANGLE url use env variable:
-- `SOURCE_SUBSTRATE_RPC_URL="TANGLE_RPC_URL_HERE"`
 
 ## Script Functionality
 
