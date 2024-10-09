@@ -2,9 +2,13 @@ import type { BitcoinTransferParams, UTXOData } from "@buildwithsygma/bitcoin";
 import {
   createBitcoinFungibleTransfer,
   TypeOfAddress,
+  getPublicKey,
+  getFeeEstimates, 
+  fetchUTXOS, 
+  processUtxos, 
+  broadcastTransaction
 } from "@buildwithsygma/bitcoin";
-import { BIP32Factory } from "bip32";
-import { mnemonicToSeed } from "bip39";
+import { BIP32Factory, BIP32Interface } from "bip32";
 import { initEccLib, networks } from "bitcoinjs-lib";
 import dotenv from "dotenv";
 import * as tinysecp from "tiny-secp256k1";
@@ -12,7 +16,6 @@ import * as tinysecp from "tiny-secp256k1";
 import {
   calculateSize,
 } from "./blockstreamApi.js";
-import { broadcastTransaction, fetchUTXOS, getFeeEstimates, processUtxos } from "@buildwithsygma/utils";
 
 dotenv.config();
 
@@ -49,9 +52,15 @@ async function btcToEvmTransfer(): Promise<void> {
   initEccLib(tinysecp);
   const bip32 = BIP32Factory(tinysecp);
   console.log("Transfer BTC to EVM");
-  const seed = await mnemonicToSeed(MNEMONIC);
-  const rootKey = bip32.fromSeed(seed, networks.testnet);
-  const derivedNode = rootKey.derivePath(DERIVATION_PATH);
+
+  const { derivedNode } = await getPublicKey({
+    bip32,
+    mnemonic: MNEMONIC as string,
+    derivationPath: DERIVATION_PATH as string,
+    network: networks.testnet,
+    typeOfAddress: TypeOfAddress.P2WPKH
+  }
+  ) as { derivedNode: BIP32Interface };
 
   const feeRate = await getFeeEstimates('5');
   const utxos = await fetchUTXOS(ADDRESS as unknown as string);

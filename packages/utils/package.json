@@ -56,6 +56,7 @@
     "typescript": "5.0.4"
   },
   "dependencies": {
+    "@buildwithsygma/bitcoin": "workspace:^",
     "@buildwithsygma/core": "workspace:^",
     "@buildwithsygma/evm": "workspace:^",
     "@buildwithsygma/substrate": "workspace:^",
