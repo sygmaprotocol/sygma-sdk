@@ -43,6 +43,7 @@ export enum ResourceType {
   NON_FUNGIBLE = 'nonfungible',
   PERMISSIONED_GENERIC = 'permissionedGeneric',
   PERMISSIONLESS_GENERIC = 'permissionlessGeneric',
+  SEMI_FUNGIBLE = 'semifungible',
 }
 
 interface BaseResource {

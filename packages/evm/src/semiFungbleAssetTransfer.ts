@@ -1,18 +1,14 @@
-import { Config } from '@buildwithsygma/core';
+import { Config, ResourceType } from '@buildwithsygma/core';
 import type { EvmResource } from '@buildwithsygma/core';
-import {
-  ERC1155__factory,
-  Bridge__factory,
-  ERC721MinterBurnerPauser__factory,
-} from '@buildwithsygma/sygma-contracts';
+import { ERC1155__factory, Bridge__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
-import type { ethers } from 'ethers';
-import { providers } from 'ethers';
+import { constants, utils, type ethers } from 'ethers';
 
-import { AssetTransfer } from './evmAssetTransfer.js';
-import type { EvmAssetTransferParams, TransactionRequest } from './types.js';
+import { UnregisteredResourceHandlerError, UnsupportedResourceTypeError } from './errors.js';
+import { EvmTransfer } from './evmTransfer.js';
+import type { SemiFungibleTransferParams, TransactionRequest } from './types.js';
 import {
-  createAssetDepositData,
+  createERC1155DepositData,
   createTransactionRequest,
   getTransactionOverrides,
 } from './utils/index.js';
@@ -22,51 +18,61 @@ import {
  * ERC1155 - it supports ONLY NON-Fungible transfer so far
  *
  */
-export class semiFungibleTransfer extends AssetTransfer {
-  protected tokenId: string;
-  protected specifiedAmount: bigint;
+class SemiFungibleAssetTransfer extends EvmTransfer {
+  protected tokenIds: string[];
+  protected amounts: bigint[];
+  protected recipientAdddress: string;
 
-  constructor(params: EvmAssetTransferParams, config: Config) {
+  constructor(params: SemiFungibleTransferParams, config: Config) {
     super(params, config);
+    this.recipientAdddress = params.recipientAddress;
+    this.tokenIds = params.tokenIds;
+    this.amounts = params.amounts;
+  }
 
-    // Ensure that the amount is always 1 for non-fungible tokens
-    if (params.amount !== BigInt(1)) {
-      throw new Error('Amount must be 1 for non-fungible ERC1155 tokens.');
-    }
-    if (!params.tokenId) {
-      throw new Error('tokenId is required for ERC1155 non-fungible transfers.');
+  public setResource(resource: EvmResource): void {
+    if (resource.type !== ResourceType.SEMI_FUNGIBLE) {
+      throw new UnsupportedResourceTypeError(ResourceType.SEMI_FUNGIBLE, resource.type);
     }
 
-    this.tokenId = params.tokenId;
-    this.specifiedAmount = params.amount;
+    this.transferResource = resource;
   }
 
   /**
    * Prepare the deposit data required for the ERC1155 transfer.
    */
   protected getDepositData(): string {
-    return createAssetDepositData({
+    return createERC1155DepositData({
       destination: this.destination,
-      recipientAddress: this.recipientAddress,
-      tokenId: this.tokenId,
-      amount: this.specifiedAmount,
+      recipientAddress: this.recipientAdddress,
+      tokenIds: this.tokenIds,
+      amounts: this.amounts,
     });
+  }
+
+  async isValidTransfer(): Promise<boolean> {
+    const sourceDomainConfig = this.config.getDomainConfig(this.source);
+    const web3Provider = new Web3Provider(this.sourceNetworkProvider);
+    const bridge = Bridge__factory.connect(sourceDomainConfig.bridge, web3Provider);
+    const { resourceId } = this.resource;
+    const handlerAddress = await bridge._resourceIDToHandlerAddress(resourceId);
+    return utils.isAddress(handlerAddress) && handlerAddress !== constants.AddressZero;
   }
 
   protected async hasEnoughBalance(): Promise<boolean> {
     const resource = this.resource as EvmResource;
     const provider = new Web3Provider(this.sourceNetworkProvider);
     const erc1155 = ERC1155__factory.connect(resource.address, provider);
-    const balance = await erc1155.balanceOf(this.sourceAddress, this.tokenId);
-    return balance.gte(this.specifiedAmount);
-  }
 
-  protected async isOwner(): Promise<boolean> {
-    const { address } = this.resource as EvmResource;
-    const provider = new providers.Web3Provider(this.sourceNetworkProvider);
-    const erc721 = ERC721MinterBurnerPauser__factory.connect(address, provider);
-    const owner = await erc721.ownerOf(this.tokenId);
-    return owner.toLowerCase() === this.sourceAddress.toLowerCase();
+    let hasBalance = true;
+    for (let i = 0; i < this.tokenIds.length; i++) {
+      const balance = await erc1155.balanceOf(this.sourceAddress, this.tokenIds[i]);
+
+      hasBalance = balance.gte(this.amounts[i]);
+      if (!hasBalance) i += this.tokenIds.length;
+    }
+
+    return hasBalance;
   }
 
   /**
@@ -89,7 +95,7 @@ export class semiFungibleTransfer extends AssetTransfer {
       const approvalTx = await erc1155.populateTransaction.setApprovalForAll(
         handlerAddress,
         true,
-        overrides,
+        overrides ?? {},
       );
       approvalTransactions.push(createTransactionRequest(approvalTx));
     }
@@ -106,9 +112,6 @@ export class semiFungibleTransfer extends AssetTransfer {
     const bridge = Bridge__factory.connect(domainConfig.bridge, provider);
     const fee = await this.getFee();
 
-    const isOwner = await this.isOwner();
-    if (!isOwner) throw new Error('Source address is not an Owner of the token');
-
     const transferTransaction = await bridge.populateTransaction.deposit(
       this.destinationDomain.id.toString(),
       this.resource.resourceId,
@@ -121,19 +124,15 @@ export class semiFungibleTransfer extends AssetTransfer {
   }
 }
 
-export async function createNonFungibleERC1155(
-  params: EvmAssetTransferParams,
-): Promise<semiFungibleTransfer> {
+export async function createSemiFungibleAssetTransfer(
+  params: SemiFungibleTransferParams,
+): Promise<SemiFungibleAssetTransfer> {
   const config = new Config();
   await config.init(process.env.SYGMA_ENV);
 
-  const transfer = new semiFungibleTransfer(params, config);
-
+  const transfer = new SemiFungibleAssetTransfer(params, config);
   const isValidTransfer = await transfer.isValidTransfer();
-
-  if (!isValidTransfer) {
-    throw new Error('Handler not registered, please check if this is a valid bridge route.');
-  }
+  if (!isValidTransfer) throw new UnregisteredResourceHandlerError(transfer.resource.resourceId);
 
   return transfer;
 }

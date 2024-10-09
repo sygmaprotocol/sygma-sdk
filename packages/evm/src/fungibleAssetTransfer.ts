@@ -9,6 +9,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber, constants, utils } from 'ethers';
 import type { ethers, PopulatedTransaction } from 'ethers';
 
+import { UnregisteredResourceHandlerError, UnsupportedResourceTypeError } from './errors.js';
 import { AssetTransfer } from './evmAssetTransfer.js';
 import type {
   EvmFee,
@@ -131,7 +132,7 @@ class FungibleAssetTransfer extends AssetTransfer {
 
   public setResource(resource: EvmResource): void {
     if (resource.type !== ResourceType.FUNGIBLE) {
-      throw new Error('Unsupported Resource type.');
+      throw new UnsupportedResourceTypeError(ResourceType.FUNGIBLE, resource.type);
     }
     this.transferResource = resource;
   }
@@ -275,8 +276,7 @@ export async function createFungibleAssetTransfer(
   const transfer = new FungibleAssetTransfer(params, config);
 
   const isValid = await transfer.isValidTransfer();
-  if (!isValid)
-    throw new Error('Handler not registered, please check if this is a valid bridge route.');
+  if (!isValid) throw new UnregisteredResourceHandlerError(transfer.resource.resourceId);
 
   await transfer.setTransferAmount(params.amount);
   return transfer;
