@@ -5,6 +5,8 @@ import {
   FeeHandlerRouter__factory,
 } from '@buildwithsygma/sygma-contracts';
 import { utils, ethers } from 'ethers';
+
+import { UnregisteredFeeHandlerError } from '../errors.js';
 /**
  * @internal
  * @category EVM Fee
@@ -41,12 +43,10 @@ export async function getFeeInformation(
   );
 
   if (!utils.isAddress(feeHandlerAddress) || feeHandlerAddress === ethers.constants.AddressZero) {
-    throw new Error(`Failed getting fee: route not registered on fee handler`);
+    throw new UnregisteredFeeHandlerError(sygmaDestinationDomainId, sygmaResourceId);
   }
 
   const FeeHandler = BasicFeeHandler__factory.connect(feeHandlerAddress, sourceProvider);
-
   const feeHandlerType = (await FeeHandler.feeHandlerType()) as unknown as FeeHandlerType;
-
   return { feeHandlerAddress, feeHandlerType };
 }

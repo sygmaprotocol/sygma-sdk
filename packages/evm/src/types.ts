@@ -77,6 +77,12 @@ export interface EvmAssetTransferParams extends EvmTransferParams {
   tokenId?: string;
 }
 
+export interface SemiFungibleTransferParams extends EvmTransferParams {
+  recipientAddress: string;
+  tokenIds: string[];
+  amounts: bigint[];
+}
+
 export interface FungibleTransferParams extends EvmAssetTransferParams {
   amount: bigint;
   securityModel?: SecurityModel;

@@ -86,7 +86,7 @@ describe('NonFungible - createNonFungibleAssetTransfer', () => {
     expect(transfer.transferTokenId).toEqual(parseEther('10').toString());
   });
 
-  it('should create fail if handler is not registered', async () => {
+  it('should fail if handler is not registered', async () => {
     (Bridge__factory.connect as jest.Mock).mockReturnValue({
       _resourceIDToHandlerAddress: jest
         .fn()
@@ -94,7 +94,7 @@ describe('NonFungible - createNonFungibleAssetTransfer', () => {
     });
 
     await expect(async () => await createNonFungibleAssetTransfer(TRANSFER_PARAMS)).rejects.toThrow(
-      'Handler not registered, please check if this is a valid bridge route.',
+      'Handler for resource 0x0 not registered',
     );
   });
 });

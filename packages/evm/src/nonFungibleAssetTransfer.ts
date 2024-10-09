@@ -7,6 +7,7 @@ import {
 import type { ethers, PopulatedTransaction } from 'ethers';
 import { providers } from 'ethers';
 
+import { UnregisteredResourceHandlerError, UnsupportedResourceTypeError } from './errors.js';
 import { AssetTransfer } from './evmAssetTransfer.js';
 import type { EvmFee, NonFungibleTransferParams, TransactionRequest } from './types.js';
 import { createAssetDepositData } from './utils/assetTransferHelpers.js';
@@ -60,7 +61,7 @@ class NonFungibleAssetTransfer extends AssetTransfer {
 
   public setResource(resource: EvmResource): void {
     if (resource.type !== ResourceType.NON_FUNGIBLE) {
-      throw new Error('Unsupported Resource type.');
+      throw new UnsupportedResourceTypeError(ResourceType.NON_FUNGIBLE, resource.type);
     }
     this.transferResource = resource;
   }
@@ -96,11 +97,8 @@ export async function createNonFungibleAssetTransfer(
   await config.init(process.env.SYGMA_ENV);
 
   const transfer = new NonFungibleAssetTransfer(params, config);
-
   const isValidTransfer = await transfer.isValidTransfer();
-
-  if (!isValidTransfer)
-    throw new Error('Handler not registered, please check if this is a valid bridge route.');
+  if (!isValidTransfer) throw new UnregisteredResourceHandlerError(transfer.resource.resourceId);
 
   return transfer;
 }

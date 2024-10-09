@@ -164,7 +164,7 @@ describe('createCrossChainContractCall', () => {
 
     await expect(
       async () => await createCrossChainContractCall<typeof mockContract, 'store'>(params),
-    ).rejects.toThrow('Failed getting fee: route not registered on fee handler');
+    ).rejects.toThrow('Fee Handler not found for Resource ID 0x00 to Domain undefined');
   });
 
   it('should create a transfer object if fee is configured properly', async () => {

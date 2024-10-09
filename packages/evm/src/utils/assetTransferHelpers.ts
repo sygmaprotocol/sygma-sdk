@@ -1,6 +1,6 @@
 import type { Domain } from '@buildwithsygma/core';
 import { Network } from '@buildwithsygma/core';
-import { AbiCoder } from '@ethersproject/abi';
+import { AbiCoder, defaultAbiCoder } from '@ethersproject/abi';
 import { arrayify, concat, hexlify, hexZeroPad } from '@ethersproject/bytes';
 import { TypeRegistry } from '@polkadot/types';
 import { decodeAddress } from '@polkadot/util-crypto';
@@ -18,6 +18,12 @@ interface AssetDepositParams {
   tokenId?: string;
   optionalGas?: bigint;
   optionalMessage?: FungibleTransferOptionalMessage;
+}
+
+interface SemiFungibleAssetDepositParams
+  extends Omit<AssetDepositParams, 'tokenId' | 'amount' | 'optionalGas' | 'optionalMessage'> {
+  tokenIds: string[];
+  amounts: bigint[];
 }
 
 export function serializeEvmAddress(evmAddress: `0x${string}`): Uint8Array {
@@ -145,4 +151,17 @@ export function createAssetDepositData(depositParams: AssetDepositParams): strin
   }
 
   return hexlify(depositData);
+}
+
+export function createERC1155DepositData(depositParams: SemiFungibleAssetDepositParams): string {
+  const { recipientAddress, destination, amounts, tokenIds } = depositParams;
+
+  const recipientAddressSerialized: Uint8Array = serializeDestinationAddress(
+    recipientAddress,
+    destination.type,
+    destination.parachainId,
+  );
+
+  const encodedData = defaultAbiCoder.encode(['uint[]', 'uint[]'], [tokenIds, amounts]);
+  return hexlify(concat([arrayify(encodedData), recipientAddressSerialized]));
 }
