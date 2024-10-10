@@ -16,8 +16,6 @@ npm install @buildwithsygma/substrate
 
 ## Environment Setup.
 
-Make sure to set environment variable `SYGMA_ENV` to either `TESTNET` or `MAINNET` prior to using the SDK.
-
 ## Support
 
 Bridge configuration and list of supported networks for each environment can be found at: [Sygma bridge shared configuration github](https://github.com/sygmaprotocol/sygma-shared-configuration)
@@ -28,6 +26,7 @@ Bridge configuration and list of supported networks for each environment can be 
 
 ```typescript
 import { createSubstrateFungibleAssetTransfer } from '@buildwithsygma/substrate';
+import { Environment } from '@buildwithsygma/core';
 ...
 const transferParams = {
   sourceDomain: 5231,
@@ -36,6 +35,7 @@ const transferParams = {
   resource: '0x0000000000000000000000000000000000000000000000000000000000001100',
   amount: BigInt('5000000'),
   destinationAddress: recipientAddress,
+  environment: Environment.TESTNET
 };
 ...
 const transfer = await createSubstrateFungibleAssetTransfer(transferParams);

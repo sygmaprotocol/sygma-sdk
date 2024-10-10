@@ -49,6 +49,7 @@ export async function erc721Transfer(): Promise<void> {
     tokenId: process.env.TOKEN_ID as string,
     recipientAddress: destinationAddress,
     sourceAddress,
+    environment: process.env.SYGMA_ENV,
   };
 
   const transfer = await createNonFungibleAssetTransfer(params);

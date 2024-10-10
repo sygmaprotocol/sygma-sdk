@@ -9,7 +9,8 @@ describe('createDestIdMultilocationData', () => {
   it('should create multilocation data for LOCAL environment', () => {
     const address = '0x123abc';
     const domainId = '42';
-    const data = createDestIdMultilocationData(address, domainId);
+    const environment = Environment.LOCAL;
+    const data = createDestIdMultilocationData(environment, address, domainId);
 
     expect(data).toEqual({
       parents: 0,
@@ -23,10 +24,10 @@ describe('createDestIdMultilocationData', () => {
   });
 
   it('should create multilocation data for non-LOCAL environment', () => {
-    process.env.SYGMA_ENV = Environment.DEVNET;
+    const environment = Environment.DEVNET;
     const address = '0x123abc';
     const domainId = '42';
-    const data = createDestIdMultilocationData(address, domainId);
+    const data = createDestIdMultilocationData(environment, address, domainId);
 
     expect(data).toEqual({
       parents: 0,
@@ -43,7 +44,6 @@ describe('createDestIdMultilocationData', () => {
 
 describe('deposit', () => {
   it('should create a deposit transaction', () => {
-    process.env.SYGMA_ENV = Environment.LOCAL;
     const xcmMultiAssetId: XcmMultiAssetIdType = {
       concrete: {
         parents: 1,
@@ -68,7 +68,14 @@ describe('deposit', () => {
       },
     } as unknown as ApiPromise;
 
-    deposit(mockApi, xcmMultiAssetId, amount, destinationDomainId, destinationAddress);
+    deposit(
+      Environment.LOCAL,
+      mockApi,
+      xcmMultiAssetId,
+      amount,
+      destinationDomainId,
+      destinationAddress,
+    );
 
     expect(mockApi.tx.sygmaBridge.deposit).toHaveBeenCalledWith(
       {

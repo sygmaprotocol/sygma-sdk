@@ -81,6 +81,7 @@ export async function genericMessage(): Promise<void> {
     sourceNetworkProvider: sourceProvider as unknown as Eip1193Provider,
     sourceAddress: walletAddress,
     resource: RESOURCE_ID,
+    environment: process.env.SYGMA_ENV,
   });
   // transaction that can be sent to the chain
   const transaction = await transfer.getTransferTransaction();

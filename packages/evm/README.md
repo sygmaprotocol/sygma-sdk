@@ -16,8 +16,6 @@ npm install @buildwithsygma/evm
 
 ## Environment Setup
 
-Make sure to set environment variable `SYGMA_ENV` to either `TESTNET` or `MAINNET` prior to using the SDK.
-
 ## Support.
 
 Bridge configuration and list of supported networks for each environment can be found at: [Sygma bridge shared configuration github](https://github.com/sygmaprotocol/sygma-shared-configuration)
@@ -36,8 +34,9 @@ const transfer = await createFungibleAssetTransfer({
   sourceNetworkProvider: provider,
   resource: '0x0000000000000000000000000000000000000000000000000000000000000200',
   amount: BigInt(2) * BigInt(1e18),
-  destinationAddress: destinationAddress,
+  recipientAddress: "<destination_address>",
   sourceAddress: senderAddress,
+  environment: Environment.TESTNET
 });
 ...
 const approvalTransactions = await transfer.getApprovalTransactions();
@@ -56,8 +55,9 @@ const transfer = await createNonFungibleAssetTransfer({
   sourceNetworkProvider: provider,
   resource: '0x0000000000000000000000000000000000000000000000000000000000000200',
   tokenId: "1",
-  destinationAddress: destinationAddress,
+  recipientAddress: "<destination_address>",
   sourceAddress: senderAddress,
+  environment: Environment.TESTNET
 });
 ...
 const approvalTransactions = await transfer.getApprovalTransactions();
@@ -90,6 +90,7 @@ const transfer = await createCrossChainContractCall<
     sourceNetworkProvider: provider,
     sourceAddress: senderAddress,
     resource: RESOURCE_ID,
+    environment: Environment.TESTNET
 });
 
 const transferTransaction = await transfer.getTransferTransaction();

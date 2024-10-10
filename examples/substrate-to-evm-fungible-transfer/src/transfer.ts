@@ -44,6 +44,7 @@ const substrateTransfer = async (): Promise<void> => {
     resource: RESOURCE_ID_SYGMA_USD,
     amount: BigInt(1) * BigInt(1e18),
     destinationAddress: recipient,
+    environment: process.env.SYGMA_ENV,
   };
 
   const transfer = await createSubstrateFungibleAssetTransfer(transferParams);
@@ -55,7 +56,7 @@ const substrateTransfer = async (): Promise<void> => {
 
     if (status.isInBlock) {
       console.log(
-        `Transaction included at blockHash ${status.asInBlock.toString()}`,
+        `Transaction included at blockHash ${status.asInBlock.toString()}`
       );
     } else if (status.isFinalized) {
       const blockNumber = results.blockNumber?.toNumber();
@@ -63,10 +64,10 @@ const substrateTransfer = async (): Promise<void> => {
 
       if (blockNumber && extrinsicIndex) {
         console.log(
-          `Transaction finalized at blockHash ${status.asFinalized.toString()}`,
+          `Transaction finalized at blockHash ${status.asFinalized.toString()}`
         );
         console.log(
-          `Explorer URL: ${getSygmaExplorerTransferUrl({ blockNumber, extrinsicIndex })}`,
+          `Explorer URL: ${getSygmaExplorerTransferUrl({ blockNumber, extrinsicIndex })}`
         );
       }
       unsub();

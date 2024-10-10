@@ -1,4 +1,5 @@
 import type { Config } from './config/config.js';
+import { Environment } from './types.js';
 import type {
   Domainlike,
   EvmResource,
@@ -12,6 +13,7 @@ export interface BaseTransferParams {
   destination: Domainlike;
   resource: string | EvmResource | SubstrateResource | BitcoinResource;
   sourceAddress: string;
+  environment?: Environment;
 }
 
 export abstract class BaseTransfer {
@@ -20,6 +22,7 @@ export abstract class BaseTransfer {
   protected transferResource: EvmResource | SubstrateResource | BitcoinResource;
   protected sygmaConfiguration: Config;
   protected sourceAddress: string;
+  protected environment: Environment;
 
   public get source(): Domain {
     return this.sourceDomain;
@@ -52,6 +55,7 @@ export abstract class BaseTransfer {
     this.sourceAddress = transfer.sourceAddress;
     this.sourceDomain = config.getDomain(transfer.source);
     this.destinationDomain = config.getDomain(transfer.destination);
+    this.environment = transfer.environment ?? Environment.MAINNET;
     const resource = this.findResource(transfer.resource);
 
     if (resource) {

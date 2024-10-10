@@ -46,6 +46,7 @@ export async function erc20Transfer(): Promise<void> {
     amount: BigInt(1) * BigInt(1e6),
     recipientAddress: destinationAddress,
     sourceAddress: sourceAddress,
+    environment: process.env.SYGMA_ENV,
   };
 
   const transfer = await createFungibleAssetTransfer(params);

@@ -1,4 +1,4 @@
-import { FeeHandlerType } from '@buildwithsygma/core';
+import { Environment, FeeHandlerType } from '@buildwithsygma/core';
 import type { SubmittableResult } from '@polkadot/api';
 import { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api-base/types';
@@ -31,6 +31,7 @@ describe('SubstrateFungibleAssetTransfer', () => {
       resource: '0x0000000000000000000000000000000000000000000000000000000000000300',
       amount: BigInt(100),
       destinationAddress: '0x98729c03c4D5e820F5e8c45558ae07aE63F97461',
+      environment: Environment.LOCAL,
     };
   });
 

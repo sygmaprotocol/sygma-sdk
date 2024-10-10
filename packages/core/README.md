@@ -14,8 +14,6 @@ npm install @buildwithsygma/core
 
 ## Environment Setup
 
-Make sure to set environment variable `SYGMA_ENV` to either `TESTNET` or `MAINNET` prior to using the SDK.
-
 ### Usage
 
 #### Config class.

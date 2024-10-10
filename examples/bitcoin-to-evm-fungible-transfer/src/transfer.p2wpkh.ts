@@ -3,19 +3,17 @@ import {
   createBitcoinFungibleTransfer,
   TypeOfAddress,
   getPublicKey,
-  getFeeEstimates, 
-  fetchUTXOS, 
-  processUtxos, 
-  broadcastTransaction
+  getFeeEstimates,
+  fetchUTXOS,
+  processUtxos,
+  broadcastTransaction,
 } from "@buildwithsygma/bitcoin";
 import { BIP32Factory, BIP32Interface } from "bip32";
 import { initEccLib, networks } from "bitcoinjs-lib";
 import dotenv from "dotenv";
 import * as tinysecp from "tiny-secp256k1";
 
-import {
-  calculateSize,
-} from "./blockstreamApi.js";
+import { calculateSize } from "./blockstreamApi.js";
 
 dotenv.config();
 
@@ -53,19 +51,21 @@ async function btcToEvmTransfer(): Promise<void> {
   const bip32 = BIP32Factory(tinysecp);
   console.log("Transfer BTC to EVM");
 
-  const { derivedNode } = await getPublicKey({
+  const { derivedNode } = (await getPublicKey({
     bip32,
     mnemonic: MNEMONIC as string,
     derivationPath: DERIVATION_PATH as string,
     network: networks.testnet,
-    typeOfAddress: TypeOfAddress.P2WPKH
-  }
-  ) as { derivedNode: BIP32Interface };
+    typeOfAddress: TypeOfAddress.P2WPKH,
+  })) as { derivedNode: BIP32Interface };
 
-  const feeRate = await getFeeEstimates('5');
-  const utxos = await fetchUTXOS(ADDRESS as unknown as string);
+  const feeRate = await getFeeEstimates(process.env.SYGMA_ENV, "5");
+  const utxos = await fetchUTXOS(
+    process.env.SYGMA_ENV,
+    ADDRESS as unknown as string
+  );
 
-  const processedUtxos = processUtxos(utxos, AMOUNT);
+  const processedUtxos = processUtxos(utxos, Number(BigInt(AMOUNT!)));
 
   const mapedUtxos = processedUtxos.map((utxo) => ({
     utxoTxId: utxo.txid,
@@ -79,7 +79,7 @@ async function btcToEvmTransfer(): Promise<void> {
     publicKey: derivedNode.publicKey,
     depositAddress: ADDRESS as unknown as string,
     domainId: DESTINATION_CHAIN_ID,
-    amount: AMOUNT,
+    amount: BigInt(AMOUNT!),
     feeValue: BigInt(0),
     changeAddress: ADDRESS as unknown as string,
     signer: derivedNode,
@@ -87,11 +87,11 @@ async function btcToEvmTransfer(): Promise<void> {
   }); // aprox estimation of the size of the tx
 
   const transferParams: BitcoinTransferParams = {
-    source: SOURCE_CAIPID,
-    destination: DESTINATION_CHAIN_ID,
-    destinationAddress: DESTINATION_ADDRESS,
-    amount: AMOUNT,
-    resource: RESOURCE_ID,
+    source: SOURCE_CAIPID!,
+    destination: DESTINATION_CHAIN_ID!,
+    destinationAddress: DESTINATION_ADDRESS!,
+    amount: BigInt(AMOUNT!),
+    resource: RESOURCE_ID!,
     utxoData: mapedUtxos,
     publicKey: derivedNode.publicKey,
     typeOfAddress: TypeOfAddress.P2WPKH,
@@ -99,6 +99,7 @@ async function btcToEvmTransfer(): Promise<void> {
     changeAddress: ADDRESS,
     feeRate: BigInt(Math.ceil(feeRate)),
     size: BigInt(size),
+    sourceAddress: "",
   };
 
   const transfer = await createBitcoinFungibleTransfer(transferParams);
@@ -114,8 +115,8 @@ async function btcToEvmTransfer(): Promise<void> {
   const tx = psbt.extractTransaction(true);
   console.log("Transaction hex", tx.toHex());
 
-  const txId = await broadcastTransaction(tx.toHex());
+  const txId = await broadcastTransaction(process.env.SYGMA_ENV, tx.toHex());
   console.log("Transaction broadcasted", `${EXPLORER_URL}/tx/${txId}`);
 }
 
-btcToEvmTransfer().finally(() => { });
+btcToEvmTransfer().finally(() => {});

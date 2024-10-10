@@ -2,6 +2,7 @@ import type { BaseTransferParams, SubstrateResource } from '@buildwithsygma/core
 import {
   BaseTransfer,
   Config,
+  Environment,
   FeeHandlerType,
   isValidAddressForNetwork,
   Network,
@@ -32,7 +33,7 @@ export async function createSubstrateFungibleAssetTransfer(
   transferRequestParams: SubstrateAssetTransferRequest,
 ): Promise<SubstrateFungibleAssetTransfer> {
   const config = new Config();
-  await config.init(process.env.SYGMA_ENV);
+  await config.init(transferRequestParams.environment ?? Environment.MAINNET);
 
   return new SubstrateFungibleAssetTransfer(transferRequestParams, config);
 }
@@ -46,8 +47,9 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
     super(transfer, config);
     this.amount = transfer.amount;
     this.sourceNetworkProvider = transfer.sourceNetworkProvider;
+    const environment = transfer.environment ?? Environment.MAINNET;
 
-    if (isValidAddressForNetwork(transfer.destinationAddress, this.destination.type))
+    if (isValidAddressForNetwork(environment, transfer.destinationAddress, this.destination.type))
       this.destinationAddress = transfer.destinationAddress;
   }
 
@@ -68,7 +70,7 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
    * @param {string} destinationAddress
    */
   setDestinationAddress(destinationAddress: string): void {
-    if (isValidAddressForNetwork(destinationAddress, this.destination.type))
+    if (isValidAddressForNetwork(this.environment, destinationAddress, this.destination.type))
       this.destinationAddress = destinationAddress;
   }
 
@@ -111,7 +113,7 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
   async verifyBalance(): Promise<void> {
     const fee = await this.getFee();
 
-    if (!isValidAddressForNetwork(this.sourceAddress, Network.SUBSTRATE))
+    if (!isValidAddressForNetwork(this.environment, this.sourceAddress, Network.SUBSTRATE))
       throw new Error('Sender address is incorrect');
 
     // Native token balance check
@@ -156,6 +158,7 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
     await this.verifyBalance();
 
     return deposit(
+      this.environment,
       this.sourceNetworkProvider,
       resource.xcmMultiAssetId,
       this.amount.toString(),
