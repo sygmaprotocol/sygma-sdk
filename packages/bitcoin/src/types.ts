@@ -30,7 +30,6 @@ export interface BitcoinTransferParams extends BaseTransferParams {
   feeRate: bigint;
   changeAddress?: string;
   size: bigint;
-  environment?: Environment;
 }
 
 export type CreatePsbtParams = Pick<
