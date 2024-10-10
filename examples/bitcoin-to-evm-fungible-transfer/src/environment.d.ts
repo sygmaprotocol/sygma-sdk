@@ -1,4 +1,4 @@
-import type { Environment } from './types.js';
+import type { Environment } from "@buildwithsygma/core";
 
 declare global {
   namespace NodeJS {

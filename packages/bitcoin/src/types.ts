@@ -1,4 +1,4 @@
-import type { BaseTransferParams } from '@buildwithsygma/core';
+import type { BaseTransferParams, Environment } from '@buildwithsygma/core';
 import type { BIP32API, BIP32Interface } from 'bip32';
 import type { Network, networks, Psbt, Signer } from 'bitcoinjs-lib';
 
@@ -30,6 +30,7 @@ export interface BitcoinTransferParams extends BaseTransferParams {
   feeRate: bigint;
   changeAddress?: string;
   size: bigint;
+  environment?: Environment;
 }
 
 export type CreatePsbtParams = Pick<

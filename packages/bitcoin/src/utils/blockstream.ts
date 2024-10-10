@@ -5,8 +5,14 @@ const MAINNET_BLOCKSTREAM_URL = 'https://blockstream.info/api';
 
 type FeeEstimates = Record<string, number>;
 
-const blockStreamUrl =
-  process.env.SYGMA_ENV === Environment.MAINNET ? MAINNET_BLOCKSTREAM_URL : TESTNET_BLOCKSTREAM_URL;
+function getBlockStreamUrl(environment: Environment): string {
+  switch (environment) {
+    case Environment.MAINNET:
+      return MAINNET_BLOCKSTREAM_URL;
+    default:
+      return TESTNET_BLOCKSTREAM_URL;
+  }
+}
 
 type Utxo = {
   txid: string;
@@ -26,9 +32,13 @@ type Utxo = {
  * @param blockConfirmations - number of confirmations
  * @returns {Promise<number>} - fee estimate
  */
-export async function getFeeEstimates(blockConfirmations: string): Promise<number> {
+export async function getFeeEstimates(
+  environment: Environment,
+  blockConfirmations: string,
+): Promise<number> {
   try {
-    const response = await fetch(`${blockStreamUrl}/fee-estimates`);
+    const url = getBlockStreamUrl(environment);
+    const response = await fetch(`${url}/fee-estimates`);
 
     const data = (await response.json()) as FeeEstimates;
 
@@ -44,9 +54,13 @@ export async function getFeeEstimates(blockConfirmations: string): Promise<numbe
  * @param txHex - raw hex string of the signed transaction
  * @returns {Promise<string>} - transaction id
  */
-export async function broadcastTransaction(txHex: string): Promise<string> {
+export async function broadcastTransaction(
+  environment: Environment,
+  txHex: string,
+): Promise<string> {
   try {
-    const response = await fetch(`${blockStreamUrl}/tx`, {
+    const url = getBlockStreamUrl(environment);
+    const response = await fetch(`${url}/tx`, {
       method: 'POST',
       body: txHex,
       headers: {
@@ -66,9 +80,10 @@ export async function broadcastTransaction(txHex: string): Promise<string> {
  * @param address - bitcoin address
  * @returns {Promise<Utxo[]>} - array of UTXOs
  */
-export const fetchUTXOS = async (address: string): Promise<Utxo[]> => {
+export const fetchUTXOS = async (environment: Environment, address: string): Promise<Utxo[]> => {
   try {
-    const response = await fetch(`${blockStreamUrl}/address/${address}/utxo`);
+    const url = getBlockStreamUrl(environment);
+    const response = await fetch(`${url}/address/${address}/utxo`);
 
     const data = (await response.json()) as Utxo[];
 

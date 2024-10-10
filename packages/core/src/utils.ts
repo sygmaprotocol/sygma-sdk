@@ -24,7 +24,7 @@ import { Environment, Network } from './types.js';
 import { Config } from './index.js';
 
 function getIndexerTransferUrl(
-  env: Environment = process.env.SYGMA_ENV,
+  env: Environment = Environment.MAINNET,
   txHash: string,
 ): {
   explorerUrl: string;
@@ -75,7 +75,7 @@ export function getSygmaScanLink(sourceHash: string, environment: Environment): 
  *
  */
 export async function getEnvironmentMetadata(
-  environment: Environment = process.env.SYGMA_ENV,
+  environment: Environment = Environment.MAINNET,
 ): Promise<EnvironmentMetadata> {
   try {
     const url = `${getIndexerURL(environment)}/api/domains/metadata`;
@@ -125,7 +125,7 @@ export async function getDomains(options: {
  */
 export async function getRoutes(
   source: Domainlike,
-  environment: Environment = process.env.SYGMA_ENV,
+  environment: Environment = Environment.MAINNET,
   options?: {
     routeTypes?: RouteType[];
     sourceProvider?: Eip1193Provider;
@@ -209,7 +209,7 @@ export async function getRoutes(
  */
 export async function getTransferStatus(
   txHash: string,
-  environment: Environment = process.env.SYGMA_ENV,
+  environment: Environment = Environment.MAINNET,
 ): Promise<TransferStatusResponse> {
   const env = environment ?? Environment.MAINNET;
   const { url, explorerUrl } = getIndexerTransferUrl(env, txHash);
@@ -253,7 +253,7 @@ export async function getTransferStatus(
  * @param environment
  */
 export async function getRawConfiguration(
-  environment: Environment = process.env.SYGMA_ENV,
+  environment: Environment = Environment.MAINNET,
 ): Promise<SygmaConfig> {
   const config = new Config();
   await config.init(environment);
@@ -291,11 +291,8 @@ export function isValidEvmAddress(address: string): boolean {
  * @param {string} address
  * @returns {boolean}
  */
-export function isValidBitcoinAddress(address: string): boolean {
-  if (
-    process.env.SYGMA_ENV === Environment.TESTNET ||
-    process.env.SYGMA_ENV === Environment.DEVNET
-  ) {
+export function isValidBitcoinAddress(environment: Environment, address: string): boolean {
+  if (environment === Environment.TESTNET || environment === Environment.DEVNET) {
     return validate(address, BitcoinNetwork.testnet);
   }
 
@@ -308,7 +305,11 @@ export function isValidBitcoinAddress(address: string): boolean {
  * @param {Network} network
  * @returns {boolean}
  */
-export function isValidAddressForNetwork(address: string, network: Network): boolean {
+export function isValidAddressForNetwork(
+  environment: Environment,
+  address: string,
+  network: Network,
+): boolean {
   switch (network) {
     case Network.EVM:
       if (isValidEvmAddress(address)) return true;
@@ -317,7 +318,7 @@ export function isValidAddressForNetwork(address: string, network: Network): boo
       if (isValidSubstrateAddress(address)) return true;
       throw new Error('Invalid Substrate Address');
     case Network.BITCOIN:
-      if (isValidBitcoinAddress(address)) return true;
+      if (isValidBitcoinAddress(environment, address)) return true;
       throw new Error('Invalid Bitcoin Address');
     default:
       throw new Error('Provided network is not supported');
