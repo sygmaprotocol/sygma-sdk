@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/sygmaprotocol/sygma-sdk/compare/substrate-v1.0.3...substrate-v1.0.4) (2024-10-11)
+
+
+### Bug Fixes
+
+* remove `process` depedency which causes browser integration failure ([#559](https://github.com/sygmaprotocol/sygma-sdk/issues/559)) ([d2eef8d](https://github.com/sygmaprotocol/sygma-sdk/commit/d2eef8dfcea2aef6a40015c840ea39b9fe264505))
+
 ## [1.0.3](https://github.com/sygmaprotocol/sygma-sdk/compare/substrate-v1.0.2...substrate-v1.0.3) (2024-08-21)
 
 
