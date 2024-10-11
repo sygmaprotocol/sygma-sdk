@@ -68,6 +68,7 @@ export async function erc20Transfer(): Promise<void> {
     recipientAddress: ethers.constants.AddressZero,
     sourceAddress: sourceAddress,
     optionalGas: BigInt(5_000_000),
+    environment: process.env.SYGMA_ENV,
     optionalMessage: {
       receiver: destinationAddress,
       transactionId: ethers.utils.formatBytes32String("EVM-ERC20+GENERIC"),
