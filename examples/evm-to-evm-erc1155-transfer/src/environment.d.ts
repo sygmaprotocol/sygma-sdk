@@ -4,6 +4,8 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       SYGMA_ENV: Environment;
+      AMOUNT: string;
+      TOKEN_ID: string;
     }
   }
 }

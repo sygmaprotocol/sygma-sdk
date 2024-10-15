@@ -1,4 +1,3 @@
-
 # Sygma SDK ERC1155 Non-Fungible Token Transfer Example
 
 This example script demonstrates how to perform a **non-fungible ERC1155 token transfer** between two accounts on different testnets using the Sygma SDK.
@@ -11,7 +10,7 @@ Before running the script, ensure that you have the following:
 - **Yarn** (version 3.4.1 or higher).
 - The [exported private key](https://support.metamask.io/hc/en-us/articles/360015289632-How-to-export-an-account-s-private-key) of your development wallet.
 - **Sepolia ETH** for gas fees, obtainable from [Sepolia Faucet](https://sepoliafaucet.com/).
-- An Ethereum **provider URL** (e.g., from [Infura](https://www.infura.io/) or [Alchemy](https://www.alchemy.com/)).  (in case the hardcoded RPC within the script does not work)
+- An Ethereum **provider URL** (e.g., from [Infura](https://www.infura.io/) or [Alchemy](https://www.alchemy.com/)). (in case the hardcoded RPC within the script does not work)
 - An **ERC1155 non-fungible token** deployed on the source network.
 - The [**resource ID**](https://docs.buildwithsygma.com/resources/environments/testnet/#registered-resources) corresponding to your ERC1155 token registered with the Sygma protocol.
 
@@ -39,7 +38,7 @@ yarn install
 To build the SDK, run:
 
 ```bash
-yarn build:all
+yarn build
 ```
 
 ## Usage
@@ -61,6 +60,7 @@ Use the provided `.env.sample` as a template. Replace the placeholder values wit
 
 - `PRIVATE_KEY`: Your wallet's private key.
 - `TOKEN_ID`: The ID of the ERC1155 token you wish to transfer.
+- `AMOUNT`: The amount of token that needs to be transferred.
 - `SYGMA_ENV`: The Sygma environment you're using (e.g., `testnet` or `mainnet`).
 - `SEPOLIA_RPC_URL`: (Optional) Custom RPC URL for the Sepolia network.
 - `CRONOS_RPC_URL`: (Optional) Custom RPC URL for the Cronos testnet.
@@ -70,6 +70,7 @@ Example `.env` file:
 ```env
 PRIVATE_KEY="your_private_key_here"
 TOKEN_ID="1"
+AMOUNT="1"
 SYGMA_ENV="testnet"
 SEPOLIA_RPC_URL="https://your-sepolia-rpc-url"
 CRONOS_RPC_URL="https://your-cronos-rpc-url"
@@ -128,14 +129,14 @@ import {
   Eip1193Provider,
   Environment,
   getSygmaScanLink,
-} from '@buildwithsygma/core';
+} from "@buildwithsygma/core";
 import {
   createErc1155NonFungibleAssetTransfer,
   EvmAssetTransferParams,
-} from '@buildwithsygma/evm';
-import dotenv from 'dotenv';
-import { Wallet, providers } from 'ethers';
-import Web3HttpProvider from 'web3-providers-http';
+} from "@buildwithsygma/evm";
+import dotenv from "dotenv";
+import { Wallet, providers } from "ethers";
+import Web3HttpProvider from "web3-providers-http";
 ```
 
 ### **Loads Environment Variables**
@@ -144,7 +145,7 @@ import Web3HttpProvider from 'web3-providers-http';
 dotenv.config();
 const privateKey = process.env.PRIVATE_KEY;
 if (!privateKey) {
-  throw new Error('Missing environment variable: PRIVATE_KEY');
+  throw new Error("Missing environment variable: PRIVATE_KEY");
 }
 ```
 
@@ -153,9 +154,11 @@ if (!privateKey) {
 ```typescript
 const SEPOLIA_CHAIN_ID = 11155111;
 const CRONOS_TESTNET_CHAIN_ID = 338;
-const RESOURCE_ID = '0x...'; // Replace with your ERC1155 resource ID
-const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || 'https://default-sepolia-rpc-url';
-const CRONOS_RPC_URL = process.env.CRONOS_RPC_URL || 'https://default-cronos-rpc-url';
+const RESOURCE_ID = "0x..."; // Replace with your ERC1155 resource ID
+const SEPOLIA_RPC_URL =
+  process.env.SEPOLIA_RPC_URL || "https://default-sepolia-rpc-url";
+const CRONOS_RPC_URL =
+  process.env.CRONOS_RPC_URL || "https://default-cronos-rpc-url";
 ```
 
 ### **Initializes Providers and Wallets**
@@ -165,19 +168,19 @@ const web3Provider = new Web3HttpProvider(SEPOLIA_RPC_URL);
 const ethersWeb3Provider = new providers.Web3Provider(web3Provider);
 const wallet = new Wallet(privateKey, ethersWeb3Provider);
 const sourceAddress = await wallet.getAddress();
-const destinationAddress = '0xRecipientAddress'; // Replace with the actual recipient address
+const destinationAddress = "0xRecipientAddress"; // Replace with the actual recipient address
 ```
 
 ### **Defines Transfer Parameters**
 
 ```typescript
-const params: EvmAssetTransferParams = {
+const params: SemiFungibleTransferParams = {
   source: SEPOLIA_CHAIN_ID,
   destination: CRONOS_TESTNET_CHAIN_ID,
   sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
   resource: RESOURCE_ID,
-  tokenId: process.env.TOKEN_ID as string,
-  amount: BigInt(1), // Amount is always 1 for non-fungible tokens
+  tokenIds: [process.env.TOKEN_ID], // Ensure TOKEN_ID of NFT is set in your .env file
+  amounts: [BigInt(process.env.AMOUNT)], // Amount is always 1 for non-fungible tokens
   recipientAddress: destinationAddress,
   sourceAddress,
 };
@@ -207,14 +210,16 @@ for (const approval of approvals) {
 const transferTx = await transfer.getTransferTransaction();
 const response = await wallet.sendTransaction(transferTx);
 await response.wait();
-console.log(`Deposited, transaction: ${getSygmaScanLink(response.hash, process.env.SYGMA_ENV as Environment)}`);
+console.log(
+  `Deposited, transaction: ${getSygmaScanLink(response.hash, process.env.SYGMA_ENV as Environment)}`
+);
 ```
 
 ### **Error Handling**
 
 ```typescript
 erc1155NonFungibleTransfer().catch((error) => {
-  console.error('Error during ERC1155 non-fungible transfer:', error);
+  console.error("Error during ERC1155 non-fungible transfer:", error);
 });
 ```
 
@@ -229,4 +234,3 @@ erc1155NonFungibleTransfer().catch((error) => {
 ## Support
 
 If you have any questions or need assistance, please refer to the [Sygma SDK documentation](https://docs.buildwithsygma.com/) or reach out to the Sygma community.
-

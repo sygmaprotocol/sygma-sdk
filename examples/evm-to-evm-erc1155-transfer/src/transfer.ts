@@ -1,7 +1,7 @@
 import { Eip1193Provider, getSygmaScanLink } from "@buildwithsygma/core";
 import {
-  createNonFungibleERC1155,
-  NonFungibleTransferParams,
+  createSemiFungibleAssetTransfer,
+  SemiFungibleTransferParams,
 } from "@buildwithsygma/evm";
 import dotenv from "dotenv";
 import { Wallet, providers } from "ethers";
@@ -37,20 +37,20 @@ export async function erc1155Transfer(): Promise<void> {
   const sourceAddress = await wallet.getAddress();
   const destinationAddress = await wallet.getAddress(); // Replace with the actual recipient address
 
-  const params: NonFungibleTransferParams = {
+  const params: SemiFungibleTransferParams = {
     source: SEPOLIA_CHAIN_ID,
     destination: CRONOS_TESTNET_CHAIN_ID,
     sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
     resource: RESOURCE_ID,
-    tokenId: process.env.TOKEN_ID as string, // Ensure TOKEN_ID of NFT is set in your .env file
-    amount: BigInt("1"), // Amount is always 1 for non-fungible tokens
+    tokenIds: [process.env.TOKEN_ID], // Ensure TOKEN_ID of NFT is set in your .env file
+    amounts: [BigInt(process.env.AMOUNT)], // Amount is always 1 for non-fungible tokens
     recipientAddress: destinationAddress,
     sourceAddress,
   };
 
-  const transfer = await createNonFungibleERC1155(params);
-
+  const transfer = await createSemiFungibleAssetTransfer(params);
   const approvals = await transfer.getApprovalTransactions();
+
   console.log(`Approving Tokens (${approvals.length})...`);
   for (const approval of approvals) {
     const response = await wallet.sendTransaction(approval);
@@ -59,7 +59,7 @@ export async function erc1155Transfer(): Promise<void> {
       `Approved, transaction: ${getTxExplorerUrl({
         txHash: response.hash,
         chainId: SEPOLIA_CHAIN_ID,
-      })}`,
+      })}`
     );
   }
 
@@ -69,8 +69,8 @@ export async function erc1155Transfer(): Promise<void> {
   console.log(
     `Deposited, transaction: ${getSygmaScanLink(
       response.hash,
-      process.env.SYGMA_ENV,
-    )}`,
+      process.env.SYGMA_ENV
+    )}`
   );
 }
 
