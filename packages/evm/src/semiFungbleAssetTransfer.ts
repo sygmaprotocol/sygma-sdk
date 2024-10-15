@@ -1,4 +1,4 @@
-import { Config, ResourceType } from '@buildwithsygma/core';
+import { Config, Environment, ResourceType } from '@buildwithsygma/core';
 import type { EvmResource } from '@buildwithsygma/core';
 import { ERC1155__factory, Bridge__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
@@ -128,7 +128,7 @@ export async function createSemiFungibleAssetTransfer(
   params: SemiFungibleTransferParams,
 ): Promise<SemiFungibleAssetTransfer> {
   const config = new Config();
-  await config.init(process.env.SYGMA_ENV);
+  await config.init(params.environment ?? Environment.MAINNET);
 
   const transfer = new SemiFungibleAssetTransfer(params, config);
   const isValidTransfer = await transfer.isValidTransfer();
