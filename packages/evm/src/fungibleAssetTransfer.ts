@@ -1,5 +1,11 @@
 import type { EthereumConfig, EvmResource } from '@buildwithsygma/core';
-import { Config, FeeHandlerType, ResourceType, SecurityModel } from '@buildwithsygma/core';
+import {
+  Config,
+  Environment,
+  FeeHandlerType,
+  ResourceType,
+  SecurityModel,
+} from '@buildwithsygma/core';
 import {
   Bridge__factory,
   ERC20__factory,
@@ -271,7 +277,7 @@ export async function createFungibleAssetTransfer(
   params: FungibleTransferParams,
 ): Promise<FungibleAssetTransfer> {
   const config = new Config();
-  await config.init(process.env.SYGMA_ENV);
+  await config.init(params.environment ?? Environment.MAINNET);
 
   const transfer = new FungibleAssetTransfer(params, config);
 

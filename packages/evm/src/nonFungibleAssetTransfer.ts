@@ -1,5 +1,5 @@
 import type { EvmResource } from '@buildwithsygma/core';
-import { Config, ResourceType } from '@buildwithsygma/core';
+import { Config, Environment, ResourceType } from '@buildwithsygma/core';
 import {
   Bridge__factory,
   ERC721MinterBurnerPauser__factory,
@@ -94,7 +94,7 @@ export async function createNonFungibleAssetTransfer(
   params: NonFungibleTransferParams,
 ): Promise<NonFungibleAssetTransfer> {
   const config = new Config();
-  await config.init(process.env.SYGMA_ENV);
+  await config.init(params.environment ?? Environment.MAINNET);
 
   const transfer = new NonFungibleAssetTransfer(params, config);
   const isValidTransfer = await transfer.isValidTransfer();

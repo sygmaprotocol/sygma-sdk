@@ -421,6 +421,8 @@ __metadata:
   dependencies:
     "@buildwithsygma/core": "workspace:^"
     "@types/jest": "npm:^29.4.0"
+    bip32: "npm:4.0.0"
+    bip39: "npm:3.1.0"
     bitcoinjs-lib: "npm:^6.1.6"
     concurrently: "npm:7.0.0"
     eslint: "npm:8"
@@ -719,6 +721,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/utils@workspace:packages/utils"
   dependencies:
+    "@buildwithsygma/bitcoin": "workspace:^"
     "@buildwithsygma/core": "workspace:^"
     "@buildwithsygma/evm": "workspace:^"
     "@buildwithsygma/substrate": "workspace:^"
@@ -4229,7 +4232,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bip32@npm:^4.0.0":
+"bip32@npm:4.0.0, bip32@npm:^4.0.0":
   version: 4.0.0
   resolution: "bip32@npm:4.0.0"
   dependencies:
@@ -4241,7 +4244,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bip39@npm:^3.1.0":
+"bip39@npm:3.1.0, bip39@npm:^3.1.0":
   version: 3.1.0
   resolution: "bip39@npm:3.1.0"
   dependencies:

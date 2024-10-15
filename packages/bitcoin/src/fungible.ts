@@ -14,7 +14,7 @@ export async function createBitcoinFungibleTransfer(
   params: BitcoinTransferParams,
 ): Promise<BitcoinFungibleTransfer> {
   const config = new Config();
-  await config.init(process.env.SYGMA_ENV || Environment.MAINNET);
+  await config.init(params.environment || Environment.MAINNET);
   return new BitcoinFungibleTransfer(params, config);
 }
 
