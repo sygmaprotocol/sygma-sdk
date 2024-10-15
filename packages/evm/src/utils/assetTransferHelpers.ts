@@ -162,6 +162,10 @@ export function createERC1155DepositData(depositParams: SemiFungibleAssetDeposit
     destination.parachainId,
   );
 
-  const encodedData = defaultAbiCoder.encode(['uint[]', 'uint[]'], [tokenIds, amounts]);
-  return hexlify(concat([arrayify(encodedData), recipientAddressSerialized]));
+  const encodedData = defaultAbiCoder.encode(
+    ['uint[]', 'uint[]', 'bytes', 'bytes'],
+    [tokenIds, amounts, recipientAddressSerialized, '0x'],
+  );
+
+  return encodedData;
 }
