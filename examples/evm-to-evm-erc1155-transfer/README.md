@@ -1,6 +1,6 @@
-# Sygma SDK ERC1155 Non-Fungible Token Transfer Example
+# Sygma SDK ERC1155 Semi-Fungible Token Transfer Example
 
-This example script demonstrates how to perform a **non-fungible ERC1155 token transfer** between two accounts on different testnets using the Sygma SDK.
+This example script demonstrates how to perform a **semi-fungible ERC1155 token transfer** between two accounts on testnet using the Sygma SDK.
 
 ## Prerequisites
 
@@ -11,7 +11,7 @@ Before running the script, ensure that you have the following:
 - The [exported private key](https://support.metamask.io/hc/en-us/articles/360015289632-How-to-export-an-account-s-private-key) of your development wallet.
 - **Sepolia ETH** for gas fees, obtainable from [Sepolia Faucet](https://sepoliafaucet.com/).
 - An Ethereum **provider URL** (e.g., from [Infura](https://www.infura.io/) or [Alchemy](https://www.alchemy.com/)). (in case the hardcoded RPC within the script does not work)
-- An **ERC1155 non-fungible token** deployed on the source network.
+- An **ERC1155 semi-fungible token** deployed on the source network.
 - The [**resource ID**](https://docs.buildwithsygma.com/resources/environments/testnet/#registered-resources) corresponding to your ERC1155 token registered with the Sygma protocol.
 
 ## Getting Started
@@ -49,10 +49,10 @@ This example uses the `dotenv` module to manage private keys and environment var
 
 ### 1. Set Up Environment Variables
 
-Create a `.env` file in the `examples/erc1155-non-fungible-transfer` directory:
+Create a `.env` file in the `examples/evm-to-evm-erc1155-transfer` directory:
 
 ```bash
-cd examples/erc1155-non-fungible-transfer
+cd examples/evm-to-evm-erc1155-transfer
 touch .env
 ```
 
@@ -76,7 +76,7 @@ SEPOLIA_RPC_URL="https://your-sepolia-rpc-url"
 CRONOS_RPC_URL="https://your-cronos-rpc-url"
 ```
 
-### 2. Run the ERC1155 Non-Fungible Token Transfer Script
+### 2. Run the ERC1155 Semi-Fungible Token Transfer Script
 
 To execute the ERC1155 transfer script, run:
 
@@ -84,7 +84,7 @@ To execute the ERC1155 transfer script, run:
 yarn run transfer
 ```
 
-This command will execute the script located in `examples/erc1155-non-fungible-transfer/erc1155NonFungibleTransfer.ts`.
+This command will execute the script located in `examples/evm-to-evm-erc1155-transfer/src/transfer.ts`.
 
 ## Script Functionality
 
@@ -94,7 +94,7 @@ The example script performs the following steps:
 
 2. **Retrieve Supported Domains and Resources**: Fetches the list of supported domains and resources from the SDK configuration to ensure the networks and tokens involved are supported.
 
-3. **Set Up Transfer Parameters**: Defines the details of the ERC1155 non-fungible token transfer, including source and destination chain IDs, resource ID, token ID, and recipient address.
+3. **Set Up Transfer Parameters**: Defines the details of the ERC1155 semi-fungible token transfer, including source and destination chain IDs, resource ID, token ID, and recipient address.
 
 4. **Create the Transfer Object**: Uses the SDK to create a transfer object that encapsulates the transfer details and logic.
 
@@ -110,7 +110,7 @@ The example script performs the following steps:
 
 ## Notes
 
-- **ERC1155 Non-Fungible Tokens**: This script is specifically designed for ERC1155 tokens that represent non-fungible assets (unique items). Ensure that the `TOKEN_ID` you provide corresponds to a non-fungible token with a balance of `1` in your wallet.
+- **ERC1155 Semi-Fungible Tokens**: This script is specifically designed for ERC1155 tokens that represent semi-fungible assets (ERC1155 standard). Ensure that the `TOKEN_ID` you provide corresponds to a Semi-fungible token with a balance of `1` in your wallet.
 
 - **Sygma Environment**: The `SYGMA_ENV` variable should match the environment your resources are registered in (e.g., `testnet` or `mainnet`).
 
@@ -120,7 +120,7 @@ The example script performs the following steps:
 
 ## Example Script Breakdown
 
-The script (`erc1155NonFungibleTransfer.ts`) performs the following actions:
+The script (`transfer.ts`) performs the following actions:
 
 ### **Imports Required Modules and Configurations**
 
@@ -131,7 +131,7 @@ import {
   getSygmaScanLink,
 } from "@buildwithsygma/core";
 import {
-  createErc1155NonFungibleAssetTransfer,
+  createSemiFungibleAssetTransfer,
   EvmAssetTransferParams,
 } from "@buildwithsygma/evm";
 import dotenv from "dotenv";
@@ -180,7 +180,7 @@ const params: SemiFungibleTransferParams = {
   sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
   resource: RESOURCE_ID,
   tokenIds: [process.env.TOKEN_ID], // Ensure TOKEN_ID of NFT is set in your .env file
-  amounts: [BigInt(process.env.AMOUNT)], // Amount is always 1 for non-fungible tokens
+  amounts: [BigInt(process.env.AMOUNT)], // Amount is always 1 for Semi-fungible tokens
   recipientAddress: destinationAddress,
   sourceAddress,
 };
@@ -189,7 +189,7 @@ const params: SemiFungibleTransferParams = {
 ### **Creates the Transfer Object**
 
 ```typescript
-const transfer = await createErc1155NonFungibleAssetTransfer(params);
+const transfer = await createSemiFungibleAssetTransfer(params);
 ```
 
 ### **Handles Approval Transactions**
@@ -218,8 +218,8 @@ console.log(
 ### **Error Handling**
 
 ```typescript
-erc1155NonFungibleTransfer().catch((error) => {
-  console.error("Error during ERC1155 non-fungible transfer:", error);
+erc1155Transfer().catch((error) => {
+  console.error("Error during ERC1155 Semi-fungible transfer:", error);
 });
 ```
 
