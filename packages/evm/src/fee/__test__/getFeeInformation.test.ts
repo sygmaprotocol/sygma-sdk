@@ -81,6 +81,6 @@ describe('getFeeInformation()', () => {
           feeInfoParams.sygmaDestinationDomainId,
           feeInfoParams.sygmaResourceId,
         ),
-    ).rejects.toThrow('Failed getting fee: route not registered on fee handler');
+    ).rejects.toThrow('Fee Handler not found for Resource ID 0x to Domain 1');
   });
 });

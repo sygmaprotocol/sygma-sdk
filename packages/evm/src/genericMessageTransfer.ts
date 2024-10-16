@@ -134,9 +134,6 @@ class GenericMessageTransfer<
    * @returns {Promise<TransactionRequest>}
    */
   async getTransferTransaction(overrides?: ethers.Overrides): Promise<TransactionRequest> {
-    const isValid = await this.isValidTransfer();
-    if (!isValid) throw new Error('Invalid Transfer.');
-
     const sourceDomain = this.config.getDomainConfig(this.source);
     const provider = new Web3Provider(this.sourceNetworkProvider);
     const bridgeInstance = Bridge__factory.connect(sourceDomain.bridge, provider);

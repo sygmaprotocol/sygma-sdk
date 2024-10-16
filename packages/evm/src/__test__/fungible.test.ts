@@ -100,7 +100,7 @@ describe('Fungible - createEvmFungibleAssetTransfer', () => {
     });
 
     await expect(async () => await createFungibleAssetTransfer(TRANSFER_PARAMS)).rejects.toThrow(
-      'Failed getting fee: route not registered on fee handler',
+      'Fee Handler not found for Resource ID 0x0 to Domain 1',
     );
   });
 });
