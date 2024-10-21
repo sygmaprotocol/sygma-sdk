@@ -16,8 +16,6 @@ npm install @buildwithsygma/bitcoin
 
 ## Environment Setup
 
-Make sure to set environment variable `SYGMA_ENV` to either `TESTNET` or `MAINNET` prior to using the SDK.
-
 ## Support.
 
 Bridge configuration and list of supported networks for each environment can be found at: [Sygma bridge shared configuration github](https://github.com/sygmaprotocol/sygma-shared-configuration)
@@ -62,14 +60,17 @@ import { createBitcoinFungibleTransfer, TypeOfAddress } from '@buildwithsygma/bi
 import type { BitcoinTransferParams, UTXOData } from '@buildwithsygma/bitcoin';
 import { networks } from 'bitcoinjs-lib';
 import { toXOnly } from 'bitcoinjs-lib/src/psbt/bip371';
+import { Environment } from '@buildwithsygma/core';
 
 // Here we create the public key needed for the P2TR transfer. You can reference our bitcoin-to-evm example to check the steps to get the public key and the signer
 // derivedNode.publicKey is one of your account given the derivation path that you provide
 const publicKeyDropedDERHeader = toXOnly(derivedNode.publicKey);
 
 const transferParams: BitcoinTransferParams = {
+  environment: Environment.TESTNET
   source: 'bip122:000000000933ea01ad0ee984209779ba',
   destination: 11155111,
+  sourceAddress: "<source_wallet_address>",
   destinationAddress: '0x...', // evm address here
   amount: 1e8,
   resource: '0x0000000000000000000000000000000000000000000000000000000000000300',
@@ -99,11 +100,14 @@ console.log('Transaction hex', tx.toHex());
 ```typescript
 import type { BitcoinTransferParams, UTXOData } from '@buildwithsygma/bitcoin';
 import { createBitcoinFungibleTransfer, TypeOfAddress } from '@buildwithsygma/bitcoin';
+import { Environment } from '@buildwithsygma/core';
 import { networks } from 'bitcoinjs-lib';
 
 const derivedNode = rootKey.derivePath('your-derivation-path');
 
 const transferParams: BitcoinTransferParams = {
+  environment: Environment.TESTNET,
+  sourceAddress: '<source_wallet_address>',
   source: 'bip122:000000000933ea01ad0ee984209779ba',
   destination: 11155111,
   destinationAddress: '0x...', // evm address here

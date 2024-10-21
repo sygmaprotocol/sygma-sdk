@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.1](https://github.com/sygmaprotocol/sygma-sdk/compare/bitcoin-v1.1.0...bitcoin-v1.1.1) (2024-10-11)
+
+
+### Bug Fixes
+
+* remove `process` depedency which causes browser integration failure ([#559](https://github.com/sygmaprotocol/sygma-sdk/issues/559)) ([d2eef8d](https://github.com/sygmaprotocol/sygma-sdk/commit/d2eef8dfcea2aef6a40015c840ea39b9fe264505))
+
+## [1.1.0](https://github.com/sygmaprotocol/sygma-sdk/compare/bitcoin-v1.0.0...bitcoin-v1.1.0) (2024-10-09)
+
+
+### Features
+
+* bitcoin wallet utils ([#546](https://github.com/sygmaprotocol/sygma-sdk/issues/546)) ([f29559b](https://github.com/sygmaprotocol/sygma-sdk/commit/f29559b7ca730640bb8a1697fc7b3fb8cc4f89c3))
+
 ## 1.0.0 (2024-09-09)
 
 

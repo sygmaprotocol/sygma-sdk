@@ -1,5 +1,5 @@
 import type { EthereumConfig } from '@buildwithsygma/core';
-import { Config, Network, ResourceType } from '@buildwithsygma/core';
+import { Config, Environment, Network, ResourceType } from '@buildwithsygma/core';
 import { Bridge__factory } from '@buildwithsygma/sygma-contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import type {
@@ -134,9 +134,6 @@ class GenericMessageTransfer<
    * @returns {Promise<TransactionRequest>}
    */
   async getTransferTransaction(overrides?: ethers.Overrides): Promise<TransactionRequest> {
-    const isValid = await this.isValidTransfer();
-    if (!isValid) throw new Error('Invalid Transfer.');
-
     const sourceDomain = this.config.getDomainConfig(this.source);
     const provider = new Web3Provider(this.sourceNetworkProvider);
     const bridgeInstance = Bridge__factory.connect(sourceDomain.bridge, provider);
@@ -183,7 +180,7 @@ export async function createCrossChainContractCall<
   params: GenericMessageTransferParams<ContractAbi, FunctionName>,
 ): Promise<GenericMessageTransfer<ContractAbi, FunctionName>> {
   const config = new Config();
-  await config.init(process.env.SYGMA_ENV);
+  await config.init(params.environment ?? Environment.MAINNET);
   const genericTransfer = new GenericMessageTransfer<ContractAbi, FunctionName>(params, config);
 
   const isValidTransfer = await genericTransfer.isValidTransfer();

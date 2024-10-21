@@ -1,5 +1,8 @@
 import type { Eip1193Provider } from "@buildwithsygma/core";
-import { createFungibleAssetTransfer } from "@buildwithsygma/evm";
+import {
+  createFungibleAssetTransfer,
+  FungibleTransferParams,
+} from "@buildwithsygma/evm";
 import dotenv from "dotenv";
 import { Wallet, providers } from "ethers";
 import Web3HttpProvider from "web3-providers-http";
@@ -35,7 +38,7 @@ export async function erc20Transfer(): Promise<void> {
   const sourceAddress = await wallet.getAddress();
   const recipientAddress = process.env.RECIPIENT_ADDRESS;
 
-  const params = {
+  const params: FungibleTransferParams = {
     source: SEPOLIA_CHAIN_ID,
     destination: TANGLE_CHAIN_ID,
     sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
@@ -43,6 +46,7 @@ export async function erc20Transfer(): Promise<void> {
     amount: BigInt(1) * BigInt(1e18),
     recipientAddress,
     sourceAddress: sourceAddress,
+    environment: process.env.SYGMA_ENV,
   };
 
   const transfer = await createFungibleAssetTransfer(params);

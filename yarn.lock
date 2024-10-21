@@ -421,6 +421,8 @@ __metadata:
   dependencies:
     "@buildwithsygma/core": "workspace:^"
     "@types/jest": "npm:^29.4.0"
+    bip32: "npm:4.0.0"
+    bip39: "npm:3.1.0"
     bitcoinjs-lib: "npm:^6.1.6"
     concurrently: "npm:7.0.0"
     eslint: "npm:8"
@@ -464,6 +466,22 @@ __metadata:
     typedoc: "npm:^0.24.1"
     typedoc-plugin-markdown: "npm:^3.15.1"
     typescript: "npm:5.0.4"
+  languageName: unknown
+  linkType: soft
+
+"@buildwithsygma/evm-to-evm-erc1155-transfer-example@workspace:examples/evm-to-evm-erc1155-transfer":
+  version: 0.0.0-use.local
+  resolution: "@buildwithsygma/evm-to-evm-erc1155-transfer-example@workspace:examples/evm-to-evm-erc1155-transfer"
+  dependencies:
+    "@buildwithsygma/core": "workspace:^"
+    "@buildwithsygma/evm": "workspace:^"
+    dotenv: "npm:^16.3.1"
+    eslint: "npm:8"
+    ethers: "npm:5.7.2"
+    ts-node: "npm:10.9.1"
+    tsx: "npm:^4.15.4"
+    typescript: "npm:5.0.4"
+    web3-providers-http: "npm:1.10.4"
   languageName: unknown
   linkType: soft
 
@@ -703,6 +721,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@buildwithsygma/utils@workspace:packages/utils"
   dependencies:
+    "@buildwithsygma/bitcoin": "workspace:^"
     "@buildwithsygma/core": "workspace:^"
     "@buildwithsygma/evm": "workspace:^"
     "@buildwithsygma/substrate": "workspace:^"
@@ -4213,7 +4232,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bip32@npm:^4.0.0":
+"bip32@npm:4.0.0, bip32@npm:^4.0.0":
   version: 4.0.0
   resolution: "bip32@npm:4.0.0"
   dependencies:
@@ -4225,7 +4244,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bip39@npm:^3.1.0":
+"bip39@npm:3.1.0, bip39@npm:^3.1.0":
   version: 3.1.0
   resolution: "bip39@npm:3.1.0"
   dependencies:

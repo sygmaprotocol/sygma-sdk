@@ -1,6 +1,6 @@
 {
   "name": "@buildwithsygma/utils",
-  "version": "1.2.1",
+  "version": "1.3.1",
   "description": "Utilities to support bridging and message passing",
   "main": "dist-esm/index.js",
   "types": "types/index.d.ts",
@@ -56,6 +56,7 @@
     "typescript": "5.0.4"
   },
   "dependencies": {
+    "@buildwithsygma/bitcoin": "workspace:^",
     "@buildwithsygma/core": "workspace:^",
     "@buildwithsygma/evm": "workspace:^",
     "@buildwithsygma/substrate": "workspace:^",

@@ -88,7 +88,8 @@ export abstract class AssetTransfer extends EvmTransfer implements IAssetTransfe
    * @param {string} address
    */
   public setRecipientAddress(address: string): void {
-    if (isValidAddressForNetwork(address, this.destination.type)) this.recipient = address;
+    if (isValidAddressForNetwork(this.environment, address, this.destination.type))
+      this.recipient = address;
   }
 
   /**

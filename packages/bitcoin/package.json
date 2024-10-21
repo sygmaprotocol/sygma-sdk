@@ -1,6 +1,6 @@
 {
   "name": "@buildwithsygma/bitcoin",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "Core primitives for bridging and message passing",
   "main": "dist-esm/index.js",
   "types": "types/index.d.ts",
@@ -61,6 +61,8 @@
   },
   "dependencies": {
     "@buildwithsygma/core": "workspace:^",
+    "bip32": "4.0.0",
+    "bip39": "3.1.0",
     "bitcoinjs-lib": "^6.1.6"
   }
 }

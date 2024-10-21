@@ -45,6 +45,7 @@ const substrateTransfer = async (): Promise<void> => {
     resource: RESOURCE_ID,
     amount: BigInt(1) * BigInt(1e18),
     destinationAddress: RECIPIENT_ADDRESS,
+    environment: process.env.SYGMA_ENV,
   };
 
   const transfer = await createSubstrateFungibleAssetTransfer(transferParams);

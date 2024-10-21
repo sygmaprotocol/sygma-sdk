@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.5.0](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.4.1...evm-v1.5.0) (2024-10-16)
+
+
+### Features
+
+* semi fungible evm ([#554](https://github.com/sygmaprotocol/sygma-sdk/issues/554)) ([f20d786](https://github.com/sygmaprotocol/sygma-sdk/commit/f20d7867f9a41f90700dc6fb61bc21dec08d34cc))
+
+## [1.4.1](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.4.0...evm-v1.4.1) (2024-10-11)
+
+
+### Bug Fixes
+
+* remove `process` depedency which causes browser integration failure ([#559](https://github.com/sygmaprotocol/sygma-sdk/issues/559)) ([d2eef8d](https://github.com/sygmaprotocol/sygma-sdk/commit/d2eef8dfcea2aef6a40015c840ea39b9fe264505))
+
 ## [1.4.0](https://github.com/sygmaprotocol/sygma-sdk/compare/evm-v1.3.3...evm-v1.4.0) (2024-09-26)
 
 
