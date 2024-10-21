@@ -12,16 +12,17 @@ if (!MNEMONIC) {
   throw new Error("Missing environment variable: PRIVATE_MNEMONIC");
 }
 
-const SEPOLIA_CHAIN_ID = 11155111;
 const TANGLE_CHAIN_ID = 3799;
+const SEPOLIA_CHAIN_ID = 11155111;
 
-const RESOURCE_ID_SYGMA_USD =
+const RECIPIENT_ADDRESS =
+  process.env.RECIPIENT_ADDRESS || "0xE39bb23F17a2cf7C9a8C4918376A32036A8867db";
+const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000002000";
-const recipient = "0xE39bb23F17a2cf7C9a8C4918376A32036A8867db";
+const SYGMA_EXPLORER_URL = "https://scan.test.buildwithsygma.com";
 const TANGLE_RPC_URL =
   process.env.SOURCE_SUBSTRATE_RPC_URL ?? "wss://rpc.tangle.tools";
 
-const SYGMA_EXPLORER_URL = "https://scan.test.buildwithsygma.com";
 const getSygmaExplorerTransferUrl = (params: {
   blockNumber: number;
   extrinsicIndex: number;
@@ -41,9 +42,9 @@ const substrateTransfer = async (): Promise<void> => {
     destination: SEPOLIA_CHAIN_ID,
     sourceNetworkProvider: api,
     sourceAddress: account.address,
-    resource: RESOURCE_ID_SYGMA_USD,
+    resource: RESOURCE_ID,
     amount: BigInt(1) * BigInt(1e18),
-    destinationAddress: recipient,
+    destinationAddress: RECIPIENT_ADDRESS,
     environment: process.env.SYGMA_ENV,
   };
 
@@ -72,6 +73,8 @@ const substrateTransfer = async (): Promise<void> => {
       }
       unsub();
       process.exit(0);
+    } else if (status.isDropped || status.isInvalid || status.isUsurped) {
+      console.error("Transaction failed. Status:", status.toString());
     }
   });
 };
