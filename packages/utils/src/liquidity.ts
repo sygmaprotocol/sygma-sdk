@@ -64,8 +64,8 @@ export async function hasEnoughLiquidity(
       );
 
       return (
-        (transfer as Awaited<ReturnType<typeof createSubstrateFungibleAssetTransfer>>).amount <=
-        substrateHandlerBalance
+        (transfer as Awaited<ReturnType<typeof createSubstrateFungibleAssetTransfer>>)
+          .transferAmount <= substrateHandlerBalance
       );
     }
     // TODO: Bitcoin?

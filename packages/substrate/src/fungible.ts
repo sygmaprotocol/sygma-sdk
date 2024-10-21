@@ -26,7 +26,7 @@ export interface SubstrateAssetTransferRequest extends BaseTransferParams {
   sourceAddress: string;
   sourceNetworkProvider: ApiPromise;
   amount: bigint;
-  destinationAddress: string;
+  recipientAddress: string;
 }
 
 export async function createSubstrateFungibleAssetTransfer(
@@ -39,18 +39,18 @@ export async function createSubstrateFungibleAssetTransfer(
 }
 
 class SubstrateFungibleAssetTransfer extends BaseTransfer {
-  amount: bigint;
-  destinationAddress: string = '';
+  transferAmount: bigint;
+  recipientAddress: string = '';
   sourceNetworkProvider: ApiPromise;
 
   constructor(transfer: SubstrateAssetTransferRequest, config: Config) {
     super(transfer, config);
-    this.amount = transfer.amount;
+    this.transferAmount = transfer.amount;
     this.sourceNetworkProvider = transfer.sourceNetworkProvider;
     const environment = transfer.environment ?? Environment.MAINNET;
 
-    if (isValidAddressForNetwork(environment, transfer.destinationAddress, this.destination.type))
-      this.destinationAddress = transfer.destinationAddress;
+    if (isValidAddressForNetwork(environment, transfer.recipientAddress, this.destination.type))
+      this.recipientAddress = transfer.recipientAddress;
   }
 
   public getSourceNetworkProvider(): ApiPromise {
@@ -62,7 +62,7 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
    * @param {bigint} amount
    */
   setAmount(amount: bigint): void {
-    this.amount = amount;
+    this.transferAmount = amount;
   }
 
   /**
@@ -71,7 +71,7 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
    */
   setDestinationAddress(destinationAddress: string): void {
     if (isValidAddressForNetwork(this.environment, destinationAddress, this.destination.type))
-      this.destinationAddress = destinationAddress;
+      this.recipientAddress = destinationAddress;
   }
 
   /**
@@ -80,7 +80,7 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
    * @returns {Promise<SubstrateFee>}
    */
   async getFee(amount?: bigint): Promise<SubstrateFee> {
-    if (amount) this.amount = amount;
+    if (amount) this.transferAmount = amount;
 
     const resource = this.resource as SubstrateResource;
 
@@ -99,7 +99,7 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
         );
       case FeeHandlerType.PERCENTAGE:
         return await getPercentageFee(this.sourceNetworkProvider, {
-          details: { amount: this.amount.toString(), recipient: this.destinationAddress },
+          details: { amount: this.transferAmount.toString(), recipient: this.recipientAddress },
           from: this.source,
           resource,
           sender: '',
@@ -118,7 +118,7 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
 
     // Native token balance check
     if ([FeeHandlerType.BASIC].includes(fee.type)) {
-      const amountBigNumber = new BN(this.amount.toString());
+      const amountBigNumber = new BN(this.transferAmount.toString());
       const balance = await getNativeTokenBalance(this.sourceNetworkProvider, this.sourceAddress);
 
       if (new BN(balance.free).lt(amountBigNumber)) {
@@ -161,9 +161,9 @@ class SubstrateFungibleAssetTransfer extends BaseTransfer {
       this.environment,
       this.sourceNetworkProvider,
       resource.xcmMultiAssetId,
-      this.amount.toString(),
+      this.transferAmount.toString(),
       this.destination.id.toString(),
-      this.destinationAddress,
+      this.recipientAddress,
     );
   }
 }
