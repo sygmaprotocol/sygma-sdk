@@ -17,7 +17,7 @@ const SEPOLIA_CHAIN_ID = 11155111;
 
 const RECIPIENT_ADDRESS =
   process.env.RECIPIENT_ADDRESS || "0xE39bb23F17a2cf7C9a8C4918376A32036A8867db";
-const RESOURCE_ID_SYGMA_USD =
+const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000002000";
 const SYGMA_EXPLORER_URL = "https://scan.test.buildwithsygma.com";
 const TANGLE_RPC_URL =
@@ -42,7 +42,7 @@ const substrateTransfer = async (): Promise<void> => {
     destination: SEPOLIA_CHAIN_ID,
     sourceNetworkProvider: api,
     sourceAddress: account.address,
-    resource: RESOURCE_ID_SYGMA_USD,
+    resource: RESOURCE_ID,
     amount: BigInt(1) * BigInt(1e18),
     destinationAddress: RECIPIENT_ADDRESS,
   };
@@ -56,7 +56,7 @@ const substrateTransfer = async (): Promise<void> => {
 
     if (status.isInBlock) {
       console.log(
-        `Transaction included at blockHash ${status.asInBlock.toString()}`,
+        `Transaction included at blockHash ${status.asInBlock.toString()}`
       );
     } else if (status.isFinalized) {
       const blockNumber = results.blockNumber?.toNumber();
@@ -64,10 +64,10 @@ const substrateTransfer = async (): Promise<void> => {
 
       if (blockNumber && extrinsicIndex) {
         console.log(
-          `Transaction finalized at blockHash ${status.asFinalized.toString()}`,
+          `Transaction finalized at blockHash ${status.asFinalized.toString()}`
         );
         console.log(
-          `Explorer URL: ${getSygmaExplorerTransferUrl({ blockNumber, extrinsicIndex })}`,
+          `Explorer URL: ${getSygmaExplorerTransferUrl({ blockNumber, extrinsicIndex })}`
         );
       }
       unsub();

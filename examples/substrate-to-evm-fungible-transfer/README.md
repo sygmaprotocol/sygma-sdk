@@ -1,4 +1,5 @@
 # Sygma SDK Substrate to EVM (Tangle to Sepolia) Asset Transfer Example
+
 This is an example script that demonstrates the functionality of the SDK using the Sygma ecosystem. The script showcases a Substrate Asset transfer between a Substrate network and an EVM network using the Sygma SDK.
 
 ## Prerequisites
@@ -40,9 +41,10 @@ yarn build
 ```
 
 ### Obtaining sygUSD Tokens
-The `RESOURCE_ID_SYGMA_USD` represents the ID for `sygUSD` tokens in the Sygma protocol. You will need `sygUSD` testnet tokens to complete this transfer. If you are transferring a different asset, you may need to replace this ID with the appropriate resource ID.
 
-You can obtain testnet `sygUSD` tokens for the Tangle testnet by visiting the [Sygma Testnet Faucet](https://docs.buildwithsygma.com/resources/environments/testnet/obtain-testnet-tokens/?ref=blog.buildwithsygma.com).
+The `RESOURCE_ID` represents the ID for `tTNT` tokens in the Sygma protocol. You will need `tTNT` testnet tokens to complete this transfer. If you are transferring a different asset, you may need to replace this ID with the appropriate resource ID.
+
+You can obtain testnet `tTNT` tokens for the Tangle testnet by visiting the [Sygma Testnet Faucet](https://docs.buildwithsygma.com/resources/environments/testnet/obtain-testnet-tokens/?ref=blog.buildwithsygma.com).
 
 ## Usage
 
@@ -51,11 +53,13 @@ This example uses the `dotenv` module to import the 12-word private mnemonic. To
 **DO NOT COMMIT YOUR MNEMONIC WITH REAL FUNDS TO GITHUB. DOING SO COULD RESULT IN COMPLETE LOSS OF YOUR FUNDS.**
 
 ### Environment Variables
+
 Create a `.env` file in the substrate-to-evm example folder:
 
 ```bash
 touch .env
 ```
+
 The file should contain the following environment variables:
 
 - PRIVATE_MNEMONIC: The 12-word mnemonic for your Substrate wallet.
@@ -64,12 +68,13 @@ The file should contain the following environment variables:
 - SYGMA_ENV: The Sygma environment you’re using, e.g., testnet.
 
 Here’s an example of the .env file:
+
 ```dotenv
 PRIVATE_MNEMONIC="YOUR TWELVE WORD MNEMONIC HERE"
 SOURCE_SUBSTRATE_RPC_URL="wss://rpc.tangle.tools"
 RECIPIENT_ADDRESS="YOUR EVM ADDRESS"
 SYGMA_ENV="testnet"
-````
+```
 
 ### Obtaining Your 12-Word Mnemonic
 
@@ -80,6 +85,7 @@ Replace between the quotation marks your 12-word mnemonic:
 `PRIVATE_MNEMONIC="YOUR TWELVE WORD MNEMONIC HERE WITH SPACES"`
 
 ### Run the example
+
 To send a Substrate token to an EVM chain example transfer run:
 
 ```bash
@@ -100,7 +106,7 @@ Once the transaction is finalized, you can view the transaction details in the [
 This example script performs the following steps:
 
 1. **Initializes the SDK**: It connects to the Substrate node via WebSocket and initializes the SDK.
-2. **Retrieves Supported Domains and Resources**: It fetches the list of supported domains (Tangle and Sepolia in this case) and resources like `sygUSD`.
+2. **Retrieves Supported Domains and Resources**: It fetches the list of supported domains (Tangle and Sepolia in this case) and resources like `tTNT`.
 3. **Constructs a Transfer Object**: A transfer object is built, specifying the token amount, the source, and destination chains (Tangle and Sepolia).
 4. **Fetches Transfer Fees**: The SDK calculates the fees required for the transfer.
 5. **Signs and Sends the Transaction**: The transfer transaction is signed with your Substrate account and broadcasted to the network.
