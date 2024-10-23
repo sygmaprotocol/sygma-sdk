@@ -47,7 +47,7 @@ const mockedTransferEVM = {
 };
 
 const mockedTransferSubstrate = {
-  amount: 0n,
+  transferAmount: 0n,
   resource: mockedResource,
   config: {
     findDomainConfig: jest.fn(),
@@ -128,7 +128,7 @@ describe('hasEnoughLiquidity - substrate', () => {
   });
 
   it('should return true if there is enough liquidity', async () => {
-    mockedTransferSubstrate.amount = BigInt(5);
+    mockedTransferSubstrate.transferAmount = BigInt(5);
 
     const isEnough = await hasEnoughLiquidity(
       mockedTransferSubstrate as unknown as Awaited<ReturnType<typeof createFungibleAssetTransfer>>,
@@ -138,7 +138,7 @@ describe('hasEnoughLiquidity - substrate', () => {
     expect(isEnough).toEqual(true);
   });
   it('should return false if there isnt enough liquidity', async () => {
-    mockedTransferSubstrate.amount = BigInt(10);
+    mockedTransferSubstrate.transferAmount = BigInt(10);
 
     const isEnough = await hasEnoughLiquidity(
       mockedTransferSubstrate as unknown as Awaited<ReturnType<typeof createFungibleAssetTransfer>>,
