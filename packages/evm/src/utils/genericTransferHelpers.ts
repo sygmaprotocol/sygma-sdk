@@ -44,8 +44,8 @@ export function createGenericCallDepositData<
       functionParams as unknown as Array<unknown>,
     );
     const funcSig = funcData.substring(0, 10);
-    /** 0x (2) + function signature (8) + first param which is always set to depositer by relayer (64)  */
-    const funcParamEncoded = funcData.substring(74);
+    /** 0x (2) + function signature (8)  */
+    const funcParamEncoded = funcData.substring(10);
 
     const funcSigLen = getZeroPaddedLength(funcSig, 2);
     const contractAddrLen = getZeroPaddedLength(contractAddress, 1);
