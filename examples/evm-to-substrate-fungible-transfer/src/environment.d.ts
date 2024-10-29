@@ -6,6 +6,7 @@ declare global {
       SYGMA_ENV: Environment;
       PRIVATE_KEY: string;
       SOURCE_EVM_RPC_URL: string;
+      RECIPIENT_ADDRESS: string;
     }
   }
 }
