@@ -21,7 +21,7 @@ const RESOURCE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000002000";
 const SEPOLIA_RPC_URL =
   process.env.SOURCE_EVM_RPC_URL ??
-  "https://eth-sepolia.g.alchemy.com/v2/MeCKDrpxLkGOn4LMlBa3cKy1EzzOzwzG";
+  "https://ethereum-sepolia-rpc.publicnode.com";
 
 const explorerUrls: Record<number, string> = {
   [SEPOLIA_CHAIN_ID]: "https://sepolia.etherscan.io",
@@ -36,7 +36,7 @@ export async function erc20Transfer(): Promise<void> {
   const ethersWeb3Provider = new providers.Web3Provider(web3Provider);
   const wallet = new Wallet(privateKey ?? "", ethersWeb3Provider);
   const sourceAddress = await wallet.getAddress();
-  const destinationAddress = "5GjowPEaFNnwbrmpPuDmBVdF2e7n3cHwk2LnUwHXsaW5KtEL";
+  const recipientAddress = process.env.RECIPIENT_ADDRESS;
 
   const params: FungibleTransferParams = {
     source: SEPOLIA_CHAIN_ID,
@@ -44,7 +44,7 @@ export async function erc20Transfer(): Promise<void> {
     sourceNetworkProvider: web3Provider as unknown as Eip1193Provider,
     resource: RESOURCE_ID,
     amount: BigInt(1) * BigInt(1e18),
-    recipientAddress: destinationAddress,
+    recipientAddress,
     sourceAddress: sourceAddress,
     environment: process.env.SYGMA_ENV,
   };
