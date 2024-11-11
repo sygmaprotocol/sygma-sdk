@@ -43,7 +43,7 @@ const substrateTransfer = async (): Promise<void> => {
     sourceAddress: account.address,
     resource: RESOURCE_ID_SYGMA_USD,
     amount: BigInt(1) * BigInt(1e18),
-    destinationAddress: recipient,
+    recipientAddress: recipient,
     environment: process.env.SYGMA_ENV,
   };
 
