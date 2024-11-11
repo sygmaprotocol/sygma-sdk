@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/sygmaprotocol/sygma-sdk/compare/utils-v1.3.1...utils-v1.3.2) (2024-11-11)
+
+
+### Bug Fixes
+
+* similar interface for substrate and evm transfers ([#570](https://github.com/sygmaprotocol/sygma-sdk/issues/570)) ([8cc52e0](https://github.com/sygmaprotocol/sygma-sdk/commit/8cc52e0f44c52ddba0a3908caed4f12870f9894c))
+
 ## [1.3.1](https://github.com/sygmaprotocol/sygma-sdk/compare/utils-v1.3.0...utils-v1.3.1) (2024-10-11)
 
 
