@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.5](https://github.com/sygmaprotocol/sygma-sdk/compare/substrate-v1.0.4...substrate-v1.0.5) (2024-11-11)
+
+
+### Bug Fixes
+
+* similar interface for substrate and evm transfers ([#570](https://github.com/sygmaprotocol/sygma-sdk/issues/570)) ([8cc52e0](https://github.com/sygmaprotocol/sygma-sdk/commit/8cc52e0f44c52ddba0a3908caed4f12870f9894c))
+
 ## [1.0.4](https://github.com/sygmaprotocol/sygma-sdk/compare/substrate-v1.0.3...substrate-v1.0.4) (2024-10-11)
 
 
