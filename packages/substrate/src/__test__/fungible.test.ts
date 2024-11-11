@@ -30,7 +30,7 @@ describe('SubstrateFungibleAssetTransfer', () => {
       sourceNetworkProvider: api,
       resource: '0x0000000000000000000000000000000000000000000000000000000000000300',
       amount: BigInt(100),
-      destinationAddress: '0x98729c03c4D5e820F5e8c45558ae07aE63F97461',
+      recipientAddress: '0x98729c03c4D5e820F5e8c45558ae07aE63F97461',
       environment: Environment.LOCAL,
     };
   });
@@ -43,16 +43,16 @@ describe('SubstrateFungibleAssetTransfer', () => {
     test('should set constructor values', async () => {
       const transfer = await createSubstrateFungibleAssetTransfer(transferRequest);
 
-      expect(transfer.amount).toBe(BigInt(100));
+      expect(transfer.transferAmount).toBe(BigInt(100));
       expect(transfer.sourceNetworkProvider).toBe(transfer.sourceNetworkProvider);
-      expect(transfer.destinationAddress).toBe(transferRequest.destinationAddress);
+      expect(transfer.recipientAddress).toBe(transferRequest.recipientAddress);
     });
 
     test('should throw an error if destination address is Invalid', async () => {
       const invalidDestinationAddress = 'someAddress';
       const transfer = createSubstrateFungibleAssetTransfer({
         ...transferRequest,
-        destinationAddress: invalidDestinationAddress,
+        recipientAddress: invalidDestinationAddress,
       });
 
       await expect(() => transfer).rejects.toThrow('Invalid EVM Address');
@@ -63,7 +63,7 @@ describe('SubstrateFungibleAssetTransfer', () => {
     test('should set another EVM destination address', async () => {
       const transfer = await createSubstrateFungibleAssetTransfer(transferRequest);
       transfer.setDestinationAddress('0x742d35Cc6634C0532925a3b844Bc454e4438f44e');
-      expect(transfer.destinationAddress).toBe('0x742d35Cc6634C0532925a3b844Bc454e4438f44e');
+      expect(transfer.recipientAddress).toBe('0x742d35Cc6634C0532925a3b844Bc454e4438f44e');
     });
 
     test('should not set an invalid destination address', async () => {
