@@ -1,6 +1,6 @@
 {
   "name": "@buildwithsygma/substrate",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Core primitives for bridging and message passing",
   "main": "dist-esm/index.js",
   "types": "types/index.d.ts",
